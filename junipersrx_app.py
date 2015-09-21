@@ -1,5 +1,5 @@
 """
-This rule runs all the Juniper SRX actions one by one.
+This playbook runs all the Juniper SRX actions one by one.
 """
 
 import phantom.rules as phantom
@@ -26,7 +26,7 @@ def block_application_cb(action, success, incident, results, handle):
     if not success:
         return
 
-    ips = set(phantom.collect(incident, 'artifact:*.cef.destinationAddress'))
+    ips = set(phantom.collect(incident, 'artifact:*.cef.destinationAddress', scope='all'))
 
     parameters = []
 
@@ -50,7 +50,7 @@ def block_ip_cb(action, success, incident, results, handle):
 
 def on_start(incident):
 
-    ips = set(phantom.collect(incident, 'artifact:*.cef.destinationAddress'))
+    ips = set(phantom.collect(incident, 'artifact:*.cef.destinationAddress', scope='all'))
 
     parameters = []
 

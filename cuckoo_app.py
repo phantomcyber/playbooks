@@ -1,5 +1,5 @@
 """
-This rule runs cuckoo actions one by one.
+This playbook runs cuckoo actions one by one.
 """
 
 import phantom.rules as phantom

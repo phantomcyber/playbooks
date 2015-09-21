@@ -1,5 +1,5 @@
 """
-This rule runs all the VirusTotal actions one by one.
+This playbook runs all the VirusTotal actions one by one.
 """
 
 import phantom.rules as phantom
@@ -48,7 +48,6 @@ def on_start(incident):
 
 def on_finish(incident, summary):
 
-    phantom.debug("Summary: "+summary)
+    phantom.debug("Summary: " + summary)
 
-    return  
-
+    return

@@ -1,5 +1,5 @@
 """
-This rule runs all the splunk actions one by one.
+This playbook runs all the splunk actions one by one.
 """
 
 import phantom.rules as phantom
@@ -26,7 +26,7 @@ def get_host_events_cb(action, success, incident, results, handle):
 
 def on_start(incident):
 
-    ip_hostnames = set(phantom.collect(incident, 'artifact:*.cef.sourceAddress'))
+    ip_hostnames = set(phantom.collect(incident, 'artifact:*.cef.sourceAddress', scope='all'))
 
     parameters = []
 

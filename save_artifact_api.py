@@ -1,5 +1,5 @@
 """
-This sample rule shows the usage of phantom.save_artifact API.
+This sample playbook shows the usage of phantom.save_artifact API.
 """
 import phantom.rules as phantom
 import json

@@ -1,5 +1,5 @@
 """
-This rule runs all the wmi actions one by one.
+This playbook runs all the wmi actions one by one.
 """
 import phantom.rules as phantom
 import json

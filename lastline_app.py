@@ -1,5 +1,5 @@
 """
-This rule runs lastline actions one by one.
+This playbook runs lastline actions one by one.
 """
 
 import phantom.rules as phantom

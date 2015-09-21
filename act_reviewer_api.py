@@ -1,5 +1,5 @@
 """
-This sample rule shows how an analyst can be involved in automated actions where he/she can
+This sample playbook shows how an analyst can be involved in automated actions where he/she can
 review the params of the action before it can be executed. The analyst can allow
 or deny the action from executing in the approval process, or the analyst can alter the 
 params before allowing the action from executing.

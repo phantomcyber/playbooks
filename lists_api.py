@@ -1,5 +1,5 @@
 """
-This rule demonstrates the use of custom lists for use in formulating an action reponse rule. 
+This playbook demonstrates the use of custom lists for use in formulating an action reponse playbook. 
 """
 import json
 import phantom.rules as phantom

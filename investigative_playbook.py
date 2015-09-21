@@ -1,5 +1,5 @@
 """
-This is a sample rule that can perform simple investigative actions on various pieces of information
+This is a sample playbook that can perform simple investigative actions on various pieces of information
 in the events of an incident. 
 """
 import json
@@ -39,14 +39,12 @@ def on_start(incident):
     victims = list(set(phantom.collect(incident, 'artifact:*.cef.sourceUserName', scope='all')))
     victims.extend(list(set(phantom.collect(incident, 'artifact:*.cef.destinationUserName', scope='all'))))
 
-    #execs = phantom.datastore_get("executives")
-    #if ((len(execs) > 0) and (len(victims) > 0)):
-    #    exec_victims = [exec_info[0] for exec_info in execs if exec_info[0] in victims]
-    #    if len(exec_victims) > 0:
-    #        phantom.set_severity(incident, 'high')
-    #        phantom.set_sensitivity(incident, 'amber')
-
-    if len(victims) > 0:
+    execs = phantom.datastore_get("executives")
+    if ((len(execs) > 0) and (len(victims) > 0)):
+        exec_victims = [exec_info[0] for exec_info in execs if exec_info[0] in victims]
+        if len(exec_victims) > 0:
+            phantom.set_severity(incident, 'high')
+            phantom.set_sensitivity(incident, 'amber')
         for victim in victims:
             params.append({'username':victim})
         phantom.act("list user groups", parameters=params, callback=generic_cb)

@@ -1,10 +1,10 @@
 """
-This sample rule shows using the API set_sensitivity and set_seveity
-In this rule, we get the users related to an incident and if any user is an executive list
+This sample playbook shows using the API set_sensitivity and set_seveity
+In this playbook, we get the users related to an incident and if any user is an executive list
 we change the incident severity as high and sensitivity as high.
 
-To run this rule, create an list named 'executives' and add a user named 'Peggy'
-and test this rule against incident '2a76c74c-5713-11e4-8a26-9b99986c1e2a'
+To run this playbook, create an list named 'executives' and add a user named 'Peggy'
+and test this playbook against incident '2a76c74c-5713-11e4-8a26-9b99986c1e2a'
 
 """
 import json

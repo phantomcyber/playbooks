@@ -1,5 +1,5 @@
 """   
-This rule runs anubis actions one by one.
+This playbook runs anubis actions one by one.
 """   
       
 import phantom.rules as phantom

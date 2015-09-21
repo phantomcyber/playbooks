@@ -1,8 +1,12 @@
 """
-This rule runs threatgrid actions one by one.
+This playbook runs threatgrid actions one by one.
 """
 
 import phantom.rules as phantom
+import re
+
+internal_ip = r"^10.\d{1,3}.\d{1,3}.\d{1,3}$"
+
 
 def detonate_url_cb(action, success, incident, results, handle):
 
@@ -51,7 +55,9 @@ def on_start(incident):
     parameters = []
 
     for ip_hostname in ip_hostnames:
-        parameters.append({ "ip_hostname" : ip_hostname,  "name" : "infostealer*.exe" })
+        if (re.match(internal_ip, ip_hostname)):
+            phantom.debug("ip: {0} is internal, will be executing the action".format(ip_hostname))
+            parameters.append({ "ip_hostname" : ip_hostname,  "name" : "infostealer*.exe" })
 
     if parameters:
         phantom.act('get process file', parameters=parameters, assets=["domainctrl1"], callback=get_process_file_cb)

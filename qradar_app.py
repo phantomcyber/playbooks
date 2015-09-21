@@ -1,5 +1,5 @@
 """
-This rule runs all the qradar actions one by one.
+This playbook runs all the qradar actions one by one.
 """
 import phantom.rules as phantom
 import json
@@ -55,6 +55,7 @@ def on_start(incident):
     return
 
 def on_finish(incident, summary):
-    phantom.debug("Summary: "+summary)
-    return  
 
+    phantom.debug("Summary: " + summary)
+
+    return

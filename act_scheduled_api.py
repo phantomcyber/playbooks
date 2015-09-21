@@ -1,5 +1,5 @@
 """
-This sample rule shows calling one or more actions scheduled in the future.
+This sample playbook shows calling one or more actions scheduled in the future.
 """
 import json
 import phantom.rules as phantom

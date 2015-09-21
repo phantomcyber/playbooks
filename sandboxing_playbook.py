@@ -1,5 +1,5 @@
 """
-This is a sample rule that can perform investigative actions on attacker IPs
+This is a sample playbook that can perform investigative actions on attacker IPs
 and then retrieves malcious process from the infected machine and deploys it
 on sandbox. 
 """

@@ -1,5 +1,5 @@
 """
-This sample rule shows calling a playbook from a playbook
+This sample playbook shows calling a playbook from a playbook
 Incident id: 2a76c74c-5713-11e4-8a26-9b99986c1e2a
 """
 import json

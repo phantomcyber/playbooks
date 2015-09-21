@@ -1,5 +1,5 @@
 """
-This sample rule shows calling one or more actions on an incident
+This sample playbook shows calling one or more actions on an incident
 and evaluating the outcome in a generic callback.
 
 The use passes a 'handle' to the action which is returned back in

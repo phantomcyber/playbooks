@@ -1,5 +1,5 @@
 """
-This sample rule shows calling actions on an incident in a variety of ways
+This sample playbook shows calling actions on an incident in a variety of ways
 and also demonstrates the use of the API get_assets or get_asset_names
 
 The actions are called with or without assets AND/OR tags

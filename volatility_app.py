@@ -1,5 +1,5 @@
 """
-This rule runs all the Volatility App actions one by one.
+This playbook runs all the Volatility App actions one by one.
 """
 
 import phantom.rules as phantom

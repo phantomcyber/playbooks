@@ -1,5 +1,5 @@
 """
-This sample rule shows how to save an retrieve large amounts of data across rule runs using the save_data and get_data APIs. 
+This sample playbook shows how to save an retrieve large amounts of data across playbook runs using the save_data and get_data APIs. 
 """
 import json
 import phantom.rules as phantom

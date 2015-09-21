@@ -1,5 +1,5 @@
 """
-This rule runs all the whois actions one by one.
+This playbook runs all the whois actions one by one.
 """
 
 import phantom.rules as phantom
