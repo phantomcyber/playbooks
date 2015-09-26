@@ -1,5 +1,5 @@
 """
-This playbook runs all the carbonblack actions one by one.
+This playbook runs all the CarbonBlack actions one by one.
 """
 import phantom.rules as phantom
 import json
@@ -40,11 +40,11 @@ def create_alert_cb(action, success, incident, results, handle):
     return
 
 def on_start(incident): 
-    
+
     phantom.act('hunt file', parameters=[{ "md5" : "27801bdf0aaa0da87dbf7637396cd40d" }], assets=["carbonblack"], callback=hunt_file_cb) 
     phantom.act('run query', parameters=[{ "query" : "company_name:Microsoft",  "type" : "binary" }], assets=["carbonblack"], callback=run_query_cb) 
     phantom.act('run query', parameters=[{ "query" : "company_name:Microsoft",  "type" : "process" }], assets=["carbonblack"], callback=run_query1_cb) 
-    
+
     phantom.act('list alerts', parameters=[{ }], assets=["carbonblack"], callback=list_alerts_cb) 
     phantom.act('create alert', parameters=[{ "read_only" : "False",  "query" : "md5:27801bdf0aaa0da87dbf7637396cd40d",  "type" : "process",  "name" : "PSCP_Started" }], assets=["carbonblack"], callback=create_alert_cb) 
     phantom.act('list endpoints', parameters=[{ }], assets=["carbonblack"], callback=list_alerts_cb) 
