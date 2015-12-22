@@ -1,6 +1,5 @@
 """
 This sample playbook shows the usage of phantom.collect API.
-Test it on incident 2a76c74c-5713-11e4-8a26-9b99986c1e2a.
 """
 import json
 import phantom.rules as phantom
