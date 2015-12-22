@@ -1,3 +1,6 @@
+"""
+This playbook runs all the MobileIron actions one by one.
+"""
 import phantom.rules as phantom
 import json
 
