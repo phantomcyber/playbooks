@@ -16,6 +16,10 @@ def on_start(incident):
     phantom.debug(incident['name'] + 'has severity: ' + incident['sensitivity'])
     phantom.debug(incident['name'] + 'has sensitivity: ' + incident['severity'])
 
+    # first set the sensitvity and severity to gree and low respectively and then update later
+    phantom.set_sensitivity(incident, 'green')
+    phantom.set_severity(incident, 'low')
+
     phantom.debug(' ------------------ USER NAMES --------------------------------- ')
     params = []
     victims = list(set(phantom.collect(incident, 'artifact:*.cef.sourceUserName', scope='all')))

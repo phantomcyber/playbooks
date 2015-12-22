@@ -16,7 +16,7 @@ def on_start(incident):
     return
 
 def whois_cb(action, success, incident, results, handle):
-    phantom.debug('Action '+action+ (' SUCCEEDED' if success else ' FAILED'))
+    phantom.debug('Action: {0} {1}'.format(action['action_name'], (' SUCCEEDED' if success else ' FAILED')))
     if not success:
         return
 

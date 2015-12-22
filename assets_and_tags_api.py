@@ -67,8 +67,8 @@ def on_start(incident):
     return
 
 
-def generic_cb(action_name, status, incident, results, handle):
-    phantom.debug('Action '+action_name+ (' SUCCEEDED' if status else ' FAILED'))
+def generic_cb(action, status, incident, results, handle):
+    phantom.debug('Action '+json.dumps(action)+ (' SUCCEEDED' if status else ' FAILED'))
     return
 
 

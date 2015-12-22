@@ -20,16 +20,25 @@ def on_start(incident):
         for ip in attacker_ips:
             params.append({'ip':ip})
 
-        key = phantom.save_data(str(params))
+        key = phantom.save_data(json.dumps(params))
 
         phantom.act("geolocate ip", parameters=params, callback=generic_cb, handle=key)
 
     return
 
 
-def generic_cb(action_name, status, incident, results, handle):
-    phantom.debug('Action '+action_name+ (' SUCCEEDED' if status else ' FAILED'))
-    my_data = phantom.get_data(handle)
+def generic_cb(action, status, incident, results, handle):
+    phantom.debug('Action '+json.dumps(action)+ (' SUCCEEDED' if status else ' FAILED'))
+    
+    
+    phantom.debug('handle: '+str(handle))
+    
+    if handle is not None:
+        if issubclass(type(handle), str):
+            if len(handle) > 0:
+                phantom.debug('handle: '+str(handle))
+                my_data = phantom.get_data(handle)
+                phantom.debug('my saved data: '+my_data)
     return
 
 def on_finish(incident, summary):
