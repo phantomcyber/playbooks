@@ -20,8 +20,8 @@ def on_start(incident):
     phantom.act("file reputation", parameters=params, callback=generic_cb, reviewer='admin@phantom.us')
     return
 
-def generic_cb(action_name, status, incident, results, handle):
-    phantom.debug('Action '+action_name+ (' SUCCEEDED' if results else ' FAILED'))
+def generic_cb(action, status, incident, results, handle):
+    phantom.debug('Action '+json.dumps(action)+ (' SUCCEEDED' if status else ' FAILED'))
     return
 
 

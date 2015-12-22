@@ -57,7 +57,7 @@ def terminate_process_cb(action, status, incident, results, handle):
     phantom.act('block path',[{'path':'infostealer*', "ip_hostname": attacked_ips[0]}], callback=generic_cb, assets=['domainctrl1']) 
 
 def generic_cb(action, status, incident, results, handle):
-    phantom.debug(action+ (', SUCCEEDED' if status else ', FAILED'))
+    phantom.debug('Action: {0} {1}'.format(action['action_name'], (' SUCCEEDED' if status else ' FAILED')))
     
 def on_finish(incident, summary):
     phantom.debug("Summary: "+summary)

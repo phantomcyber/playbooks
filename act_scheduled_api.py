@@ -30,8 +30,8 @@ def on_start(incident):
     when = datetime.now()+timedelta(seconds=60)
     phantom.act("geolocate ip", parameters=params, callback=generic_cb, handle=str(params), start_time=when)
 
-def generic_cb(action_name, status, incident, results, handle):
-    phantom.debug('Action '+action_name+ (' SUCCEEDED' if status else ' FAILED'))
+def generic_cb(action, status, incident, results, handle):
+    phantom.debug('Action '+json.dumps(action)+ (' SUCCEEDED' if status else ' FAILED'))
     phantom.debug('My Handle: '+handle)
     return
 

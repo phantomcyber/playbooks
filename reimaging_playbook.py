@@ -49,10 +49,10 @@ def on_start(incident):
     
     return
 
-def get_system_attrib_cb(action_name, status, incident, results, handle):
+def get_system_attrib_cb(action, status, incident, results, handle):
     """Callback for the get system attribute action"""
 
-    phantom.debug('Action: {0} {1}'.format(action_name, (' SUCCEEDED' if status else ' FAILED')))
+    phantom.debug('Action: {0} {1}'.format(action['action_name'], (' SUCCEEDED' if status else ' FAILED')))
 
     if (status == False):
         return
@@ -87,10 +87,10 @@ def get_system_attrib_cb(action_name, status, incident, results, handle):
     
     return
 
-def set_system_attrib_cb(action_name, status, incident, results, handle):
+def set_system_attrib_cb(action, status, incident, results, handle):
     """Callback for the set system attribute action"""
 
-    phantom.debug('Action: {0} {1}'.format(action_name, (' SUCCEEDED' if status else ' FAILED')))
+    phantom.debug('Action: {0} {1}'.format(action['action_name'], (' SUCCEEDED' if status else ' FAILED')))
     
     if (status == False):
         return
@@ -108,10 +108,10 @@ def set_system_attrib_cb(action_name, status, incident, results, handle):
     
     return
   
-def change_system_ou_cb(action_name, status, incident, results, handle):
+def change_system_ou_cb(action, status, incident, results, handle):
     """Callback for the change system ou action"""
 
-    phantom.debug('Action: {0} {1}'.format(action_name, (' SUCCEEDED' if status else ' FAILED')))
+    phantom.debug('Action: {0} {1}'.format(action['action_name'], (' SUCCEEDED' if status else ' FAILED')))
 
     if (status == False):
         return
@@ -129,10 +129,10 @@ def change_system_ou_cb(action_name, status, incident, results, handle):
 
     return
     
-def sys_part_inactive_cb(action_name, status, incident, results, handle):
+def sys_part_inactive_cb(action, status, incident, results, handle):
     """Callback for the deactivate partition action"""
     
-    phantom.debug('Action: {0} {1}'.format(action_name, (' SUCCEEDED' if status else ' FAILED')))
+    phantom.debug('Action: {0} {1}'.format(action['action_name'], (' SUCCEEDED' if status else ' FAILED')))
 
     if (status == False):
         return
@@ -150,10 +150,10 @@ def sys_part_inactive_cb(action_name, status, incident, results, handle):
 
     return
   
-def reboot_system_cb(action_name, status, incident, results, handle):
+def reboot_system_cb(action, status, incident, results, handle):
     """Callback for the reboot system action"""
 
-    phantom.debug('Action: {0} {1}'.format(action_name, (' SUCCEEDED' if status else ' FAILED')))
+    phantom.debug('Action: {0} {1}'.format(action['action_name'], (' SUCCEEDED' if status else ' FAILED')))
 
     machine = eval(handle)
 
