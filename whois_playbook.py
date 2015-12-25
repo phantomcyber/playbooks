@@ -1,5 +1,5 @@
 """
-This is a plyabook for performing who-is lookups on IPs in incidents.
+This is a playbook for performing who-is lookups on IPs in incidents.
 """
 import json
 import phantom.rules as phantom
