@@ -41,7 +41,7 @@ def create_alert_cb(action, success, incident, results, handle):
 
 def on_start(incident): 
 
-    phantom.act('hunt file', parameters=[{ "md5" : "27801bdf0aaa0da87dbf7637396cd40d" }], assets=["carbonblack"], callback=hunt_file_cb) 
+    phantom.act('hunt file', parameters=[{ "hash" : "27801bdf0aaa0da87dbf7637396cd40d" }], assets=["carbonblack"], callback=hunt_file_cb) 
     phantom.act('run query', parameters=[{ "query" : "company_name:Microsoft",  "type" : "binary" }], assets=["carbonblack"], callback=run_query_cb) 
     phantom.act('run query', parameters=[{ "query" : "company_name:Microsoft",  "type" : "process" }], assets=["carbonblack"], callback=run_query1_cb) 
 
