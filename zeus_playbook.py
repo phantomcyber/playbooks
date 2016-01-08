@@ -43,7 +43,7 @@ def detonate_file_cb(action, success, incident, results, handle):
     score = results[0]['action_results'][0]['data'][0]['threat']['score']
     phantom.debug('ThreatGrid threat score for this file: '+str(score))
     if score > 60:
-        for mac_addr in phantom.collect(incident,'artifact:event.cef.sourceMacAddress'):
+        for mac_addr in phantom.collect(incident,'artifact:*.cef.sourceMacAddress'):
             phantom.act('terminate session', parameters=[{'macaddress':mac_addr}], assets=['ciscoise'], callback=generic_cb)
         for a_ip in phantom.attacker_ips(incident):
             params = [{'src':'any','direction':'out','dest':a_ip,'interface':'outside','access-list':'inside_access_out'}]
