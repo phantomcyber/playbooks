@@ -21,7 +21,7 @@ def on_start(campaign):
     parameters = []
 
     for md5 in md5s:
-        parameters.append({ "md5" : md5 })
+        parameters.append({ "hash" : md5 })
 
     if parameters:
         phantom.act('hunt file', parameters=parameters, assets=["carbonblack"], callback=hunt_file_cb)
