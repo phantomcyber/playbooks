@@ -40,14 +40,11 @@ def get_process_dump_cb(action, success, incident, results, handle):
     if not success:
         return
 
-    phantom.act('terminate process', parameters=[{ "name" : "notepad.exe",  "ip_hostname" : "10.17.1.44" }], assets=["domainctrl1"], callback=terminate_process_cb)
+    phantom.act('terminate process', parameters=[{ "name" : "chrome.exe",  "ip_hostname" : "10.17.1.44" }], assets=["domainctrl1"], callback=terminate_process_cb)
 
     return
 
 def get_process_file_cb(action, success, incident, results, handle):
-
-    if not success:
-        return
 
     phantom.act('get process dump', parameters=[{ "name" : "notepad.exe",  "ip_hostname" : "10.17.1.44" }], assets=["domainctrl1"], callback=get_process_dump_cb)
 
