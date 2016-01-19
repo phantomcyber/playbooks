@@ -13,21 +13,31 @@ import json
 # 5. Block the malicious file on endpoint using SRP policies"""
 
 def on_start(incident):
+    
+    phantom.debug("Local playbook")
     if 'Zeus' not in incident['name']:
         return
     phantom.act('list vms', callback=list_vms_cb)
 
 def list_vms_cb(action, success, incident, results, handle):
+    
     phantom.debug('VSphere list vms'+(' SUCCEEDED' if success else ' FAILED'))
     if not success:
         return
     attacked_ips = phantom.victim_ips(incident)
+    
+    phantom.debug(json.dumps(attacked_ips, indent=4))
     success_results = phantom.parse_success(results)
     for vm_info in success_results:
         if 'ip' in vm_info:# if the VM is running, it will have an IP
             if vm_info['ip'] in attacked_ips: #if the IP address of the VM is the attacked IP
                 phantom.act('snapshot vm', parameters=[{'vmx_path':vm_info['vmx_path'],'download': False}], callback=generic_cb)
-    phantom.act('get process file', parameters=[{'name':'*infostealer*','ip_hostname':attacked_ips[0]}], assets=['domainctrl1'], callback=get_process_file_cb)
+                
+    if (attacked_ips):
+        phantom.act('get process file', parameters=[{'name':'*infostealer*','ip_hostname':attacked_ips[0]}], assets=['domainctrl1'], callback=get_process_file_cb)
+        
+    else:
+        phantom.debug("No new attacked_ips in list")
     
 def get_process_file_cb(action, success, incident, results, handle):
     phantom.debug('get process file,'+(' SUCCEEDED' if success else ' FAILED'))
@@ -57,7 +67,9 @@ def terminate_process_cb(action, status, incident, results, handle):
     phantom.act('block path',[{'path':'infostealer*', "ip_hostname": attacked_ips[0]}], callback=generic_cb, assets=['domainctrl1']) 
 
 def generic_cb(action, status, incident, results, handle):
-    phantom.debug('Action: {0} {1}'.format(action['action_name'], (' SUCCEEDED' if status else ' FAILED')))
+    
+    
+    phantom.debug(action['action_name'] + (', SUCCEEDED' if status else ', FAILED'))
     
 def on_finish(incident, summary):
     phantom.debug("Summary: "+summary)
