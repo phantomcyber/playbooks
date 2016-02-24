@@ -4,6 +4,8 @@ This playbook runs all the pan actions one by one.
 
 import phantom.rules as phantom
 import json
+from datetime import datetime
+from datetime import timedelta 
 
 def block_url_cb(action, success, container, results, handle):
 
@@ -16,8 +18,9 @@ def unblock_ip_cb(action, success, container, results, handle):
 
     if not success:
         return
-
-    phantom.act('block url', parameters=[{ "url" : "www.yahoo.com" }], assets=["pan"], callback=block_url_cb)
+    
+    when = datetime.now()+timedelta(seconds=40) 
+    phantom.act('block url', parameters=[{ "url" : "www.yahoo.com" }], assets=["pan"], callback=block_url_cb, start_time=when)
 
     return
 
@@ -26,7 +29,8 @@ def block_ip_cb(action, success, container, results, handle):
     if not success:
         return
 
-    phantom.act('unblock ip', parameters=[{ "ip" : "192.94.73.3" }], assets=["pan"], callback=unblock_ip_cb)
+    when = datetime.now()+timedelta(seconds=40) 
+    phantom.act('unblock ip', parameters=[{ "ip" : "192.94.73.3" }], assets=["pan"], callback=unblock_ip_cb, start_time=when)
 
     return
 
@@ -35,8 +39,11 @@ def block_application_cb(action, success, container, results, handle):
     if not success:
         return
 
-    # Block www.freeshell.org
-    phantom.act('block ip', parameters=[{ "ip" : "192.94.73.3" }], assets=["pan"], callback=block_ip_cb)
+    when = datetime.now()+timedelta(seconds=40) 
+    
+    # Block www.freeshell.org, configure the action after a while, noticed that the commit is still not finished
+    # on the remote device
+    phantom.act('block ip', parameters=[{ "ip" : "192.94.73.3" }], assets=["pan"], callback=block_ip_cb, start_time=when)
 
     return
 
