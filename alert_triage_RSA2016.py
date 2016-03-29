@@ -238,8 +238,6 @@ def on_start(container):
     
     phantom.act("domain reputation", parameters=parameters, assets=["opendns_investigate"], callback=domain_reputation_cb)
     
-    return
-
     # ------------------------------------------------------------------------
     # ==> INVESTITAGE ACTION #3:  "file reputation" ... how bad the file is
     # ------------------------------------------------------------------------
