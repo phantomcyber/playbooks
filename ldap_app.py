@@ -5,10 +5,26 @@ This playbook runs all the ldap actions one by one.
 import phantom.rules as phantom
 import json
 
+def get_user_attributes_key_cb(action, success, incident, results, handle):
+
+    if not success:
+        return
+    
+    sam_account_names = phantom.collect(results, "action_result.data.*.samaccountname")
+    
+    phantom.debug(sam_account_names)
+    
+    for user_name in sam_account_names:
+        phantom.act('enable user', parameters=[{ "username" : user_name }], assets=["domainctrl1"])
+    
+    return
+
 def get_system_attributes_cb(action, success, incident, results, handle):
 
     if not success:
         return
+    
+    phantom.act('get user attributes', parameters=[{ "username" : "00001", "attribute": "employeeID" }], assets=["domainctrl1"], name="search user by specifying an attribute to match", callback=get_user_attributes_key_cb)
 
     return
 
