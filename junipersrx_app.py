@@ -43,6 +43,8 @@ def block_ip_cb(action, success, incident, results, handle):
     if not success:
         return
 
+    phantom.act('list applications', parameters=[{}], assets=["junipersrx"])
+
     phantom.act('block application', parameters=[{ "application" : "junos-http",  "from_zone" : "trust",  "to_zone" : "untrust" }], assets=["junipersrx"], callback=block_application_cb)
 
     return

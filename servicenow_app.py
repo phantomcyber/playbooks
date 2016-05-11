@@ -29,10 +29,15 @@ def get_ticket_cb(action, success, incident, results, handle):
 
     id = data[0]['sys_id']
     
-    # stringized version of a dictionary
+    # stringized version of a dictionary, can be used as a parameter of the fields value when the action is carried
+    # out in the ui
     fields_to_update = '{"short_description": "Zeus, Run file reputation actions only", "made_sla": false}'
 
-    phantom.act('update ticket', parameters=[{ "id" : id, "fields": fields_to_update}], assets=["servicenow"], callback=update_ticket_cb) 
+    # For playbook though, the easier way is to create a dictionary
+    my_fields_value = {'short_description': 'Zeus, Run file reputation actions only', 'made_sla': False}
+
+    # and then use json.dumps
+    phantom.act('update ticket', parameters=[{ "id" : id, "fields": json.dumps(my_fields_value)}], assets=["servicenow"], callback=update_ticket_cb) 
 
     return
 
