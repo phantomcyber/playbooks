@@ -1,4 +1,7 @@
-"""This playbook runs the 'test connectivity' action on all possible assets currently configured"""
+"""
+This playbook runs the 'test connectivity' action on all possible assets currently configured
+Last updated by Phantom Team: May 19, 2016
+"""
 
 import phantom.rules as phantom
 import json

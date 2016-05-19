@@ -2,6 +2,7 @@
 This is a sample playbook that can perform investigative actions on attacker IPs
 and then retrieves malcious process from the infected machine and deploys it
 on sandbox. 
+Last updated by Phantom Team: May 19, 2016
 """
 import phantom.rules as phantom
 import json
