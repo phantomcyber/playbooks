@@ -1,6 +1,7 @@
 """
 This is a sample playbook that can perform simple investigative actions on various pieces of information
 in the events of an incident. 
+Last updated by Phantom Team: May 19, 2016
 """
 import json
 import phantom.rules as phantom
