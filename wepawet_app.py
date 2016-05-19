@@ -1,4 +1,7 @@
-"""This playbook executes the wepawet actions one by one."""
+"""
+This playbook executes the wepawet actions one by one.
+Last updated by Phantom Team: May 19, 2016
+"""
 
 import phantom.rules as phantom
 import json

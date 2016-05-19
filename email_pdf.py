@@ -10,6 +10,7 @@ detonate all attachments and send you an email for each result.
 NOTE: PLEASE substitute the email_to and email_from variables to VALID VALUES.
 
 Phantom minimum version 1.0.354
+Last updated by Phantom Team: May 19, 2016
 """
 import phantom.rules as phantom
 import json

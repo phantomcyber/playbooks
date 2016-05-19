@@ -1,5 +1,6 @@
 """
 This playbook runs all the jira actions one by one.
+Last updated by Phantom Team: May 19, 2016
 """
 
 import phantom.rules as phantom
