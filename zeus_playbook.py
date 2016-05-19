@@ -1,4 +1,7 @@
-"""This is a playbook for automating investigative and containment responses for Zeus infections. """
+"""
+This is a playbook for automating investigative and containment responses for Zeus infections. 
+Last updated by Phantom Team: May 19, 2016
+"""
 
 import phantom.rules as phantom
 import json

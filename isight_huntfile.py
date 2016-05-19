@@ -1,6 +1,7 @@
 """
 This playbook collects the file hashes in an artifact and executes 'hunting' action on an asset, to detect the presence of the file
 in an enterprise.
+Last updated by Phantom Team: May 19, 2016
 """
 
 import phantom.rules as phantom
