@@ -1,5 +1,5 @@
 """
-This Playbook executes the wepawet actions one by one
+This Playbook executes the malwr actions one by one
 Last updated by Phantom Team: May 19, 2016
 """
 
