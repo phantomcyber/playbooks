@@ -1,4 +1,4 @@
-# Phantom Cyber Orchestration Playbooks - Repo for Phantom version 1.0
+# Phantom Orchestration Playbooks - Repo for Phantom version 1.0
 
 This is the 1.0 release repo for Phantom Community Playbooks.
 If you are using Phantom version 1.0, you should update to the latest Phantom release.
