@@ -1,6 +1,7 @@
 """
 Playbook for showing the basic functionality of the McAfee ePO app
 by running through all of its actions one by one
+Last updated by Phantom Team: August 09, 2016
 """
 import phantom.rules as phantom
 import json

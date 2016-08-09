@@ -1,6 +1,6 @@
 """ 
 This playbook runs Cylance actions one by one.
-Last updated by Phantom Team: July 11th, 2016
+Last updated by Phantom Team: August 09, 2016
 """
 import phantom.rules as phantom
 import json

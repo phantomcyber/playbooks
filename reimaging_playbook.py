@@ -1,6 +1,6 @@
 """
 This is a playbook that carries out various actions related to re-imaging a system via Windows Deployment Services.
-Last updated by Phantom Team: May 19, 2016
+Last updated by Phantom Team: August 09, 2016
 """
 
 import json
