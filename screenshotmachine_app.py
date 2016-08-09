@@ -1,5 +1,6 @@
 """
-This playbook runs the screenshot action.
+This playbook runs a screenshot action.
+Last Updated on August 9, 2016
 """
 
 import phantom.rules as phantom

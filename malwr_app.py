@@ -1,6 +1,6 @@
 """
-This Playbook executes the malwr actions one by one
-Last updated by Phantom Team: May 19, 2016
+This Playbook executes all malwr actions
+Last Updated on August 9, 2016
 """
 
 import phantom.rules as phantom
