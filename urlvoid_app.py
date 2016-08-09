@@ -1,5 +1,5 @@
 """
-This Playbook executes all urlvoid actions
+This Playbook executes all urlvoid actions.
 Last updated by Phantom Team: August 09, 2016
 """
 import phantom.rules as phantom
