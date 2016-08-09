@@ -1,6 +1,6 @@
 """
-This playbook runs all urlquery actions one by one.
-Last updated by Phantom Team: May 19, 2016
+This Playbook executes all urlquery actions
+Last Updated on August 9, 2016
 """
 import phantom.rules as phantom
 import json

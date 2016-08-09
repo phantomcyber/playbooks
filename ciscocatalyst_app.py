@@ -1,6 +1,6 @@
 """
-This playbook runs the Cisco Catalyst actions.
-Last updated by Phantom Team: May 19, 2016
+This playbook runs all Cisco Catalyst actions.
+Last Updated on August 9, 2016
 """
 
 import phantom.rules as phantom
