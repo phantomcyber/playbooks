@@ -1,6 +1,6 @@
 """
 Orchestrates enrichment and protective actions on via assets like Splunk, CarbonBlack, Tanium, etc.
-Last updated by Phantom Team: May 19, 2016
+Last updated by Phantom Team: August 09, 2016
 """
 import phantom.utils as utils
 import phantom.rules as phantom
