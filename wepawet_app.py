@@ -1,6 +1,6 @@
 """
 This playbook executes all wepawet actions.
-Last Updated on August 9, 2016
+Last updated by Phantom Team: August 09, 2016
 """
 
 import phantom.rules as phantom

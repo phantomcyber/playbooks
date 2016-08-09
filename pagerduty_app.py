@@ -1,4 +1,7 @@
-"""Executes PagerDuty actions"""
+"""
+Executes PagerDuty actions
+Last updated by Phantom Team: August 09, 2016
+"""
 
 import phantom.rules as phantom
 import json

@@ -1,6 +1,7 @@
 """
 This is a playbook for the actions of the Carbon Black Protection (bit9) app
 Last made changes on July 26
+Last updated by Phantom Team: August 09, 2016
 """
 import phantom.rules as phantom
 import json
