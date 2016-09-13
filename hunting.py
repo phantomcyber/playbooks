@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 ##############################
 # Start - Global Code Block
 
+"""
+The hunting Playbook queries a number of internal security technologies in order to determine if any of the artifacts present in your data source have been observed in your environment.  By selecting this Playbook you will be guided through the configuration of a number of common endpoint technologies next.
+"""
 #################
 # It is important to NOTE that the following are examples of determining the presence and risk of the 
 # content and results. The examples below demonstrate how to navigate the results returned from action
@@ -158,6 +161,10 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
 
     return
 
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    return
+
 def hunt_source_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     # collect data for 'hunt_source_ip' call
@@ -177,6 +184,30 @@ def hunt_source_ip(action=None, success=None, container=None, results=None, hand
 
     if parameters:
         phantom.act("hunt ip", parameters=parameters, callback=decision_1, name="hunt_source_ip")    
+    
+    return
+
+def hunt_source_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    # collect data for 'hunt_source_ip' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'hunt_source_ip' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'ip': container_item[0],
+                'scope': "",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    if parameters:
+        phantom.act("hunt ip", parameters=parameters, assets=['autofocus','isightpartners'], callback=decision_1, name="hunt_source_ip")    
+    else:
+        phantom.error("'hunt_source_ip' will not be executed due to lack of parameters")
     
     return
 
@@ -202,6 +233,30 @@ def hunt_file_1(action=None, success=None, container=None, results=None, handle=
     
     return
 
+def hunt_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    # collect data for 'hunt_file_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'hunt_file_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'scope': "",
+                'hash': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    if parameters:
+        phantom.act("hunt file", parameters=parameters, assets=['autofocus'], callback=decision_3, name="hunt_file_1")    
+    else:
+        phantom.error("'hunt_file_1' will not be executed due to lack of parameters")
+    
+    return
+
 def hunt_dest_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     # collect data for 'hunt_dest_ip' call
@@ -224,10 +279,38 @@ def hunt_dest_ip(action=None, success=None, container=None, results=None, handle
     
     return
 
+def hunt_dest_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    # collect data for 'hunt_dest_ip' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'hunt_dest_ip' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'ip': container_item[0],
+                'scope': "",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    if parameters:
+        phantom.act("hunt ip", parameters=parameters, assets=['autofocus','isightpartners'], callback=decision_2, name="hunt_dest_ip")    
+    else:
+        phantom.error("'hunt_dest_ip' will not be executed due to lack of parameters")
+    
+    return
+
 def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     if ip_is_suspicious(results):
         phantom.debug("IP Presence - Take Action")        
+
+    return
+
+def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     return
 
@@ -238,10 +321,18 @@ def decision_3(action=None, success=None, container=None, results=None, handle=N
 
     return
 
+def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    return
+
 def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     if url_is_suspicious(results):
         phantom.debug("URL Presence - Take Action")        
+
+    return
+
+def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     return
 
@@ -267,6 +358,30 @@ def hunt_url_1(action=None, success=None, container=None, results=None, handle=N
     
     return
 
+def hunt_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    # collect data for 'hunt_url_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.requestURL', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'hunt_url_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'url': container_item[0],
+                'scope': "",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    if parameters:
+        phantom.act("hunt url", parameters=parameters, assets=['autofocus'], callback=decision_4, name="hunt_url_1")    
+    else:
+        phantom.error("'hunt_url_1' will not be executed due to lack of parameters")
+    
+    return
+
 def hunt_dest_domain(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     # collect data for 'hunt_dest_domain' call
@@ -286,6 +401,30 @@ def hunt_dest_domain(action=None, success=None, container=None, results=None, ha
 
     if parameters:
         phantom.act("hunt domain", parameters=parameters, callback=decision_5, name="hunt_dest_domain")    
+    
+    return
+
+def hunt_dest_domain(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    # collect data for 'hunt_dest_domain' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationDnsDomain', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'hunt_dest_domain' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'scope': "",
+                'domain': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    if parameters:
+        phantom.act("hunt domain", parameters=parameters, assets=['autofocus'], callback=decision_5, name="hunt_dest_domain")    
+    else:
+        phantom.error("'hunt_dest_domain' will not be executed due to lack of parameters")
     
     return
 
@@ -311,6 +450,30 @@ def hunt_source_domain(action=None, success=None, container=None, results=None, 
     
     return
 
+def hunt_source_domain(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    # collect data for 'hunt_source_domain' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceDnsDomain', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'hunt_source_domain' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'scope': "",
+                'domain': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    if parameters:
+        phantom.act("hunt domain", parameters=parameters, assets=['autofocus'], callback=decision_6, name="hunt_source_domain")    
+    else:
+        phantom.error("'hunt_source_domain' will not be executed due to lack of parameters")
+    
+    return
+
 def decision_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     if domain_is_suspicious(results):
@@ -318,10 +481,18 @@ def decision_6(action=None, success=None, container=None, results=None, handle=N
         
     return
 
+def decision_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    return
+
 def decision_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     if domain_is_suspicious(results):
         phantom.debug("Domain Presence - Take Action")        
+
+    return
+
+def decision_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     return
 

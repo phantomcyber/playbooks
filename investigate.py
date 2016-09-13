@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 ##############################
 # Start - Global Code Block
 
+"""
+The investigative Playbook queries a number of external reputation and intelligence services in order to enrich events coming from your data source.  By selecting this Playbook you will be guided through the configuration of a number of common IP, file, domain, and URL reputation services next.
+"""
 #################
 # It is important to NOTE that the following are examples of determining the malicious nature of the 
 # content and results. The examples below demonstrate how to navigate the results returned from action
