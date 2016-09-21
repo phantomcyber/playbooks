@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 ##############################
 # Start - Global Code Block
 """
-The hunting Playbook queries a number of internal security technologies in order to determine if any of the artifacts present in your data source have been observed in your environment.  By selecting this Playbook you will be guided through the configuration of a number of common endpoint technologies next.
+The hunting Playbook queries a number of internal security technologies in order to determine if any of the artifacts present in your data source have been observed in your environment.
 """
 
 import traceback
