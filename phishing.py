@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 # Start - Global Code Block
 
 """
-This playbook is deigned to perform the investigative steps necessary to investigate a potential Phishing attempt. It will process File attachments, IPs, domains,  and URLs. If there is a positive, the Admin user group on Phantom will have 6 hours to respond to the prompt in order to have the email deleted from the exchange server.
+This playbook investigates and remediates phishing emails with Admin approval.
 """
 
 def test_params(container, datapath, key_name):
