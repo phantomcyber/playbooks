@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 ##############################
 # Start - Global Code Block
 
-"""Ransomware detected on endpoint"""
+"""This playbook investigates and contains ransomware detected on endpoints."""
 
 # End - Global Code block
 ##############################
