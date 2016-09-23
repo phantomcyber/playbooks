@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 ##############################
 # Start - Global Code Block
 
-"""This playbook investigates and contains ransomware detected on endpoints"""
+"""Ransomware detected on endpoint"""
 
 # End - Global Code block
 ##############################
@@ -17,26 +17,48 @@ def on_start(container):
 
     return
 
-def get_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    # collect data for 'get_file_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["detonate_file_1:action_result.summary.malware", "==", "ransomware"],
+        ])
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        block_ip_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        hunt_file_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        block_hash_4(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        block_hash_3(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    return
+
+def block_ip_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'block_ip_2' call
+    results_data_1 = phantom.collect2(container=container, datapath=['list_connections_1:action_result.data.*.ip_addr', 'list_connections_1:action_result.parameter.context.artifact_id'], action_results=results)
 
     parameters = []
     
-    # build parameters list for 'get_file_1' call
-    for container_item in container_data:
-        if container_item[0]:
+    # build parameters list for 'block_ip_2' call
+    for results_item_1 in results_data_1:
+        if results_item_1[0]:
             parameters.append({
-                'hash': container_item[0],
+                'ip': results_item_1[0],
+                'vsys': "",
                 # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
+                'context': {'artifact_id': results_item_1[1]},
             })
 
     if parameters:
-        phantom.act("get file", parameters=parameters, assets=['cylance_1'], callback=detonate_file_1, name="get_file_1")    
+        phantom.act("block ip", parameters=parameters, assets=['pan'], name="block_ip_2", parent_action=action)    
     else:
-        phantom.error("'get_file_1' will not be executed due to lack of parameters")
+        phantom.error("'block_ip_2' will not be executed due to lack of parameters")
     
     return
 
@@ -60,34 +82,9 @@ def block_ip_1(action=None, success=None, container=None, results=None, handle=N
             })
 
     if parameters:
-        phantom.act("block ip", parameters=parameters, assets=['pan'], name="block_ip_1", parent_action=action)    
+        phantom.act("block ip", parameters=parameters, assets=['pan'], name="block_ip_1")    
     else:
         phantom.error("'block_ip_1' will not be executed due to lack of parameters")
-    
-    return
-
-def disable_user_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'disable_user_1' call
-    results_data_1 = phantom.collect2(container=container, datapath=['hunt_file_1:action_result.data.*.process.results.*.username', 'hunt_file_1:action_result.parameter.context.artifact_id'], action_results=results)
-
-    parameters = []
-    
-    # build parameters list for 'disable_user_1' call
-    for results_item_1 in results_data_1:
-        if results_item_1[0]:
-            parameters.append({
-                'username': results_item_1[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[1]},
-            })
-
-    if parameters:
-        phantom.act("disable user", parameters=parameters, assets=['domainctrl1'], name="disable_user_1", parent_action=action)    
-    else:
-        phantom.error("'disable_user_1' will not be executed due to lack of parameters")
     
     return
 
@@ -143,6 +140,55 @@ def quarantine_device_1(action=None, success=None, container=None, results=None,
     
     return
 
+def block_hash_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'block_hash_3' call
+    filtered_results_data_1 = phantom.collect2(container=container, datapath=["detonate_file_1:filtered-action_result.data.*.task_info.report.*.process_list.process.*.file.create.*.@sha1", "detonate_file_1:filtered-action_result.parameter.context.artifact_id"], action_results=filtered_results)
+
+    parameters = []
+    
+    # build parameters list for 'block_hash_3' call
+    for filtered_results_item_1 in filtered_results_data_1:
+        if filtered_results_item_1[0]:
+            parameters.append({
+                'comment': "",
+                'hash': filtered_results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_results_item_1[1]},
+            })
+
+    if parameters:
+        phantom.act("block hash", parameters=parameters, assets=['carbonblack'], name="block_hash_3")    
+    else:
+        phantom.error("'block_hash_3' will not be executed due to lack of parameters")
+    
+    return
+
+def get_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    # collect data for 'get_file_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'get_file_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'hash': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    if parameters:
+        phantom.act("get file", parameters=parameters, assets=['cylance_1'], callback=detonate_file_1, name="get_file_1")    
+    else:
+        phantom.error("'get_file_1' will not be executed due to lack of parameters")
+    
+    return
+
 def block_hash_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -156,8 +202,8 @@ def block_hash_4(action=None, success=None, container=None, results=None, handle
     for filtered_container_item in filtered_container_data:
         if filtered_container_item[0]:
             parameters.append({
-                'hash': filtered_container_item[0],
                 'comment': "",
+                'hash': filtered_container_item[0],
             })
 
     if parameters:
@@ -193,32 +239,6 @@ def detonate_file_1(action=None, success=None, container=None, results=None, han
     
     return
 
-def block_hash_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'block_hash_3' call
-    filtered_results_data_1 = phantom.collect2(container=container, datapath=["detonate_file_1:filtered-action_result.data.*.task_info.report.*.process_list.process.*.file.create.*.@sha1", "detonate_file_1:filtered-action_result.parameter.context.artifact_id"], action_results=filtered_results)
-
-    parameters = []
-    
-    # build parameters list for 'block_hash_3' call
-    for filtered_results_item_1 in filtered_results_data_1:
-        if filtered_results_item_1[0]:
-            parameters.append({
-                'hash': filtered_results_item_1[0],
-                'comment': "",
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': filtered_results_item_1[1]},
-            })
-
-    if parameters:
-        phantom.act("block hash", parameters=parameters, assets=['carbonblack'], name="block_hash_3", parent_action=action)    
-    else:
-        phantom.error("'block_hash_3' will not be executed due to lack of parameters")
-    
-    return
-
 def hunt_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -232,9 +252,9 @@ def hunt_file_1(action=None, success=None, container=None, results=None, handle=
     for filtered_container_item in filtered_container_data:
         if filtered_container_item[0]:
             parameters.append({
-                'hash': filtered_container_item[0],
-                'range': "",
                 'type': "",
+                'range': "",
+                'hash': filtered_container_item[0],
             })
 
     if parameters:
@@ -283,49 +303,29 @@ def list_connections_1(action=None, success=None, container=None, results=None, 
     
     return
 
-def block_ip_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def disable_user_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
-    # collect data for 'block_ip_2' call
-    results_data_1 = phantom.collect2(container=container, datapath=['list_connections_1:action_result.data.*.ip_addr', 'list_connections_1:action_result.parameter.context.artifact_id'], action_results=results)
+    # collect data for 'disable_user_1' call
+    results_data_1 = phantom.collect2(container=container, datapath=['hunt_file_1:action_result.data.*.process.results.*.username', 'hunt_file_1:action_result.parameter.context.artifact_id'], action_results=results)
 
     parameters = []
     
-    # build parameters list for 'block_ip_2' call
+    # build parameters list for 'disable_user_1' call
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'ip': results_item_1[0],
-                'vsys': "",
+                'username': results_item_1[0],
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
     if parameters:
-        phantom.act("block ip", parameters=parameters, assets=['pan'], name="block_ip_2", parent_action=action)    
+        phantom.act("disable user", parameters=parameters, assets=['domainctrl1'], name="disable_user_1", parent_action=action)    
     else:
-        phantom.error("'block_ip_2' will not be executed due to lack of parameters")
+        phantom.error("'disable_user_1' will not be executed due to lack of parameters")
     
-    return
-
-def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["detonate_file_1:action_result.summary.malware", "==", "ransomware"],
-        ])
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        block_ip_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        hunt_file_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        block_hash_4(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        block_hash_3(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
     return
 
 def on_finish(container, summary):
