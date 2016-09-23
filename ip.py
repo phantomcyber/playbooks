@@ -161,7 +161,7 @@ def Send_Email_bad_ip(action=None, success=None, container=None, results=None, h
     # build parameters list for 'Send_Email_bad_ip' call
     parameters.append({
         'body': "Check phantom to see output results for bad port scan.",
-        'to': "michael@phantom.us",
+        'to': "notifications@phantom.us",
         'from': "admin@phantom.us",
         'attachments': "",
         'subject': "Port Scan detected from bad IP",
@@ -495,7 +495,7 @@ def Send_Email_safe(action=None, success=None, container=None, results=None, han
     # build parameters list for 'Send_Email_safe' call
     parameters.append({
         'body': "A safe port scan was detected, see Phantom for details.",
-        'to': "michael@phantom.us",
+        'to': "notifications@phantom.us",
         'from': "admin@phantom.us",
         'attachments': "",
         'subject': "Port Scan determined safe",
