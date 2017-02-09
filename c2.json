@@ -5,7 +5,7 @@
     "coa": {
         "data": {
             "clean": true,
-            "code_block": "import traceback\n\ndef asset_configured(action):\n    assets = phantom.get_assets(action=action)\n    if assets:\n        return True\n    \n    return False\n\ndef escalate(container):\n    phantom.set_severity(container, \"high\")\n    \ndef deescalate(container):\n    phantom.set_severity(container, \"low\")\n    phantom.close(container)\n    \ndef deescalate_close_notify(container):\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'deescalate_close_notify' call\n\n    container_id = container['id']\n    phantom.deescalate(container)\n    \n    parameters = []\n    \n    # build parameters list for 'deescalate_close_notify' call\n    parameters.append({\n        'from': \"\",\n        'to': \"root@localhost\",\n        'subject': \"Descalating and Closing Container ID: \" + container['id'],\n        'body': \"The c2 investigate and contain playbook on the Phantom platform has completed and will be closing the container.\" +\n                \"Information about the container is as follows: \\n Container ID: \" + container['id'] + \"\\nContainer Label: \" + container['label'] + \"\\nContainer Severity: \" + container['severity'],\n        'attachments': \"\",\n    })\n\n    if parameters:\n        phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"deescalate_close_notify\")    \n    else:\n        phantom.error(\"'deescalate_close_notify' will not be executed due to lack of parameters\")\n    \n    return\n\ndef escalate_close_notify(container):\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'escalate_close_notify' call\n\n    parameters = []\n    \n    # build parameters list for 'escalate_close_notify' call\n    parameters.append({\n        'body': \"asdf\",\n        'to': \"root@localhost\",\n        'from': \"\",\n        'attachments': \"\",\n        'subject': \"Escalating and closing\",\n    })\n\n    if parameters:\n        phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"escalate_close_notify\")    \n    else:\n        phantom.error(\"'escalate_close_notify' will not be executed due to lack of parameters\")\n    \n    return",
+            "code_block": "import traceback\n\ndef asset_configured(action):\n    assets = phantom.get_assets(action=action)\n    if assets:\n        return True\n    \n    return False\n\ndef escalate(container):\n    phantom.set_severity(container, \"high\")\n    \ndef deescalate(container):\n    phantom.set_severity(container, \"low\")\n    phantom.close(container)\n    \ndef deescalate_close_notify(container):\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'deescalate_close_notify' call\n\n    container_id = container['id']\n    deescalate(container)\n    \n    parameters = []\n    \n    # build parameters list for 'deescalate_close_notify' call\n    parameters.append({\n        'from': \"\",\n        'to': \"root@localhost\",\n        'subject': \"Descalating and Closing Container ID: \" + container['id'],\n        'body': \"The c2 investigate and contain playbook on the Phantom platform has completed and will be closing the container.\" +\n                \"Information about the container is as follows: \\n Container ID: \" + container['id'] + \"\\nContainer Label: \" + container['label'] + \"\\nContainer Severity: \" + container['severity'],\n        'attachments': \"\",\n    })\n\n    if parameters:\n        phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"deescalate_close_notify\")    \n    else:\n        phantom.error(\"'deescalate_close_notify' will not be executed due to lack of parameters\")\n    \n    return\n\ndef escalate_close_notify(container):\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'escalate_close_notify' call\n\n    parameters = []\n    \n    # build parameters list for 'escalate_close_notify' call\n    parameters.append({\n        'body': \"asdf\",\n        'to': \"root@localhost\",\n        'from': \"\",\n        'attachments': \"\",\n        'subject': \"Escalating and closing\",\n    })\n\n    if parameters:\n        phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"escalate_close_notify\")    \n    else:\n        phantom.error(\"'escalate_close_notify' will not be executed due to lack of parameters\")\n    \n    return",
             "description": "This playbook is deigned to perform the investigative and potential containment steps necessary to properly handle a command and control attack scenario.  It will extract file and connection information from a compromised VM, enrich the information, then take containment actions depending on the significance of the information.  Examples of significant information include files with threat scores greater than 70, IP addresses with reputation status of MALICIOUS, among other attributes.",
             "joint": {
                 "cells": [
@@ -1673,369 +1673,6 @@
                         "z": 4912
                     },
                     {
-                        "0": "S",
-                        "1": "T",
-                        "2": "A",
-                        "3": "R",
-                        "4": "T",
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "text": "START"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
-                            }
-                        },
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "d89a525e-08c7-47b1-8cf3-2bc7c087494a",
-                        "inPorts": [],
-                        "join_optional": [],
-                        "name": "",
-                        "notes": "",
-                        "number": 0,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 60,
-                            "y": 200
-                        },
-                        "previous_function": "",
-                        "previous_name": "",
-                        "show_number": true,
-                        "size": {
-                            "height": 48,
-                            "width": 96
-                        },
-                        "status": "",
-                        "title": "START",
-                        "type": "coa.StartEnd",
-                        "warn": false,
-                        "z": 4968
-                    },
-                    {
-                        "action": "list vms",
-                        "action_type": "investigate",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {},
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {},
-                                "name": "vmwarevsphere",
-                                "output": [
-                                    {
-                                        "column_name": "Host Name",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "host name"
-                                        ],
-                                        "data_path": "action_result.data.*.vm_hostname",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "OS",
-                                        "column_order": 1,
-                                        "data_path": "action_result.data.*.vm_full_name",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Ip",
-                                        "column_order": 2,
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.data.*.ip",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Name",
-                                        "column_order": 3,
-                                        "data_path": "action_result.data.*.vm_name",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "State",
-                                        "column_order": 4,
-                                        "data_path": "action_result.data.*.state",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "VM",
-                                        "column_order": 5,
-                                        "contains": [
-                                            "vm"
-                                        ],
-                                        "data_path": "action_result.data.*.vmx_path",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.total_vms",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.running_vms",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "virtualization"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "list vms"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "stroke": "#5094D4"
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Investigate"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#5094D4"
-                            },
-                            "text.icon": {
-                                "fill": "#5094D4"
-                            }
-                        },
-                        "callsback": true,
-                        "color": "#654796",
-                        "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": "0",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "548d3a1a-7508-4a4c-a1dd-cce0300c4098",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_optional": [],
-                        "message": "",
-                        "name": "list vms",
-                        "notes": "",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 240,
-                            "y": 160
-                        },
-                        "previous_block_type": "",
-                        "previous_function": "",
-                        "previous_name": "list_vms_1_1",
-                        "required_params": {},
-                        "reviewer": "",
-                        "showNumber": false,
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Investigate",
-                        "type": "coa.Action",
-                        "warn": "",
-                        "z": 5130
-                    },
-                    {
                         "action": "block ip",
                         "action_type": "contain",
                         "active": false,
@@ -2475,7 +2112,8 @@
                                 "opacity": 0
                             },
                             "g.notes": {
-                                "display": "none"
+                                "display": "block",
+                                "opacity": 0.7
                             },
                             "rect.warn-background": {
                                 "fill": "#5094D4"
@@ -2825,228 +2463,6 @@
                         "type": "coa.Action",
                         "warn": "",
                         "z": 5145
-                    },
-                    {
-                        "action": "find malware",
-                        "action_type": "investigate",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "profile": "",
-                            "vault_id": "snapshot_vm_1:action_result.data.*.vault_id"
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "profile": "",
-                                    "vault_id": "snapshot_vm_1:action_result.data.*.vault_id"
-                                },
-                                "name": "volatility",
-                                "output": [
-                                    {
-                                        "contains": [
-                                            "file name"
-                                        ],
-                                        "data_path": "action_result.data.*.process",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "pid"
-                                        ],
-                                        "data_path": "action_result.data.*.pid",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.protection",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.flags",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.address",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.vad_tag",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.buffer",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.disassembly",
-                                        "data_type": "string"
-                                    }
-                                ],
-                                "type": "forensic"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "find malware"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "stroke": "#5094D4"
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Investigate"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#5094D4"
-                            },
-                            "text.icon": {
-                                "fill": "#5094D4"
-                            }
-                        },
-                        "callsback": true,
-                        "color": "#654796",
-                        "connected_to_start": false,
-                        "connection_name": "snapshot vm",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": "0",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "e8c6c914-ae4a-498f-914b-40afbc10b112",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_optional": [],
-                        "message": "",
-                        "name": "find malware",
-                        "notes": "",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 880,
-                            "y": 160
-                        },
-                        "previous_block_type": "",
-                        "previous_function": "",
-                        "previous_name": "find_malware_1_1",
-                        "required_params": {
-                            "vault_id": true
-                        },
-                        "reviewer": "",
-                        "showNumber": false,
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Investigate",
-                        "type": "coa.Action",
-                        "warn": "",
-                        "z": 5153
                     },
                     {
                         "active": false,
@@ -3836,249 +3252,6 @@
                         "z": 5165
                     },
                     {
-                        "action": "hunt ip",
-                        "action_type": "investigate",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "ip": "artifact:*.cef.destinationAddress",
-                            "scope": ""
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "ip": "artifact:*.cef.destinationAddress",
-                                    "scope": ""
-                                },
-                                "name": "autofocus",
-                                "output": [
-                                    {
-                                        "column_name": "Public Tag Name",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "autofocus tag"
-                                        ],
-                                        "data_path": "action_result.data.*.public_tag_name",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Tag Name",
-                                        "column_order": 1,
-                                        "data_path": "action_result.data.*.tag_name",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Count",
-                                        "column_order": 2,
-                                        "data_path": "action_result.data.*.count",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "column_name": "Description",
-                                        "column_order": 3,
-                                        "data_path": "action_result.data.*.description",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.ip",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.scope",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.total_tags_matched",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "action_result.id",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "endpoint"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "hunt ip"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "stroke": "#5094D4"
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Investigate"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#5094D4"
-                            },
-                            "text.icon": {
-                                "fill": "#5094D4"
-                            }
-                        },
-                        "callsback": true,
-                        "color": "#654796",
-                        "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": "0",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "95ecc4d5-0bbe-4456-a453-80684850319d",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_optional": [],
-                        "message": "",
-                        "name": "hunt ip",
-                        "notes": "",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 240,
-                            "y": 300
-                        },
-                        "previous_block_type": "",
-                        "previous_function": "",
-                        "previous_name": "hunt_ip_1_1",
-                        "required_params": {
-                            "ip": true
-                        },
-                        "reviewer": "",
-                        "showNumber": false,
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Investigate",
-                        "type": "coa.Action",
-                        "warn": "",
-                        "z": 5170
-                    },
-                    {
                         "action": "create alert",
                         "action_type": "generic",
                         "active": false,
@@ -4250,226 +3423,6 @@
                         "z": 5171
                     },
                     {
-                        "action": "send email",
-                        "action_type": "generic",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "attachments": "",
-                            "body": "asdf",
-                            "from": "",
-                            "subject": "Escalating and closing",
-                            "to": "root@localhost"
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "attachments": "",
-                                    "body": "asdf",
-                                    "from": "",
-                                    "subject": "Escalating and closing",
-                                    "to": "root@localhost"
-                                },
-                                "name": "smtp",
-                                "output": [
-                                    {
-                                        "contains": [
-                                            "email"
-                                        ],
-                                        "data_path": "action_result.parameter.from",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.subject",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "email"
-                                        ],
-                                        "data_path": "action_result.parameter.to",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "email"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "escalate_close_container2"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "stroke": "#5094D4"
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Utilities"
-                            },
-                            "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#5094D4"
-                            },
-                            "text.icon": {
-                                "fill": "#5094D4"
-                            }
-                        },
-                        "callsback": true,
-                        "color": "#5094D4",
-                        "connected_to_start": false,
-                        "connection_name": "terminate process",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "def escalate_close_container2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    escalate_close_notify(container)\n\n    return",
-                        "custom_join": "",
-                        "custom_name": "escalate_close_container2",
-                        "delay": "0",
-                        "description": "",
-                        "has_custom": true,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "c5f0117e-d979-4794-a089-52a3fd4336ee",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_optional": [],
-                        "message": "",
-                        "name": "send email",
-                        "notes": "",
-                        "number": 4,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1220,
-                            "y": 320
-                        },
-                        "previous_block_type": "",
-                        "previous_function": "",
-                        "previous_name": "escalate_close_container2",
-                        "required_params": {
-                            "body": true,
-                            "to": true
-                        },
-                        "reviewer": "",
-                        "showNumber": true,
-                        "show_number": true,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Utilities",
-                        "type": "coa.Action",
-                        "warn": false,
-                        "z": 5173
-                    },
-                    {
                         "action": "terminate process",
                         "action_type": "contain",
                         "active": false,
@@ -4635,7 +3588,8 @@
                                 "opacity": 0
                             },
                             "g.notes": {
-                                "display": "none"
+                                "display": "block",
+                                "opacity": 0.7
                             },
                             "rect.warn-background": {
                                 "fill": "#5094D4"
@@ -5073,7 +4027,8 @@
                                 "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
-                                "display": "none"
+                                "display": "block",
+                                "opacity": 0.7
                             }
                         },
                         "callsback": false,
@@ -5227,17 +4182,72 @@
                         "z": 5182
                     },
                     {
-                        "action": "create alert",
-                        "action_type": "generic",
+                        "action": "ip reputation",
+                        "action_type": "investigate",
                         "active": false,
                         "active_keys": {},
-                        "active_values": {},
+                        "active_values": {
+                            "ip": "artifact:*.cef.destinationAddress"
+                        },
                         "angle": 0,
                         "approver": "",
-                        "assets": [],
+                        "assets": [
+                            {
+                                "fields": {
+                                    "ip": "artifact:*.cef.destinationAddress"
+                                },
+                                "name": "opendns_investigate",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Blocked Domain",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "domain"
+                                        ],
+                                        "data_path": "action_result.data.*.name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Domain ID",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.total_blocked_domains",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.ip_status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "type": "reputation"
+                            }
+                        ],
                         "attrs": {
                             ".action": {
-                                "text": "deescalate_close_contain..."
+                                "text": "ip reputation"
                             },
                             ".background": {
                                 "height": 88
@@ -5246,7 +4256,7 @@
                                 "stroke": "#5094D4"
                             },
                             ".color-band": {
-                                "fill": "#5094D4"
+                                "fill": "#654796"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -5278,16 +4288,14 @@
                                 "ref-y": 68
                             },
                             ".title": {
-                                "text": "Utilities"
-                            },
-                            "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "text": "Investigate"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
-                                "display": "none"
+                                "display": "none",
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#5094D4"
@@ -5297,27 +4305,27 @@
                             }
                         },
                         "callsback": true,
-                        "color": "#5094D4",
-                        "connected_to_start": false,
-                        "connection_name": "detonate file, get report",
-                        "connection_type": "action",
+                        "color": "#654796",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
                         "custom_callback": "",
-                        "custom_code": "def deescalate_close_container1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n\n    deescalate_close_notify(container)\n    \n    return",
+                        "custom_code": "",
                         "custom_join": "",
-                        "custom_name": "deescalate_close_container1",
+                        "custom_name": "",
                         "delay": "0",
                         "description": "",
-                        "has_custom": true,
+                        "has_custom": false,
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
-                        "id": "444a63ef-a64f-4673-a02a-4ed0ccb9ef43",
+                        "id": "a014a947-8730-4cfa-a6f9-da517ef1eaf8",
                         "inPorts": [
                             "in"
                         ],
                         "join_optional": [],
                         "message": "",
-                        "name": "create alert",
+                        "name": "ip reputation",
                         "notes": "",
                         "number": 1,
                         "outPorts": [
@@ -5376,13 +4384,765 @@
                             }
                         },
                         "position": {
-                            "x": 1800,
-                            "y": 60
+                            "x": 240,
+                            "y": 440
                         },
                         "previous_block_type": "",
                         "previous_function": "",
-                        "previous_name": "deescalate_close_container1",
-                        "required_params": {},
+                        "previous_name": "ip_reputation_1_1",
+                        "required_params": {
+                            "ip": true
+                        },
+                        "reviewer": "",
+                        "showNumber": false,
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": "",
+                        "z": 5185
+                    },
+                    {
+                        "0": "S",
+                        "1": "T",
+                        "2": "A",
+                        "3": "R",
+                        "4": "T",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "START"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "color": "#FFFFFF"
+                            }
+                        },
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "d89a525e-08c7-47b1-8cf3-2bc7c087494a",
+                        "inPorts": [],
+                        "join_optional": [],
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 60,
+                            "y": 200
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 48,
+                            "width": 96
+                        },
+                        "status": "",
+                        "title": "START",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 5192
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".border": {
+                                "stroke": "#5094D4",
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            }
+                        },
+                        "callsback": false,
+                        "connected_to_start": false,
+                        "connection_name": "list vms",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "hasElse": false,
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "bccde3ed-b14f-4edd-b693-596a2197e5fb",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_optional": [],
+                        "name": "filter",
+                        "notes": "",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "list_vms_1:action_result.data.*.ip",
+                                        "value": "artifact:*.cef.sourceAddress"
+                                    },
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "list_vms_1:action_result.data.*.state",
+                                        "value": "running"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 500,
+                            "y": 160
+                        },
+                        "previous_block_type": "",
+                        "previous_function": "",
+                        "previous_name": "filter_1",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "filter",
+                        "status": "",
+                        "type": "coa.Filter",
+                        "warn": "",
+                        "z": 5195
+                    },
+                    {
+                        "action": "hunt ip",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip": "artifact:*.cef.destinationAddress",
+                            "scope": ""
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "ip": "artifact:*.cef.destinationAddress",
+                                    "scope": ""
+                                },
+                                "name": "autofocus",
+                                "output": [
+                                    {
+                                        "column_name": "Public Tag Name",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "autofocus tag"
+                                        ],
+                                        "data_path": "action_result.data.*.public_tag_name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Tag Name",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*.tag_name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Count",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.count",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "column_name": "Description",
+                                        "column_order": 3,
+                                        "data_path": "action_result.data.*.description",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.scope",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.total_tags_matched",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "type": "endpoint"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "hunt ip"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "stroke": "#5094D4"
+                            },
+                            ".color-band": {
+                                "fill": "#654796"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#5094D4"
+                            },
+                            "text.icon": {
+                                "fill": "#5094D4"
+                            }
+                        },
+                        "callsback": true,
+                        "color": "#654796",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": "0",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "95ecc4d5-0bbe-4456-a453-80684850319d",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_optional": [],
+                        "message": "",
+                        "name": "hunt ip",
+                        "notes": "",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 240,
+                            "y": 300
+                        },
+                        "previous_block_type": "",
+                        "previous_function": "",
+                        "previous_name": "hunt_ip_1_1",
+                        "required_params": {
+                            "ip": true
+                        },
+                        "reviewer": "",
+                        "showNumber": false,
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": "",
+                        "z": 5197
+                    },
+                    {
+                        "action": "send email",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "attachments": "",
+                            "body": "asdf",
+                            "from": "",
+                            "subject": "Escalating and closing",
+                            "to": "root@localhost"
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "attachments": "",
+                                    "body": "asdf",
+                                    "from": "",
+                                    "subject": "Escalating and closing",
+                                    "to": "root@localhost"
+                                },
+                                "name": "smtp",
+                                "output": [
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.parameter.from",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.subject",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.parameter.to",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "type": "email"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "escalate_close_container2"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "stroke": "#5094D4"
+                            },
+                            ".color-band": {
+                                "fill": "#5094D4"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Utilities"
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#5094D4"
+                            },
+                            "text.icon": {
+                                "fill": "#5094D4"
+                            }
+                        },
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": false,
+                        "connection_name": "terminate process",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def escalate_close_container2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    escalate_close_notify(container)\n\n    return",
+                        "custom_join": "",
+                        "custom_name": "escalate_close_container2",
+                        "delay": "0",
+                        "description": "",
+                        "has_custom": true,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "c5f0117e-d979-4794-a089-52a3fd4336ee",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_optional": [],
+                        "message": "",
+                        "name": "send email",
+                        "notes": "",
+                        "number": 4,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1220,
+                            "y": 320
+                        },
+                        "previous_block_type": "",
+                        "previous_function": "",
+                        "previous_name": "escalate_close_container2",
+                        "required_params": {
+                            "body": true,
+                            "to": true
+                        },
                         "reviewer": "",
                         "showNumber": true,
                         "show_number": true,
@@ -5395,7 +5155,7 @@
                         "title": "Utilities",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 5183
+                        "z": 5198
                     },
                     {
                         "action": "get report",
@@ -6351,7 +6111,8 @@
                                 "opacity": 0
                             },
                             "g.notes": {
-                                "display": "none"
+                                "display": "none",
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#5094D4"
@@ -6462,59 +6223,73 @@
                         "title": "Investigate",
                         "type": "coa.Action",
                         "warn": "",
-                        "z": 5184
+                        "z": 5200
                     },
                     {
-                        "action": "ip reputation",
+                        "action": "list vms",
                         "action_type": "investigate",
                         "active": false,
                         "active_keys": {},
-                        "active_values": {
-                            "ip": "artifact:*.cef.destinationAddress"
-                        },
+                        "active_values": {},
                         "angle": 0,
                         "approver": "",
                         "assets": [
                             {
-                                "fields": {
-                                    "ip": "artifact:*.cef.destinationAddress"
-                                },
-                                "name": "opendns_investigate",
+                                "fields": {},
+                                "name": "vmwarevsphere",
                                 "output": [
                                     {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.ip",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Blocked Domain",
+                                        "column_name": "Host Name",
                                         "column_order": 0,
                                         "contains": [
-                                            "domain"
+                                            "host name"
                                         ],
-                                        "data_path": "action_result.data.*.name",
+                                        "data_path": "action_result.data.*.vm_hostname",
                                         "data_type": "string"
                                     },
                                     {
-                                        "column_name": "Domain ID",
+                                        "column_name": "OS",
                                         "column_order": 1,
-                                        "data_path": "action_result.data.*.id",
+                                        "data_path": "action_result.data.*.vm_full_name",
                                         "data_type": "string"
                                     },
                                     {
-                                        "data_path": "action_result.summary.total_blocked_domains",
+                                        "column_name": "Ip",
+                                        "column_order": 2,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Name",
+                                        "column_order": 3,
+                                        "data_path": "action_result.data.*.vm_name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "State",
+                                        "column_order": 4,
+                                        "data_path": "action_result.data.*.state",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "VM",
+                                        "column_order": 5,
+                                        "contains": [
+                                            "vm"
+                                        ],
+                                        "data_path": "action_result.data.*.vmx_path",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.total_vms",
                                         "data_type": "numeric"
                                     },
                                     {
-                                        "data_path": "action_result.summary.ip_status",
-                                        "data_type": "string"
+                                        "data_path": "action_result.summary.running_vms",
+                                        "data_type": "numeric"
                                     },
                                     {
                                         "data_path": "summary.total_objects",
@@ -6525,12 +6300,12 @@
                                         "data_type": "numeric"
                                     }
                                 ],
-                                "type": "reputation"
+                                "type": "virtualization"
                             }
                         ],
                         "attrs": {
                             ".action": {
-                                "text": "ip reputation"
+                                "text": "list vms"
                             },
                             ".background": {
                                 "height": 88
@@ -6602,13 +6377,13 @@
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
-                        "id": "a014a947-8730-4cfa-a6f9-da517ef1eaf8",
+                        "id": "548d3a1a-7508-4a4c-a1dd-cce0300c4098",
                         "inPorts": [
                             "in"
                         ],
                         "join_optional": [],
                         "message": "",
-                        "name": "ip reputation",
+                        "name": "list vms",
                         "notes": "",
                         "number": 1,
                         "outPorts": [
@@ -6668,14 +6443,12 @@
                         },
                         "position": {
                             "x": 240,
-                            "y": 440
+                            "y": 160
                         },
                         "previous_block_type": "",
                         "previous_function": "",
-                        "previous_name": "ip_reputation_1_1",
-                        "required_params": {
-                            "ip": true
-                        },
+                        "previous_name": "list_vms_1_1",
+                        "required_params": {},
                         "reviewer": "",
                         "showNumber": false,
                         "show_number": false,
@@ -6688,41 +6461,64 @@
                         "title": "Investigate",
                         "type": "coa.Action",
                         "warn": "",
-                        "z": 5185
+                        "z": 5203
                     },
                     {
+                        "action": "create alert",
+                        "action_type": "generic",
                         "active": false,
+                        "active_keys": {},
+                        "active_values": {},
                         "angle": 0,
+                        "approver": "",
+                        "assets": [],
                         "attrs": {
+                            ".action": {
+                                "text": "deescalate_close_contain..."
+                            },
                             ".background": {
-                                "transform": "rotate(45 30 70)"
+                                "height": 88
                             },
                             ".border": {
-                                "stroke": "#5094D4",
-                                "transform": "rotate(45 30 70)"
+                                "stroke": "#5094D4"
                             },
-                            ".inPorts>.port-0>.port-body": {
+                            ".color-band": {
+                                "fill": "#5094D4"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
                                 "port": {
                                     "id": "in",
                                     "type": "in"
                                 }
                             },
-                            ".number": {
-                                "text": 1
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
                             },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
                             },
-                            ".outPorts>.port-0>.port-body": {
+                            ".outPorts>.port-out>.port-body": {
                                 "port": {
-                                    "id": "out-1",
+                                    "id": "out",
                                     "type": "out"
                                 }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Utilities"
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -6730,53 +6526,40 @@
                             "g.notes": {
                                 "display": "none",
                                 "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#5094D4"
+                            },
+                            "text.icon": {
+                                "fill": "#5094D4"
                             }
                         },
-                        "callsback": false,
+                        "callsback": true,
+                        "color": "#5094D4",
                         "connected_to_start": false,
-                        "connection_name": "list vms",
+                        "connection_name": "detonate file, get report",
                         "connection_type": "action",
                         "custom_callback": "",
-                        "custom_code": "",
+                        "custom_code": "def deescalate_close_container1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n\n    deescalate_close_notify(container)\n    \n    return",
                         "custom_join": "",
-                        "custom_name": "",
+                        "custom_name": "deescalate_close_container1",
+                        "delay": "0",
                         "description": "",
-                        "hasElse": false,
-                        "has_custom": false,
+                        "has_custom": true,
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
-                        "id": "bccde3ed-b14f-4edd-b693-596a2197e5fb",
+                        "id": "444a63ef-a64f-4673-a02a-4ed0ccb9ef43",
                         "inPorts": [
                             "in"
                         ],
                         "join_optional": [],
-                        "name": "filter",
+                        "message": "",
+                        "name": "create alert",
                         "notes": "",
                         "number": 1,
                         "outPorts": [
-                            "out-1"
-                        ],
-                        "outputs": [
-                            {
-                                "conditions": [
-                                    {
-                                        "comparison": "==",
-                                        "data_type": "",
-                                        "param": "list_vms_1:action_result.data.*.ip",
-                                        "value": "artifact:*.cef.sourceAddress"
-                                    },
-                                    {
-                                        "comparison": "==",
-                                        "data_type": "",
-                                        "param": "list_vms_1:action_result.data.*.state",
-                                        "value": "running"
-                                    }
-                                ],
-                                "display": "If",
-                                "logic": "and",
-                                "type": "if"
-                            }
+                            "out"
                         ],
                         "ports": {
                             "groups": {
@@ -6831,22 +6614,26 @@
                             }
                         },
                         "position": {
-                            "x": 500,
-                            "y": 160
+                            "x": 1800,
+                            "y": 60
                         },
                         "previous_block_type": "",
                         "previous_function": "",
-                        "previous_name": "filter_1",
+                        "previous_name": "deescalate_close_container1",
+                        "required_params": {},
+                        "reviewer": "",
+                        "showNumber": true,
                         "show_number": true,
                         "size": {
-                            "height": 82,
-                            "width": 82
+                            "height": 112,
+                            "width": 168
                         },
-                        "state": "filter",
+                        "state": "asset",
                         "status": "",
-                        "type": "coa.Filter",
-                        "warn": "",
-                        "z": 5186
+                        "title": "Utilities",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 5204
                     },
                     {
                         "action": "detonate file",
@@ -7918,7 +7705,230 @@
                         "title": "Investigate",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 5187
+                        "z": 5205
+                    },
+                    {
+                        "action": "find malware",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "profile": "",
+                            "vault_id": "snapshot_vm_1:action_result.data.*.vault_id"
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "profile": "",
+                                    "vault_id": "snapshot_vm_1:action_result.data.*.vault_id"
+                                },
+                                "name": "volatility",
+                                "output": [
+                                    {
+                                        "contains": [
+                                            "file name"
+                                        ],
+                                        "data_path": "action_result.data.*.process",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "pid"
+                                        ],
+                                        "data_path": "action_result.data.*.pid",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.protection",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.flags",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.address",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.vad_tag",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.buffer",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.disassembly",
+                                        "data_type": "string"
+                                    }
+                                ],
+                                "type": "forensic"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "find malware"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "stroke": "#5094D4"
+                            },
+                            ".color-band": {
+                                "fill": "#654796"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#5094D4"
+                            },
+                            "text.icon": {
+                                "fill": "#5094D4"
+                            }
+                        },
+                        "callsback": true,
+                        "color": "#654796",
+                        "connected_to_start": false,
+                        "connection_name": "snapshot vm",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": "0",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "e8c6c914-ae4a-498f-914b-40afbc10b112",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_optional": [],
+                        "message": "",
+                        "name": "find malware",
+                        "notes": "",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 880,
+                            "y": 160
+                        },
+                        "previous_block_type": "",
+                        "previous_function": "",
+                        "previous_name": "find_malware_1_1",
+                        "required_params": {
+                            "vault_id": true
+                        },
+                        "reviewer": "",
+                        "showNumber": false,
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": "",
+                        "z": 5206
                     }
                 ]
             },
@@ -7926,7 +7936,7 @@
         },
         "version": "2.1.303"
     },
-    "create_time": "2017-02-09T22:53:48.674607+00:00",
+    "create_time": "2017-02-09T23:08:42.549303+00:00",
     "draft_mode": false,
     "labels": [
         "incident"

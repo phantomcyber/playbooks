@@ -32,7 +32,7 @@ def deescalate_close_notify(container):
     # collect data for 'deescalate_close_notify' call
 
     container_id = container['id']
-    phantom.deescalate(container)
+    deescalate(container)
     
     parameters = []
     
