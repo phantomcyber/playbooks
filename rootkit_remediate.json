@@ -7,6 +7,7 @@
             "clean": true,
             "code_block": "",
             "description": "This playbook executes remediation actions to clear a rootkit infection on an endpoint",
+            "hash": "5b688ba1212ae7dd04a72da8217a588bef33a01c",
             "joint": {
                 "cells": [
                     {
@@ -653,6 +654,9 @@
                                 "color": "#FFFFFF"
                             }
                         },
+                        "block_code": "# read-only block view not available",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
                         "callsback": false,
                         "connected_to_start": true,
                         "connection_name": "",
@@ -668,7 +672,11 @@
                         "has_custom_join": false,
                         "id": "140ac97d-ef85-4f94-a61c-cedaeab6088b",
                         "inPorts": [],
+                        "join_code": "# read-only block view not available",
                         "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 17,
+                        "line_start": 9,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -745,6 +753,343 @@
                         "z": 1641
                     },
                     {
+                        "action": "revert vm",
+                        "action_type": "contain",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "snapshot": "",
+                            "vmx_path": "get_system_info_1:filtered-action_result.data.*.vmx_path"
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "snapshot": "",
+                                    "vmx_path": "get_system_info_1:filtered-action_result.data.*.vmx_path"
+                                },
+                                "name": "vmwarevsphere",
+                                "output": [
+                                    {
+                                        "contains": [
+                                            "vm"
+                                        ],
+                                        "data_path": "action_result.parameter.vmx_path",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "type": "virtualization"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "revert vm"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#3D9959"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Contain"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def revert_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('revert_vm_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'revert_vm_1' call\n    passed_filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"get_system_info_1:filtered-action_result.data.*.vmx_path\", \"get_system_info_1:filtered-action_result.parameter.context.artifact_id\"], action_results=filtered_results)\n\n    parameters = []\n    \n    # build parameters list for 'revert_vm_1' call\n    for passed_filtered_results_item_1 in passed_filtered_results_data_1:\n        if passed_filtered_results_item_1[0]:\n            parameters.append({\n                'snapshot': \"\",\n                'vmx_path': passed_filtered_results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': passed_filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"revert vm\", parameters=parameters, assets=['vmwarevsphere'], callback=unquarantine_device_1, name=\"revert_vm_1\")    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#3D9959",
+                        "connected_to_start": false,
+                        "connection_name": "get system info 1",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": "0",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "faa526c0-3798-4ba8-bdad-2cd5dce7a7cf",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 165,
+                        "line_start": 141,
+                        "message": "",
+                        "name": "revert vm",
+                        "notes": "",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1160,
+                            "y": 140
+                        },
+                        "previous_block_type": "",
+                        "previous_function": "",
+                        "previous_name": "revert_vm_1",
+                        "required_params": {
+                            "vmx_path": true
+                        },
+                        "reviewer": "",
+                        "showNumber": false,
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Contain",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 1817
+                    },
+                    {
+                        "0": "E",
+                        "1": "N",
+                        "2": "D",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".title": {
+                                "text": "END"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "color": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "# read-only block view not available",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "Send Email reverted, send email 2",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "d10c7be1-99cc-4fb0-b9fc-13c01a8d21de",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 303,
+                        "line_start": 290,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1880,
+                            "y": 380
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 48,
+                            "width": 96
+                        },
+                        "status": "",
+                        "title": "END",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 1825
+                    },
+                    {
                         "action": "quarantine device",
                         "action_type": "contain",
                         "active": false,
@@ -802,9 +1147,6 @@
                             ".background": {
                                 "height": 88
                             },
-                            ".border": {
-                                "stroke": "#5094D4"
-                            },
                             ".color-band": {
                                 "fill": "#3D9959"
                             },
@@ -847,15 +1189,19 @@
                                 "opacity": 0
                             },
                             "g.notes": {
-                                "display": "none"
+                                "display": "none",
+                                "opacity": 1
                             },
                             "rect.warn-background": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             },
                             "text.icon": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             }
                         },
+                        "block_code": "# read-only block view not available",
+                        "callback_code": "",
+                        "callback_start": 1,
                         "callsback": true,
                         "color": "#3D9959",
                         "connected_to_start": true,
@@ -868,14 +1214,18 @@
                         "delay": "0",
                         "description": "",
                         "has_custom": true,
-                        "has_custom_block": false,
+                        "has_custom_block": true,
                         "has_custom_callback": false,
                         "has_custom_join": false,
                         "id": "ec148915-006a-41b8-8e4f-752e428a85bc",
                         "inPorts": [
                             "in"
                         ],
+                        "join_code": "",
                         "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 40,
+                        "line_start": 17,
                         "message": "",
                         "name": "quarantine device",
                         "notes": "",
@@ -941,7 +1291,7 @@
                         },
                         "previous_block_type": "",
                         "previous_function": "",
-                        "previous_name": "quarantine_device_1_1",
+                        "previous_name": "quarantine_device_1",
                         "required_params": {
                             "ip_hostname": true
                         },
@@ -957,7 +1307,7 @@
                         "title": "Contain",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 1695
+                        "z": 1833
                     },
                     {
                         "action": "get system info",
@@ -1048,9 +1398,6 @@
                             ".background": {
                                 "height": 88
                             },
-                            ".border": {
-                                "stroke": "#5094D4"
-                            },
                             ".color-band": {
                                 "fill": "#654796"
                             },
@@ -1090,18 +1437,22 @@
                                 "opacity": 0
                             },
                             "g.notes": {
-                                "display": "none"
+                                "display": "none",
+                                "opacity": 1
                             },
                             "rect.warn-background": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             },
                             "text.icon": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             }
                         },
+                        "block_code": "def get_system_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_system_info_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_system_info_1' call\n    inputs_data_1 = phantom.collect2(container=container, datapath=['quarantine_device_1:artifact:*.cef.sourceAddress', 'quarantine_device_1:artifact:*.id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_system_info_1' call\n    for inputs_item_1 in inputs_data_1:\n        if inputs_item_1[0]:\n            parameters.append({\n                'ip_hostname': inputs_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': inputs_item_1[1]},\n            })\n\n    phantom.act(\"get system info\", parameters=parameters, assets=['vmwarevsphere'], callback=filter_1, name=\"get_system_info_1\", parent_action=action)    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
                         "callsback": true,
                         "color": "#654796",
-                        "connected_to_start": false,
+                        "connected_to_start": true,
                         "connection_name": "quarantine device",
                         "connection_type": "action",
                         "custom_callback": "",
@@ -1118,7 +1469,11 @@
                         "inPorts": [
                             "in"
                         ],
+                        "join_code": "",
                         "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 63,
+                        "line_start": 40,
                         "message": "",
                         "name": "get system info",
                         "notes": "",
@@ -1184,7 +1539,7 @@
                         },
                         "previous_block_type": "",
                         "previous_function": "",
-                        "previous_name": "get_system_info_1_1",
+                        "previous_name": "get_system_info_1",
                         "required_params": {
                             "ip_hostname": true
                         },
@@ -1199,8 +1554,8 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
-                        "z": 1697
+                        "warn": false,
+                        "z": 1835
                     },
                     {
                         "active": false,
@@ -1210,7 +1565,6 @@
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
-                                "stroke": "#5094D4",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".inPorts>.port-0>.port-body": {
@@ -1257,9 +1611,13 @@
                                 "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
-                                "display": "none"
+                                "display": "none",
+                                "opacity": 1
                             }
                         },
+                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"get_system_info_1:action_result.data.*.state\", \"==\", \"running\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        revert_vm_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    # collect filtered artifact ids for 'if' condition 2\n    matched_artifacts_2, matched_results_2 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"get_system_info_1:action_result.data.*.state\", \"!=\", \"running\"],\n        ],\n        name=\"filter_1:condition_2\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_2 or matched_results_2:\n        terminate_process_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n        get_system_info_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
                         "callsback": false,
                         "connected_to_start": false,
                         "connection_name": "get system info 1",
@@ -1278,7 +1636,11 @@
                         "inPorts": [
                             "in"
                         ],
+                        "join_code": "",
                         "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 95,
+                        "line_start": 63,
                         "name": "filter",
                         "notes": "",
                         "number": 1,
@@ -1381,8 +1743,8 @@
                         "state": "filter",
                         "status": "",
                         "type": "coa.Filter",
-                        "warn": "",
-                        "z": 1724
+                        "warn": false,
+                        "z": 1836
                     },
                     {
                         "action": "get system info",
@@ -1977,7 +2339,7 @@
                                 "height": 88
                             },
                             ".border": {
-                                "stroke": "#5094D4"
+                                "height": 88
                             },
                             ".color-band": {
                                 "fill": "#654796"
@@ -2018,15 +2380,19 @@
                                 "opacity": 0
                             },
                             "g.notes": {
-                                "display": "none"
+                                "display": "none",
+                                "opacity": 1
                             },
                             "rect.warn-background": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             },
                             "text.icon": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             }
                         },
+                        "block_code": "def get_system_info_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_system_info_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_system_info_2' call\n    passed_filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"get_system_info_1:filtered-action_result.data.*.ip\", \"get_system_info_1:filtered-action_result.parameter.context.artifact_id\"], action_results=filtered_results)\n\n    parameters = []\n    \n    # build parameters list for 'get_system_info_2' call\n    for passed_filtered_results_item_1 in passed_filtered_results_data_1:\n        if passed_filtered_results_item_1[0]:\n            parameters.append({\n                'ip_hostname': passed_filtered_results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': passed_filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"get system info\", parameters=parameters, assets=['domainctrl1'], callback=disable_user_1, name=\"get_system_info_2\")    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
                         "callsback": true,
                         "color": "#654796",
                         "connected_to_start": false,
@@ -2046,7 +2412,11 @@
                         "inPorts": [
                             "in"
                         ],
+                        "join_code": "",
                         "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 118,
+                        "line_start": 95,
                         "message": "",
                         "name": "get system info",
                         "notes": "",
@@ -2112,7 +2482,7 @@
                         },
                         "previous_block_type": "",
                         "previous_function": "",
-                        "previous_name": "get_system_info_2_2",
+                        "previous_name": "get_system_info_2",
                         "required_params": {
                             "ip_hostname": true
                         },
@@ -2127,450 +2497,107 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
-                        "z": 1806
+                        "warn": false,
+                        "z": 1838
                     },
                     {
-                        "action": "disable user",
-                        "action_type": "contain",
+                        "action": "create ticket",
+                        "action_type": "generic",
                         "active": false,
                         "active_keys": {},
                         "active_values": {
-                            "username": "get_system_info_2:action_result.data.*.system_details.PrimaryOwnerName"
+                            "assignee": "",
+                            "description": "Machine was discovered by phantom to have a rootkit.  See Phantom for more information.",
+                            "issue_type": "",
+                            "priority": "High",
+                            "project_key": "REIMAGE",
+                            "summary": "Machine was identified with a rootkit."
                         },
                         "angle": 0,
                         "approver": "",
                         "assets": [
                             {
                                 "fields": {
-                                    "username": "get_system_info_2:action_result.data.*.system_details.PrimaryOwnerName"
+                                    "assignee": "",
+                                    "description": "Machine was discovered by phantom to have a rootkit.  See Phantom for more information.",
+                                    "issue_type": "",
+                                    "priority": "High",
+                                    "project_key": "REIMAGE",
+                                    "summary": "Machine was identified with a rootkit."
                                 },
-                                "name": "domainctrl1",
+                                "name": "jira",
                                 "output": [
                                     {
-                                        "column_name": "Username",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "user name"
-                                        ],
-                                        "data_path": "action_result.parameter.username",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Message",
-                                        "column_order": 1,
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "directory service"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "disable user"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "stroke": "#5094D4"
-                            },
-                            ".color-band": {
-                                "fill": "#3D9959"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Contain"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#5094D4"
-                            },
-                            "text.icon": {
-                                "fill": "#5094D4"
-                            }
-                        },
-                        "callsback": true,
-                        "color": "#3D9959",
-                        "connected_to_start": false,
-                        "connection_name": "get system info 2",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": "0",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "ed16d9c1-2de3-4ddb-8d03-5beff2668b9d",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_optional": [],
-                        "message": "",
-                        "name": "disable user",
-                        "notes": "",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1160,
-                            "y": 260
-                        },
-                        "previous_block_type": "",
-                        "previous_function": "",
-                        "previous_name": "disable_user_1_1",
-                        "required_params": {
-                            "username": true
-                        },
-                        "reviewer": "",
-                        "showNumber": false,
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Contain",
-                        "type": "coa.Action",
-                        "warn": "",
-                        "z": 1813
-                    },
-                    {
-                        "action": "revert vm",
-                        "action_type": "contain",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "snapshot": "",
-                            "vmx_path": "get_system_info_1:filtered-action_result.data.*.vmx_path"
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "snapshot": "",
-                                    "vmx_path": "get_system_info_1:filtered-action_result.data.*.vmx_path"
-                                },
-                                "name": "vmwarevsphere",
-                                "output": [
-                                    {
-                                        "contains": [
-                                            "vm"
-                                        ],
-                                        "data_path": "action_result.parameter.vmx_path",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "virtualization"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "revert vm"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "stroke": "#5094D4"
-                            },
-                            ".color-band": {
-                                "fill": "#3D9959"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Contain"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#5094D4"
-                            },
-                            "text.icon": {
-                                "fill": "#5094D4"
-                            }
-                        },
-                        "callsback": true,
-                        "color": "#3D9959",
-                        "connected_to_start": false,
-                        "connection_name": "get system info 1",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": "0",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "faa526c0-3798-4ba8-bdad-2cd5dce7a7cf",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_optional": [],
-                        "message": "",
-                        "name": "revert vm",
-                        "notes": "",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1160,
-                            "y": 140
-                        },
-                        "previous_block_type": "",
-                        "previous_function": "",
-                        "previous_name": "revert_vm_1_1",
-                        "required_params": {
-                            "vmx_path": true
-                        },
-                        "reviewer": "",
-                        "showNumber": false,
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Contain",
-                        "type": "coa.Action",
-                        "warn": "",
-                        "z": 1817
-                    },
-                    {
-                        "action": "unquarantine device",
-                        "action_type": "correct",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "ip_hostname": "revert_vm_1:artifact:*.cef.sourceAddress"
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "ip_hostname": "revert_vm_1:artifact:*.cef.sourceAddress"
-                                },
-                                "name": "carbonblack",
-                                "output": [
-                                    {
-                                        "column_name": "Status",
-                                        "column_order": 1,
                                         "data_path": "action_result.status",
                                         "data_type": "string"
                                     },
                                     {
-                                        "column_name": "Name",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "host name",
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.parameter.ip_hostname",
+                                        "data_path": "action_result.parameter.id",
                                         "data_type": "string"
                                     },
                                     {
-                                        "column_name": "Message",
-                                        "column_order": 1,
                                         "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Summary",
+                                        "column_order": 0,
+                                        "data_path": "action_result.data.*.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Description",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*.description",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "ID",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Type",
+                                        "column_order": 3,
+                                        "data_path": "action_result.data.*.issue_type",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Key",
+                                        "column_order": 4,
+                                        "contains": [
+                                            "jira ticket key"
+                                        ],
+                                        "data_path": "action_result.data.*.name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Status",
+                                        "column_order": 5,
+                                        "data_path": "action_result.data.*.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Priority",
+                                        "column_order": 6,
+                                        "data_path": "action_result.data.*.priority",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Resolution",
+                                        "column_order": 7,
+                                        "data_path": "action_result.data.*.resolution",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Reporter",
+                                        "column_order": 8,
+                                        "data_path": "action_result.data.*.reporter",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.project_key",
                                         "data_type": "string"
                                     },
                                     {
@@ -2582,21 +2609,18 @@
                                         "data_type": "numeric"
                                     }
                                 ],
-                                "type": "endpoint"
+                                "type": "ticketing"
                             }
                         ],
                         "attrs": {
                             ".action": {
-                                "text": "unquarantine device"
+                                "text": "create ticket"
                             },
                             ".background": {
                                 "height": 88
                             },
-                            ".border": {
-                                "stroke": "#5094D4"
-                            },
                             ".color-band": {
-                                "fill": "#E65100"
+                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2628,25 +2652,29 @@
                                 "ref-y": 68
                             },
                             ".title": {
-                                "text": "Recover"
+                                "text": "Utilities"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
-                                "display": "none"
+                                "display": "block",
+                                "opacity": 0.7
                             },
                             "rect.warn-background": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             },
                             "text.icon": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             }
                         },
+                        "block_code": "def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_ticket_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_ticket_1' call\n\n    parameters = []\n    \n    # build parameters list for 'create_ticket_1' call\n    parameters.append({\n        'description': \"Machine was discovered by phantom to have a rootkit.  See Phantom for more information.\",\n        'project_key': \"REIMAGE\",\n        'summary': \"Machine was identified with a rootkit.\",\n        'priority': \"High\",\n        'assignee': \"\",\n        'issue_type': \"\",\n    })\n\n    phantom.act(\"create ticket\", parameters=parameters, assets=['jira'], callback=send_email_2, name=\"create_ticket_1\")    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
                         "callsback": true,
-                        "color": "#E65100",
-                        "connected_to_start": false,
-                        "connection_name": "revert vm",
+                        "color": "#5094D4",
+                        "connected_to_start": true,
+                        "connection_name": "disable user, terminate process",
                         "connection_type": "action",
                         "custom_callback": "",
                         "custom_code": "",
@@ -2658,13 +2686,17 @@
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
-                        "id": "e9e8a254-917e-44d4-9870-f3ab2b67b173",
+                        "id": "3207a426-fcf4-44b8-b5e7-1c5196f0dcba",
                         "inPorts": [
                             "in"
                         ],
+                        "join_code": "def join_create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('join_create_ticket_1() called')\n\n    # check if all connected incoming actions are done i.e. have succeeded or failed\n    if phantom.actions_done([ 'disable_user_1', 'terminate_process_1' ]):\n        \n        # call connected block \"create_ticket_1\"\n        create_ticket_1(container=container, handle=handle)\n    \n    return",
                         "join_optional": [],
+                        "join_start": 279,
+                        "line_end": 290,
+                        "line_start": 256,
                         "message": "",
-                        "name": "unquarantine device",
+                        "name": "create ticket",
                         "notes": "",
                         "number": 1,
                         "outPorts": [
@@ -2724,14 +2756,12 @@
                         },
                         "position": {
                             "x": 1400,
-                            "y": 140
+                            "y": 360
                         },
                         "previous_block_type": "",
                         "previous_function": "",
-                        "previous_name": "unquarantine_device_1_1",
-                        "required_params": {
-                            "ip_hostname": true
-                        },
+                        "previous_name": "create_ticket_1",
+                        "required_params": {},
                         "reviewer": "",
                         "showNumber": false,
                         "show_number": false,
@@ -2741,568 +2771,10 @@
                         },
                         "state": "asset",
                         "status": "",
-                        "title": "Recover",
-                        "type": "coa.Action",
-                        "warn": "",
-                        "z": 1819
-                    },
-                    {
-                        "action": "send email",
-                        "action_type": "generic",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "attachments": "",
-                            "body": "",
-                            "from": "",
-                            "subject": "",
-                            "to": ""
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "attachments": "",
-                                    "body": "",
-                                    "from": "",
-                                    "subject": "",
-                                    "to": ""
-                                },
-                                "name": "smtp",
-                                "output": [
-                                    {
-                                        "contains": [
-                                            "email"
-                                        ],
-                                        "data_path": "action_result.parameter.from",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.subject",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "email"
-                                        ],
-                                        "data_path": "action_result.parameter.to",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "email"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "send email 2"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "stroke": "#5094D4"
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Utilities"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#5094D4"
-                            },
-                            "text.icon": {
-                                "fill": "#5094D4"
-                            }
-                        },
-                        "callsback": true,
-                        "color": "#5094D4",
-                        "connected_to_start": false,
-                        "connection_name": "create ticket",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": "0",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "ec9a77e8-1512-4ada-bf98-31a9afc5b362",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_optional": [],
-                        "message": "",
-                        "name": "send email",
-                        "notes": "",
-                        "number": 2,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1640,
-                            "y": 360
-                        },
-                        "previous_block_type": "",
-                        "previous_function": "",
-                        "previous_name": "send_email_2_2",
-                        "required_params": {
-                            "body": true,
-                            "to": true
-                        },
-                        "reviewer": "",
-                        "showNumber": true,
-                        "show_number": true,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
                         "title": "Utilities",
                         "type": "coa.Action",
-                        "warn": "",
-                        "z": 1823
-                    },
-                    {
-                        "action": "send email",
-                        "action_type": "generic",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "attachments": "",
-                            "body": "A rootkit was discovered on a device, which was then reverted to an earlier VM snapshot.  See Phantom for more details.",
-                            "from": "admin@phantom.us",
-                            "subject": "Rootkit was remediated",
-                            "to": "test@phantom.us"
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "attachments": "",
-                                    "body": "A rootkit was discovered on a device, which was then reverted to an earlier VM snapshot.  See Phantom for more details.",
-                                    "from": "admin@phantom.us",
-                                    "subject": "Rootkit was remediated",
-                                    "to": "test@phantom.us"
-                                },
-                                "name": "smtp",
-                                "output": [
-                                    {
-                                        "contains": [
-                                            "email"
-                                        ],
-                                        "data_path": "action_result.parameter.from",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.subject",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "email"
-                                        ],
-                                        "data_path": "action_result.parameter.to",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "email"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "Send Email reverted"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "stroke": "#5094D4"
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Utilities"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#5094D4"
-                            },
-                            "text.icon": {
-                                "fill": "#5094D4"
-                            }
-                        },
-                        "callsback": true,
-                        "color": "#5094D4",
-                        "connected_to_start": false,
-                        "connection_name": "unquarantine device",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "Send Email reverted",
-                        "delay": "0",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "3c425f8d-29b6-4f03-894a-c9c5539f74b4",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_optional": [],
-                        "message": "",
-                        "name": "send email",
-                        "notes": "",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1640,
-                            "y": 140
-                        },
-                        "previous_block_type": "",
-                        "previous_function": "",
-                        "previous_name": "Send_Email_reverted",
-                        "required_params": {
-                            "body": true,
-                            "to": true
-                        },
-                        "reviewer": "",
-                        "showNumber": true,
-                        "show_number": true,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Utilities",
-                        "type": "coa.Action",
-                        "warn": "",
-                        "z": 1824
-                    },
-                    {
-                        "0": "E",
-                        "1": "N",
-                        "2": "D",
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".title": {
-                                "text": "END"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
-                            }
-                        },
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "Send Email reverted, send email 2",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "d10c7be1-99cc-4fb0-b9fc-13c01a8d21de",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_optional": [],
-                        "name": "",
-                        "notes": "",
-                        "number": 0,
-                        "outPorts": [],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1880,
-                            "y": 380
-                        },
-                        "previous_function": "",
-                        "previous_name": "",
-                        "show_number": true,
-                        "size": {
-                            "height": 48,
-                            "width": 96
-                        },
-                        "status": "",
-                        "title": "END",
-                        "type": "coa.StartEnd",
                         "warn": false,
-                        "z": 1825
+                        "z": 1843
                     },
                     {
                         "action": "terminate process",
@@ -3429,7 +2901,7 @@
                                 "height": 88
                             },
                             ".border": {
-                                "stroke": "#5094D4"
+                                "height": 88
                             },
                             ".color-band": {
                                 "fill": "#3D9959"
@@ -3474,12 +2946,15 @@
                                 "opacity": 1
                             },
                             "rect.warn-background": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             },
                             "text.icon": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             }
                         },
+                        "block_code": "def terminate_process_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('terminate_process_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'terminate_process_1' call\n    passed_filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"get_system_info_1:filtered-action_result.data.*.vm_hostname\", \"get_system_info_1:filtered-action_result.parameter.context.artifact_id\"], action_results=filtered_results)\n\n    parameters = []\n    \n    # build parameters list for 'terminate_process_1' call\n    for passed_filtered_results_item_1 in passed_filtered_results_data_1:\n        parameters.append({\n            'sensor_id': \"\",\n            'pid': \"\",\n            'ip_hostname': passed_filtered_results_item_1[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': passed_filtered_results_item_1[1]},\n        })\n\n    phantom.act(\"terminate process\", parameters=parameters, assets=['carbonblack'], callback=join_create_ticket_1, name=\"terminate_process_1\")    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
                         "callsback": true,
                         "color": "#3D9959",
                         "connected_to_start": false,
@@ -3499,7 +2974,11 @@
                         "inPorts": [
                             "in"
                         ],
+                        "join_code": "",
                         "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 256,
+                        "line_start": 232,
                         "message": "",
                         "name": "terminate process",
                         "notes": "",
@@ -3565,7 +3044,7 @@
                         },
                         "previous_block_type": "",
                         "previous_function": "",
-                        "previous_name": "terminate_process_1_1",
+                        "previous_name": "terminate_process_1",
                         "required_params": {
                             "pid": true
                         },
@@ -3580,107 +3059,39 @@
                         "status": "",
                         "title": "Contain",
                         "type": "coa.Action",
-                        "warn": "",
-                        "z": 1826
+                        "warn": false,
+                        "z": 1847
                     },
                     {
-                        "action": "create ticket",
-                        "action_type": "generic",
+                        "action": "disable user",
+                        "action_type": "contain",
                         "active": false,
                         "active_keys": {},
                         "active_values": {
-                            "assignee": "",
-                            "description": "Machine was discovered by phantom to have a rootkit.  See Phantom for more information.",
-                            "issue_type": "",
-                            "priority": "High",
-                            "project_key": "REIMAGE",
-                            "summary": "Machine was identified with a rootkit."
+                            "username": "get_system_info_2:action_result.data.*.system_details.PrimaryOwnerName"
                         },
                         "angle": 0,
                         "approver": "",
                         "assets": [
                             {
                                 "fields": {
-                                    "assignee": "",
-                                    "description": "Machine was discovered by phantom to have a rootkit.  See Phantom for more information.",
-                                    "issue_type": "",
-                                    "priority": "High",
-                                    "project_key": "REIMAGE",
-                                    "summary": "Machine was identified with a rootkit."
+                                    "username": "get_system_info_2:action_result.data.*.system_details.PrimaryOwnerName"
                                 },
-                                "name": "jira",
+                                "name": "domainctrl1",
                                 "output": [
                                     {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.id",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Summary",
+                                        "column_name": "Username",
                                         "column_order": 0,
-                                        "data_path": "action_result.data.*.summary",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Description",
-                                        "column_order": 1,
-                                        "data_path": "action_result.data.*.description",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "ID",
-                                        "column_order": 2,
-                                        "data_path": "action_result.data.*.id",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Type",
-                                        "column_order": 3,
-                                        "data_path": "action_result.data.*.issue_type",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Key",
-                                        "column_order": 4,
                                         "contains": [
-                                            "jira ticket key"
+                                            "user name"
                                         ],
-                                        "data_path": "action_result.data.*.name",
+                                        "data_path": "action_result.parameter.username",
                                         "data_type": "string"
                                     },
                                     {
-                                        "column_name": "Status",
-                                        "column_order": 5,
-                                        "data_path": "action_result.data.*.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Priority",
-                                        "column_order": 6,
-                                        "data_path": "action_result.data.*.priority",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Resolution",
-                                        "column_order": 7,
-                                        "data_path": "action_result.data.*.resolution",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Reporter",
-                                        "column_order": 8,
-                                        "data_path": "action_result.data.*.reporter",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.project_key",
+                                        "column_name": "Message",
+                                        "column_order": 1,
+                                        "data_path": "action_result.message",
                                         "data_type": "string"
                                     },
                                     {
@@ -3692,21 +3103,21 @@
                                         "data_type": "numeric"
                                     }
                                 ],
-                                "type": "ticketing"
+                                "type": "directory service"
                             }
                         ],
                         "attrs": {
                             ".action": {
-                                "text": "create ticket"
+                                "text": "disable user"
                             },
                             ".background": {
                                 "height": 88
                             },
                             ".border": {
-                                "stroke": "#5094D4"
+                                "height": 88
                             },
                             ".color-band": {
-                                "fill": "#5094D4"
+                                "fill": "#3D9959"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -3738,7 +3149,7 @@
                                 "ref-y": 68
                             },
                             ".title": {
-                                "text": "Utilities"
+                                "text": "Contain"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -3748,16 +3159,19 @@
                                 "opacity": 1
                             },
                             "rect.warn-background": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             },
                             "text.icon": {
-                                "fill": "#5094D4"
+                                "fill": "#FFFFFF"
                             }
                         },
+                        "block_code": "def disable_user_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('disable_user_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'disable_user_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_system_info_2:action_result.data.*.system_details.PrimaryOwnerName', 'get_system_info_2:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'disable_user_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'username': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"disable user\", parameters=parameters, assets=['domainctrl1'], callback=join_create_ticket_1, name=\"disable_user_1\", parent_action=action)    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
                         "callsback": true,
-                        "color": "#5094D4",
+                        "color": "#3D9959",
                         "connected_to_start": false,
-                        "connection_name": "disable user, terminate process",
+                        "connection_name": "get system info 2",
                         "connection_type": "action",
                         "custom_callback": "",
                         "custom_code": "",
@@ -3769,13 +3183,237 @@
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
-                        "id": "3207a426-fcf4-44b8-b5e7-1c5196f0dcba",
+                        "id": "ed16d9c1-2de3-4ddb-8d03-5beff2668b9d",
                         "inPorts": [
                             "in"
                         ],
+                        "join_code": "",
                         "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 141,
+                        "line_start": 118,
                         "message": "",
-                        "name": "create ticket",
+                        "name": "disable user",
+                        "notes": "",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1160,
+                            "y": 260
+                        },
+                        "previous_block_type": "",
+                        "previous_function": "",
+                        "previous_name": "disable_user_1",
+                        "required_params": {
+                            "username": true
+                        },
+                        "reviewer": "",
+                        "showNumber": false,
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Contain",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 1848
+                    },
+                    {
+                        "action": "unquarantine device",
+                        "action_type": "correct",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip_hostname": "revert_vm_1:artifact:*.cef.sourceAddress"
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "ip_hostname": "revert_vm_1:artifact:*.cef.sourceAddress"
+                                },
+                                "name": "carbonblack",
+                                "output": [
+                                    {
+                                        "column_name": "Status",
+                                        "column_order": 1,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Name",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "host name",
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Message",
+                                        "column_order": 1,
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "type": "endpoint"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "unquarantine device"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#E65100"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Recover"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def unquarantine_device_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('unquarantine_device_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'unquarantine_device_1' call\n    inputs_data_1 = phantom.collect2(container=container, datapath=['revert_vm_1:artifact:*.cef.sourceAddress', 'revert_vm_1:artifact:*.id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'unquarantine_device_1' call\n    for inputs_item_1 in inputs_data_1:\n        if inputs_item_1[0]:\n            parameters.append({\n                'ip_hostname': inputs_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': inputs_item_1[1]},\n            })\n\n    phantom.act(\"unquarantine device\", parameters=parameters, assets=['carbonblack'], callback=Send_Email_reverted, name=\"unquarantine_device_1\", parent_action=action)    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#E65100",
+                        "connected_to_start": false,
+                        "connection_name": "revert vm",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": "0",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "e9e8a254-917e-44d4-9870-f3ab2b67b173",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 188,
+                        "line_start": 165,
+                        "message": "",
+                        "name": "unquarantine device",
                         "notes": "",
                         "number": 1,
                         "outPorts": [
@@ -3835,12 +3473,14 @@
                         },
                         "position": {
                             "x": 1400,
-                            "y": 360
+                            "y": 140
                         },
                         "previous_block_type": "",
                         "previous_function": "",
-                        "previous_name": "create_ticket_1_1",
-                        "required_params": {},
+                        "previous_name": "unquarantine_device_1",
+                        "required_params": {
+                            "ip_hostname": true
+                        },
                         "reviewer": "",
                         "showNumber": false,
                         "show_number": false,
@@ -3850,18 +3490,466 @@
                         },
                         "state": "asset",
                         "status": "",
+                        "title": "Recover",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 1849
+                    },
+                    {
+                        "action": "send email",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "attachments": "",
+                            "body": "",
+                            "from": "",
+                            "subject": "",
+                            "to": ""
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "attachments": "",
+                                    "body": "",
+                                    "from": "",
+                                    "subject": "",
+                                    "to": ""
+                                },
+                                "name": "smtp",
+                                "output": [
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.parameter.from",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.subject",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.parameter.to",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "type": "email"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "send email 2"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#5094D4"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Utilities"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def send_email_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_email_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_email_2' call\n\n    parameters = []\n    \n    # build parameters list for 'send_email_2' call\n    parameters.append({\n        'body': \"\",\n        'to': \"\",\n        'from': \"\",\n        'attachments': \"\",\n        'subject': \"\",\n    })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"send_email_2\", parent_action=action)    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": false,
+                        "connection_name": "create ticket",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": "0",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "ec9a77e8-1512-4ada-bf98-31a9afc5b362",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 210,
+                        "line_start": 188,
+                        "message": "",
+                        "name": "send email",
+                        "notes": "",
+                        "number": 2,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1640,
+                            "y": 360
+                        },
+                        "previous_block_type": "",
+                        "previous_function": "",
+                        "previous_name": "send_email_2",
+                        "required_params": {
+                            "body": true,
+                            "to": true
+                        },
+                        "reviewer": "",
+                        "showNumber": true,
+                        "show_number": true,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
                         "title": "Utilities",
                         "type": "coa.Action",
-                        "warn": "",
-                        "z": 1827
+                        "warn": false,
+                        "z": 1854
+                    },
+                    {
+                        "action": "send email",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "attachments": "",
+                            "body": "A rootkit was discovered on a device, which was then reverted to an earlier VM snapshot.  See Phantom for more details.",
+                            "from": "admin@phantom.us",
+                            "subject": "Rootkit was remediated",
+                            "to": "test@phantom.us"
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "attachments": "",
+                                    "body": "A rootkit was discovered on a device, which was then reverted to an earlier VM snapshot.  See Phantom for more details.",
+                                    "from": "admin@phantom.us",
+                                    "subject": "Rootkit was remediated",
+                                    "to": "test@phantom.us"
+                                },
+                                "name": "smtp",
+                                "output": [
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.parameter.from",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.subject",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.parameter.to",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "type": "email"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "Send Email reverted"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#5094D4"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Utilities"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def Send_Email_reverted(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('Send_Email_reverted() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Send_Email_reverted' call\n\n    parameters = []\n    \n    # build parameters list for 'Send_Email_reverted' call\n    parameters.append({\n        'body': \"A rootkit was discovered on a device, which was then reverted to an earlier VM snapshot.  See Phantom for more details.\",\n        'to': \"test@phantom.us\",\n        'from': \"admin@phantom.us\",\n        'attachments': \"\",\n        'subject': \"Rootkit was remediated\",\n    })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"Send_Email_reverted\", parent_action=action)    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": true,
+                        "connection_name": "unquarantine device",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "Send Email reverted",
+                        "delay": "0",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "3c425f8d-29b6-4f03-894a-c9c5539f74b4",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 232,
+                        "line_start": 210,
+                        "message": "",
+                        "name": "send email",
+                        "notes": "",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1640,
+                            "y": 140
+                        },
+                        "previous_block_type": "",
+                        "previous_function": "",
+                        "previous_name": "Send_Email_reverted",
+                        "required_params": {
+                            "body": true,
+                            "to": true
+                        },
+                        "reviewer": "",
+                        "showNumber": true,
+                        "show_number": true,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Utilities",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 1858
                     }
                 ]
             },
             "notes": ""
         },
-        "version": "2.1.303"
+        "schema": 2,
+        "version": "2.1.415"
     },
-    "create_time": "2017-02-09T23:07:55.451982+00:00",
+    "create_time": "2017-03-28T01:48:41.666485+00:00",
     "draft_mode": false,
     "labels": [
         "incident"
