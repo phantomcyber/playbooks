@@ -1,5 +1,5 @@
 """
-This playbook is deigned to perform the investigative steps necessary to investigate a potential Phishing attempt. It will process File attachments, IPs, domains,  and URLs. If there is a positive, the Admin user group on Phantom will have 6 hours to respond to the prompt in order to have the email deleted from the exchange server.
+This playbook investigates and remediates phishing emails with Admin approval.
 """
 
 import phantom.rules as phantom
@@ -9,6 +9,9 @@ from datetime import datetime, timedelta
 ##############################
 # Start - Global Code Block
 
+"""
+This playbook is deigned to perform the investigative steps necessary to investigate a potential Phishing attempt. It will process File attachments, IPs, domains,  and URLs. If there is a positive, the Admin user group on Phantom will have 6 hours to respond to the prompt in order to have the email deleted from the exchange server.
+"""
 
 def test_params(container, datapath, key_name):
     params = []
@@ -153,7 +156,7 @@ def filter_8(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        lookup_ip_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        filter_13(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -171,7 +174,7 @@ def filter_5(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        join_prompt_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        filter_15(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -193,6 +196,140 @@ def domain_reputation(action=None, success=None, container=None, results=None, h
             })
 
     phantom.act("domain reputation", parameters=parameters, assets=['opendns_investigate'], callback=filter_5, name="domain_reputation")    
+    
+    return
+
+def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_2() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["hunt_file_1:action_result.data.*.computerId", "!=", "\"NULL\""],
+        ],
+        name="filter_2:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        get_sysinfo(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    return
+
+def filter_10(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_10() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["geolocate_ip_1:action_result.data.*.country_name", "in", "Burma,China,Eretrea,Iran,North Korea,Saudi Arabia,Sudan,Turkmenistan,Uzbekistan"],
+        ],
+        name="filter_10:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        filter_14(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    return
+
+def lookup_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('lookup_ip_1() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'lookup_ip_1' call
+    passed_filtered_results_data_1 = phantom.collect2(container=container, datapath=["ip_reputation_1:filtered-action_result.parameter.ip", "ip_reputation_1:filtered-action_result.parameter.context.artifact_id"], action_results=filtered_results)
+
+    parameters = []
+    
+    # build parameters list for 'lookup_ip_1' call
+    for passed_filtered_results_item_1 in passed_filtered_results_data_1:
+        if passed_filtered_results_item_1[0]:
+            parameters.append({
+                'ip': passed_filtered_results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': passed_filtered_results_item_1[1]},
+            })
+
+    phantom.act("lookup ip", parameters=parameters, assets=['dns'], callback=IP_Domain_Rep, name="lookup_ip_1")    
+    
+    return
+
+def filter_11(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_11() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["IP_Domain_Rep:action_result.summary.domain_status", "==", "MALICIOUS"],
+        ],
+        name="filter_11:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        join_prompt_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    return
+
+def IP_Domain_Rep(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('IP_Domain_Rep() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'IP_Domain_Rep' call
+    results_data_1 = phantom.collect2(container=container, datapath=['lookup_ip_1:action_result.summary.hostname', 'lookup_ip_1:action_result.parameter.context.artifact_id'], action_results=results)
+
+    parameters = []
+    
+    # build parameters list for 'IP_Domain_Rep' call
+    for results_item_1 in results_data_1:
+        if results_item_1[0]:
+            parameters.append({
+                'domain': results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[1]},
+            })
+
+    phantom.act("domain reputation", parameters=parameters, assets=['opendns_investigate'], callback=filter_11, name="IP_Domain_Rep", parent_action=action)    
+    
+    return
+
+def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('prompt_1() called')
+    
+    # set user and message variables for phantom.prompt call
+    user = "Administrator"
+    message = """An email is being marked as a Phish attempt. Please inspect and approve so that Phantom can delete all instances of the phish from your mail server.  If you do not respond within 6 hours (360 Minutes) the email will _NOT_ be deleted. If you respond (any response) will result in the subsequent removal of the phish from all mailboxes on your mail server. All enrichment data is in MIssion Control for your review."""
+
+    # response options
+    options = {
+        "type": "list",
+        "choices": [
+            "Yes",
+            "No",
+        ]
+    }
+
+    phantom.prompt(container=container, user=user, message=message, respond_in_mins=360, name="prompt_1", options=options, callback=decision_1)
+
+    return
+
+def join_prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('join_prompt_1() called')
+    
+    # if the joined function has already been called, do nothing
+    if phantom.get_run_data(key='join_prompt_1_called'):
+        return
+
+    # no callbacks to check, call connected block "prompt_1"
+    phantom.save_run_data(key='join_prompt_1_called', value='prompt_1', auto=True)
+
+    prompt_1(container=container, handle=handle)
     
     return
 
@@ -248,42 +385,6 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
-def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_3() called')
-
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["detonate_file_1:action_result.summary.malware", "==", "yes"],
-        ],
-        name="filter_3:condition_1")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        join_hunt_file_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
-def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_2() called')
-
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["hunt_file_1:action_result.data.*.computerId", "!=", "\"NULL\""],
-        ],
-        name="filter_2:condition_1")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        get_sysinfo(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
 def url_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('url_reputation_1() called')
 
@@ -303,6 +404,85 @@ def url_reputation_1(action=None, success=None, container=None, results=None, ha
 
     phantom.act("url reputation", parameters=parameters, assets=['virustotal_private'], callback=filter_4, name="url_reputation_1")    
     
+    return
+
+def detonate_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('detonate_url_1() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'detonate_url_1' call
+    results_data_1 = phantom.collect2(container=container, datapath=['url_reputation_1:action_result.data.*.resource', 'url_reputation_1:action_result.parameter.context.artifact_id'], action_results=results)
+
+    parameters = []
+    
+    # build parameters list for 'detonate_url_1' call
+    for results_item_1 in results_data_1:
+        if results_item_1[0]:
+            parameters.append({
+                'url': results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[1]},
+            })
+
+    phantom.act("detonate url", parameters=parameters, assets=['threatgrid'], callback=filter_6, name="detonate_url_1")    
+    
+    return
+
+def filter_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_6() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["detonate_url_1:action_result.data.*.threat.max-confidence", "==", 50],
+        ],
+        name="filter_6:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        attribution(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    return
+
+def attribution(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('attribution() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'attribution' call
+    passed_filtered_artifact_data = phantom.collect2(container=container, datapath=['filtered-artifact:*.cef.requestURL', 'filtered-artifact:*.id'], filter_artifacts=filtered_artifacts)
+
+    parameters = []
+    
+    # build parameters list for 'attribution' call
+    for passed_filtered_artifact_item in passed_filtered_artifact_data:
+        parameters.append({
+            'url': passed_filtered_artifact_item[0],
+        })
+
+    phantom.act("hunt url", parameters=parameters, assets=['isightpartners'], callback=join_get_screenshot_1, name="attribution")    
+    
+    return
+
+def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_3() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["detonate_file_1:action_result.summary.malware", "==", "yes"],
+        ],
+        name="filter_3:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        join_hunt_file_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
     return
 
 def detonate_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -400,74 +580,31 @@ def filter_4(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
-def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('prompt_1() called')
-    
-    # set user and message variables for phantom.prompt call
-    user = "Administrator"
-    message = """An email is being marked as a Phish attempt. Please inspect and approve so that Phantom can delete all instances of the phish from your mail server.  If you do not respond within 6 hours (360 Minutes) the email will _NOT_ be deleted. If you respond (any response) will result in the subsequent removal of the phish from all mailboxes on your mail server. All enrichment data is in MIssion Control for your review."""
-
-    # response options
-    options = {
-        "type": "message",
-    }
-
-    phantom.prompt(container=container, user=user, message=message, respond_in_mins=360, name="prompt_1", options=options, callback=delete_email_2)
-
-    return
-
-def join_prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('join_prompt_1() called')
-    
-    # if the joined function has already been called, do nothing
-    if phantom.get_run_data(key='join_prompt_1_called'):
-        return
-
-    # no callbacks to check, call connected block "prompt_1"
-    phantom.save_run_data(key='join_prompt_1_called', value='prompt_1', auto=True)
-
-    prompt_1(container=container, handle=handle)
-    
-    return
-
-def filter_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_6() called')
-
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["detonate_url_1:action_result.data.*.threat.max-confidence", "==", 50],
-        ],
-        name="filter_6:condition_1")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        attribution(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
-def detonate_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('detonate_url_1() called')
+def delete_email_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('delete_email_2() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
-    # collect data for 'detonate_url_1' call
-    results_data_1 = phantom.collect2(container=container, datapath=['url_reputation_1:action_result.data.*.resource', 'url_reputation_1:action_result.parameter.context.artifact_id'], action_results=results)
+    name_value = container.get('name', None)
+
+    # collect data for 'delete_email_2' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_12:condition_1:artifact:*.cef.sourceUserName', 'filtered-data:filter_12:condition_1:artifact:*.id'])
 
     parameters = []
     
-    # build parameters list for 'detonate_url_1' call
-    for results_item_1 in results_data_1:
-        if results_item_1[0]:
+    # build parameters list for 'delete_email_2' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        if filtered_artifacts_item_1[0]:
             parameters.append({
-                'url': results_item_1[0],
+                'ip_hostname': "exchange_server",
+                'user': "",
+                'subject': name_value,
+                'from': filtered_artifacts_item_1[0],
                 # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[1]},
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("detonate url", parameters=parameters, assets=['threatgrid'], callback=filter_6, name="detonate_url_1")    
+    phantom.act("delete email", parameters=parameters, assets=['domainctrl1'], name="delete_email_2")    
     
     return
 
@@ -495,73 +632,24 @@ def get_sysinfo(action=None, success=None, container=None, results=None, handle=
     
     return
 
-def lookup_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('lookup_ip_1() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'lookup_ip_1' call
-    passed_filtered_results_data_1 = phantom.collect2(container=container, datapath=["ip_reputation_1:filtered-action_result.parameter.ip", "ip_reputation_1:filtered-action_result.parameter.context.artifact_id"], action_results=filtered_results)
-
-    parameters = []
-    
-    # build parameters list for 'lookup_ip_1' call
-    for passed_filtered_results_item_1 in passed_filtered_results_data_1:
-        if passed_filtered_results_item_1[0]:
-            parameters.append({
-                'ip': passed_filtered_results_item_1[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': passed_filtered_results_item_1[1]},
-            })
-
-    phantom.act("lookup ip", parameters=parameters, assets=['dns'], callback=IP_Domain_Rep, name="lookup_ip_1")    
-    
-    return
-
-def attribution(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('attribution() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'attribution' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.requestURL', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'attribution' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'url': container_item[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("hunt url", parameters=parameters, assets=['isightpartners'], callback=join_get_screenshot_1, name="attribution")    
-    
-    return
-
 def get_screenshot_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('get_screenshot_1() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'get_screenshot_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.requestURL', 'artifact:*.id'])
+    passed_filtered_artifact_data = phantom.collect2(container=container, datapath=['filtered-artifact:*.cef.requestURL', 'filtered-artifact:*.id'], filter_artifacts=filtered_artifacts)
 
     parameters = []
     
     # build parameters list for 'get_screenshot_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'url': container_item[0],
-                'size': "",
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
+    for passed_filtered_artifact_item in passed_filtered_artifact_data:
+        parameters.append({
+            'url': passed_filtered_artifact_item[0],
+            'size': "",
+        })
 
-    phantom.act("get screenshot", parameters=parameters, assets=['screenshot machine'], callback=join_prompt_1, name="get_screenshot_1")    
+    phantom.act("get screenshot", parameters=parameters, assets=['screenshot machine'], callback=join_prompt_1, name="get_screenshot_1", parent_action=action)    
     
     return
 
@@ -579,17 +667,53 @@ def join_get_screenshot_1(action=None, success=None, container=None, results=Non
     
     return
 
-def filter_10(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_10() called')
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('decision_1() called')
+
+    # check for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["prompt_1:action_result.summary.response", "==", "YES"],
+        ])
+
+    # call connected blocks if condition 1 matched
+    if matched_artifacts_1 or matched_results_1:
+        delete_email_2(action=action, success=success, container=container, results=results, handle=handle)
+        return
+
+    return
+
+def filter_13(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_13() called')
 
     # collect filtered artifact ids for 'if' condition 1
     matched_artifacts_1, matched_results_1 = phantom.condition(
         container=container,
         action_results=results,
         conditions=[
-            ["geolocate_ip_1:action_result.data.*.country_name", "in", "Burma,China,Eretrea,Iran,North Korea,Saudi Arabia,Sudan,Turkmenistan,Uzbekistan"],
+            ["ip_reputation_1:action_result.parameter.ip", "==", "artifact:*.cef.destinationAddress"],
         ],
-        name="filter_10:condition_1")
+        name="filter_13:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        lookup_ip_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    return
+
+def filter_14(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_14() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["geolocate_ip_1:artifact:*.cef.destinationAddress", "==", "artifact:*.cef.destinationAddress"],
+        ],
+        name="filter_14:condition_1")
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
@@ -597,68 +721,22 @@ def filter_10(action=None, success=None, container=None, results=None, handle=No
 
     return
 
-def IP_Domain_Rep(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('IP_Domain_Rep() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'IP_Domain_Rep' call
-    results_data_1 = phantom.collect2(container=container, datapath=['lookup_ip_1:action_result.summary.hostname', 'lookup_ip_1:action_result.parameter.context.artifact_id'], action_results=results)
-
-    parameters = []
-    
-    # build parameters list for 'IP_Domain_Rep' call
-    for results_item_1 in results_data_1:
-        if results_item_1[0]:
-            parameters.append({
-                'domain': results_item_1[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[1]},
-            })
-
-    phantom.act("domain reputation", parameters=parameters, assets=['opendns_investigate'], callback=filter_11, name="IP_Domain_Rep", parent_action=action)    
-    
-    return
-
-def filter_11(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_11() called')
+def filter_15(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_15() called')
 
     # collect filtered artifact ids for 'if' condition 1
     matched_artifacts_1, matched_results_1 = phantom.condition(
         container=container,
         action_results=results,
         conditions=[
-            ["IP_Domain_Rep:action_result.summary.domain_status", "==", "MALICIOUS"],
+            ["domain_reputation:action_result.parameter.domain", "==", "artifact:*.cef.destinationDnsDomain"],
         ],
-        name="filter_11:condition_1")
+        name="filter_15:condition_1")
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
         join_prompt_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
-    return
-
-def delete_email_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('delete_email_2() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    name_value = container.get('name', None)
-
-    # collect data for 'delete_email_2' call
-
-    parameters = []
-    
-    # build parameters list for 'delete_email_2' call
-    parameters.append({
-        'from': "from_email",
-        'user': "",
-        'ip_hostname': "exchange_server",
-        'subject': name_value,
-    })
-
-    phantom.act("delete email", parameters=parameters, assets=['domainctrl1'], name="delete_email_2")    
-    
     return
 
 def on_finish(container, summary):
