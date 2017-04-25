@@ -14,6 +14,46 @@ def on_start(container):
 
     return
 
+def add_endpoint_to_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('add_endpoint_to_list() called')
+
+    # collect data for 'add_endpoint_to_list' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_2:condition_2:artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'add_endpoint_to_list' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'new_row': filtered_artifacts_item_1[0],
+                'create': "",
+                'list': "infected_endpoints",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
+
+    phantom.act("add listitem", parameters=parameters, assets=['helper'], callback=format_2, name="add_endpoint_to_list")    
+    
+    return
+
+def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_2() called')
+    
+    template = """The following infected endpoints are new infection instances and have been added to the infected_endpoints custom list:
+{0}"""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress",
+    ]
+
+    phantom.format(container=container, template=template, parameters=parameters, name="format_2")
+
+    create_ticket_2(container=container)
+
+    return
+
 def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('decision_1() called')
 
@@ -32,6 +72,29 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
     # call connected blocks for 'else' condition 2
     join_close_container(action=action, success=success, container=container, results=results, handle=handle)
 
+    return
+
+def close_container(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('close_container() called')
+    
+    # set container properties for: status
+    update_data = {
+        "status" : "closed",
+    }
+
+    phantom.update(container, update_data)
+
+    return
+
+def join_close_container(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('join_close_container() called')
+
+    # check if all connected incoming actions are done i.e. have succeeded or failed
+    if phantom.actions_done([ 'create_ticket_2', 'create_ticket_1' ]):
+        
+        # call connected block "close_container"
+        close_container(container=container, handle=handle)
+    
     return
 
 def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -63,50 +126,6 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
-def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('create_ticket_1() called')
-
-    # collect data for 'create_ticket_1' call
-    formatted_data_1 = phantom.get_format_data(name='format_1')
-
-    parameters = []
-    
-    # build parameters list for 'create_ticket_1' call
-    parameters.append({
-        'short_description': "Reinfected Endpoint Instance",
-        'description': formatted_data_1,
-        'table': "",
-        'fields': "",
-        'vault_id': "",
-    })
-
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=join_close_container, name="create_ticket_1")    
-    
-    return
-
-def add_endpoint_to_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('add_endpoint_to_list() called')
-
-    # collect data for 'add_endpoint_to_list' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_2:condition_2:artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'add_endpoint_to_list' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        if filtered_artifacts_item_1[0]:
-            parameters.append({
-                'list': "infected_endpoints",
-                'new_row': filtered_artifacts_item_1[0],
-                'create': "",
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': filtered_artifacts_item_1[1]},
-            })
-
-    phantom.act("add listitem", parameters=parameters, assets=['helper'], callback=format_2, name="add_endpoint_to_list")    
-    
-    return
-
 def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('format_1() called')
     
@@ -124,21 +143,25 @@ def format_1(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
-def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_2() called')
+def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('create_ticket_1() called')
+
+    # collect data for 'create_ticket_1' call
+    formatted_data_1 = phantom.get_format_data(name='format_1')
+
+    parameters = []
     
-    template = """The following infected endpoints are new infection instances and have been added to the infected_endpoints custom list:
-{0}"""
+    # build parameters list for 'create_ticket_1' call
+    parameters.append({
+        'short_description': "Reinfected Endpoint Instance",
+        'table': "",
+        'vault_id': "",
+        'description': formatted_data_1,
+        'fields': "",
+    })
 
-    # parameter list for template variable replacement
-    parameters = [
-        "filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress",
-    ]
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_2")
-
-    create_ticket_2(container=container)
-
+    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=join_close_container, name="create_ticket_1")    
+    
     return
 
 def create_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -154,36 +177,13 @@ def create_ticket_2(action=None, success=None, container=None, results=None, han
     # build parameters list for 'create_ticket_2' call
     parameters.append({
         'short_description': "New Infected Endpoints",
-        'description': formatted_data_1,
         'table': "",
-        'fields': "",
         'vault_id': "",
+        'description': formatted_data_1,
+        'fields': "",
     })
 
     phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=join_close_container, name="create_ticket_2")    
-    
-    return
-
-def close_container(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('close_container() called')
-    
-    # set container properties for: status
-    update_data = {
-        "status" : "closed",
-    }
-
-    phantom.update(container, update_data)
-
-    return
-
-def join_close_container(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('join_close_container() called')
-
-    # check if all connected incoming actions are done i.e. have succeeded or failed
-    if phantom.actions_done([ 'create_ticket_2', 'create_ticket_1' ]):
-        
-        # call connected block "close_container"
-        close_container(container=container, handle=handle)
     
     return
 
