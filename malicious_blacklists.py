@@ -189,28 +189,28 @@ def filter_6(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
-def Add_to_IP_blacklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('Add_to_IP_blacklist() called')
+def Add_hash_to_blacklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('Add_hash_to_blacklist() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
-    # collect data for 'Add_to_IP_blacklist' call
-    results_data_1 = phantom.collect2(container=container, datapath=['block_ip_1:action_result.parameter.ip', 'block_ip_1:action_result.parameter.context.artifact_id'], action_results=results)
+    # collect data for 'Add_hash_to_blacklist' call
+    results_data_1 = phantom.collect2(container=container, datapath=['block_hash_2:action_result.parameter.hash', 'block_hash_2:action_result.parameter.context.artifact_id'], action_results=results)
 
     parameters = []
     
-    # build parameters list for 'Add_to_IP_blacklist' call
+    # build parameters list for 'Add_hash_to_blacklist' call
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'list': "custom_list:blacklisted_ips",
                 'new_row': results_item_1[0],
                 'create': True,
+                'list': "custom_list:filehash_blacklist",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_to_IP_blacklist", parent_action=action)    
+    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_hash_to_blacklist", parent_action=action)    
     
     return
 
@@ -228,9 +228,9 @@ def Add_domain_to_blacklist(action=None, success=None, container=None, results=N
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'list': "custom_list:domain_blacklist",
                 'new_row': results_item_1[0],
                 'create': True,
+                'list': "custom_list:domain_blacklist",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
@@ -239,28 +239,28 @@ def Add_domain_to_blacklist(action=None, success=None, container=None, results=N
     
     return
 
-def Add_hash_to_blacklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('Add_hash_to_blacklist() called')
+def Add_to_IP_blacklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('Add_to_IP_blacklist() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
-    # collect data for 'Add_hash_to_blacklist' call
-    results_data_1 = phantom.collect2(container=container, datapath=['block_hash_2:action_result.parameter.hash', 'block_hash_2:action_result.parameter.context.artifact_id'], action_results=results)
+    # collect data for 'Add_to_IP_blacklist' call
+    results_data_1 = phantom.collect2(container=container, datapath=['block_ip_1:action_result.parameter.ip', 'block_ip_1:action_result.parameter.context.artifact_id'], action_results=results)
 
     parameters = []
     
-    # build parameters list for 'Add_hash_to_blacklist' call
+    # build parameters list for 'Add_to_IP_blacklist' call
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'list': "custom_list:filehash_blacklist",
                 'new_row': results_item_1[0],
                 'create': True,
+                'list': "custom_list:blacklisted_ips",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_hash_to_blacklist", parent_action=action)    
+    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_to_IP_blacklist", parent_action=action)    
     
     return
 
