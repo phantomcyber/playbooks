@@ -7,7 +7,7 @@
             "clean": true,
             "code_block": "import requests",
             "description": "This is the May 12 Tech Session Playbook that shows use of filter, decision, custom lists, prompts and scheduled actions.",
-            "hash": "0b268c28d1e152dc99bf3f4b80fe6f811113f008",
+            "hash": "c130dfe6df7600f5e3157ecf2b42b32803eb0818",
             "joint": {
                 "cells": [
                     {
@@ -36,8 +36,7 @@
                                 "opacity": 0
                             },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
+                                "display": "none"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -766,8 +765,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 58,
-                        "line_start": 46,
+                        "line_end": 37,
+                        "line_start": 25,
                         "message": "",
                         "name": "set severity",
                         "notes": "Set severity to HIGH because the infected endpoint is not a test machine",
@@ -949,8 +948,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 124,
-                        "line_start": 106,
+                        "line_end": 55,
+                        "line_start": 37,
                         "name": "filter",
                         "notes": "More than 10 vendors detect the file as Malicious?",
                         "number": 1,
@@ -1105,8 +1104,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 186,
-                        "line_start": 166,
+                        "line_end": 75,
+                        "line_start": 55,
                         "name": "filter",
                         "notes": "Identify the artifact whose hash is malicious to get other related properties",
                         "number": 2,
@@ -1262,8 +1261,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 142,
-                        "line_start": 124,
+                        "line_end": 93,
+                        "line_start": 75,
                         "name": "decision",
                         "notes": "If the infected machine is NOT a test machine then this is a HIGH severity event",
                         "number": 3,
@@ -1378,8 +1377,7 @@
                                 "opacity": 0
                             },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
+                                "display": "none"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1411,8 +1409,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 311,
-                        "line_start": 298,
+                        "line_end": 313,
+                        "line_start": 300,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -1555,6 +1553,9 @@
                             ".background": {
                                 "height": 88
                             },
+                            ".border": {
+                                "height": 88
+                            },
                             ".color-band": {
                                 "fill": "#3D9959"
                             },
@@ -1604,7 +1605,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def block_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_ip_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_ip_1' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_3:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_ip_1' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                'is_source_address': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['pan'], callback=unblock_ip_1, name=\"block_ip_1\", parent_action=action)    \n    \n    return",
+                        "block_code": "def block_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_ip_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_ip_1' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_3:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_ip_1' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'is_source_address': \"\",\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['pan'], callback=unblock_ip_1, name=\"block_ip_1\", parent_action=action)    \n    \n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1629,8 +1630,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 245,
-                        "line_start": 220,
+                        "line_end": 118,
+                        "line_start": 93,
                         "message": "",
                         "name": "block ip",
                         "notes": "lets block the IP on the FWs",
@@ -1709,7 +1710,7 @@
                         "status": "",
                         "title": "Contain",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 175
                     },
                     {
@@ -1776,8 +1777,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 204,
-                        "line_start": 186,
+                        "line_end": 136,
+                        "line_start": 118,
                         "name": "filter",
                         "notes": "If the source (attacker) IP is not already blocked, then lets ask the user to proceed with the block",
                         "number": 3,
@@ -1927,8 +1928,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 106,
-                        "line_start": 76,
+                        "line_end": 166,
+                        "line_start": 136,
                         "message": "shall we block the attacker IP  \n{0} that is being connected to malware with hash \n{1} that has more \n{2} detections? NOTE: If you chose to block, it will be unblocked after 60 mins.",
                         "name": "prompt",
                         "notes": "Ask the IR analyst to see if this should be temporarily blocked",
@@ -2094,8 +2095,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 76,
-                        "line_start": 58,
+                        "line_end": 184,
+                        "line_start": 166,
                         "name": "decision",
                         "notes": "Analyst wants a temp block so lets add it to block list first and proceed with block",
                         "number": 4,
@@ -2185,498 +2186,6 @@
                         "type": "coa.Decision",
                         "warn": "",
                         "z": 183
-                    },
-                    {
-                        "action": "send message",
-                        "action_type": "generic",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "destination": "",
-                            "message": "filtered-data:filter_3:condition_1:artifact:*.cef.destinationAddress"
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "destination": "",
-                                    "message": "filtered-data:filter_3:condition_1:artifact:*.cef.destinationAddress"
-                                },
-                                "name": "slack",
-                                "output": [
-                                    {
-                                        "data_path": "action_result.data.*.ok",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.ts",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "slack destination"
-                                        ],
-                                        "data_path": "action_result.data.*.channel",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.message.ts",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.message.text",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.message.type",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.message.user",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.message.bot_id",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Status",
-                                        "column_order": 2,
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Destination",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "slack destination"
-                                        ],
-                                        "data_path": "action_result.parameter.destination",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Message",
-                                        "column_order": 1,
-                                        "data_path": "action_result.parameter.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "information"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "add to blocklist"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Generic"
-                            },
-                            "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "fill": "#FFFFFF"
-                            }
-                        },
-                        "block_code": "# read-only block view not available",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "color": "#5094D4",
-                        "connected_to_start": true,
-                        "connection_name": "prompt 1",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "def add_to_blocklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('add_to_list() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_3:condition_1:artifact:*.id'])\n    \n    phantom_url = phantom.get_base_url()\n    container_url = \"{}/mission/{}\".format(phantom_url, container['id'])\n    \n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            phantom.datastore_add('blocked_ips', [ filtered_artifacts_item_1[0], 'yes',  container_url ] )\n\n    block_ip_1(action, success, container, results, handle, filtered_artifacts, filtered_results)\n    return",
-                        "custom_join": "",
-                        "custom_name": "add to blocklist",
-                        "delay": 0,
-                        "description": "",
-                        "has_custom": true,
-                        "has_custom_block": true,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "fc0bdfe2-0da0-4b10-a487-75628d52c651",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 220,
-                        "line_start": 204,
-                        "message": "",
-                        "name": "send message",
-                        "notes": "Add the IP address to [blocked_ips] custom list",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1240,
-                            "y": 840
-                        },
-                        "previous_function": "",
-                        "previous_name": "add_to_blocklist",
-                        "required_params": {
-                            "destination": true,
-                            "message": true
-                        },
-                        "reviewer": "",
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Generic",
-                        "type": "coa.Action",
-                        "warn": false,
-                        "z": 184
-                    },
-                    {
-                        "action": "unblock ip",
-                        "action_type": "correct",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "ip": "unblock_ip_1:action_result.parameter.ip",
-                            "is_source_address": "",
-                            "vsys": ""
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "ip": "unblock_ip_1:action_result.parameter.ip",
-                                    "is_source_address": "",
-                                    "vsys": ""
-                                },
-                                "name": "pan",
-                                "output": [
-                                    {
-                                        "column_name": "IP",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.parameter.ip",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.is_source_address",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.vsys",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Status",
-                                        "column_order": 1,
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Message",
-                                        "column_order": 2,
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "firewall"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "remove from blockli..."
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#E65100"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Correct"
-                            },
-                            "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "fill": "#FFFFFF"
-                            }
-                        },
-                        "block_code": "def remove_from_blocklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('remove_from_blocklist() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'remove_from_blocklist' call\n    results_data_1 = phantom.collect2(container=container, datapath=['unblock_ip_1:action_result.parameter.ip', 'unblock_ip_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'remove_from_blocklist' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'vsys': \"\",\n                'is_source_address': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"unblock ip\", parameters=parameters, assets=['pan'], name=\"remove_from_blocklist\", parent_action=action)    \n    \n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "color": "#E65100",
-                        "connected_to_start": true,
-                        "connection_name": "unblock ip 1",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "def remove_from_blocklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('remove_from_blocklist() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'remove_from_blocklist' call\n    ips_to_remove = phantom.collect2(container=container, datapath=['unblock_ip_1:action_result.parameter.ip'], action_results=results)\n    \n    phantom.debug(\"ips to remove: {}\".format(ips_to_remove))\n    del_rows = set()\n    \n    for ip in ips_to_remove:\n        match = phantom.datastore_present('blocked_ips', [ip[0]], 0)\n        matches = match.get('matches', [])\n        for m in matches:\n            idx = m.get('index', -1)\n            if idx >= 0:\n                del_rows.add(idx)\n    \n    if del_rows:\n        phantom.debug(\"deleting rows: {}\".format(del_rows))\n        data = { 'delete_rows': list(del_rows) }\n        requests.post('https://127.0.0.1/rest/decided_list/blocked_ips', data=json.dumps(data), verify=False)\n        \n    \n    return",
-                        "custom_join": "",
-                        "custom_name": "remove from blocklist",
-                        "delay": 0,
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": true,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "841e8b4f-567c-4c39-8c6e-5cf8527ff457",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 298,
-                        "line_start": 272,
-                        "message": "",
-                        "name": "unblock ip",
-                        "notes": "If unblock was done, remove the IP address from blocklist",
-                        "number": 2,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1980,
-                            "y": 840
-                        },
-                        "previous_function": "",
-                        "previous_name": "remove_from_blocklist",
-                        "required_params": {
-                            "ip": true
-                        },
-                        "reviewer": "",
-                        "show_number": true,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Correct",
-                        "type": "coa.Action",
-                        "warn": false,
-                        "z": 186
                     },
                     {
                         "attrs": {
@@ -2829,6 +2338,9 @@
                             ".background": {
                                 "height": 88
                             },
+                            ".border": {
+                                "height": 88
+                            },
                             ".color-band": {
                                 "fill": "#E65100"
                             },
@@ -2878,7 +2390,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def unblock_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('unblock_ip_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'unblock_ip_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['block_ip_1:action_result.parameter.ip', 'block_ip_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'unblock_ip_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'vsys': \"\",\n                'is_source_address': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n    # calculate start time using delay of 1 minutes\n    start_time = datetime.now() + timedelta(minutes=1)\n\n    phantom.act(\"unblock ip\", parameters=parameters, assets=['pan'], callback=remove_from_blocklist, start_time=start_time, name=\"unblock_ip_1\", parent_action=action)    \n    \n    return",
+                        "block_code": "def unblock_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('unblock_ip_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'unblock_ip_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['block_ip_1:action_result.parameter.ip', 'block_ip_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'unblock_ip_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'is_source_address': \"\",\n                'ip': results_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n    # calculate start time using delay of 1 minutes\n    start_time = datetime.now() + timedelta(minutes=1)\n\n    phantom.act(\"unblock ip\", parameters=parameters, assets=['pan'], callback=remove_from_blocklist, start_time=start_time, name=\"unblock_ip_1\", parent_action=action)    \n    \n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2892,7 +2404,7 @@
                         "custom_name": "",
                         "delay": "1",
                         "description": "",
-                        "has_custom": true,
+                        "has_custom": false,
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
@@ -2903,8 +2415,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 272,
-                        "line_start": 245,
+                        "line_end": 255,
+                        "line_start": 228,
                         "message": "",
                         "name": "unblock ip",
                         "notes": "Scheduling the unblock after 60 minutes",
@@ -2984,7 +2496,7 @@
                         "status": "",
                         "title": "Correct",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 189
                     },
                     {
@@ -3227,8 +2739,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 46,
-                        "line_start": 25,
+                        "line_end": 276,
+                        "line_start": 255,
                         "message": "",
                         "name": "file reputation",
                         "notes": "Check reversing labs if file is malicious",
@@ -3384,6 +2896,9 @@
                             ".background": {
                                 "height": 88
                             },
+                            ".border": {
+                                "height": 88
+                            },
                             ".color-band": {
                                 "fill": "#3D9959"
                             },
@@ -3461,8 +2976,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 166,
-                        "line_start": 142,
+                        "line_end": 300,
+                        "line_start": 276,
                         "message": "",
                         "name": "terminate process",
                         "notes": "terminating the process by file name for the file whose hash has been confirmed to be malicious",
@@ -3528,10 +3043,7 @@
                         },
                         "previous_function": "",
                         "previous_name": "terminate_process_1",
-                        "required_params": {
-                            "ip_hostname": true,
-                            "name": true
-                        },
+                        "required_params": {},
                         "reviewer": "",
                         "show_number": false,
                         "size": {
@@ -3544,15 +3056,504 @@
                         "type": "coa.Action",
                         "warn": false,
                         "z": 191
+                    },
+                    {
+                        "action": "send message",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "destination": "",
+                            "message": "filtered-data:filter_3:condition_1:artifact:*.cef.destinationAddress"
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "destination": "",
+                                    "message": "filtered-data:filter_3:condition_1:artifact:*.cef.destinationAddress"
+                                },
+                                "name": "slack",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.data.*.ok",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.ts",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "slack destination"
+                                        ],
+                                        "data_path": "action_result.data.*.channel",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.message.ts",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.message.text",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.message.type",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.message.user",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.message.bot_id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Status",
+                                        "column_order": 2,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Destination",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "slack destination"
+                                        ],
+                                        "data_path": "action_result.parameter.destination",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Message",
+                                        "column_order": 1,
+                                        "data_path": "action_result.parameter.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "type": "information"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "add to blocklist"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#5094D4"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Generic"
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "# read-only block view not available",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": true,
+                        "connection_name": "prompt 1",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def add_to_blocklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('add_to_list() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_3:condition_1:artifact:*.id'])\n    \n    phantom_url = phantom.get_base_url()\n    container_url = \"{}/mission/{}\".format(phantom_url, container['id'])\n    \n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            phantom.datastore_add('blocked_ips', [ filtered_artifacts_item_1[0], 'yes',  container_url ] )\n\n    block_ip_1(action, success, container, results, handle, filtered_artifacts, filtered_results)\n    return",
+                        "custom_join": "",
+                        "custom_name": "add to blocklist",
+                        "delay": 0,
+                        "description": "",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "fc0bdfe2-0da0-4b10-a487-75628d52c651",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 200,
+                        "line_start": 184,
+                        "message": "",
+                        "name": "send message",
+                        "notes": "Add the IP address to [blocked_ips] custom list",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1240,
+                            "y": 840
+                        },
+                        "previous_function": "",
+                        "previous_name": "add_to_blocklist",
+                        "required_params": {},
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Generic",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 192
+                    },
+                    {
+                        "action": "unblock ip",
+                        "action_type": "correct",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip": "unblock_ip_1:action_result.parameter.ip",
+                            "is_source_address": "",
+                            "vsys": ""
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "ip": "unblock_ip_1:action_result.parameter.ip",
+                                    "is_source_address": "",
+                                    "vsys": ""
+                                },
+                                "name": "pan",
+                                "output": [
+                                    {
+                                        "column_name": "IP",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.is_source_address",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.vsys",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Status",
+                                        "column_order": 1,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Message",
+                                        "column_order": 2,
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "type": "firewall"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "remove from blockli...."
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#E65100"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Correct"
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def remove_from_blocklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('remove_from_blocklist() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'remove_from_blocklist' call\n    results_data_1 = phantom.collect2(container=container, datapath=['unblock_ip_1:action_result.parameter.ip', 'unblock_ip_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'remove_from_blocklist' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'vsys': \"\",\n                'is_source_address': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"unblock ip\", parameters=parameters, assets=['pan'], name=\"remove_from_blocklist\", parent_action=action)    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#E65100",
+                        "connected_to_start": true,
+                        "connection_name": "unblock ip 1",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def remove_from_blocklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('remove_from_blocklist() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'remove_from_blocklist' call\n    ips_to_remove = phantom.collect2(container=container, datapath=['unblock_ip_1:action_result.parameter.ip'], action_results=results)\n    \n    phantom.debug(\"ips to remove: {}\".format(ips_to_remove))\n    del_rows = set()\n    \n    for ip in ips_to_remove:\n        match = phantom.datastore_present('blocked_ips', [ip[0]], 0)\n        #matches = match.get('matches', [])\n        if 'matches' in match:\n            matches = match['matches']\n            for m in matches:\n                idx = m.get('index', -1)\n                if idx >= 0:\n                    del_rows.add(idx)\n    \n    if del_rows:\n        phantom.debug(\"deleting rows: {}\".format(del_rows))\n        data = { 'delete_rows': list(del_rows) }\n        requests.post('https://127.0.0.1/rest/decided_list/blocked_ips', data=json.dumps(data), verify=False)\n\n    return",
+                        "custom_join": "",
+                        "custom_name": "remove from blocklist",
+                        "delay": 0,
+                        "description": "",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "841e8b4f-567c-4c39-8c6e-5cf8527ff457",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 228,
+                        "line_start": 200,
+                        "message": "",
+                        "name": "unblock ip",
+                        "notes": "If unblock was done, remove the IP address from blocklist",
+                        "number": 2,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1980,
+                            "y": 840
+                        },
+                        "previous_function": "",
+                        "previous_name": "remove_from_blocklist",
+                        "required_params": {
+                            "ip": true
+                        },
+                        "reviewer": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Correct",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 193
                     }
                 ]
             },
             "notes": "Check file reputation (reversing labs)\nCheck if infected endpoint is a test machine or a critical system. Set Severity accordingly.\nIf file is malicious, terminate process by filename on endpoint (Tanium)\nIf file is malicious, extract the C&C Server IP and check if C&C IP is already blocked in a \u201cblocked IPs\u201d list\nIf not already blocked, ask user if the IP should be blocked given the file reputation information and other details\nIf user approves, block the IP and add it to \u201cblocked IPs\u201d list\nSchedule an unblock after 60 mins and remove the IP from \u201cblocked IPs\u201d list"
         },
         "schema": 2,
-        "version": "2.1.474"
+        "version": "2.2.82"
     },
-    "create_time": "2017-05-12T21:21:18.739491+00:00",
+    "create_time": "2017-05-12T21:29:36.815246+00:00",
     "draft_mode": false,
     "labels": [
         "dlpevent",
@@ -3562,9 +3563,7 @@
         "generator",
         "email",
         "incident",
-        "dxl_event",
         "report",
-        "campaign",
-        "event"
+        "campaign"
     ]
 }
