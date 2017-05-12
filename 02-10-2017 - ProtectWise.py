@@ -1,4 +1,5 @@
 """
+This playbook was constructed for the Phantom Tech Session held on 02/10/2017 with ProtectWise.
 """
 
 import phantom.rules as phantom
