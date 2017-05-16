@@ -416,23 +416,6 @@ def revert_vm_1(action=None, success=None, container=None, results=None, handle=
     
     return
 
-def decision_8(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('decision_8() called')
-
-    # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        conditions=[
-            ["artifact:*.cef.sourceAddress", "in", "custom_list:wannacry_remediated_endpoints"],
-        ])
-
-    # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        decision_1(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    return
-
 def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('decision_1() called')
 
@@ -740,6 +723,23 @@ def list_processes_3(action=None, success=None, container=None, results=None, ha
 
     phantom.act("list processes", parameters=parameters, assets=['carbonblack'], callback=filter_6, name="list_processes_3")    
     
+    return
+
+def decision_8(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('decision_8() called')
+
+    # check for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        conditions=[
+            ["artifact:*.cef.sourceAddress", "in", "custom_list:wannacry_remediated_endpoints"],
+        ])
+
+    # call connected blocks if condition 1 matched
+    if matched_artifacts_1 or matched_results_1:
+        decision_1(action=action, success=success, container=container, results=results, handle=handle)
+        return
+
     return
 
 def on_finish(container, summary):
