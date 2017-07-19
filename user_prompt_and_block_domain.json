@@ -1,0 +1,1857 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "misc": {
+        "apps_list": [
+            "DomainTools",
+            "OpenDNS Investigate"]
+    },
+    "coa": {
+        "data": {
+            "clean": true,
+            "code_block": "",
+            "description": "This Playbook utilizes DomainTools to generate the risk level of a domain, and, if a high enough score, blocks the domain on OpenDNS Umbrella for 60 minutes, after approval via user prompt of a role.",
+            "hash": "23eca82b6131184087d8039519dc06f59433ebcf",
+            "joint": {
+                "cells": [
+                    {
+                        "0": "S",
+                        "1": "T",
+                        "2": "A",
+                        "3": "R",
+                        "4": "T",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "START"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "color": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'domain_reputation_1' block\n    domain_reputation_1(container=container)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "ae52e042-4902-4cd4-baaf-96710ef94702",
+                        "inPorts": [],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 17,
+                        "line_start": 9,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 100,
+                            "y": 100
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 48,
+                            "width": 96
+                        },
+                        "status": "",
+                        "title": "START",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 1
+                    },
+                    {
+                        "0": "E",
+                        "1": "N",
+                        "2": "D",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".title": {
+                                "text": "END"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "color": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "domain reputation, prompt 1, unblock domain",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "b0a149a0-86a9-4ee4-b820-9dcf5e0dbd84",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 166,
+                        "line_start": 153,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1400,
+                            "y": 200
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 48,
+                            "width": 96
+                        },
+                        "status": "",
+                        "title": "END",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 2
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "8a629614-3f75-456d-ab87-2f57bc21156c",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "ae52e042-4902-4cd4-baaf-96710ef94702",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "b82e464f-d808-48e1-842a-dfd80cf8d110",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 3
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "9e9a2427-d7ec-472f-86fb-d0762556fb1d",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "2bb48364-d646-46d0-aad1-bc593506bcbb",
+                            "port": "out-2",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(2) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "b0a149a0-86a9-4ee4-b820-9dcf5e0dbd84",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 10
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "a4a64c6c-d44d-4426-8cb9-3e8e22b46650",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "2bb48364-d646-46d0-aad1-bc593506bcbb",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "35f90dcf-0d5c-4750-ab66-1c6002f80eef",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 11
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "4e475017-5a8a-4222-9ca5-ad3cb6029b99",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "35f90dcf-0d5c-4750-ab66-1c6002f80eef",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "933824c1-16f9-422b-b694-f11612fe12ff",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 14
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "055ff950-4e75-45cf-92bc-341a02accbf6",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "933824c1-16f9-422b-b694-f11612fe12ff",
+                            "port": "out-2",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(2) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "b0a149a0-86a9-4ee4-b820-9dcf5e0dbd84",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 16
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "b819483f-2435-4f68-8c3d-add553cf4f14",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "933824c1-16f9-422b-b694-f11612fe12ff",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "d4b4e189-3e43-40ae-89e4-1abcb0946214",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 17
+                    },
+                    {
+                        "action": "domain reputation",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "domain": "artifact:*.cef.destinationDnsDomain"
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "domain": "artifact:*.cef.destinationDnsDomain"
+                                },
+                                "name": "domaintools",
+                                "output": [
+                                    {
+                                        "column_name": "Domain",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "domain"
+                                        ],
+                                        "data_path": "action_result.data.*.domain",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Risk Score",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*.risk_score",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.risk_score",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "contains": [
+                                            "url",
+                                            "domain"
+                                        ],
+                                        "data_path": "action_result.parameter.domain",
+                                        "data_type": "string"
+                                    }
+                                ],
+                                "type": "information"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "domain reputation"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#654796"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def domain_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('domain_reputation_1() called')\n\n    # collect data for 'domain_reputation_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationDnsDomain', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'domain_reputation_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'domain': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"domain reputation\", parameters=parameters, assets=['domaintools'], callback=decision_2, name=\"domain_reputation_1\")    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 37,
+                        "callsback": true,
+                        "color": "#654796",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "b82e464f-d808-48e1-842a-dfd80cf8d110",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 38,
+                        "line_start": 17,
+                        "message": "",
+                        "name": "domain reputation",
+                        "notes": "Domain Reputation from DomainTools contains a risk score, which is an analysis of the given domain, with regards to its maliciousness.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 260,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "domain_reputation_1",
+                        "required_params": {
+                            "domain": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 21
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "approver": "Automation Engineer",
+                        "attrs": {
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            }
+                        },
+                        "block_code": "def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('prompt_1() called')\n    \n    # set user and message variables for phantom.prompt call\n    user = \"Automation Engineer\"\n    message = \"\"\"The risk score of {0} has been evaluated by DomainTools Domain Reputation as {1}, which exceeds the Playbook's defined threshold.  Would you like to block this domain?\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"domain_reputation_1:action_result.parameter.domain\",\n        \"domain_reputation_1:action_result.data.*.risk_score\",\n    ]\n\n    # response options\n    options = {\n        \"type\": \"list\",\n        \"choices\": [\n            \"Yes\",\n            \"No\",\n        ]\n    }\n\n    phantom.prompt(container=container, user=user, message=message, respond_in_mins=60, name=\"prompt_1\", parameters=parameters, options=options, callback=decision_3)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "connected_to_start": true,
+                        "connection_name": "domain reputation",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "35f90dcf-0d5c-4750-ab66-1c6002f80eef",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 64,
+                        "line_start": 38,
+                        "message": "The risk score of {0} has been evaluated by DomainTools Domain Reputation as {1}, which exceeds the Playbook's defined threshold.  Would you like to block this domain?",
+                        "name": "prompt",
+                        "notes": "If the risk score is above the acceptable threshold, all those in the Automation Engineer role are prompted as to whether or not block the domain for sixty minutes.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 1,
+                                "type": "",
+                                "value": "domain_reputation_1:action_result.parameter.domain"
+                            },
+                            {
+                                "position": 1,
+                                "type": "",
+                                "value": "domain_reputation_1:action_result.data.*.risk_score"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 640,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "prompt_1",
+                        "respond_in": "60",
+                        "response_key": "Yes/No",
+                        "response_options": [
+                            "Yes",
+                            "No"
+                        ],
+                        "response_type": "list",
+                        "show_number": true,
+                        "size": {
+                            "height": 80,
+                            "width": 80
+                        },
+                        "state": "prompt",
+                        "status": "",
+                        "type": "coa.Prompt",
+                        "warn": false,
+                        "z": 24
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 3
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".outPorts>.port-1": {
+                                "port": {
+                                    "id": "out-2",
+                                    "type": "out"
+                                },
+                                "ref-x": 41,
+                                "ref-y": 82
+                            },
+                            ".outPorts>.port-1>.port-body": {
+                                "port": {
+                                    "id": "out-2",
+                                    "type": "out"
+                                }
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            }
+                        },
+                        "block_code": "def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_3() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"prompt_1:action_result.summary.response\", \"==\", \"Yes\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        block_domain_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "prompt 1",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "hasElse": true,
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "933824c1-16f9-422b-b694-f11612fe12ff",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 84,
+                        "line_start": 64,
+                        "name": "decision",
+                        "notes": "If the answer to the prompt is yes, the domain is then blocked.",
+                        "number": 3,
+                        "outPorts": [
+                            "out-1",
+                            "out-2"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "prompt_1:action_result.summary.response",
+                                        "value": "Yes"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "",
+                                        "value": ""
+                                    }
+                                ],
+                                "display": "Else",
+                                "logic": "and",
+                                "type": "else"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 780,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "decision_3",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "decision",
+                        "status": "",
+                        "type": "coa.Decision",
+                        "warn": "",
+                        "z": 25
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "872bc841-3dfd-4cfb-81a9-52655562a952",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "d4b4e189-3e43-40ae-89e4-1abcb0946214",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "9a907d9b-d172-4200-9ed3-65b8bf401ed1",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 27
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "d1d3dea4-c0d1-46a1-a5ba-3a11b24f0b76",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "9a907d9b-d172-4200-9ed3-65b8bf401ed1",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "b0a149a0-86a9-4ee4-b820-9dcf5e0dbd84",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 30
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 2
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".outPorts>.port-1": {
+                                "port": {
+                                    "id": "out-2",
+                                    "type": "out"
+                                },
+                                "ref-x": 41,
+                                "ref-y": 82
+                            },
+                            ".outPorts>.port-1>.port-body": {
+                                "port": {
+                                    "id": "out-2",
+                                    "type": "out"
+                                }
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            }
+                        },
+                        "block_code": "def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_2() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"domain_reputation_1:action_result.data.*.risk_score\", \">=\", 80],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        prompt_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": false,
+                        "connection_name": "domain reputation",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "hasElse": true,
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "2bb48364-d646-46d0-aad1-bc593506bcbb",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 104,
+                        "line_start": 84,
+                        "name": "decision",
+                        "notes": "If the risk score is evaluated to be greater than 80, then continue; if not, the playbook is ended.",
+                        "number": 2,
+                        "outPorts": [
+                            "out-1",
+                            "out-2"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": ">=",
+                                        "data_type": "",
+                                        "param": "domain_reputation_1:action_result.data.*.risk_score",
+                                        "value": "80"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "",
+                                        "value": ""
+                                    }
+                                ],
+                                "display": "Else",
+                                "logic": "and",
+                                "type": "else"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 500,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "decision_2",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "decision",
+                        "status": "",
+                        "type": "coa.Decision",
+                        "warn": "",
+                        "z": 36
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "7e7b3e49-7127-40c8-8ad4-ed26c931a494",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "b82e464f-d808-48e1-842a-dfd80cf8d110",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "2bb48364-d646-46d0-aad1-bc593506bcbb",
+                            "port": "in",
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 37
+                    },
+                    {
+                        "action": "block domain",
+                        "action_type": "contain",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "disable_safeguards": "",
+                            "domain": "domain_reputation_1:action_result.parameter.domain"
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "disable_safeguards": "",
+                                    "domain": "domain_reputation_1:action_result.parameter.domain"
+                                },
+                                "name": "opendns_umbrella",
+                                "output": [
+                                    {
+                                        "column_name": "Status",
+                                        "column_order": 1,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.disable_safeguards",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "column_name": "Domain",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "domain"
+                                        ],
+                                        "data_path": "action_result.parameter.domain",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "ID",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "type": "endpoint"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "block domain"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#3D9959"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Contain"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def block_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_domain_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_domain_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['domain_reputation_1:action_result.parameter.domain', 'domain_reputation_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'block_domain_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'disable_safeguards': \"\",\n                'domain': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"block domain\", parameters=parameters, assets=['opendns_umbrella'], callback=unblock_domain_1, name=\"block_domain_1\")    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#3D9959",
+                        "connected_to_start": true,
+                        "connection_name": "prompt 1",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "d4b4e189-3e43-40ae-89e4-1abcb0946214",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 126,
+                        "line_end": 128,
+                        "line_start": 104,
+                        "message": "",
+                        "name": "block domain",
+                        "notes": "Blocks the domain utilizing OpenDNS Umbrella.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 920,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "block_domain_1",
+                        "required_params": {
+                            "domain": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Contain",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 38
+                    },
+                    {
+                        "action": "unblock domain",
+                        "action_type": "correct",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "domain": "block_domain_1:action_result.parameter.domain"
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "fields": {
+                                    "domain": "block_domain_1:action_result.parameter.domain"
+                                },
+                                "name": "opendns_umbrella",
+                                "output": [
+                                    {
+                                        "column_name": "Status",
+                                        "column_order": 1,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Domain",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "domain"
+                                        ],
+                                        "data_path": "action_result.parameter.domain",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "type": "endpoint"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "unblock domain"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#E65100"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Correct"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def unblock_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('unblock_domain_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'unblock_domain_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['block_domain_1:action_result.parameter.domain', 'block_domain_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'unblock_domain_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'domain': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n    # calculate start time using delay of 60 minutes\n    start_time = datetime.now() + timedelta(minutes=60)\n\n    phantom.act(\"unblock domain\", parameters=parameters, assets=['opendns_umbrella'], start_time=start_time, name=\"unblock_domain_1\", parent_action=action)    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#E65100",
+                        "connected_to_start": true,
+                        "connection_name": "block domain",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": "60",
+                        "description": "",
+                        "has_custom": true,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "9a907d9b-d172-4200-9ed3-65b8bf401ed1",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 153,
+                        "line_start": 128,
+                        "message": "",
+                        "name": "unblock domain",
+                        "notes": "Unblocks the domain, after waiting sixty (60) minutes.  The wait is generated with custom code.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1160,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "unblock_domain_1",
+                        "required_params": {
+                            "domain": true
+                        },
+                        "reviewer": "",
+                        "show_delay": true,
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Correct",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 40
+                    }
+                ]
+            },
+            "notes": "Apps Used:\n - DomainTools\n - OpenDNS Umbrella\n\nThis playbook utilizes DomainTools\u2019s risk score analysis in order to evaluate the maliciousness of a domain.  If the Risk Score is greater than a threshold specified in the playbook, an Automation Engineer is notified and is prompted as to whether to temporarily block this domain using Infoblox DDI for sixty (60) minutes."
+        },
+        "schema": 2,
+        "version": "2.1.478"
+    },
+    "create_time": "2017-06-08T01:43:42.419245+00:00",
+    "draft_mode": false,
+    "labels": [
+        "events"
+    ]
+}
