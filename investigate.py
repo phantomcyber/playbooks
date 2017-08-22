@@ -1,12 +1,12 @@
-"""
-"""
-
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
 
 ##############################
 # Start - Global Code Block
+"""
+The investigative Playbook queries a number of external reputation and intelligence services in order to enrich events coming from your data source.
+"""
 
 import traceback
 
@@ -578,6 +578,72 @@ def on_start(container):
 
     return
 
+def lookup_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets=get_filtered_assets("lookup ip")
+    if not assets:
+        return
+    
+    container_data = handle # in collected data, 0th item is source address and 1st item is destination address
+
+    parameters = []
+    
+    # build parameters list for 'geolocate_ip_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
+        if container_item[1]:
+            parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("lookup ip", parameters=parameters, name="lookup_ip_1", assets=assets)    
+    
+    return
+
+def lookup_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets = get_filtered_assets("lookup domain")
+    if not assets:
+        return
+    
+    container_data = handle # 3rd item is source domain and 4th item is destination domain
+
+    parameters = []
+    
+    # build parameters list for 'geolocate_ip_1' call
+    for container_item in container_data:
+        if container_item[3]: # source domain
+            parameters.append({'domain': container_item[3],'type': "",'context': {'artifact_id': container_item[7]}})
+        if container_item[4]: # destination domain
+            parameters.append({'domain': container_item[4],'type': "",'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("lookup domain", parameters=parameters, name="lookup_domain_1", assets=assets)    
+        
+    return
+
+def whois_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets = get_filtered_assets("whois domain", excluded_products=["ThreatStream"])
+    if not assets:
+        return
+    
+    container_data = handle # in collected data, 3rd item is source domain and 4th item is destination domain
+
+    parameters = []
+    
+    # build parameters list for 'geolocate_ip_1' call
+    for container_item in container_data:
+        if container_item[3]: # source domain
+            parameters.append({'domain': container_item[3],'type': "",'context': {'artifact_id': container_item[7]}})
+        if container_item[4]: # destination domain
+            parameters.append({'domain': container_item[4],'type': "",'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("whois domain", parameters=parameters, name="whois_domain_1", assets=assets)    
+        
+    return
+
 def domain_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     assets = get_filtered_assets("domain reputation", ["ThreatStream"])
@@ -600,251 +666,26 @@ def domain_reputation(action=None, success=None, container=None, results=None, h
     
     return
 
-def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def hunt_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    if not success or not results:
+    assets = get_filtered_assets("hunt domain")
+    if not assets:
         return
     
-    data = is_url_bad(results)
+    container_data = handle # 3rd item is source domain and 4th item is destination domain
+
+    parameters = []
     
-    for item in data:
-        if item['bad'] == True:
-            escalate(container)
-            return # if anyone reporting this as bad, no need to detonate
+    # build parameters list for 'geolocate_ip_1' call
+    for container_item in container_data:
+        if container_item[3]:# source domain
+            parameters.append({'domain': container_item[3],'scope': "",'context': {'artifact_id': container_item[7]}})
+        if container_item[4]:# destination domain
+            parameters.append({'domain': container_item[4],'scope': "",'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("hunt domain", parameters=parameters, name="hunt_domain_1", assets=assets)    
         
-    detonate_url_1(action=action, success=success, container=container, results=results, handle=data)
-    
-    return
-
-def detonate_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    
-    unique_urls=[]
-    parameters = []
-    if handle:
-        for data in handle:
-            if data['bad'] == False:
-                if data['url'] not in unique_urls:
-                    unique_urls.append(data['url'])
-                    parameters.append({'url': data['url'],'context': {'artifact_id': data['artifact_id']}})
-    
-    if parameters:
-        phantom.debug("parameters for detonate file: {}".format(parameters))
-        return
-    
-        phantom.act("detonate url", parameters=parameters, assets=['cuckoo'], name="detonate_url_1")    
-    
-    return
-
-def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    if not success or not results:
-        return
-    
-    data = is_file_bad(results)
-    #phantom.debug("In decision_1.. data: {}".format(data))
-    for item in data:
-        if item['bad'] == True:
-            escalate(container)#phantom.set_severity(container, "high")
-            return # if anyone reporting this as bad, no need to detonate
-        
-    get_file_1(action=action, success=success, container=container, results=results, handle=data)
-
-    return
-
-def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets = get_filtered_assets("file reputation", excluded_products=["ThreatStream"])
-    if not assets:
-        return
-    
-    container_data = handle # 6th item is file hash
-
-    parameters = []
-    
-    # build parameters list for 'geolocate_ip_1' call
-    for container_item in container_data:
-        if container_item[6]:
-            parameters.append({'hash': container_item[6],'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("file reputation", parameters=parameters, name="file_reputation_1", callback=filter_1, assets=assets)    
-
-    return
-
-def url_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets = get_filtered_assets("url reputation")
-    if not assets:
-        return
-    
-    container_data = handle # in collected data, 2nd item is request URL
-
-    parameters = []
-    
-    # build parameters list for 'geolocate_ip_1' call
-    for container_item in container_data:
-        if container_item[2]:
-            url=''
-            if container_item[2].startswith("http"):
-                url=container_item[2]
-            else:
-                url = "http://"+container_item[2]
-            parameters.append({'url': url,'scope': "",'context': {'artifact_id': container_item[7]}})
-    if parameters:
-        phantom.act("url reputation", parameters=parameters, name="url_reputation_1", assets=assets)    
-        
-    return
-
-def get_file_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets = get_filtered_assets("get file info", excluded_products=["Carbon Black"])
-    if not assets:
-        return
-    
-    # collect data for 'get_file_info_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'get_file_info_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            if len(container_item[0]) == 64:#length of SHA2s
-                parameters.append({
-                    'hash': container_item[0],
-                    # context (artifact id) is added to associate results with the artifact
-                    'context': {'artifact_id': container_item[1]},
-                })
-
-    if parameters:
-        phantom.act("get file info", parameters=parameters, assets=assets, name="get_file_info_1")    
-    
-    return
-
-def hunt_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets = get_filtered_assets("hunt url")
-    if not assets:
-        return
-    
-    container_data = handle # in collected data, 2nd item is request URL
-
-    parameters = []
-    
-    # build parameters list for 'geolocate_ip_1' call
-    for container_item in container_data:
-        if container_item[2]: # request URL
-            parameters.append({'url': container_item[2],'scope': "",'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("hunt url", parameters=parameters, name="hunt_url_1", assets=assets)    
-    
-    return
-
-def get_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    
-    unique_file_hashes=[]
-    parameters = []
-    if handle:
-        for data in handle:
-            if data['bad'] == False:
-                if data['hash'] not in unique_file_hashes:
-                    unique_file_hashes.append(data['hash'])
-                    parameters.append({'hash': data['hash'],'context': {'artifact_id': data['artifact_id']}})
-                    
-    if parameters:
-        phantom.debug("get file with parameters: {}".format(parameters))
-        return
-    
-        phantom.act("get file", parameters=parameters, assets=['carbonblack'], callback=detonate_file_1, name="get_file_1")    
-    
-    return
-
-def hunt_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets= get_filtered_assets("hunt file", excluded_products=["Carbon Black", "Carbon Black Protection","CylancePROTECT"])
-    if not assets:
-        return
-    
-    container_data = handle # 6th item is file hash
-
-    parameters = []
-    
-    # build parameters list for 'geolocate_ip_1' call
-    for container_item in container_data:
-        if container_item[6]:
-            parameters.append({'hash': container_item[6],'scope': "",'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("hunt file", parameters=parameters, name="hunt_file_1", assets=assets)    
-
-    return
-
-def reverse_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    
-    assets = get_filtered_assets("reverse ip")
-    
-    if not assets:
-        return
-    
-    container_data = handle # in collected data, 0th item is source address and 1st item is destination address
-
-    parameters = []
-    
-    # build parameters list for 'geolocate_ip_1' call
-    for container_item in container_data:
-        if container_item[0]: # source address
-            parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
-        if container_item[1]: # destination address
-            parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("reverse ip", parameters=parameters, name="reverse_ip_1", assets=assets)    
-    
-    return
-
-def hunt_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets = get_filtered_assets("hunt ip")
-    if not assets:
-        return
-    
-    container_data = handle # in collected data, 0th item is source address and 1st item is destination address
-
-    parameters = []
-    
-    # build parameters list for 'geolocate_ip_1' call
-    for container_item in container_data:
-        if container_item[0]: # source address
-            parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
-        if container_item[1]: # destination address
-            parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("hunt ip", parameters=parameters, name="hunt_ip_1", assets=assets)    
-    
-    return
-
-def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets = get_filtered_assets("ip reputation", ["ThreatStream"])
-    if not assets:
-        return
-    
-    container_data = handle # in collected data, 0th item is source address and 1st item is destination address
-
-    parameters = []
-    
-    # build parameters list for 'geolocate_ip_1' call
-    for container_item in container_data:
-        if container_item[0]: # source address
-            parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
-        if container_item[1]: # destination address
-            parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("ip reputation", parameters=parameters, name="ip_reputation_1", assets=assets)    
-    
     return
 
 def geolocate_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -890,6 +731,70 @@ def whois_ip_1(action=None, success=None, container=None, results=None, handle=N
         
     return
 
+def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets = get_filtered_assets("ip reputation", ["ThreatStream"])
+    if not assets:
+        return
+    
+    container_data = handle # in collected data, 0th item is source address and 1st item is destination address
+
+    parameters = []
+    
+    # build parameters list for 'geolocate_ip_1' call
+    for container_item in container_data:
+        if container_item[0]: # source address
+            parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
+        if container_item[1]: # destination address
+            parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("ip reputation", parameters=parameters, name="ip_reputation_1", assets=assets)    
+    
+    return
+
+def hunt_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets = get_filtered_assets("hunt ip")
+    if not assets:
+        return
+    
+    container_data = handle # in collected data, 0th item is source address and 1st item is destination address
+
+    parameters = []
+    
+    # build parameters list for 'geolocate_ip_1' call
+    for container_item in container_data:
+        if container_item[0]: # source address
+            parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
+        if container_item[1]: # destination address
+            parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("hunt ip", parameters=parameters, name="hunt_ip_1", assets=assets)    
+    
+    return
+
+def hunt_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets = get_filtered_assets("hunt url")
+    if not assets:
+        return
+    
+    container_data = handle # in collected data, 2nd item is request URL
+
+    parameters = []
+    
+    # build parameters list for 'geolocate_ip_1' call
+    for container_item in container_data:
+        if container_item[2]: # request URL
+            parameters.append({'url': container_item[2],'scope': "",'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("hunt url", parameters=parameters, name="hunt_url_1", assets=assets)    
+    
+    return
+
 def reverse_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     assets=get_filtered_assets("reverse domain")
@@ -912,8 +817,121 @@ def reverse_domain_1(action=None, success=None, container=None, results=None, ha
     
     return
 
+def get_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    
+    unique_file_hashes=[]
+    parameters = []
+    if handle:
+        for data in handle:
+            if data['bad'] == False:
+                if data['hash'] not in unique_file_hashes:
+                    unique_file_hashes.append(data['hash'])
+                    parameters.append({'hash': data['hash'],'context': {'artifact_id': data['artifact_id']}})
+                    
+    if parameters:
+        phantom.debug("get file with parameters: {}".format(parameters))
+        return
+    
+        phantom.act("get file", parameters=parameters, assets=['carbonblack'], callback=detonate_file_1, name="get_file_1")    
+    
+    return
+
+def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets = get_filtered_assets("file reputation", excluded_products=["ThreatStream"])
+    if not assets:
+        return
+    
+    container_data = handle # 6th item is file hash
+
+    parameters = []
+    
+    # build parameters list for 'geolocate_ip_1' call
+    for container_item in container_data:
+        if container_item[6]:
+            parameters.append({'hash': container_item[6],'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("file reputation", parameters=parameters, name="file_reputation_1", callback=decision_1, assets=assets)    
+
+    return
+
+def detonate_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    
+    unique_urls=[]
+    parameters = []
+    if handle:
+        for data in handle:
+            if data['bad'] == False:
+                if data['url'] not in unique_urls:
+                    unique_urls.append(data['url'])
+                    parameters.append({'url': data['url'],'context': {'artifact_id': data['artifact_id']}})
+    
+    if parameters:
+        phantom.debug("parameters for detonate file: {}".format(parameters))
+        return
+    
+        phantom.act("detonate url", parameters=parameters, assets=['cuckoo'], name="detonate_url_1")    
+    
+    return
+
+def url_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets = get_filtered_assets("url reputation")
+    if not assets:
+        return
+    
+    container_data = handle # in collected data, 2nd item is request URL
+
+    parameters = []
+    
+    # build parameters list for 'geolocate_ip_1' call
+    for container_item in container_data:
+        if container_item[2]:
+            url=''
+            if container_item[2].startswith("http"):
+                url=container_item[2]
+            else:
+                url = "http://"+container_item[2]
+            parameters.append({'url': url,'scope': "",'context': {'artifact_id': container_item[7]}})
+    if parameters:
+        phantom.act("url reputation", parameters=parameters, name="url_reputation_1", assets=assets)    
+        
+    return
+
+def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    if not success or not results:
+        return
+    
+    data = is_url_bad(results)
+    
+    for item in data:
+        if item['bad'] == True:
+            escalate(container)
+            return # if anyone reporting this as bad, no need to detonate
+        
+    detonate_url_1(action=action, success=success, container=container, results=results, handle=data)
+    
+    return
+
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    if not success or not results:
+        return
+    
+    data = is_file_bad(results)
+    #phantom.debug("In decision_1.. data: {}".format(data))
+    for item in data:
+        if item['bad'] == True:
+            escalate(container)#phantom.set_severity(container, "high")
+            return # if anyone reporting this as bad, no need to detonate
+        
+    get_file_1(action=action, success=success, container=container, results=results, handle=data)
+
+    return
+
 def detonate_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('detonate_file_1() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
@@ -924,20 +942,25 @@ def detonate_file_1(action=None, success=None, container=None, results=None, han
     
     # build parameters list for 'detonate_file_1' call
     for results_item_1 in results_data_1:
-        parameters.append({
-            'file_name': "",
-            'vault_id': results_item_1[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': results_item_1[1]},
-        })
+        if results_item_1[0]:
+            parameters.append({
+                'file_name': "",
+                'vault_id': results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[1]},
+            })
 
-    phantom.act("detonate file", parameters=parameters, assets=['cuckoo'], name="detonate_file_1", parent_action=action)    
+    if parameters:
+        phantom.act("detonate file", parameters=parameters, assets=['cuckoo'], name="detonate_file_1", parent_action=action)    
+    else:
+        phantom.error("'detonate_file_1' will not be executed due to lack of parameters")
     
     return
 
-def lookup_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets=get_filtered_assets("lookup ip")
+def reverse_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    
+    assets = get_filtered_assets("reverse ip")
+    
     if not assets:
         return
     
@@ -947,80 +970,60 @@ def lookup_ip_1(action=None, success=None, container=None, results=None, handle=
     
     # build parameters list for 'geolocate_ip_1' call
     for container_item in container_data:
-        if container_item[0]:
+        if container_item[0]: # source address
             parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
-        if container_item[1]:
+        if container_item[1]: # destination address
             parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
 
     if parameters:
-        phantom.act("lookup ip", parameters=parameters, name="lookup_ip_1", assets=assets)    
+        phantom.act("reverse ip", parameters=parameters, name="reverse_ip_1", assets=assets)    
     
     return
 
-def hunt_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_file_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    assets = get_filtered_assets("hunt domain")
+    assets = get_filtered_assets("get file info", excluded_products=["Carbon Black"])
     if not assets:
         return
     
-    container_data = handle # 3rd item is source domain and 4th item is destination domain
+    # collect data for 'get_file_info_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'get_file_info_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            if len(container_item[0]) == 64:#length of SHA2s
+                parameters.append({
+                    'hash': container_item[0],
+                    # context (artifact id) is added to associate results with the artifact
+                    'context': {'artifact_id': container_item[1]},
+                })
+
+    if parameters:
+        phantom.act("get file info", parameters=parameters, assets=assets, name="get_file_info_1")    
+    
+    return
+
+def hunt_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets= get_filtered_assets("hunt file", excluded_products=["Carbon Black", "Carbon Black Protection","CylancePROTECT"])
+    if not assets:
+        return
+    
+    container_data = handle # 6th item is file hash
 
     parameters = []
     
     # build parameters list for 'geolocate_ip_1' call
     for container_item in container_data:
-        if container_item[3]:# source domain
-            parameters.append({'domain': container_item[3],'scope': "",'context': {'artifact_id': container_item[7]}})
-        if container_item[4]:# destination domain
-            parameters.append({'domain': container_item[4],'scope': "",'context': {'artifact_id': container_item[7]}})
+        if container_item[6]:
+            parameters.append({'hash': container_item[6],'scope': "",'context': {'artifact_id': container_item[7]}})
 
     if parameters:
-        phantom.act("hunt domain", parameters=parameters, name="hunt_domain_1", assets=assets)    
-        
-    return
+        phantom.act("hunt file", parameters=parameters, name="hunt_file_1", assets=assets)    
 
-def whois_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets = get_filtered_assets("whois domain", excluded_products=["ThreatStream"])
-    if not assets:
-        return
-    
-    container_data = handle # in collected data, 3rd item is source domain and 4th item is destination domain
-
-    parameters = []
-    
-    # build parameters list for 'geolocate_ip_1' call
-    for container_item in container_data:
-        if container_item[3]: # source domain
-            parameters.append({'domain': container_item[3],'type': "",'context': {'artifact_id': container_item[7]}})
-        if container_item[4]: # destination domain
-            parameters.append({'domain': container_item[4],'type': "",'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("whois domain", parameters=parameters, name="whois_domain_1", assets=assets)    
-        
-    return
-
-def lookup_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets = get_filtered_assets("lookup domain")
-    if not assets:
-        return
-    
-    container_data = handle # 3rd item is source domain and 4th item is destination domain
-
-    parameters = []
-    
-    # build parameters list for 'geolocate_ip_1' call
-    for container_item in container_data:
-        if container_item[3]: # source domain
-            parameters.append({'domain': container_item[3],'type': "",'context': {'artifact_id': container_item[7]}})
-        if container_item[4]: # destination domain
-            parameters.append({'domain': container_item[4],'type': "",'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("lookup domain", parameters=parameters, name="lookup_domain_1", assets=assets)    
-        
     return
 
 def on_finish(container, summary):
@@ -1034,9 +1037,6 @@ def on_finish(container, summary):
     url_actions = ['hunt url', 'url reputation']
     file_actions = ['funt file', 'file reputation']
     
-    ioc_count = 0
-    bad_ioc_count = 0
-    
     summary_json = phantom.get_summary()
     if 'result' in summary_json:
         
@@ -1049,53 +1049,33 @@ def on_finish(container, summary):
                 
                     if action_results[0]['action'] in ip_actions:
                         data = is_ip_bad(action_results)
-                        phantom.debug(data)
-                        ioc_count += len(data)
                         for item in data:
                             if item['bad'] == True:
-                                bad_ioc_count += 1
                                 phantom.debug("{} is a BAD ip".format(item.get("ip","")))
-                                # escalate(container)
+                                escalate(container)
+                                return
                         
                     if action_results[0]['action'] in domain_actions:
                         data = is_domain_bad(action_results)
-                        ioc_count += len(data)
                         for item in data:
                             if item['bad'] == True:
-                                bad_ioc_count += 1
                                 phantom.debug("{} is a BAD domain".format(item.get("domain","")))
-                                # escalate(container)                      
+                                escalate(container)
+                                return                        
                         
                     if action_results[0]['action'] in url_actions:
                         data = is_url_bad(action_results)
-                        ioc_count += len(data)
                         for item in data:
                             if item['bad'] == True:
-                                bad_ioc_count += 1
                                 phantom.debug("{} is a BAD url".format(item.get("url","")))
-                                # scalate(container)
+                                escalate(container)
+                                return
                     
                     if action_results[0]['action'] in file_actions:
                         data = is_file_bad(action_results)
-                        ioc_count += len(data)
                         for item in data:
                             if item['bad'] == True:
-                                bad_ioc_count += 1
                                 phantom.debug("{} is a BAD file".format(item.get("hash","")))
-                                # escalate(container)
-    
-    if bad_ioc_count > 0:
-        escalate(container)
-    data = "{0} of {1} IOCs confirmed malicious".format(bad_ioc_count, ioc_count)
-    pin_id = phantom.get_data("pin_id")
-    if not pin_id:
-        ret_val, message, pin_id = phantom.pin(container=container, message="Malicious IOC", data=data, pin_type="card_large", pin_style="purple")
-    else:
-        ret_val, message = phantom.update_pin(pin_id=pin_id, data=data)
-
-    if not ret_val:
-        phantom.debug("Failed to update or create pin: {0}".format(message))
-    else:
-        phantom.save_data(pin_id, "pin_id")
-
+                                escalate(container)
+                                return
     return
