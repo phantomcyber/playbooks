@@ -569,12 +569,14 @@ def on_start(container):
     
     # call 'whois_domain_1' block
     whois_domain_1(container=container, handle=container_data)
-
-    # call 'get_file_info_1' block
-    get_file_info_1(container=container, handle=container_data)
     
     # call 'hunt_file_1' block
     hunt_file_1(container=container, handle=container_data)
+    
+    # create pins on the HUD
+    api_2(container=container, handle=container_data)
+    api_3(container=container, handle=container_data)
+    api_4(container=container, handle=container_data)
 
     return
 
@@ -660,25 +662,6 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
     
     return
 
-def detonate_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    
-    unique_urls=[]
-    parameters = []
-    if handle:
-        for data in handle:
-            if data['bad'] == False:
-                if data['url'] not in unique_urls:
-                    unique_urls.append(data['url'])
-                    parameters.append({'url': data['url'],'context': {'artifact_id': data['artifact_id']}})
-    
-    if parameters:
-        phantom.debug("parameters for detonate file: {}".format(parameters))
-        return
-    
-        phantom.act("detonate url", parameters=parameters, assets=['cuckoo'], name="detonate_url_1")    
-    
-    return
-
 def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     if not success or not results:
@@ -759,32 +742,6 @@ def whois_domain_1(action=None, success=None, container=None, results=None, hand
     if parameters:
         phantom.act("whois domain", parameters=parameters, name="whois_domain_1", assets=assets)    
         
-    return
-
-def get_file_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets = get_filtered_assets("get file info", excluded_products=["Carbon Black"])
-    if not assets:
-        return
-    
-    # collect data for 'get_file_info_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'get_file_info_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            if len(container_item[0]) == 64:#length of SHA2s
-                parameters.append({
-                    'hash': container_item[0],
-                    # context (artifact id) is added to associate results with the artifact
-                    'context': {'artifact_id': container_item[1]},
-                })
-
-    if parameters:
-        phantom.act("get file info", parameters=parameters, assets=assets, name="get_file_info_1")    
-    
     return
 
 def hunt_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -1023,6 +980,123 @@ def detonate_file_1(action=None, success=None, container=None, results=None, han
     
     return
 
+def detonate_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    
+    unique_urls=[]
+    parameters = []
+    if handle:
+        for data in handle:
+            if data['bad'] == False:
+                if data['url'] not in unique_urls:
+                    unique_urls.append(data['url'])
+                    parameters.append({'url': data['url'],'context': {'artifact_id': data['artifact_id']}})
+    
+    if parameters:
+        phantom.debug("parameters for detonate file: {}".format(parameters))
+        return
+    
+        phantom.act("detonate url", parameters=parameters, assets=['cuckoo'], name="detonate_url_1")    
+    
+    return
+
+def api_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('api_2() called')
+
+    # collect data for 'pin_to_hud_6' call
+    dest_username = filter(lambda x: x[0], phantom.collect2(container=container, datapath=['artifact:*.cef.destinationUserName']))
+    sorc_username = filter(lambda x: x[0], phantom.collect2(container=container, datapath=['artifact:*.cef.sourceUserName']))
+
+    try:
+        pin_id = phantom.get_object(container_id=container['id'], key="pin2")[0]['value']['pin_id']
+    except:
+        pin_id = None
+    
+    if not pin_id:
+        ret_val, message, pin_id = phantom.pin(container=container, message="Affected Users", data=str(len(dest_username) + len(sorc_username)), pin_type="card_medium", pin_style="purple")
+    else:
+        # Delete and remake this one, for the sake of demonstration
+        ret_val, message = phantom.delete_pin(pin_id)
+        ret_val, message, pin_id = phantom.pin(container=container, message="Affected Users", data=str(len(dest_username) + len(sorc_username)), pin_type="card_medium", pin_style="purple")
+    
+    if ret_val:
+        phantom.save_object(container_id=container['id'], value={'pin_id': pin_id}, key="pin2")
+    else:
+        phantom.clear_object(container_id=container['id'], key="pin1")
+        phantom.debug("Failed to update or create pin: {0}".format(message))
+        
+    # set container properties for: 
+    update_data = {
+    }
+
+    phantom.update(container, update_data)
+
+    return
+
+def api_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('api_3() called')
+
+    # collect data for 'pin_to_hud_6' call
+    dest_domain = filter(lambda x: x[0], phantom.collect2(container=container, datapath=['artifact:*.cef.destinationDnsDomain']))
+    
+    try:
+        most_rcnt_domain = dest_domain[0][0]
+    except:
+        pass
+    else:
+        try:
+            pin_id = phantom.get_object(container_id=container['id'], key="pin3")[0]['value']['pin_id']
+        except:
+            pin_id = None
+        if not pin_id:
+            ret_val, message, pin_id = phantom.pin(container=container, message="Most Recent Domain", data=most_rcnt_domain, pin_type="card_medium", pin_style="red")
+        else:
+            ret_val, message = phantom.update_pin(pin_id, message="Most Recent Domain", data=most_rcnt_domain, pin_type="card_medium", pin_style="red")
+            
+        if ret_val:
+            phantom.save_object(container_id=container['id'], value={'pin_id': pin_id}, key="pin3")
+        else:
+            phantom.clear_object(container_id=container['id'], key="pin3")
+            phantom.debug("Failed to update or create pin: {0}".format(message))
+
+    # set container properties for: 
+    update_data = {
+    }
+
+    phantom.update(container, update_data)
+    return
+
+def api_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('api_4() called')
+
+    # collect data for 'pin_to_hud_6' call
+    dest_ip_artifacts = filter(lambda x: x[0], phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress']))
+    sorc_ip_artifacts = filter(lambda x: x[0], phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress']))
+
+    try:
+        pin_id = phantom.get_object(container_id=container['id'], key="pin4")[0]['value']['pin_id']
+    except:
+        pin_id = None
+        
+    if not pin_id:
+        ret_val, message, pin_id = phantom.pin(container=container, message="Affected IPs", data=str(len(dest_ip_artifacts) + len(sorc_ip_artifacts)), pin_type="card_medium", pin_style="white")
+        phantom.debug("New Pin")
+    else:
+        ret_val, message = phantom.update_pin(pin_id, message="Affected IPs", data=str(len(dest_ip_artifacts) + len(sorc_ip_artifacts)))
+    
+    if ret_val:
+        phantom.save_object(container_id=container['id'], value={'pin_id': pin_id}, key="pin4")
+    else:
+        phantom.clear_object(container_id=container['id'], key="pin4")
+        phantom.debug("Failed to update or create pin: {0}".format(message))
+
+    # set container properties for: 
+    update_data = {
+    }
+
+    phantom.update(container, update_data)
+
+    return
+
 def on_finish(container, summary):
 
     # This function is called after all actions are completed.
@@ -1043,14 +1117,13 @@ def on_finish(container, summary):
         for action_result in summary_json['result']:
             
             if 'action_run_id' in action_result:
+                ioc_count += len(action_result['app_runs'])
                 
                 action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=True, flatten=False)
                 if action_results:
                 
                     if action_results[0]['action'] in ip_actions:
                         data = is_ip_bad(action_results)
-                        phantom.debug(data)
-                        ioc_count += len(data)
                         for item in data:
                             if item['bad'] == True:
                                 bad_ioc_count += 1
@@ -1058,7 +1131,6 @@ def on_finish(container, summary):
                         
                     if action_results[0]['action'] in domain_actions:
                         data = is_domain_bad(action_results)
-                        ioc_count += len(data)
                         for item in data:
                             if item['bad'] == True:
                                 bad_ioc_count += 1
@@ -1066,7 +1138,6 @@ def on_finish(container, summary):
                         
                     if action_results[0]['action'] in url_actions:
                         data = is_url_bad(action_results)
-                        ioc_count += len(data)
                         for item in data:
                             if item['bad'] == True:
                                 bad_ioc_count += 1
@@ -1074,7 +1145,6 @@ def on_finish(container, summary):
                     
                     if action_results[0]['action'] in file_actions:
                         data = is_file_bad(action_results)
-                        ioc_count += len(data)
                         for item in data:
                             if item['bad'] == True:
                                 bad_ioc_count += 1
@@ -1082,14 +1152,20 @@ def on_finish(container, summary):
     
     if bad_ioc_count > 0:
         escalate(container)
-    data = "{0} of {1} IOCs confirmed malicious".format(bad_ioc_count, ioc_count)
-    pin_id = phantom.get_data("pin_id")
+    data = "{0} of {1} scans revealed bad IOC".format(bad_ioc_count, ioc_count)
+    
+    try:
+        pin_id = phantom.get_object(container_id=container['id'], key="pin1")[0]['value']['pin_id']
+    except:
+        pin_id = None
+        
     if not pin_id:
         ret_val, message, pin_id = phantom.pin(container=container, message="Malicious IOC", data=data, pin_type="card_large", pin_style="purple")
     else:
         ret_val, message = phantom.update_pin(pin_id=pin_id, data=data)
     if not ret_val:
+        phantom.clear_object(container_id=container['id'], key="pin1")
         phantom.debug("Failed to update or create pin: {0}".format(message))
     else:
-        phantom.save_data(pin_id, "pin_id")
+        phantom.save_object(container_id=container['id'], value={'pin_id': pin_id}, key="pin1")
     return
