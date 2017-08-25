@@ -773,7 +773,7 @@ def api_2(action=None, success=None, container=None, results=None, handle=None, 
 
 def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    assets = get_filtered_assets("ip reputation", ["ThreatStream"])
+    assets = get_filtered_assets("ip reputation", ["ThreatStream", "DeepSight", "MetaDefender", "OpenDNS Investigate"])
     if not assets:
         return
     
@@ -839,7 +839,7 @@ def domain_reputation(action=None, success=None, container=None, results=None, h
 
 def lookup_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    assets = get_filtered_assets("lookup domain")
+    assets = get_filtered_assets("lookup domain", ["MxToolbox"])
     if not assets:
         return
     
@@ -861,7 +861,7 @@ def lookup_domain_1(action=None, success=None, container=None, results=None, han
 
 def lookup_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    assets=get_filtered_assets("lookup ip")
+    assets=get_filtered_assets("lookup ip", ["MxToolbox", "DShield"])
     if not assets:
         return
     
@@ -883,7 +883,8 @@ def lookup_ip_1(action=None, success=None, container=None, results=None, handle=
 
 def geolocate_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    if not asset_configured("geolocate ip"):
+    assets = get_filtered_assets("geolocate ip", excluded_products=["HackerTarget"])
+    if not assets:
         return
     
     container_data = handle # in collected data, 0th item is source address and 1st item is destination address
@@ -898,7 +899,7 @@ def geolocate_ip_1(action=None, success=None, container=None, results=None, hand
             parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
 
     if parameters:
-        phantom.act("geolocate ip", parameters=parameters, name="geolocate_ip_1")    
+        phantom.act("geolocate ip", parameters=parameters, name="geolocate_ip_1", assets=assets)    
     
     return
 
@@ -948,7 +949,7 @@ def whois_domain_1(action=None, success=None, container=None, results=None, hand
 
 def hunt_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    assets = get_filtered_assets("hunt url")
+    assets = get_filtered_assets("hunt url", ["AutoFocus", "ThreatScape"])
     if not assets:
         return
     
@@ -991,7 +992,7 @@ def reverse_ip_1(action=None, success=None, container=None, results=None, handle
 
 def url_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    assets = get_filtered_assets("url reputation")
+    assets = get_filtered_assets("url reputation", ["Joe Sandbox", "DeepSight"])
     if not assets:
         return
     
@@ -1015,7 +1016,7 @@ def url_reputation_1(action=None, success=None, container=None, results=None, ha
 
 def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    assets = get_filtered_assets("file reputation", excluded_products=["ThreatStream"])
+    assets = get_filtered_assets("file reputation", excluded_products=["ThreatStream", "Joe Sandbox"])
     if not assets:
         return
     
@@ -1035,7 +1036,7 @@ def file_reputation_1(action=None, success=None, container=None, results=None, h
 
 def hunt_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    assets = get_filtered_assets("hunt ip")
+    assets = get_filtered_assets("hunt ip", ["AutoFocus", "ThreatScape"])
     if not assets:
         return
     
@@ -1079,7 +1080,7 @@ def reverse_domain_1(action=None, success=None, container=None, results=None, ha
 
 def hunt_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
-    assets= get_filtered_assets("hunt file", excluded_products=["Carbon Black", "Carbon Black Protection","CylancePROTECT", "ThreatScape", "AutoFocus"])
+    assets= get_filtered_assets("hunt file", excluded_products=["Carbon Black", "Carbon Black Protection","CylancePROTECT", "ThreatScape", "AutoFocus", "ProtectWise"])
     if not assets:
         return
     
