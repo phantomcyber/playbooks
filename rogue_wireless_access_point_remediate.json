@@ -1,0 +1,2782 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "misc": { "apps_list": ["SSH", "HTTP"] },
+    "coa": {
+        "data": {
+            "clean": true,
+            "code_block": "import re\n\n# parse the wireless scan results returned from ssh and save the run_data with key 'parsed_access_points'\ndef parse_and_save_iwlist(iwlist):\n    phantom.debug('parsing the iwlist data returned from the wireless scan')\n    \n    iwlist = iwlist[0][0]\n    \n    if not iwlist:\n        phantom.error(\"no results were received from the wifi sensor\")\n        return\n    \n    if 'Scan completed' not in iwlist.split('\\n')[0]:\n        phantom.error(\"failed to parse the results of iwlist\")\n        return\n    \n    # disregard the first line\n    iwlist = iwlist.split('\\n', 1)[1]\n    \n    # split on the string that starts the results for each access point (iwlist calls them \"Cells\")\n    access_points = re.split(\"          Cell \", iwlist)\n    access_points = access_points[1:]\n        \n    # parse out the mac address, ESSID, radio frequency, signal strength, and security protocol\n    for i, access_point in enumerate(access_points):\n        lines = access_point.split('\\n')\n        access_points[i] = {}\n        if re.match('\\d+ - Address: ', lines[0]):\n            access_points[i]['mac_address'] = lines[0].split(' - Address: ')[-1]\n        else:\n            phantom.error('failed to parse one of the access_points returned from iwlist')\n            return\n        \n        for line in lines[1:]:\n            if re.match('                    ESSID:\"', line):\n                access_points[i]['ESSID'] = line.split('ESSID:')[-1].strip('\"')\n            if re.match('                    Frequency:\\d', line):\n                access_points[i]['radio_frequency'] = line.split('Frequency:')[-1].strip()\n            if re.match('                    Quality=\\d', line):\n                access_points[i]['signal_strength'] = line.strip()\n            if re.match('                    IE: IEEE 802.11i', line):\n                access_points[i]['security_protocol'] = line.split('IE:')[-1].strip()\n        \n        # no string matching \"IEEE 802.11i\" means plaintext\n        if not access_points[i].get('security_protocol'):\n            access_points[i]['security_protocol'] = 'plaintext'\n\n    phantom.debug('parsed out the following wifi access points:')\n    phantom.debug(access_points)\n    \n    phantom.save_run_data(value=json.dumps(access_points), key='parsed_access_points')\n    \n    return\n\ndef parse_and_save_live_case(live_case_body):\n    phantom.debug('parsing the id of the live case to update')\n    \n    phantom.debug(live_case_body)\n    \n    live_case_id = live_case_body[0][0]['data'][0]['id']\n    phantom.debug('tracking wireless scans in the case with id {}'.format(live_case_id))\n    phantom.save_run_data(value=str(live_case_id), key='live_case_id')\n    \n    live_case_owner = live_case_body[0][0]['data'][0]['owner_name']\n    phantom.debug('this case is owned by {}'.format(live_case_owner))\n    phantom.save_run_data(value=json.dumps(live_case_owner), key='live_case_owner')\n    \n    return\n\n# write a one-line comment to the activity feed\ndef live_comment(message):\n    live_case_id = int(phantom.get_run_data(key='live_case_id'))\n    phantom.comment(container=live_case_id, comment=message)\n    return\n\ndef edit_distance(s1, s2):\n\n    # ignore non-letters and upper-case vs lower-case\n    s1 = s1.lower()\n    s1 = re.sub(r'[^a-z]', '', s1) \n    s2 = s2.lower()\n    s2 = re.sub(r'[^a-z]', '', s2) \n    \n    # ignore the potential usage of some generic terms\n    for generic in ['wifi', 'wireless', 'network', 'official', 'corp', 'corporate']:\n        s1 = re.sub(generic, '', s1) \n        s2 = re.sub(generic, '', s2) \n\n    # switch the order to make sure s1 is not shorter\n    if len(s1) < len(s2):\n        return edit_distance(s2, s1) \n\n    # len(s1) >= len(s2)\n    if len(s2) == 0:\n        return len(s1)\n\n    distances = range(len(s2) + 1)\n    # iterate through each character in s1\n    for i in range(len(s1)):\n        next_distances = []\n        next_distances.append(i + 1)\n        # iterate through each character in s2\n        for j in range(len(s2)):\n            # insert a new character\n            distance = distances[j + 1] + 1 \n            # delete a character\n            distance = min(distance, next_distances[j] + 1)\n            # change a character\n            if s1[i] != s2[j]:\n                distance = min(distance, distances[j] + 1)\n            # no change\n            if s1[i] == s2[j]:\n                distance = min(distance, distances[j])\n            # keep the smallest edit\n            next_distances.append(distance)\n\n        distances = next_distances\n\n    return next_distances[-1]",
+            "description": "This playbook helps the security team detect and remove rogue wireless access points (WAPs). A Raspberry Pi 3 with a battery pack is used as a mobile scanner, periodically polling the 2.4 GHz frequency and collecting the ESSID (network name), MAC address, channel, signal strength, signal quality, and security protocol of each WAP in range. The results of each scan are compared against a whitelist of known-good network names and a greylist of potential \"evil twin\" network names. The results are tracked live using artifacts and Heads-up Display pins posted to the most recently created Case with the label \"wireless\". Finally, a team member is tasked to carry around the Raspberry Pi and use the live feed of MAC addresses and signal strengths to locate the rogue WAPs and remove them.",
+            "joint": {
+                "cells": [
+                    {
+                        "0": "E",
+                        "1": "N",
+                        "2": "D",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".title": {
+                                "text": "END"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "color": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "find and disable rogue ap",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "563d1367-72b5-41e0-974e-9adf9d2e673f",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 396,
+                        "line_start": 383,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 2060,
+                            "y": 140
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 48,
+                            "width": 96
+                        },
+                        "status": "",
+                        "title": "END",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 2
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "41b5bdfb-0ac5-40de-a062-c4e3b429a9ab",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "49deab62-9461-4a9e-bfc3-e183e006f4de",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "4964f17a-7ebd-4d59-8f42-580e22eb9dde",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 3
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "59fc59f6-2554-4f2d-9d86-9c0d2833078c",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "49deab62-9461-4a9e-bfc3-e183e006f4de",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "be41ad2e-018e-4de8-9720-2896a262f460",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 7
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "7e098aad-bf0c-44b3-9c4c-3338784bb7d9",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "4964f17a-7ebd-4d59-8f42-580e22eb9dde",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "8790fc00-3051-4158-bb6e-20f66a3c867f",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 11
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "404613f9-647d-4c9a-a013-7a7b4f1df67f",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "be41ad2e-018e-4de8-9720-2896a262f460",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "8790fc00-3051-4158-bb6e-20f66a3c867f",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 13
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "4986e121-aeb7-4da7-9da5-2444dd002f20",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "8790fc00-3051-4158-bb6e-20f66a3c867f",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "4d6904dc-99d6-4ed7-90e7-1e8e583b2660",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 14
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "f0f98c34-7b66-49b2-b9f3-8a008f9ed11f",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "4d6904dc-99d6-4ed7-90e7-1e8e583b2660",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "bf8878a1-2cde-433b-bf1b-0c918341606c",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 16
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "c6959f32-6a84-4493-8016-674c5006f332",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "bf8878a1-2cde-433b-bf1b-0c918341606c",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "097d2727-fabe-4242-85ab-8fc8b57e7462",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 18
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "f4f1c82d-6a17-498f-995d-c4bc51083c4d",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "097d2727-fabe-4242-85ab-8fc8b57e7462",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "d71da3fe-1f03-43d3-ba30-befd63c21567",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 20
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "514c4391-a1f6-4f96-a165-875dffe8fdbb",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "d71da3fe-1f03-43d3-ba30-befd63c21567",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "d0842145-1776-441f-bde9-34222c879e21",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 22
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "0de9da16-2827-4db8-8cc3-4e6eb43c4243",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "d0842145-1776-441f-bde9-34222c879e21",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "f96874dd-7422-49ce-9771-cdaa0a20cc10",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 24
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "26d3d53c-cac9-4d2a-9b26-21fcd4ffc286",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "f96874dd-7422-49ce-9771-cdaa0a20cc10",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "563d1367-72b5-41e0-974e-9adf9d2e673f",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 26
+                    },
+                    {
+                        "0": "S",
+                        "1": "T",
+                        "2": "A",
+                        "3": "R",
+                        "4": "T",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "START"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "color": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'execute_program_1' block\n    execute_program_1(container=container)\n\n    # call 'find_case' block\n    find_case(container=container)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "49deab62-9461-4a9e-bfc3-e183e006f4de",
+                        "inPorts": [],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 146,
+                        "line_start": 135,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 40,
+                            "y": 140
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 48,
+                            "width": 96
+                        },
+                        "status": "",
+                        "title": "START",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 66
+                    },
+                    {
+                        "action": "add artifact",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "cef_name": "",
+                            "cef_value": "",
+                            "container_id": "",
+                            "contains": "",
+                            "label": "",
+                            "name": ""
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "app_name": "Phantom",
+                                "app_version": "2.0.18",
+                                "fields": {
+                                    "cef_name": "",
+                                    "cef_value": "",
+                                    "container_id": "",
+                                    "contains": "",
+                                    "label": "",
+                                    "name": ""
+                                },
+                                "name": "helper",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.success",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.summary.server",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.artifact id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.label",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "phantom container id"
+                                        ],
+                                        "data_path": "action_result.parameter.container_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.contains",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.cef_name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "*"
+                                        ],
+                                        "data_path": "action_result.parameter.cef_value",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.failed",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.existing_artifact_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.container id",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "product_name": "Phantom",
+                                "product_vendor": "Phantom"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "collect data"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#5094D4"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Generic"
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def add_artifact_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('add_artifact_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'add_artifact_1' call\n\n    parameters = []\n    \n    # build parameters list for 'add_artifact_1' call\n    parameters.append({\n        'name': \"\",\n        'container_id': \"\",\n        'label': \"\",\n        'contains': \"\",\n        'cef_name': \"\",\n        'cef_value': \"\",\n    })\n\n    phantom.act(\"add artifact\", parameters=parameters, assets=['helper'], callback=add_artifact_2, name=\"add_artifact_1\", parent_action=action)    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": true,
+                        "connection_name": "execute program, find case",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def collect_data(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('collect_data() called')\n    \n    iwlist = phantom.collect2(container=container, datapath=['execute_program_1:action_result.data.*.output',\n                                                             'execute_program_1:action_result.parameter.context.artifact_id'],\n                              action_results=results)\n    parse_and_save_iwlist(iwlist)\n    \n    live_case_body = phantom.collect2(container=container, datapath=['find_case:action_result.data.*.response_body'], action_results=results)\n    parse_and_save_live_case(live_case_body)\n\n    check_whitelist(container=container)\n    \n    return",
+                        "custom_join": "",
+                        "custom_name": "collect data",
+                        "delay": 0,
+                        "description": "Join together the execution paths of the SSH command and the HTTP query, then call utility functions in the Global Block to parse the results of each and save the necessary data using phantom.save_run_data().\n\nIf using a different version of iwlist or using a different scanning tool, the function parse_and_save_iwlist() may need to be modified.",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "8790fc00-3051-4158-bb6e-20f66a3c867f",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "def join_collect_data(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('join_collect_data() called')\n\n    # check if all connected incoming actions are done i.e. have succeeded or failed\n    if phantom.actions_done([ 'execute_program_1', 'find_case' ]):\n        \n        # call connected block \"collect_data\"\n        collect_data(container=container, handle=handle)\n    \n    return",
+                        "join_optional": [],
+                        "join_start": 166,
+                        "line_end": 177,
+                        "line_start": 151,
+                        "message": "",
+                        "name": "add artifact",
+                        "notes": "Join together the execution paths of the SSH command and the HTTP query, then call utility functions in the Global Block to parse the results of each and save the necessary data using phantom.save_run_data().",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 580,
+                            "y": 120
+                        },
+                        "previous_function": "",
+                        "previous_name": "collect_data",
+                        "required_params": {},
+                        "reviewer": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Generic",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 143
+                    },
+                    {
+                        "action": "add artifact",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "cef_name": "",
+                            "cef_value": "",
+                            "container_id": "",
+                            "contains": "",
+                            "label": "",
+                            "name": ""
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "app_name": "Phantom",
+                                "app_version": "2.0.18",
+                                "fields": {
+                                    "cef_name": "",
+                                    "cef_value": "",
+                                    "container_id": "",
+                                    "contains": "",
+                                    "label": "",
+                                    "name": ""
+                                },
+                                "name": "helper",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.success",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.summary.server",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.artifact id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.label",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "phantom container id"
+                                        ],
+                                        "data_path": "action_result.parameter.container_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.contains",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.cef_name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "*"
+                                        ],
+                                        "data_path": "action_result.parameter.cef_value",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.failed",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.existing_artifact_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.container id",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "product_name": "Phantom",
+                                "product_vendor": "Phantom"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "check whitelist"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#5094D4"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Generic"
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def add_artifact_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('add_artifact_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'add_artifact_2' call\n\n    parameters = []\n    \n    # build parameters list for 'add_artifact_2' call\n    parameters.append({\n        'name': \"\",\n        'container_id': \"\",\n        'label': \"\",\n        'contains': \"\",\n        'cef_name': \"\",\n        'cef_value': \"\",\n    })\n\n    phantom.act(\"add artifact\", parameters=parameters, assets=['helper'], callback=add_artifact_3, name=\"add_artifact_2\", parent_action=action)    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": true,
+                        "connection_name": "collect data",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def check_whitelist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('check_whitelist() called')\n    \n    parsed_access_points = json.loads(phantom.get_run_data(key='parsed_access_points'))\n    \n    success, message, whitelist = phantom.get_list(list_name='Example Company WiFi ESSID Whitelist')\n    \n    whitelist_filtered_access_points = [\n        ap for ap in parsed_access_points \n        if (\n            # all ESSIDs that aren't in the whitelist are suspicious\n            [ap[\"ESSID\"]] not in whitelist\n            or\n            # all non-WPA2 access points are suspicious\n            'WPA2' not in ap['security_protocol']\n        )\n    ]\n\n    message = 'out of the {} access points identified by the scan, {} matched the whitelist and are being ignored'.format(len(parsed_access_points), len(parsed_access_points) - len(whitelist_filtered_access_points))\n    phantom.debug(message)\n    live_comment(message)\n    \n    phantom.save_run_data(value=json.dumps(whitelist_filtered_access_points), key='whitelist_filtered_access_points')\n    \n    check_greylist() \n    \n    return",
+                        "custom_join": "",
+                        "custom_name": "check whitelist",
+                        "delay": 0,
+                        "description": "Check the results of the WiFi scan against our whitelist of official company networks which are saved as a Custom List called \"Example Company WiFi ESSID Whitelist\". Stop investigating any networks that are both on the whitelist and are using WPA2.\n\nIn this case we are not pursuing further investigation of WPA2 networks that match the whitelist because our client devices will not automatically connect to them.",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "4d6904dc-99d6-4ed7-90e7-1e8e583b2660",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 210,
+                        "line_start": 182,
+                        "message": "",
+                        "name": "add artifact",
+                        "notes": "Check the results of the WiFi scan against our whitelist of official company networks which are saved as a Custom List called \"Example Company WiFi ESSID Whitelist\". Stop investigating any networks that are both on the whitelist and are using WPA2.",
+                        "number": 2,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 820,
+                            "y": 120
+                        },
+                        "previous_function": "",
+                        "previous_name": "check_whitelist",
+                        "required_params": {},
+                        "reviewer": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Generic",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 150
+                    },
+                    {
+                        "action": "add artifact",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "cef_name": "",
+                            "cef_value": "",
+                            "container_id": "",
+                            "contains": "",
+                            "label": "",
+                            "name": ""
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "app_name": "Phantom",
+                                "app_version": "2.0.18",
+                                "fields": {
+                                    "cef_name": "",
+                                    "cef_value": "",
+                                    "container_id": "",
+                                    "contains": "",
+                                    "label": "",
+                                    "name": ""
+                                },
+                                "name": "helper",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.success",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.summary.server",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.artifact id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.label",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "phantom container id"
+                                        ],
+                                        "data_path": "action_result.parameter.container_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.contains",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.cef_name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "*"
+                                        ],
+                                        "data_path": "action_result.parameter.cef_value",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.failed",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.existing_artifact_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.container id",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "product_name": "Phantom",
+                                "product_vendor": "Phantom"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "get pins"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#5094D4"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Generic"
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def add_artifact_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('add_artifact_4() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'add_artifact_4' call\n\n    parameters = []\n    \n    # build parameters list for 'add_artifact_4' call\n    parameters.append({\n        'name': \"\",\n        'container_id': \"\",\n        'label': \"\",\n        'contains': \"\",\n        'cef_name': \"\",\n        'cef_value': \"\",\n    })\n\n    phantom.act(\"add artifact\", parameters=parameters, assets=['helper'], callback=api_1, name=\"add_artifact_4\", parent_action=action)    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": true,
+                        "connection_name": "check greylist",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def get_pins(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_pins() called')\n    \n    live_case = phantom.get_run_data(key='live_case_id')\n    \n    parameters = []\n    \n    # build the container_pin filter url using the live case id\n    parameters.append({\n        'location': \"/rest/container_pin?page_size=0&_filter_container=\" + live_case,\n        'verify_certificate': False,\n        'headers': \"\",\n    })\n\n    phantom.act(\"get data\", parameters=parameters, assets=['http'], callback=update_case, name=\"get_pins\")    \n    \n    return",
+                        "custom_join": "",
+                        "custom_name": "get pins",
+                        "delay": 0,
+                        "description": "Retrieve a list of all the cards currently pinned to the Heads-up Display of the Case that will be used to track the results.",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "097d2727-fabe-4242-85ab-8fc8b57e7462",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 269,
+                        "line_start": 251,
+                        "message": "",
+                        "name": "add artifact",
+                        "notes": "Retrieve a list of all the cards currently pinned to the Heads-up Display of the Case that will be used to track the results.",
+                        "number": 4,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1300,
+                            "y": 120
+                        },
+                        "previous_function": "",
+                        "previous_name": "get_pins",
+                        "required_params": {},
+                        "reviewer": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Generic",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 153
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".api": {
+                                "text": "update case"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def api_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('api_1() called')\n    \n    decision_1(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "color": "",
+                        "configured": [],
+                        "connected_to_start": true,
+                        "connection_name": "get pins",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def update_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('update_case() called')\n    \n    get_pins_body = phantom.collect2(container=container, datapath=['get_pins:action_result.data.*.response_body'], action_results=results)\n\n    # get the necessary run_data\n    fuzzy_matched_access_points = json.loads(phantom.get_run_data(key='fuzzy_matched_access_points'))\n    live_case_id = int(phantom.get_run_data(key='live_case_id'))\n\n    # delete all the existing pins to prevent duplicates\n    for pin in get_pins_body[0][0]['data']:\n        phantom.delete_pin(int(pin['id']))\n    \n    # add a pin for each ap that fuzzy-matched the greylist\n    for ap in fuzzy_matched_access_points:\n        if ap['is_escalated']:\n            phantom.pin(container=live_case_id, message=ap['signal_strength'], data=ap['mac_address'], pin_type=\"card_medium\", pin_style=\"red\")\n            phantom.add_artifact(\n                container=live_case_id,\n                raw_data={},\n                cef_data=ap,\n                label='wireless',\n                name='suspicious access point detection',\n                severity='high',\n                identifier=None,\n                artifact_type='network')\n    \n    decision_1(container=container)\n\n    return",
+                        "custom_join": "",
+                        "custom_name": "update case",
+                        "description": "Update the Case with artifacts and Heads-up Display cards containing the results of this playbook run. This overwrites all existing Heads-up Display cards to keep the signal strength values fresh and prevent duplicates, but the artifacts will not be deleted so they will be sortable by timestamp for a historical record.",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "d71da3fe-1f03-43d3-ba30-befd63c21567",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 303,
+                        "line_start": 272,
+                        "message": "",
+                        "name": "api",
+                        "notes": "Update the Case with artifacts and Heads-up Display cards containing the results of this playbook run. This overwrites all existing Heads-up Display cards to keep the signal strength values fresh and prevent duplicates, but the artifacts will not be deleted so they will be sortable by timestamp for a historical record.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1540,
+                            "y": 120
+                        },
+                        "previous_function": "",
+                        "previous_name": "update_case",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "api",
+                        "status": "",
+                        "type": "coa.API",
+                        "warn": false,
+                        "z": 161
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            }
+                        },
+                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "get pins",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    live_case_owner = phantom.get_run_data(key='live_case_owner')\n    live_case_owner = json.loads(live_case_owner)\n    \n    # only task a responder if there is no owner yet\n    if not live_case_owner:\n        find_and_disable_rogue_ap()\n\n    return",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "Only proceed to assign a task if the Case has no owner. This prevents duplicate task assignments while the responder is actively completing the task.",
+                        "hasElse": false,
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "d0842145-1776-441f-bde9-34222c879e21",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 318,
+                        "line_start": 306,
+                        "name": "decision",
+                        "notes": "Only proceed to assign a task if the Case has no owner. This prevents duplicate task assignments while the responder is actively completing the task.",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "",
+                                        "value": ""
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1780,
+                            "y": 120
+                        },
+                        "previous_function": "",
+                        "previous_name": "decision_1",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "decision",
+                        "status": "",
+                        "type": "coa.Decision",
+                        "warn": false,
+                        "z": 165
+                    },
+                    {
+                        "action": "get data",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "headers": "",
+                            "location": "rest/container?_filter_label=\"wireless\"&_filter_container_type=\"case\"&sort=start_time&order=desc&page_size=1",
+                            "verify_certificate": "False"
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "app_name": "HTTP",
+                                "app_version": "2.0.10",
+                                "fields": {
+                                    "headers": "",
+                                    "location": "rest/container?_filter_label=\"wireless\"&_filter_container_type=\"case\"&sort=start_time&order=desc&page_size=1",
+                                    "verify_certificate": "False"
+                                },
+                                "name": "http",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.data.*.method",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.location",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.response_body",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.response_headers",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.status_code",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.reason",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.headers",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.location",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.verify_certificate",
+                                        "data_type": "boolean"
+                                    }
+                                ],
+                                "product_name": "HTTP",
+                                "product_vendor": "Generic"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "find case"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#5094D4"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Generic"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def find_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('find_case() called')\n\n    # collect data for 'find_case' call\n\n    parameters = []\n    \n    # build parameters list for 'find_case' call\n    parameters.append({\n        'headers': \"\",\n        'location': \"rest/container?_filter_label=\\\"wireless\\\"&_filter_container_type=\\\"case\\\"&sort=start_time&order=desc&page_size=1\",\n        'verify_certificate': False,\n    })\n\n    phantom.act(\"get data\", parameters=parameters, assets=['http'], callback=join_collect_data, name=\"find_case\")    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "find case",
+                        "delay": 0,
+                        "description": "Use the HTTP app to query the REST API of this Phantom instance for the most recently created Case with the label Wireless. This is the Case that will be updated with new artifacts and Heads-up Display information containing the results of the WiFi scan.\n\nWhen testing and using this playbook it may be helpful to open up this Case in Mission Control to monitor the output.",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "be41ad2e-018e-4de8-9720-2896a262f460",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 360,
+                        "line_start": 342,
+                        "message": "",
+                        "name": "get data",
+                        "notes": "Use the HTTP app to query the REST API of this Phantom instance for the most recently created Case with the label Wireless. This is the Case that will be updated with new artifacts and Heads-up Display information containing the results of the WiFi scan.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 280,
+                            "y": 180
+                        },
+                        "previous_function": "",
+                        "previous_name": "find_case",
+                        "required_params": {},
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Generic",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 173
+                    },
+                    {
+                        "action": "add artifact",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "cef_name": "",
+                            "cef_value": "",
+                            "container_id": "",
+                            "contains": "",
+                            "label": "",
+                            "name": ""
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "app_name": "Phantom",
+                                "app_version": "2.0.18",
+                                "fields": {
+                                    "cef_name": "",
+                                    "cef_value": "",
+                                    "container_id": "",
+                                    "contains": "",
+                                    "label": "",
+                                    "name": ""
+                                },
+                                "name": "helper",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.success",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.summary.server",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.artifact id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.label",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "phantom container id"
+                                        ],
+                                        "data_path": "action_result.parameter.container_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.contains",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.cef_name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "*"
+                                        ],
+                                        "data_path": "action_result.parameter.cef_value",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.failed",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.existing_artifact_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.container id",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "product_name": "Phantom",
+                                "product_vendor": "Phantom"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "check greylist"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#5094D4"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Generic"
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def add_artifact_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('add_artifact_3() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'add_artifact_3' call\n\n    parameters = []\n    \n    # build parameters list for 'add_artifact_3' call\n    parameters.append({\n        'name': \"\",\n        'container_id': \"\",\n        'label': \"\",\n        'contains': \"\",\n        'cef_name': \"\",\n        'cef_value': \"\",\n    })\n\n    phantom.act(\"add artifact\", parameters=parameters, assets=['helper'], callback=add_artifact_4, name=\"add_artifact_3\", parent_action=action)    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": true,
+                        "connection_name": "check whitelist",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def check_greylist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('check_greylist() called')\n    \n    edit_distance_threshold = 5\n    \n    success, message, potentials = phantom.get_list(list_name='Potential Rogue Access Point ESSIDs')\n    whitelist_filtered_access_points = json.loads(phantom.get_run_data(key='whitelist_filtered_access_points'))\n    \n    scanned_ESSIDs = [ap['ESSID'] for ap in whitelist_filtered_access_points]\n    \n    # compare each ESSID against each potential evil twin and escalate those with a sufficiently small edit distance\n    matches = 0\n    for ap in whitelist_filtered_access_points:\n        ap['is_escalated'] = False\n        ap['matched_rule'] = None\n        for potential in potentials:\n            if edit_distance(ap['ESSID'], potential[0]) < edit_distance_threshold:\n                ap['is_escalated'] = True\n                ap['matched_rule'] = potential\n                matches += 1\n                break\n\n    message = '{} out of {} access points fuzzy-matched \"Potential Rogue Access Point ESSIDs\"'.format(\n        matches, len(whitelist_filtered_access_points))\n    phantom.debug(message)\n    live_comment(message)\n\n    phantom.save_run_data(value=json.dumps(whitelist_filtered_access_points), key='fuzzy_matched_access_points')\n\n    get_pins()\n    \n    return",
+                        "custom_join": "",
+                        "custom_name": "check greylist",
+                        "delay": 0,
+                        "description": "Check the remaining access points against a greylist of several possible network names that an attacker might use to spoof an official company network. The greylist is loaded from the Custom List called \"Potential Rogue Access Point ESSIDs\". To account for small variations in network names, a Levenshtein edit distance is used so even non-exact matches will be considered suspicious.\n\nThe resulting artifact saved to the Case will have a field called \"matched_rule\", which will show the first entry from the Custom List that matches the given network name.",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "bf8878a1-2cde-433b-bf1b-0c918341606c",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 248,
+                        "line_start": 215,
+                        "message": "",
+                        "name": "add artifact",
+                        "notes": "Check the remaining access points against a greylist of several possible network names that an attacker might use to spoof an official company network. The greylist is loaded from the Custom List called \"Potential Rogue Access Point ESSIDs\". To account for small variations in network names, a Levenshtein edit distance of 5 is used so even non-exact matches will be considered suspicious.",
+                        "number": 3,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1060,
+                            "y": 120
+                        },
+                        "previous_function": "",
+                        "previous_name": "check_greylist",
+                        "required_params": {},
+                        "reviewer": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Generic",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 176
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "approver": "",
+                        "attrs": {
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            }
+                        },
+                        "block_code": "def task_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('task_1() called')\n    \n    # set user and message variables for phantom.task call\n    user = \"\"\n    message = \"\"\n\n    phantom.task(user=user, message=message, respond_in_mins=30, name=\"task_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "connected_to_start": true,
+                        "connection_name": "get pins",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def find_and_disable_rogue_ap(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('find_and_disable() called')\n    \n    live_case_id = phantom.get_run_data(key='live_case_id')\n    \n    # set user and message variables for phantom.task call\n    user = \"admin\"\n    message = \"Walk around the office with the Raspberry Pi. Use the MAC addresses and signal strengths on the Heads-up Display of Case #{} to find the potential rogue access points. For each one, consider doing a packet capture to find other devices that are connecting to it. Also consider unplugging it, placing it in a faraday cage, and bringing it back to the security operations center for further forensic analysis.\".format(live_case_id)\n\n    phantom.task(user=user, message=message, respond_in_mins=30, name=\"find_and_disable_rogue_ap\")\n    \n    # set the case owner to the same user\n    phantom.set_owner(container=int(live_case_id), user=user)\n\n    return",
+                        "custom_join": "",
+                        "custom_name": "find and disable rogue ap",
+                        "description": "Assign a manual task for an operator to remediate. The HUD can be used to live-track the MAC addresses and signal strengths of the identified access points.",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "f96874dd-7422-49ce-9771-cdaa0a20cc10",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 337,
+                        "line_start": 321,
+                        "message": "",
+                        "name": "task",
+                        "notes": "Assign a manual task for an operator to go and physically disable the access points. The HUD can be used to live-track the MAC addresses and signal strengths of the identified access points.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1920,
+                            "y": 120
+                        },
+                        "previous_function": "",
+                        "previous_name": "find_and_disable_rogue_ap",
+                        "respond_in": "30",
+                        "show_number": true,
+                        "size": {
+                            "height": 80,
+                            "width": 80
+                        },
+                        "state": "task",
+                        "status": "",
+                        "type": "coa.Task",
+                        "warn": false,
+                        "z": 177
+                    },
+                    {
+                        "action": "execute program",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "command": "sudo /sbin/iwlist wlan0 scanning",
+                            "ip_hostname": "192.168.1.100",
+                            "timeout": ""
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "app_name": "SSH",
+                                "app_version": "1.0.32",
+                                "fields": {
+                                    "command": "sudo /sbin/iwlist wlan0 scanning",
+                                    "ip_hostname": "192.168.1.100",
+                                    "timeout": ""
+                                },
+                                "name": "raspberry_pi_ssh",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.data.*.output",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.command",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip",
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.timeout",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.exit_status",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "product_name": "SSH",
+                                "product_vendor": "Generic"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "execute program"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#5094D4"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Generic"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def execute_program_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('execute_program_1() called')\n\n    # collect data for 'execute_program_1' call\n\n    parameters = []\n    \n    # build parameters list for 'execute_program_1' call\n    parameters.append({\n        'ip_hostname': \"192.168.1.100\",\n        'command': \"sudo /sbin/iwlist wlan0 scanning\",\n        'timeout': \"\",\n    })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['raspberry_pi_ssh'], callback=join_collect_data, name=\"execute_program_1\")    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Scan all WiFi access points in range of the Raspberry Pi using the command \"iwlist wlan0 scanning\". The following information will be returned for each access point: ESSID (network name), MAC address, channel, signal strength, signal quality, and security protocol.\n\nIf adapting to scan from a Windows machine, \"netsh.exe\" should be able to list access points in range.",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "4964f17a-7ebd-4d59-8f42-580e22eb9dde",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 383,
+                        "line_start": 365,
+                        "message": "",
+                        "name": "execute program",
+                        "notes": "Scan all WiFi access points in range of the Raspberry Pi using the command \"iwlist wlan0 scanning\". The following information will be returned for each access point: ESSID (network name), MAC address, channel, signal strength, signal quality, and security protocol.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 280,
+                            "y": 60
+                        },
+                        "previous_function": "",
+                        "previous_name": "execute_program_1",
+                        "required_params": {
+                            "command": true,
+                            "ip_hostname": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Generic",
+                        "type": "coa.Action",
+                        "warn": "",
+                        "z": 179
+                    }
+                ]
+            },
+            "notes": "This playbook uses the following Apps:\n - SSH (execute program) [asset name = raspberry_pi_ssh]\n - HTTP (get data) [asset name = http] (the app should be configured with the address and credentials of the REST API of this Phantom instance)\n\nAfter the first two simultaneous actions, custom code is used for all other blocks.\n\nThis playbook was developed by scanning with a Raspberry Pi 3 running Raspbian 8.0, but the scanner could be any Linux machine with the package \"wireless-tools\". If using the Pi 3, the built-in WiFi chip only supports 2.4 GHz, so 5 GHz access points will not be visible.\n\nThe following hard-coded values are used and may need to be changed:\n - \"192.168.1.100\" is the IP address of the Raspberry Pi in the \"execute program\" action\n - \"wlan0\" is the name of the WiFi interface on the Raspberry Pi, which is used in the \"execute program\" action\n - the custom Phantom label \"wireless\" is used for artifacts and containers associated with this playbook. The most recently-created Case with this label will be used to track the results of this playbook.\n - the custom list \"Example Company WiFi ESSID Whitelist\" is used as a whitelist of the official company WiFi network names (for instance, if our company is called Example Company we might use the networks \"Example Company Staff\" and \"Example Company Guest\")\n - the custom list \"Potential Rogue Access Point ESSIDs\" is used as a greylist of possible network names used to spoof official company wireless (for instance, if our company is called Example Company, populate this list with strings like: \"Example Company\", \"ECompany\", \"EComp\", \"Ec Inc\", and \"ExmplCmpny\")\n - the threshold of the Levenshtein edit distance used in \"check greylist\" is hard-coded to 5. This may generate some false positives, particularly around shorter network names or network names with mostly numbers or special characters.\n - the Phantom user \"admin\" will be assigned the task of finding and disabling any rogue access points that are identified\n\nThe suggested workflow for using this playbook is to setup a Generator or external source to create a container with the label Wireless whenever a scan is desired. Then create a new Case with the label Wireless to track each batch of scans. The playbook will find that Case and keep the HUD updated for each run of the scan. When a Task is sent, the operator can open Mission Control on a wireless device and take the Raspberry Pi around the building, watching the signal strength change on the HUD until close enough to see the access point. Once that access point is physically disabled it will not show up in the next HUD refresh and the operator can move on to the next access point."
+        },
+        "schema": 2,
+        "version": "3.0.250"
+    },
+    "create_time": "2017-09-20T19:44:32.185670+00:00",
+    "draft_mode": false,
+    "labels": [
+        "wireless"
+    ]
+}
