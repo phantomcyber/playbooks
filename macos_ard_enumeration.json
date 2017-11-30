@@ -1,0 +1,1136 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "misc": { "apps_list": ["nmap"] },
+    "coa": {
+        "data": {
+            "clean": true,
+            "code_block": "",
+            "description": "This helper playbook uses an nmap scan to build a custom list of endpoints running an open service on TCP port 5900. This custom list will be used to enumerate MacOS High Sierra endpoints to respond to the 2017-11-28 disclosure of root user access without a password.",
+            "joint": {
+                "cells": [
+                    {
+                        "0": "S",
+                        "1": "T",
+                        "2": "A",
+                        "3": "R",
+                        "4": "T",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "START"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "color": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'scan_port_5900' block\n    scan_port_5900(container=container)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "7dfde59b-b847-4204-82bf-c8800be8fae7",
+                        "inPorts": [],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 17,
+                        "line_start": 9,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 100,
+                            "y": 100
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 48,
+                            "width": 96
+                        },
+                        "status": "",
+                        "title": "START",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 1
+                    },
+                    {
+                        "0": "E",
+                        "1": "N",
+                        "2": "D",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".title": {
+                                "text": "END"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "none",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "color": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "scan port 5900",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "1a5d00fc-571a-4247-b399-a39ab05c3755",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 88,
+                        "line_start": 75,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 880,
+                            "y": 100
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 48,
+                            "width": 96
+                        },
+                        "status": "",
+                        "title": "END",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 2
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "3f240ef9-8374-4d9e-9a85-a544f18febc7",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "7dfde59b-b847-4204-82bf-c8800be8fae7",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "b8643fe9-c965-4b9d-9ba5-83ca2ebb58f7",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 3
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "04b83ea1-d5f8-43c3-a35f-f4ed0b7699c1",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "b8643fe9-c965-4b9d-9ba5-83ca2ebb58f7",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "5e69ac2e-6480-473a-b17a-1fd0adf2205b",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 37
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "83253fef-71ee-4b6b-b0a5-0334f734aa99",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "5e69ac2e-6480-473a-b17a-1fd0adf2205b",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "d63e6a76-6c0f-4394-a33c-d5a615df2a0f",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 40
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "e5460f24-532f-46b6-b1b6-92e3705b7bec",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "d63e6a76-6c0f-4394-a33c-d5a615df2a0f",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "1a5d00fc-571a-4247-b399-a39ab05c3755",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 42
+                    },
+                    {
+                        "action": "scan network",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip_hostname": "198.51.100.*",
+                            "portlist": "5900",
+                            "script": "",
+                            "script-args": "",
+                            "udp_scan": ""
+                        },
+                        "angle": 0,
+                        "approver": "",
+                        "assets": [
+                            {
+                                "app_name": "NMAP Scanner",
+                                "app_version": "1.0.25",
+                                "fields": {
+                                    "ip_hostname": "198.51.100.*",
+                                    "portlist": "5900",
+                                    "script": "",
+                                    "script-args": "",
+                                    "udp_scan": ""
+                                },
+                                "name": "nmap",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.data.*.udp.*.cpe",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.udp.*.conf",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.udp.*.name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "port"
+                                        ],
+                                        "data_path": "action_result.data.*.udp.*.port",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.udp.*.state",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.udp.*.reason",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.udp.*.product",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.udp.*.version",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.udp.*.extrainfo",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tcp.*.cpe",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tcp.*.conf",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tcp.*.name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "port"
+                                        ],
+                                        "data_path": "action_result.data.*.tcp.*.port",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tcp.*.state",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tcp.*.reason",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tcp.*.product",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tcp.*.version",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tcp.*.extrainfo",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.hostscript.*.id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.hostscript.*.output.*",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.status.state",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.status.reason",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.hostnames.*.type",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.hostnames.*.name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.vendor",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.addresses.ipv4.*.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.endpoint_state",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.total_open_tcp_ports",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.total_open_udp_ports",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.portlist",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip",
+                                            "host name",
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.udp_scan",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.script",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.script-args",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "product_name": "NMAP",
+                                "product_vendor": "Generic"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "scan port 5900"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#654796"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def scan_port_5900(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('scan_port_5900() called')\n\n    # collect data for 'scan_port_5900' call\n\n    parameters = []\n    \n    # build parameters list for 'scan_port_5900' call\n    parameters.append({\n        'portlist': 5900,\n        'script-args': \"\",\n        'script': \"\",\n        'ip_hostname': \"198.51.100.*\",\n        'udp_scan': \"\",\n    })\n\n    phantom.act(\"scan network\", parameters=parameters, assets=['nmap'], callback=filter_1, name=\"scan_port_5900\")    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 36,
+                        "callsback": true,
+                        "color": "#654796",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "scan port 5900",
+                        "delay": 0,
+                        "description": "Scan the given subnet with a TCP syn-ack on port 5900 to detect VNC or ARD services.",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "b8643fe9-c965-4b9d-9ba5-83ca2ebb58f7",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 75,
+                        "line_start": 55,
+                        "message": "",
+                        "name": "scan network",
+                        "notes": "Scan the given subnet with a TCP syn-ack on port 5900 to detect VNC or ARD services.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 260,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "scan_port_5900",
+                        "required_params": {},
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 65
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            }
+                        },
+                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"scan_port_5900:action_result.data.*.tcp.*.state\", \"==\", \"open\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        add_addresses_to_list(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "scan port 5900",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "Only pass on ip addresses that are found to have open ports.",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "5e69ac2e-6480-473a-b17a-1fd0adf2205b",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 52,
+                        "line_start": 34,
+                        "name": "filter",
+                        "notes": "Only pass on ip addresses that are found to have open ports.",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "scan_port_5900:action_result.data.*.tcp.*.state",
+                                        "value": "open"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 500,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "filter_1",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "filter",
+                        "status": "",
+                        "type": "coa.Filter",
+                        "warn": false,
+                        "z": 66
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".api": {
+                                "text": "add addresses to list"
+                            },
+                            ".background": {
+                                "height": 88
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "ref-x": 16,
+                                "ref-y": 70,
+                                "text": ""
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".status": {
+                                "fill": "#FFFFFF",
+                                "ref-y": 68
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def add_addresses_to_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('add_addresses_to_list() called')\n\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:scan_port_5900:action_result.data.*.addresses.ipv4.*.ip\"])\n\n    filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]\n\n    phantom.add_list(\"macos_endpoints\", filtered_results_item_1_0)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "color": "",
+                        "configured": [
+                            {
+                                "addListData": "filtered-data:filter_1:condition_1:scan_port_5900:action_result.data.*.addresses.ipv4.*.ip",
+                                "addListList": "macos_endpoints",
+                                "key": "add-list"
+                            }
+                        ],
+                        "connected_to_start": true,
+                        "connection_name": "scan port 5900",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "add addresses to list",
+                        "description": "Create a custom list with the given IP addresses or add to one if it exists.",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "d63e6a76-6c0f-4394-a33c-d5a615df2a0f",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 31,
+                        "line_start": 20,
+                        "message": "",
+                        "name": "add list",
+                        "notes": "Create a custom list with the given IP addresses or add to one if it exists.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 640,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "add_addresses_to_list",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "api",
+                        "status": "",
+                        "type": "coa.API",
+                        "warn": false,
+                        "z": 67
+                    }
+                ]
+            },
+            "notes": "This playbook uses the following App:\n - nmap (scan network) [asset name = nmap] - a network scan of endpoints with TCP port 5900 allows us to build the custom list in this playbook\n\nDeployment notes\n - the hard-coded custom list name \"macos_endpoints\" is created or appended to by this playbook\n - this playbook is originally designed to be run manually as needed, but it could be configured to auto-start using Generator if desired"
+        },
+        "schema": 2,
+        "version": "3.0.264"
+    },
+    "create_time": "2017-11-29T22:29:13.908886+00:00",
+    "draft_mode": false,
+    "labels": [
+        "cve_2017_13872"
+    ]
+}
