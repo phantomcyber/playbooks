@@ -14,60 +14,6 @@ def on_start(container):
 
     return
 
-def update_ticket_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('update_ticket_5() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'update_ticket_5' call
-    results_data_1 = phantom.collect2(container=container, datapath=['create_ticket_5:action_result.parameter.table', 'create_ticket_5:action_result.summary.created_ticket_id', 'create_ticket_5:action_result.parameter.context.artifact_id'], action_results=results)
-    formatted_data_1 = phantom.get_format_data(name='format_4')
-
-    parameters = []
-    
-    # build parameters list for 'update_ticket_5' call
-    for results_item_1 in results_data_1:
-        if results_item_1[1]:
-            parameters.append({
-                'table': results_item_1[0],
-                'vault_id': "",
-                'id': results_item_1[1],
-                'fields': formatted_data_1,
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[2]},
-            })
-
-    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], callback=join_set_severity_3, name="update_ticket_5")
-
-    return
-
-def update_ticket_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('update_ticket_3() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'update_ticket_3' call
-    results_data_1 = phantom.collect2(container=container, datapath=['create_ticket_5:action_result.parameter.table', 'create_ticket_5:action_result.summary.created_ticket_id', 'create_ticket_5:action_result.parameter.context.artifact_id'], action_results=results)
-    formatted_data_1 = phantom.get_format_data(name='format_2')
-
-    parameters = []
-    
-    # build parameters list for 'update_ticket_3' call
-    for results_item_1 in results_data_1:
-        if results_item_1[1]:
-            parameters.append({
-                'table': results_item_1[0],
-                'vault_id': "",
-                'id': results_item_1[1],
-                'fields': formatted_data_1,
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[2]},
-            })
-
-    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], callback=join_set_severity_3, name="update_ticket_3")
-
-    return
-
 def set_severity_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('set_severity_6() called')
 
@@ -198,33 +144,6 @@ def set_severity_8(action=None, success=None, container=None, results=None, hand
 
     return
 
-def update_ticket_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('update_ticket_4() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'update_ticket_4' call
-    results_data_1 = phantom.collect2(container=container, datapath=['create_ticket_5:action_result.parameter.table', 'create_ticket_5:action_result.summary.created_ticket_id', 'create_ticket_5:action_result.parameter.context.artifact_id'], action_results=results)
-    formatted_data_1 = phantom.get_format_data(name='format_3')
-
-    parameters = []
-    
-    # build parameters list for 'update_ticket_4' call
-    for results_item_1 in results_data_1:
-        if results_item_1[1]:
-            parameters.append({
-                'table': results_item_1[0],
-                'vault_id': "",
-                'id': results_item_1[1],
-                'fields': formatted_data_1,
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[2]},
-            })
-
-    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], callback=join_set_severity_3, name="update_ticket_4")
-
-    return
-
 def domain_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('domain_filter() called')
 
@@ -352,27 +271,6 @@ def url_filter(action=None, success=None, container=None, results=None, handle=N
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
         block_url_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
-def get_report_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('get_report_2() called')
-
-    # collect data for 'get_report_2' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.phishmeThreatId', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'get_report_2' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'threat_id': container_item[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("get report", parameters=parameters, assets=['phishme'], callback=format_1, name="get_report_2")
 
     return
 
@@ -531,57 +429,6 @@ def filter_9(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
-def format_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_5() called')
-    
-    template = """{{\"work_notes\": \"The following source IPs:\\n{1}\\n\\nwere detected with the following fileHash:\\n{0}\"}}"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "block_hash_3:action_result.parameter.hash",
-        "artifact:*.cef.sourceAddress",
-    ]
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_5")
-
-    update_ticket_6(container=container)
-
-    return
-
-def format_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_4() called')
-    
-    template = """{{\"work_notes\": \"The following source IPs:\\n{1}\\n\\nconnected with the URL:\\n{0}\"}}"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "block_url_1:action_result.parameter.url",
-        "filtered-data:url_filter:condition_1:artifact:*.cef.sourceAddress",
-    ]
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_4")
-
-    update_ticket_5(container=container)
-
-    return
-
-def format_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_3() called')
-    
-    template = """{{\"work_notes\": \"The following source IPs:\\n{1}\\n\\nconnected with destination domain:\\n{0}\"}}"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "block_domain_1:action_result.parameter.domain",
-        "filtered-data:domain_filter:condition_1:artifact:*.cef.sourceAddress",
-    ]
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_3")
-
-    update_ticket_4(container=container)
-
-    return
-
 def block_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('block_ip_1() called')
     
@@ -604,23 +451,6 @@ def block_ip_1(action=None, success=None, container=None, results=None, handle=N
             })
 
     phantom.act("block ip", parameters=parameters, assets=['pan'], callback=format_2, name="block_ip_1")
-
-    return
-
-def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_2() called')
-    
-    template = """{{\"work_notes\": \"The following source IPs connected with dst: {0}\\n\\nsrc: {1}\"}}"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "block_ip_1:action_result.parameter.ip",
-        "filtered-data:ip_filter:condition_1:artifact:*.cef.sourceAddress",
-    ]
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_2")
-
-    update_ticket_3(container=container)
 
     return
 
@@ -717,6 +547,55 @@ def decision_6(action=None, success=None, container=None, results=None, handle=N
 
     return
 
+def set_severity_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('set_severity_3() called')
+
+    phantom.set_severity(container, "high")
+    set_status_4(container=container)
+
+    return
+
+def join_set_severity_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('join_set_severity_3() called')
+    
+    # if the joined function has already been called, do nothing
+    if phantom.get_run_data(key='join_set_severity_3_called'):
+        return
+
+    # check if all connected incoming actions are done i.e. have succeeded or failed
+    if phantom.actions_done([ 'update_ticket_7' ]):
+        
+        # save the state that the joined function has now been called
+        phantom.save_run_data(key='join_set_severity_3_called', value='set_severity_3')
+        
+        # call connected block "set_severity_3"
+        set_severity_3(container=container, handle=handle)
+    
+    return
+
+def set_status_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('set_status_4() called')
+
+    phantom.set_status(container, "closed")
+
+    return
+
+def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_1() called')
+    
+    template = """{0}"""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "get_report_2:action_result",
+    ]
+
+    phantom.format(container=container, template=template, parameters=parameters, name="format_1")
+
+    create_ticket_5(container=container)
+
+    return
+
 def create_ticket_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('create_ticket_5() called')
     
@@ -752,19 +631,200 @@ def create_ticket_5_callback(action=None, success=None, container=None, results=
 
     return
 
-def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_1() called')
+def get_report_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('get_report_2() called')
+
+    # collect data for 'get_report_2' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.phishmeThreatId', 'artifact:*.id'])
+
+    parameters = []
     
-    template = """{0}"""
+    # build parameters list for 'get_report_2' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'threat_id': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("get report", parameters=parameters, assets=['phishme'], callback=format_1, name="get_report_2")
+
+    return
+
+def update_ticket_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('update_ticket_3() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'update_ticket_3' call
+    results_data_1 = phantom.collect2(container=container, datapath=['create_ticket_5:action_result.parameter.table', 'create_ticket_5:action_result.summary.created_ticket_id', 'create_ticket_5:action_result.parameter.context.artifact_id'], action_results=results)
+    formatted_data_1 = phantom.get_format_data(name='format_2')
+
+    parameters = []
+    
+    # build parameters list for 'update_ticket_3' call
+    for results_item_1 in results_data_1:
+        if results_item_1[1]:
+            parameters.append({
+                'table': results_item_1[0],
+                'vault_id': "",
+                'id': results_item_1[1],
+                'fields': formatted_data_1,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[2]},
+            })
+
+    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], callback=join_set_severity_3, name="update_ticket_3")
+
+    return
+
+def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_2() called')
+    
+    template = """{{\"work_notes\": \"The following source IPs connected with dst: {0}\\n\\nsrc: {1}\"}}"""
 
     # parameter list for template variable replacement
     parameters = [
-        "get_report_2:action_result",
+        "block_ip_1:action_result.parameter.ip",
+        "filtered-data:ip_filter:condition_1:artifact:*.cef.sourceAddress",
     ]
 
-    phantom.format(container=container, template=template, parameters=parameters, name="format_1")
+    phantom.format(container=container, template=template, parameters=parameters, name="format_2")
 
-    create_ticket_5(container=container)
+    update_ticket_3(container=container)
+
+    return
+
+def update_ticket_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('update_ticket_4() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'update_ticket_4' call
+    results_data_1 = phantom.collect2(container=container, datapath=['create_ticket_5:action_result.parameter.table', 'create_ticket_5:action_result.summary.created_ticket_id', 'create_ticket_5:action_result.parameter.context.artifact_id'], action_results=results)
+    formatted_data_1 = phantom.get_format_data(name='format_3')
+
+    parameters = []
+    
+    # build parameters list for 'update_ticket_4' call
+    for results_item_1 in results_data_1:
+        if results_item_1[1]:
+            parameters.append({
+                'table': results_item_1[0],
+                'vault_id': "",
+                'id': results_item_1[1],
+                'fields': formatted_data_1,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[2]},
+            })
+
+    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], callback=join_set_severity_3, name="update_ticket_4")
+
+    return
+
+def format_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_3() called')
+    
+    template = """{{\"work_notes\": \"The following source IPs:\\n{1}\\n\\nconnected with destination domain:\\n{0}\"}}"""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "block_domain_1:action_result.parameter.domain",
+        "filtered-data:domain_filter:condition_1:artifact:*.cef.sourceAddress",
+    ]
+
+    phantom.format(container=container, template=template, parameters=parameters, name="format_3")
+
+    update_ticket_4(container=container)
+
+    return
+
+def format_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_4() called')
+    
+    template = """{{\"work_notes\": \"The following source IPs:\\n{1}\\n\\nconnected with the URL:\\n{0}\"}}"""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "block_url_1:action_result.parameter.url",
+        "filtered-data:url_filter:condition_1:artifact:*.cef.sourceAddress",
+    ]
+
+    phantom.format(container=container, template=template, parameters=parameters, name="format_4")
+
+    update_ticket_5(container=container)
+
+    return
+
+def update_ticket_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('update_ticket_5() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'update_ticket_5' call
+    results_data_1 = phantom.collect2(container=container, datapath=['create_ticket_5:action_result.parameter.table', 'create_ticket_5:action_result.summary.created_ticket_id', 'create_ticket_5:action_result.parameter.context.artifact_id'], action_results=results)
+    formatted_data_1 = phantom.get_format_data(name='format_4')
+
+    parameters = []
+    
+    # build parameters list for 'update_ticket_5' call
+    for results_item_1 in results_data_1:
+        if results_item_1[1]:
+            parameters.append({
+                'table': results_item_1[0],
+                'vault_id': "",
+                'id': results_item_1[1],
+                'fields': formatted_data_1,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[2]},
+            })
+
+    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], callback=join_set_severity_3, name="update_ticket_5")
+
+    return
+
+def format_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_5() called')
+    
+    template = """{{\"work_notes\": \"The following source IPs:\\n{1}\\n\\nwere detected with the following fileHash:\\n{0}\"}}"""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "block_hash_3:action_result.parameter.hash",
+        "artifact:*.cef.sourceAddress",
+    ]
+
+    phantom.format(container=container, template=template, parameters=parameters, name="format_5")
+
+    update_ticket_6(container=container)
+
+    return
+
+def update_ticket_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('update_ticket_6() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'update_ticket_6' call
+    results_data_1 = phantom.collect2(container=container, datapath=['create_ticket_5:action_result.parameter.table', 'create_ticket_5:action_result.summary.created_ticket_id', 'create_ticket_5:action_result.parameter.context.artifact_id'], action_results=results)
+    formatted_data_1 = phantom.get_format_data(name='format_5')
+
+    parameters = []
+    
+    # build parameters list for 'update_ticket_6' call
+    for results_item_1 in results_data_1:
+        if results_item_1[1]:
+            parameters.append({
+                'table': results_item_1[0],
+                'vault_id': "",
+                'id': results_item_1[1],
+                'fields': formatted_data_1,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[2]},
+            })
+
+    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], callback=join_set_severity_3, name="update_ticket_6")
 
     return
 
@@ -809,66 +869,6 @@ def update_ticket_7(action=None, success=None, container=None, results=None, han
             })
 
     phantom.act("update ticket", parameters=parameters, assets=['servicenow'], callback=join_set_severity_3, name="update_ticket_7")
-
-    return
-
-def update_ticket_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('update_ticket_6() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'update_ticket_6' call
-    results_data_1 = phantom.collect2(container=container, datapath=['create_ticket_5:action_result.parameter.table', 'create_ticket_5:action_result.summary.created_ticket_id', 'create_ticket_5:action_result.parameter.context.artifact_id'], action_results=results)
-    formatted_data_1 = phantom.get_format_data(name='format_5')
-
-    parameters = []
-    
-    # build parameters list for 'update_ticket_6' call
-    for results_item_1 in results_data_1:
-        if results_item_1[1]:
-            parameters.append({
-                'table': results_item_1[0],
-                'vault_id': "",
-                'id': results_item_1[1],
-                'fields': formatted_data_1,
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[2]},
-            })
-
-    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], callback=join_set_severity_3, name="update_ticket_6")
-
-    return
-
-def set_severity_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('set_severity_3() called')
-
-    phantom.set_severity(container, "high")
-    set_status_4(container=container)
-
-    return
-
-def join_set_severity_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('join_set_severity_3() called')
-    
-    # if the joined function has already been called, do nothing
-    if phantom.get_run_data(key='join_set_severity_3_called'):
-        return
-
-    # check if all connected incoming actions are done i.e. have succeeded or failed
-    if phantom.actions_done([ 'update_ticket_7' ]):
-        
-        # save the state that the joined function has now been called
-        phantom.save_run_data(key='join_set_severity_3_called', value='set_severity_3')
-        
-        # call connected block "set_severity_3"
-        set_severity_3(container=container, handle=handle)
-    
-    return
-
-def set_status_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('set_status_4() called')
-
-    phantom.set_status(container, "closed")
 
     return
 
