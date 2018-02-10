@@ -2,12 +2,13 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Tech Sessions",
+    "misc": { "apps_list": ["Palo Alto Networks Firewall", "ReversingLabs"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "import requests",
             "description": "This is the May 12 Tech Session Playbook that shows use of filter, decision, custom lists, prompts and scheduled actions.",
-            "hash": "c130dfe6df7600f5e3157ecf2b42b32803eb0818",
+            "hash": "1ab25f46b23d05f007229271391eb6035808db7e",
             "joint": {
                 "cells": [
                     {
@@ -30,19 +31,21 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'file_reputation_1' block\n    file_reputation_1(container=container)\n\n    return",
@@ -134,8 +137,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -686,9 +689,6 @@
                             ".api": {
                                 "text": "set severity"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
                             },
@@ -703,9 +703,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -717,9 +722,11 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
+                            ".title": {
+                                "text": "API"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -735,15 +742,15 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def set_severity_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('set_severity_2() called')\n    \n    # set container properties for: severity\n    update_data = {\n        \"severity\" : \"high\",\n    }\n\n    phantom.update(container, update_data)\n\n    return",
+                        "block_code": "def set_severity_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('set_severity_2() called')\n\n    phantom.set_severity(container, \"high\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
                         "color": "",
                         "configured": [
                             {
-                                "name": "severity",
-                                "value": "high"
+                                "key": "set-severity",
+                                "setSeveritySeverity": "high"
                             }
                         ],
                         "connected_to_start": true,
@@ -765,9 +772,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 37,
+                        "line_end": 32,
                         "line_start": 25,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "set severity",
                         "notes": "Set severity to HIGH because the infected endpoint is not a test machine",
                         "number": 2,
@@ -839,6 +846,7 @@
                         },
                         "state": "api",
                         "status": "",
+                        "title": "API",
                         "type": "coa.API",
                         "warn": false,
                         "z": 58
@@ -901,318 +909,6 @@
                                 }
                             },
                             ".number": {
-                                "text": 1
-                            },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
-                            },
-                            ".outPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"file_reputation_1:action_result.summary.positives\", \">\", 10],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        filter_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "file reputation",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "7fb56735-cc89-4272-afb1-d89874c587c2",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 55,
-                        "line_start": 37,
-                        "name": "filter",
-                        "notes": "More than 10 vendors detect the file as Malicious?",
-                        "number": 1,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "outputs": [
-                            {
-                                "conditions": [
-                                    {
-                                        "comparison": ">",
-                                        "data_type": "",
-                                        "param": "file_reputation_1:action_result.summary.positives",
-                                        "value": "10"
-                                    }
-                                ],
-                                "display": "If",
-                                "logic": "and",
-                                "type": "if"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 540,
-                            "y": 600
-                        },
-                        "previous_function": "",
-                        "previous_name": "filter_1",
-                        "show_number": true,
-                        "size": {
-                            "height": 82,
-                            "width": 82
-                        },
-                        "state": "filter",
-                        "status": "",
-                        "type": "coa.Filter",
-                        "warn": false,
-                        "z": 153
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".border": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".inPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 2
-                            },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
-                            },
-                            ".outPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_2() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"filtered-data:filter_1:condition_1:file_reputation_1:action_result.parameter.hash\", \"==\", \"artifact:*.cef.fileHash\"],\n        ],\n        name=\"filter_2:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        decision_3(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        terminate_process_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        filter_3(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "file reputation",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "83fbb871-d0d4-488a-ad95-974f45077c38",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 75,
-                        "line_start": 55,
-                        "name": "filter",
-                        "notes": "Identify the artifact whose hash is malicious to get other related properties",
-                        "number": 2,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "outputs": [
-                            {
-                                "conditions": [
-                                    {
-                                        "comparison": "==",
-                                        "data_type": "",
-                                        "param": "filtered-data:filter_1:condition_1:file_reputation_1:action_result.parameter.hash",
-                                        "value": "artifact:*.cef.fileHash"
-                                    }
-                                ],
-                                "display": "If",
-                                "logic": "and",
-                                "type": "if"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 680,
-                            "y": 600
-                        },
-                        "previous_function": "",
-                        "previous_name": "filter_2",
-                        "show_number": true,
-                        "size": {
-                            "height": 82,
-                            "width": 82
-                        },
-                        "state": "filter",
-                        "status": "",
-                        "type": "coa.Filter",
-                        "warn": false,
-                        "z": 154
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".border": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".inPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
                                 "text": 3
                             },
                             ".outPorts>.port-0": {
@@ -1229,12 +925,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_3() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress\", \"not in\", \"custom_list:test_machines\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        set_severity_2(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
@@ -1261,8 +963,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 93,
-                        "line_start": 75,
+                        "line_end": 88,
+                        "line_start": 70,
                         "name": "decision",
                         "notes": "If the infected machine is NOT a test machine then this is a HIGH severity event",
                         "number": 3,
@@ -1373,17 +1075,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -1409,8 +1111,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 313,
-                        "line_start": 300,
+                        "line_end": 308,
+                        "line_start": 295,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -1468,250 +1170,21 @@
                             }
                         },
                         "position": {
-                            "x": 1760,
-                            "y": 700
+                            "x": 2200,
+                            "y": 620
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
                         "type": "coa.StartEnd",
                         "warn": false,
                         "z": 166
-                    },
-                    {
-                        "action": "block ip",
-                        "action_type": "contain",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "ip": "filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress",
-                            "is_source_address": "",
-                            "vsys": ""
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "ip": "filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress",
-                                    "is_source_address": "",
-                                    "vsys": ""
-                                },
-                                "name": "pan",
-                                "output": [
-                                    {
-                                        "column_name": "IP",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.parameter.ip",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.vsys",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.is_source_address",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "column_name": "Status",
-                                        "column_order": 1,
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Message",
-                                        "column_order": 2,
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "firewall"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "block ip"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#3D9959"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Contain"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "fill": "#FFFFFF"
-                            }
-                        },
-                        "block_code": "def block_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_ip_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_ip_1' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_3:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_ip_1' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'is_source_address': \"\",\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['pan'], callback=unblock_ip_1, name=\"block_ip_1\", parent_action=action)    \n    \n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "color": "#3D9959",
-                        "connected_to_start": true,
-                        "connection_name": "add to blocklist",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": 0,
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "ea54af98-d19b-4438-b959-ee4b509ef85d",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 118,
-                        "line_start": 93,
-                        "message": "",
-                        "name": "block ip",
-                        "notes": "lets block the IP on the FWs",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1480,
-                            "y": 840
-                        },
-                        "previous_function": "",
-                        "previous_name": "block_ip_1",
-                        "required_params": {
-                            "ip": true
-                        },
-                        "reviewer": "",
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Contain",
-                        "type": "coa.Action",
-                        "warn": false,
-                        "z": 175
                     },
                     {
                         "active": false,
@@ -1746,12 +1219,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_3() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress\", \"not in\", \"custom_list:blocked_ips\"],\n        ],\n        name=\"filter_3:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        prompt_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
@@ -1777,8 +1256,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 136,
-                        "line_start": 118,
+                        "line_end": 131,
+                        "line_start": 113,
                         "name": "filter",
                         "notes": "If the source (attacker) IP is not already blocked, then lets ask the user to proceed with the block",
                         "number": 3,
@@ -1870,324 +1349,6 @@
                         "z": 181
                     },
                     {
-                        "active": false,
-                        "angle": 0,
-                        "approver": "sourabh@phantom.us",
-                        "attrs": {
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 1
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('prompt_1() called')\n    \n    # set user and message variables for phantom.prompt call\n    user = \"sourabh@phantom.us\"\n    message = \"\"\"shall we block the attacker IP  \n{0} that is being connected to malware with hash \n{1} that has more \n{2} detections? NOTE: If you chose to block, it will be unblocked after 60 mins.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress\",\n        \"filtered-data:filter_3:condition_1:artifact:*.cef.fileHash\",\n        \"filtered-data:filter_2:condition_1:file_reputation_1:action_result.summary.positives\",\n    ]\n\n    # response options\n    options = {\n        \"type\": \"list\",\n        \"choices\": [\n            \"Yes\",\n            \"No\",\n        ]\n    }\n\n    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name=\"prompt_1\", parameters=parameters, options=options, callback=decision_4)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "connected_to_start": true,
-                        "connection_name": "file reputation",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "5fe6244b-4b80-4e5d-a661-e91f932040bd",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 166,
-                        "line_start": 136,
-                        "message": "shall we block the attacker IP  \n{0} that is being connected to malware with hash \n{1} that has more \n{2} detections? NOTE: If you chose to block, it will be unblocked after 60 mins.",
-                        "name": "prompt",
-                        "notes": "Ask the IR analyst to see if this should be temporarily blocked",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "parameters": [
-                            {
-                                "position": 0,
-                                "type": "",
-                                "value": "filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress"
-                            },
-                            {
-                                "position": 1,
-                                "type": "",
-                                "value": "filtered-data:filter_3:condition_1:artifact:*.cef.fileHash"
-                            },
-                            {
-                                "position": 2,
-                                "type": "",
-                                "value": "filtered-data:filter_2:condition_1:file_reputation_1:action_result.summary.positives"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 960,
-                            "y": 840
-                        },
-                        "previous_function": "",
-                        "previous_name": "prompt_1",
-                        "respond_in": "30",
-                        "response_key": "Yes/No",
-                        "response_options": [
-                            "Yes",
-                            "No"
-                        ],
-                        "response_type": "list",
-                        "show_number": true,
-                        "size": {
-                            "height": 80,
-                            "width": 80
-                        },
-                        "state": "prompt",
-                        "status": "",
-                        "type": "coa.Prompt",
-                        "warn": false,
-                        "z": 182
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".border": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".inPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 4
-                            },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
-                            },
-                            ".outPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_4() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"prompt_1:action_result.summary.response\", \"==\", \"Yes\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        add_to_blocklist(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "prompt 1",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "",
-                        "hasElse": false,
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "6f3d383e-6e07-4ce9-b2bd-30d7338ff22c",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 184,
-                        "line_start": 166,
-                        "name": "decision",
-                        "notes": "Analyst wants a temp block so lets add it to block list first and proceed with block",
-                        "number": 4,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "outputs": [
-                            {
-                                "conditions": [
-                                    {
-                                        "comparison": "==",
-                                        "data_type": "",
-                                        "param": "prompt_1:action_result.summary.response",
-                                        "value": "Yes"
-                                    }
-                                ],
-                                "display": "If",
-                                "logic": "and",
-                                "type": "if"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1100,
-                            "y": 840
-                        },
-                        "previous_function": "",
-                        "previous_name": "decision_4",
-                        "show_number": true,
-                        "size": {
-                            "height": 82,
-                            "width": 82
-                        },
-                        "state": "decision",
-                        "status": "",
-                        "type": "coa.Decision",
-                        "warn": "",
-                        "z": 183
-                    },
-                    {
                         "attrs": {
                             ".connection": {
                                 "stroke": "#6C7A89",
@@ -2270,111 +1431,40 @@
                         "z": 188
                     },
                     {
-                        "action": "unblock ip",
-                        "action_type": "correct",
                         "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "ip": "block_ip_1:action_result.parameter.ip",
-                            "is_source_address": "",
-                            "vsys": ""
-                        },
                         "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "ip": "block_ip_1:action_result.parameter.ip",
-                                    "is_source_address": "",
-                                    "vsys": ""
-                                },
-                                "name": "pan",
-                                "output": [
-                                    {
-                                        "column_name": "IP",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.parameter.ip",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.is_source_address",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.vsys",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Status",
-                                        "column_order": 1,
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Message",
-                                        "column_order": 2,
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "firewall"
-                            }
-                        ],
                         "attrs": {
-                            ".action": {
-                                "text": "unblock ip 1"
-                            },
                             ".background": {
-                                "height": 88
+                                "transform": "rotate(45 30 70)"
                             },
                             ".border": {
-                                "height": 88
+                                "transform": "rotate(45 30 70)"
                             },
-                            ".color-band": {
-                                "fill": "#E65100"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
+                            ".inPorts>.port-0>.port-body": {
                                 "port": {
                                     "id": "in",
                                     "type": "in"
                                 }
                             },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                            ".number": {
+                                "text": 1
                             },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
+                            ".outPorts>.port-0": {
                                 "port": {
-                                    "id": "out",
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Correct"
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -2383,46 +1473,55 @@
                                 "display": "block",
                                 "opacity": 1
                             },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "fill": "#FFFFFF"
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
-                        "block_code": "def unblock_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('unblock_ip_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'unblock_ip_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['block_ip_1:action_result.parameter.ip', 'block_ip_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'unblock_ip_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'is_source_address': \"\",\n                'ip': results_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n    # calculate start time using delay of 1 minutes\n    start_time = datetime.now() + timedelta(minutes=1)\n\n    phantom.act(\"unblock ip\", parameters=parameters, assets=['pan'], callback=remove_from_blocklist, start_time=start_time, name=\"unblock_ip_1\", parent_action=action)    \n    \n    return",
+                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"file_reputation_1:action_result.summary.positives\", \">\", 10],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        filter_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
-                        "callsback": true,
-                        "color": "#E65100",
+                        "callsback": false,
                         "connected_to_start": true,
-                        "connection_name": "block ip",
+                        "connection_name": "file reputation",
                         "connection_type": "action",
                         "custom_callback": "",
                         "custom_code": "",
                         "custom_join": "",
                         "custom_name": "",
-                        "delay": "1",
                         "description": "",
                         "has_custom": false,
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
-                        "id": "c33dec3f-d008-4c3c-99ae-76ddc963b5f1",
+                        "id": "7fb56735-cc89-4272-afb1-d89874c587c2",
                         "inPorts": [
                             "in"
                         ],
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 255,
-                        "line_start": 228,
-                        "message": "",
-                        "name": "unblock ip",
-                        "notes": "Scheduling the unblock after 60 minutes",
+                        "line_end": 50,
+                        "line_start": 32,
+                        "name": "filter",
+                        "notes": "More than 10 vendors detect the file as Malicious?",
                         "number": 1,
                         "outPorts": [
-                            "out"
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": ">",
+                                        "data_type": "",
+                                        "param": "file_reputation_1:action_result.summary.positives",
+                                        "value": "10"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
                         ],
                         "ports": {
                             "groups": {
@@ -2477,27 +1576,183 @@
                             }
                         },
                         "position": {
-                            "x": 1740,
-                            "y": 840
+                            "x": 540,
+                            "y": 600
                         },
                         "previous_function": "",
-                        "previous_name": "unblock_ip_1",
-                        "required_params": {
-                            "ip": true
-                        },
-                        "reviewer": "",
-                        "show_delay": true,
+                        "previous_name": "filter_1",
                         "show_number": true,
                         "size": {
-                            "height": 112,
-                            "width": 168
+                            "height": 82,
+                            "width": 82
                         },
-                        "state": "asset",
+                        "state": "filter",
                         "status": "",
-                        "title": "Correct",
-                        "type": "coa.Action",
+                        "type": "coa.Filter",
                         "warn": false,
-                        "z": 189
+                        "z": 195
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 2
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_2() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"filtered-data:filter_1:condition_1:file_reputation_1:action_result.parameter.hash\", \"==\", \"artifact:*.cef.fileHash\"],\n        ],\n        name=\"filter_2:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        decision_3(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        terminate_process_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        filter_3(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "file reputation",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "83fbb871-d0d4-488a-ad95-974f45077c38",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 70,
+                        "line_start": 50,
+                        "name": "filter",
+                        "notes": "Identify the artifact whose hash is malicious to get other related properties",
+                        "number": 2,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "filtered-data:filter_1:condition_1:file_reputation_1:action_result.parameter.hash",
+                                        "value": "artifact:*.cef.fileHash"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 680,
+                            "y": 600
+                        },
+                        "previous_function": "",
+                        "previous_name": "filter_2",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "filter",
+                        "status": "",
+                        "type": "coa.Filter",
+                        "warn": false,
+                        "z": 196
                     },
                     {
                         "action": "file reputation",
@@ -2508,13 +1763,24 @@
                             "hash": "artifact:*.cef.fileHash"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "file reputation",
+                                "active": true,
+                                "app_name": "ReversingLabs",
+                                "app_version": "1.2.26",
+                                "asset_name": "reversinglabs",
+                                "config_type": "asset",
+                                "count": 0,
                                 "fields": {
                                     "hash": "artifact:*.cef.fileHash"
                                 },
-                                "name": "reversinglabs_private",
+                                "id": 61,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "reversinglabs",
                                 "output": [
                                     {
                                         "contains": [
@@ -2652,21 +1918,35 @@
                                         "data_type": "numeric"
                                     }
                                 ],
-                                "type": "reputation"
+                                "parameters": {
+                                    "hash": {
+                                        "contains": [
+                                            "hash",
+                                            "sha256",
+                                            "sha1",
+                                            "md5"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "File hash to query",
+                                        "key": "hash",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "TitaniumCloud",
+                                "product_vendor": "ReversingLabs",
+                                "targets": "5",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "file reputation"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2679,9 +1959,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2693,19 +1978,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2714,7 +2007,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('file_reputation_1() called')\n\n    # collect data for 'file_reputation_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'file_reputation_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'hash': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"file reputation\", parameters=parameters, assets=['reversinglabs_private'], callback=filter_1, name=\"file_reputation_1\")    \n    \n    return",
+                        "block_code": "def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('file_reputation_1() called')\n\n    # collect data for 'file_reputation_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'file_reputation_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'hash': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"file reputation\", parameters=parameters, assets=['reversinglabs'], callback=filter_1, name=\"file_reputation_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2739,9 +2032,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 276,
-                        "line_start": 255,
-                        "message": "",
+                        "line_end": 227,
+                        "line_start": 206,
+                        "message": "Configuring now",
                         "name": "file reputation",
                         "notes": "Check reversing labs if file is malicious",
                         "number": 1,
@@ -2815,127 +2108,48 @@
                             "height": 112,
                             "width": 168
                         },
-                        "state": "asset",
+                        "state": "action_assets",
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 190
+                        "z": 197
                     },
                     {
-                        "action": "terminate process",
-                        "action_type": "contain",
                         "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "ip_hostname": "filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress",
-                            "name": "filtered-data:filter_2:condition_1:artifact:*.cef.fileName"
-                        },
                         "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "fields": {
-                                    "ip_hostname": "filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress",
-                                    "name": "filtered-data:filter_2:condition_1:artifact:*.cef.fileName"
-                                },
-                                "name": "tanium",
-                                "output": [
-                                    {
-                                        "contains": [
-                                            "file name",
-                                            "process name"
-                                        ],
-                                        "data_path": "action_result.parameter.name",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Name/IP Address",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "ip",
-                                            "host name"
-                                        ],
-                                        "data_path": "action_result.parameter.ip_hostname",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Status",
-                                        "column_order": 1,
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "type": "endpoint"
-                            }
-                        ],
                         "attrs": {
-                            ".action": {
-                                "text": "terminate pr..."
-                            },
                             ".background": {
-                                "height": 88
+                                "transform": "rotate(45 30 70)"
                             },
                             ".border": {
-                                "height": 88
+                                "transform": "rotate(45 30 70)"
                             },
-                            ".color-band": {
-                                "fill": "#3D9959"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
+                            ".inPorts>.port-0>.port-body": {
                                 "port": {
                                     "id": "in",
                                     "type": "in"
                                 }
                             },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                            ".number": {
+                                "text": 4
                             },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
+                            ".outPorts>.port-0": {
                                 "port": {
-                                    "id": "out",
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Contain"
-                            },
-                            "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -2944,46 +2158,56 @@
                                 "display": "block",
                                 "opacity": 1
                             },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "fill": "#FFFFFF"
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
-                        "block_code": "def terminate_process_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('terminate_process_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'terminate_process_1' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.fileName', 'filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'terminate_process_1' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0] and filtered_artifacts_item_1[1]:\n            parameters.append({\n                'name': filtered_artifacts_item_1[0],\n                'ip_hostname': filtered_artifacts_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[2]},\n            })\n\n    phantom.act(\"terminate process\", parameters=parameters, assets=['tanium'], name=\"terminate_process_1\")    \n    \n    return",
+                        "block_code": "def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_4() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"prompt_1:action_result.summary.response\", \"==\", \"Yes\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        add_to_blocklist(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
-                        "callsback": true,
-                        "color": "#3D9959",
+                        "callsback": false,
                         "connected_to_start": true,
-                        "connection_name": "file reputation",
+                        "connection_name": "prompt 1",
                         "connection_type": "action",
                         "custom_callback": "",
-                        "custom_code": "def terminate_process_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('terminate_process_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'terminate_process_1' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.fileName', 'filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'terminate_process_1' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0] and filtered_artifacts_item_1[1]:\n            parameters.append({\n                'name': filtered_artifacts_item_1[0],\n                'ip_hostname': filtered_artifacts_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[2]},\n            })\n\n    #phantom.act(\"terminate process\", parameters=parameters, assets=['tanium'], name=\"terminate_process_1\")    \n    \n    return",
+                        "custom_code": "",
                         "custom_join": "",
                         "custom_name": "",
-                        "delay": 0,
                         "description": "",
-                        "has_custom": true,
-                        "has_custom_block": true,
+                        "hasElse": false,
+                        "has_custom": false,
+                        "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
-                        "id": "27845ccb-bf3b-4f45-a1b2-538ddf53ce57",
+                        "id": "6f3d383e-6e07-4ce9-b2bd-30d7338ff22c",
                         "inPorts": [
                             "in"
                         ],
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 300,
-                        "line_start": 276,
-                        "message": "",
-                        "name": "terminate process",
-                        "notes": "terminating the process by file name for the file whose hash has been confirmed to be malicious",
-                        "number": 1,
+                        "line_end": 179,
+                        "line_start": 161,
+                        "name": "decision",
+                        "notes": "Analyst wants a temp block so lets add it to block list first and proceed with block",
+                        "number": 4,
                         "outPorts": [
-                            "out"
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "prompt_1:action_result.summary.response",
+                                        "value": "Yes"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
                         ],
                         "ports": {
                             "groups": {
@@ -3038,24 +2262,191 @@
                             }
                         },
                         "position": {
-                            "x": 820,
-                            "y": 680
+                            "x": 1100,
+                            "y": 840
                         },
                         "previous_function": "",
-                        "previous_name": "terminate_process_1",
-                        "required_params": {},
-                        "reviewer": "",
-                        "show_number": false,
+                        "previous_name": "decision_4",
+                        "show_number": true,
                         "size": {
-                            "height": 112,
-                            "width": 168
+                            "height": 82,
+                            "width": 82
                         },
-                        "state": "asset",
+                        "state": "decision",
                         "status": "",
-                        "title": "Contain",
-                        "type": "coa.Action",
+                        "type": "coa.Decision",
+                        "warn": "",
+                        "z": 198
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "approver": "sourabh@phantom.us",
+                        "attrs": {
+                            ".background": {
+                                "stroke": "#637282"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('prompt_1() called')\n    \n    # set user and message variables for phantom.prompt call\n    user = \"sourabh@phantom.us\"\n    message = \"\"\"shall we block the attacker IP  \n{0} that is being connected to malware with hash \n{1} that has more \n{2} detections? NOTE: If you chose to block, it will be unblocked after 60 mins.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress\",\n        \"filtered-data:filter_3:condition_1:artifact:*.cef.fileHash\",\n        \"filtered-data:filter_2:condition_1:file_reputation_1:action_result.summary.positives\",\n    ]\n\n    # response options\n    options = {\n        \"type\": \"list\",\n        \"choices\": [\n            \"Yes\",\n            \"No\",\n        ]\n    }\n\n    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name=\"prompt_1\", parameters=parameters, options=options, callback=decision_4)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "connected_to_start": true,
+                        "connection_name": "file reputation",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "5fe6244b-4b80-4e5d-a661-e91f932040bd",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 161,
+                        "line_start": 131,
+                        "message": "shall we block the attacker IP  \n{0} that is being connected to malware with hash \n{1} that has more \n{2} detections? NOTE: If you chose to block, it will be unblocked after 60 mins.",
+                        "name": "prompt",
+                        "notes": "Ask the IR analyst to see if this should be temporarily blocked",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": "filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress"
+                            },
+                            {
+                                "position": 1,
+                                "type": "",
+                                "value": "filtered-data:filter_3:condition_1:artifact:*.cef.fileHash"
+                            },
+                            {
+                                "position": 2,
+                                "type": "",
+                                "value": "filtered-data:filter_2:condition_1:file_reputation_1:action_result.summary.positives"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 960,
+                            "y": 840
+                        },
+                        "previous_function": "",
+                        "previous_name": "prompt_1",
+                        "respond_in": "30",
+                        "response_key": "Yes/No",
+                        "response_options": [
+                            "Yes",
+                            "No"
+                        ],
+                        "response_type": "list",
+                        "show_number": true,
+                        "size": {
+                            "height": 80,
+                            "width": 80
+                        },
+                        "state": "prompt",
+                        "status": "",
+                        "type": "coa.Prompt",
                         "warn": false,
-                        "z": 191
+                        "z": 199
                     },
                     {
                         "action": "send message",
@@ -3067,13 +2458,22 @@
                             "message": "filtered-data:filter_3:condition_1:artifact:*.cef.destinationAddress"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
                                 "fields": {
                                     "destination": "",
                                     "message": "filtered-data:filter_3:condition_1:artifact:*.cef.destinationAddress"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "slack",
                                 "output": [
                                     {
@@ -3149,18 +2549,14 @@
                                         "data_type": "numeric"
                                     }
                                 ],
+                                "product_name": "",
+                                "product_vendor": "",
                                 "type": "information"
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "add to blocklist"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -3173,9 +2569,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -3187,22 +2588,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -3236,9 +2642,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 200,
-                        "line_start": 184,
-                        "message": "",
+                        "line_end": 267,
+                        "line_start": 251,
+                        "message": "Configuring now",
                         "name": "send message",
                         "notes": "Add the IP address to [blocked_ips] custom list",
                         "number": 1,
@@ -3315,7 +2721,251 @@
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 192
+                        "z": 200
+                    },
+                    {
+                        "action": "block ip",
+                        "action_type": "contain",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip": "filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress",
+                            "is_source_address": "",
+                            "vsys": ""
+                        },
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
+                                "fields": {
+                                    "ip": "filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress",
+                                    "is_source_address": "",
+                                    "vsys": ""
+                                },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
+                                "name": "pan",
+                                "output": [
+                                    {
+                                        "column_name": "IP",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.vsys",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.is_source_address",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "column_name": "Status",
+                                        "column_order": 1,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Message",
+                                        "column_order": 2,
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "product_name": "",
+                                "product_vendor": "",
+                                "type": "firewall"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "block ip"
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Contain"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_contain.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def block_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_ip_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_ip_1' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_3:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_3:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_ip_1' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'is_source_address': \"\",\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['pan'], callback=unblock_ip_1, name=\"block_ip_1\", parent_action=action)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#3D9959",
+                        "connected_to_start": true,
+                        "connection_name": "add to blocklist",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "ea54af98-d19b-4438-b959-ee4b509ef85d",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 113,
+                        "line_start": 88,
+                        "message": "Configuring now",
+                        "name": "block ip",
+                        "notes": "lets block the IP on the FWs",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1480,
+                            "y": 840
+                        },
+                        "previous_function": "",
+                        "previous_name": "block_ip_1",
+                        "required_params": {
+                            "ip": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Contain",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 204
                     },
                     {
                         "action": "unblock ip",
@@ -3323,19 +2973,28 @@
                         "active": false,
                         "active_keys": {},
                         "active_values": {
-                            "ip": "unblock_ip_1:action_result.parameter.ip",
+                            "ip": "block_ip_1:action_result.parameter.ip",
                             "is_source_address": "",
                             "vsys": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
                                 "fields": {
-                                    "ip": "unblock_ip_1:action_result.parameter.ip",
+                                    "ip": "block_ip_1:action_result.parameter.ip",
                                     "is_source_address": "",
                                     "vsys": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "pan",
                                 "output": [
                                     {
@@ -3376,18 +3035,17 @@
                                         "data_type": "numeric"
                                     }
                                 ],
+                                "product_name": "",
+                                "product_vendor": "",
                                 "type": "firewall"
                             }
                         ],
                         "attrs": {
                             ".action": {
-                                "text": "remove from blockli...."
+                                "text": "unblock ip 1"
                             },
-                            ".background": {
+                            ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#E65100"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -3400,9 +3058,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -3414,22 +3077,522 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
+                            ".title": {
+                                "text": "Correct"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_correct.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def unblock_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('unblock_ip_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'unblock_ip_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['block_ip_1:action_result.parameter.ip', 'block_ip_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'unblock_ip_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'is_source_address': \"\",\n                'ip': results_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n    # calculate start time using delay of 1 minutes\n    start_time = datetime.now() + timedelta(minutes=1)\n\n    phantom.act(\"unblock ip\", parameters=parameters, assets=['pan'], callback=remove_from_blocklist, start_time=start_time, name=\"unblock_ip_1\", parent_action=action)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#E65100",
+                        "connected_to_start": true,
+                        "connection_name": "block ip",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": "1",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "c33dec3f-d008-4c3c-99ae-76ddc963b5f1",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 206,
+                        "line_start": 179,
+                        "message": "Configuring now",
+                        "name": "unblock ip",
+                        "notes": "Scheduling the unblock after 60 minutes",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1740,
+                            "y": 840
+                        },
+                        "previous_function": "",
+                        "previous_name": "unblock_ip_1",
+                        "required_params": {
+                            "ip": true
+                        },
+                        "reviewer": "",
+                        "show_delay": true,
+                        "show_number": true,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Correct",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 205
+                    },
+                    {
+                        "action": "terminate process",
+                        "action_type": "contain",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip_hostname": "filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress",
+                            "name": "filtered-data:filter_2:condition_1:artifact:*.cef.fileName"
+                        },
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
+                                "fields": {
+                                    "ip_hostname": "filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress",
+                                    "name": "filtered-data:filter_2:condition_1:artifact:*.cef.fileName"
+                                },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
+                                "name": "tanium",
+                                "output": [
+                                    {
+                                        "contains": [
+                                            "file name",
+                                            "process name"
+                                        ],
+                                        "data_path": "action_result.parameter.name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Name/IP Address",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "ip",
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Status",
+                                        "column_order": 1,
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "product_name": "",
+                                "product_vendor": "",
+                                "type": "endpoint"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "terminate pr..."
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
                                 "fill": "#FFFFFF",
-                                "ref-y": 68
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Contain"
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_contain.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def terminate_process_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('terminate_process_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'terminate_process_1' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.fileName', 'filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'terminate_process_1' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0] and filtered_artifacts_item_1[1]:\n            parameters.append({\n                'name': filtered_artifacts_item_1[0],\n                'ip_hostname': filtered_artifacts_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[2]},\n            })\n\n    phantom.act(\"terminate process\", parameters=parameters, assets=['tanium'], name=\"terminate_process_1\")    \n    \n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#3D9959",
+                        "connected_to_start": true,
+                        "connection_name": "file reputation",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def terminate_process_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('terminate_process_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'terminate_process_1' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.fileName', 'filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'terminate_process_1' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0] and filtered_artifacts_item_1[1]:\n            parameters.append({\n                'name': filtered_artifacts_item_1[0],\n                'ip_hostname': filtered_artifacts_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[2]},\n            })\n\n    #phantom.act(\"terminate process\", parameters=parameters, assets=['tanium'], name=\"terminate_process_1\")    \n    \n    return",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "27845ccb-bf3b-4f45-a1b2-538ddf53ce57",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 251,
+                        "line_start": 227,
+                        "message": "Configuring now",
+                        "name": "terminate process",
+                        "notes": "terminating the process by file name for the file whose hash has been confirmed to be malicious",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 820,
+                            "y": 680
+                        },
+                        "previous_function": "",
+                        "previous_name": "terminate_process_1",
+                        "required_params": {
+                            "ip_hostname": true,
+                            "name": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Contain",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 206
+                    },
+                    {
+                        "action": "unblock ip",
+                        "action_type": "correct",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip": "unblock_ip_1:action_result.parameter.ip",
+                            "is_source_address": "",
+                            "vsys": ""
+                        },
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
+                                "fields": {
+                                    "ip": "unblock_ip_1:action_result.parameter.ip",
+                                    "is_source_address": "",
+                                    "vsys": ""
+                                },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
+                                "name": "pan",
+                                "output": [
+                                    {
+                                        "column_name": "IP",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.is_source_address",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.vsys",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Status",
+                                        "column_order": 1,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Message",
+                                        "column_order": 2,
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "product_name": "",
+                                "product_vendor": "",
+                                "type": "firewall"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "remove from blockli...."
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
                             },
                             ".title": {
                                 "text": "Correct"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_correct.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -3463,9 +3626,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 228,
-                        "line_start": 200,
-                        "message": "",
+                        "line_end": 295,
+                        "line_start": 267,
+                        "message": "Configuring now",
                         "name": "unblock ip",
                         "notes": "If unblock was done, remove the IP address from blocklist",
                         "number": 2,
@@ -3544,26 +3707,21 @@
                         "title": "Correct",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 193
+                        "z": 207
                     }
                 ]
             },
             "notes": "Check file reputation (reversing labs)\nCheck if infected endpoint is a test machine or a critical system. Set Severity accordingly.\nIf file is malicious, terminate process by filename on endpoint (Tanium)\nIf file is malicious, extract the C&C Server IP and check if C&C IP is already blocked in a \u201cblocked IPs\u201d list\nIf not already blocked, ask user if the IP should be blocked given the file reputation information and other details\nIf user approves, block the IP and add it to \u201cblocked IPs\u201d list\nSchedule an unblock after 60 mins and remove the IP from \u201cblocked IPs\u201d list"
         },
         "schema": 2,
-        "version": "2.2.82"
+        "version": "3.5.128"
     },
-    "create_time": "2017-05-12T21:29:36.815246+00:00",
+    "create_time": "2018-02-10T00:30:23.343819+00:00",
     "draft_mode": false,
     "labels": [
-        "dlpevent",
         "o365email",
         "threatconnect",
-        "kafka message",
-        "generator",
-        "email",
-        "incident",
         "report",
-        "campaign"
+        "events"
     ]
 }
