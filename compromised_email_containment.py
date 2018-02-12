@@ -29,16 +29,17 @@ def query_ldap(action=None, success=None, container=None, results=None, handle=N
     
     # build parameters list for 'query_ldap' call
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'username': filtered_artifacts_item_1[0],
-            'fields': "",
-            'attribute': "",
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'username': filtered_artifacts_item_1[0],
+                'fields': "",
+                'attribute': "",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
 
-    phantom.act("get user attributes", parameters=parameters, assets=['ldap'], callback=filter_2, name="query_ldap", parent_action=action)    
-    
+    phantom.act("get user attributes", parameters=parameters, assets=['ldap'], callback=filter_2, name="query_ldap", parent_action=action)
+
     return
 
 """
@@ -110,17 +111,18 @@ def update_ticket_5(action=None, success=None, container=None, results=None, han
     
     # build parameters list for 'update_ticket_5' call
     for results_item_1 in results_data_1:
-        parameters.append({
-            'table': "",
-            'vault_id': "",
-            'id': results_item_1[0],
-            'fields': formatted_data_1,
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': results_item_1[1]},
-        })
+        if results_item_1[0]:
+            parameters.append({
+                'table': "",
+                'vault_id': "",
+                'id': results_item_1[0],
+                'fields': formatted_data_1,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[1]},
+            })
 
-    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], name="update_ticket_5")    
-    
+    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], name="update_ticket_5")
+
     return
 
 """
@@ -139,17 +141,18 @@ def update_ticket_1(action=None, success=None, container=None, results=None, han
     
     # build parameters list for 'update_ticket_1' call
     for results_item_1 in results_data_1:
-        parameters.append({
-            'table': "",
-            'vault_id': "",
-            'id': results_item_1[0],
-            'fields': formatted_data_1,
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': results_item_1[1]},
-        })
+        if results_item_1[0]:
+            parameters.append({
+                'table': "",
+                'vault_id': "",
+                'id': results_item_1[0],
+                'fields': formatted_data_1,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[1]},
+            })
 
-    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], callback=compromised_email_password_reset, name="update_ticket_1")    
-    
+    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], callback=compromised_email_password_reset, name="update_ticket_1")
+
     return
 
 """
@@ -222,14 +225,15 @@ def reset_password_2(action=None, success=None, container=None, results=None, ha
     
     # build parameters list for 'reset_password_2' call
     for filtered_results_item_1 in filtered_results_data_1:
-        parameters.append({
-            'username': filtered_results_item_1[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_results_item_1[1]},
-        })
+        if filtered_results_item_1[0]:
+            parameters.append({
+                'username': filtered_results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_results_item_1[1]},
+            })
 
-    phantom.act("reset password", parameters=parameters, assets=['ldap'], callback=decision_2, name="reset_password_2")    
-    
+    phantom.act("reset password", parameters=parameters, assets=['ldap'], callback=decision_2, name="reset_password_2")
+
     return
 
 """
@@ -291,17 +295,18 @@ def update_ticket_2(action=None, success=None, container=None, results=None, han
     
     # build parameters list for 'update_ticket_2' call
     for results_item_1 in results_data_1:
-        parameters.append({
-            'table': "",
-            'vault_id': "",
-            'id': results_item_1[0],
-            'fields': formatted_data_1,
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': results_item_1[1]},
-        })
+        if results_item_1[0]:
+            parameters.append({
+                'table': "",
+                'vault_id': "",
+                'id': results_item_1[0],
+                'fields': formatted_data_1,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[1]},
+            })
 
-    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], name="update_ticket_2")    
-    
+    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], name="update_ticket_2")
+
     return
 
 """
@@ -340,17 +345,18 @@ def update_ticket_3(action=None, success=None, container=None, results=None, han
     
     # build parameters list for 'update_ticket_3' call
     for results_item_1 in results_data_1:
-        parameters.append({
-            'table': "",
-            'vault_id': "",
-            'id': results_item_1[0],
-            'fields': formatted_data_1,
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': results_item_1[1]},
-        })
+        if results_item_1[0]:
+            parameters.append({
+                'table': "",
+                'vault_id': "",
+                'id': results_item_1[0],
+                'fields': formatted_data_1,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[1]},
+            })
 
-    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], name="update_ticket_3")    
-    
+    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], name="update_ticket_3")
+
     return
 
 """
@@ -388,17 +394,18 @@ def update_ticket_4(action=None, success=None, container=None, results=None, han
     
     # build parameters list for 'update_ticket_4' call
     for results_item_1 in results_data_1:
-        parameters.append({
-            'table': "",
-            'vault_id': "",
-            'id': results_item_1[0],
-            'fields': formatted_data_1,
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': results_item_1[1]},
-        })
+        if results_item_1[0]:
+            parameters.append({
+                'table': "",
+                'vault_id': "",
+                'id': results_item_1[0],
+                'fields': formatted_data_1,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[1]},
+            })
 
-    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], name="update_ticket_4")    
-    
+    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], name="update_ticket_4")
+
     return
 
 """
@@ -441,8 +448,8 @@ def create_ticket_1(action=None, success=None, container=None, results=None, han
         'fields': "",
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=query_ldap, name="create_ticket_1")    
-    
+    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=query_ldap, name="create_ticket_1")
+
     return
 
 """
