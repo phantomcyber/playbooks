@@ -8,7 +8,7 @@
             "clean": true,
             "code_block": "",
             "description": "This playbook automatically escalates an event's severity and sensitivity based upon the cef.suser found in the artifact.  This cef.suser is then used to list groups that the user belongs to using the LDAP app; if one of those groups is the \"Executive\" group, then the event is escalated to Severity \"High\" with TLP:RED as the sensitivity.",
-            "hash": "9bdda3f7192f11a839d9e38dc0ef8461a22630fa",
+            "hash": "382cab1a0e41394e495d2994798b500673f22ca4",
             "joint": {
                 "cells": [
                     {
@@ -31,20 +31,21 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'decision_1' block\n    decision_1(container=container)\n\n    return",
@@ -136,8 +137,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -165,17 +166,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -201,8 +202,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 123,
-                        "line_start": 110,
+                        "line_end": 119,
+                        "line_start": 106,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -267,8 +268,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -617,10 +618,7 @@
                         "angle": 0,
                         "attrs": {
                             ".api": {
-                                "text": "escalate alert"
-                            },
-                            ".background": {
-                                "height": 88
+                                "text": "set sensitivity, severity"
                             },
                             ".border": {
                                 "height": 88
@@ -636,9 +634,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -650,9 +653,11 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
+                            ".title": {
+                                "text": "API"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -668,19 +673,19 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def escalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('escalate_alert() called')\n    \n    # set container properties for: sensitivity, severity\n    update_data = {\n        \"sensitivity\" : \"red\",\n        \"severity\" : \"high\",\n    }\n\n    phantom.update(container, update_data)\n\n    return",
+                        "block_code": "def escalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('escalate_alert() called')\n\n    phantom.set_sensitivity(container, \"red\")\n\n    phantom.set_severity(container, \"high\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
                         "color": "",
                         "configured": [
                             {
-                                "name": "sensitivity",
-                                "value": "red"
+                                "key": "set-sensitivity",
+                                "setSensitivitySensitivity": "red"
                             },
                             {
-                                "name": "severity",
-                                "value": "high"
+                                "key": "set-severity",
+                                "setSeveritySeverity": "high"
                             }
                         ],
                         "connected_to_start": true,
@@ -702,9 +707,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 110,
-                        "line_start": 97,
-                        "message": "",
+                        "line_end": 26,
+                        "line_start": 17,
+                        "message": "Configuring now",
                         "name": "set sensitivity, severity",
                         "notes": "This block sets the sensitivity to TLP:RED and the severity to HIGH to help differentiate it from other events.",
                         "number": 1,
@@ -776,6 +781,7 @@
                         },
                         "state": "api",
                         "status": "",
+                        "title": "API",
                         "type": "coa.API",
                         "warn": false,
                         "z": 31
@@ -874,12 +880,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.suser\", \"!=\", \"\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        list_user_groups_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
@@ -906,8 +918,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 36,
-                        "line_start": 17,
+                        "line_end": 45,
+                        "line_start": 26,
                         "name": "decision",
                         "notes": "This block determines if the artifact has a cef.sname value populated.",
                         "number": 1,
@@ -1059,12 +1071,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_3() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"list_user_groups_1:action_result.summary.total_groups\", \">\", 0],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        decision_4(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
@@ -1091,8 +1109,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 77,
-                        "line_start": 57,
+                        "line_end": 65,
+                        "line_start": 45,
                         "name": "decision",
                         "notes": "Allows the playbook to continue workflow if the user belongs to at least one group.",
                         "number": 3,
@@ -1244,12 +1262,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_4() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"CN=Executive\", \"in\", \"list_user_groups_1:action_result.data.*.group\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        escalate_alert(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
@@ -1276,8 +1300,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 97,
-                        "line_start": 77,
+                        "line_end": 85,
+                        "line_start": 65,
                         "name": "decision",
                         "notes": "Checks if the user belongs to the Executive group.",
                         "number": 4,
@@ -1391,12 +1415,21 @@
                             "username": "artifact:*.cef.suser"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
                                 "fields": {
                                     "username": "artifact:*.cef.suser"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "domainctrl1",
                                 "output": [
                                     {
@@ -1435,18 +1468,14 @@
                                         "data_type": "numeric"
                                     }
                                 ],
+                                "product_name": "",
+                                "product_vendor": "",
                                 "type": "directory service"
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "list user groups"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1459,9 +1488,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1473,19 +1507,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1494,7 +1533,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def list_user_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_user_groups_1() called')\n\n    # collect data for 'list_user_groups_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.suser', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'list_user_groups_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'username': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"list user groups\", parameters=parameters, assets=['domainctrl1'], callback=decision_3, name=\"list_user_groups_1\")    \n    \n    return",
+                        "block_code": "def list_user_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_user_groups_1() called')\n\n    # collect data for 'list_user_groups_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.suser', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'list_user_groups_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'username': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"list user groups\", parameters=parameters, assets=['domainctrl1'], callback=decision_3, name=\"list_user_groups_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1519,9 +1558,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 57,
-                        "line_start": 36,
-                        "message": "",
+                        "line_end": 106,
+                        "line_start": 85,
+                        "message": "Configuring now",
                         "name": "list user groups",
                         "notes": "By utilizing the LDAP app, the 'list user groups' action is used to retrieve all the groups that the user belongs to.",
                         "number": 1,
@@ -1606,20 +1645,12 @@
             },
             "notes": "Apps Used:\n - LDAP\n\nNaturally, events in which an executive's machines are compromised are going to be of utmost importance, with regards to the amount of sensitive information they may contain.  Unfortunately, it can be hard to decipher which events need more attention in comparison to others without clear indications of needed attention.  By utilizing LDAP to determine whether an user is an executive, the container can be automatically escalated to a higher severity and sensitivity using the Phantom API."
         },
-        "schema": 2,
-        "version": "2.1.478"
+        "schema": 3,
+        "version": "3.5.135"
     },
-    "create_time": "2017-06-23T02:17:00.672943+00:00",
+    "create_time": "2018-02-12T02:04:19.048567+00:00",
     "draft_mode": false,
     "labels": [
-        "o365email",
-        "campaign",
-        "kafka message",
-        "generator",
-        "email",
-        "incident",
-        "splunk",
-        "report",
         "events"
     ]
 }

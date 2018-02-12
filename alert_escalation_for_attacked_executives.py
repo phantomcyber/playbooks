@@ -14,6 +14,15 @@ def on_start(container):
 
     return
 
+def escalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('escalate_alert() called')
+
+    phantom.set_sensitivity(container, "red")
+
+    phantom.set_severity(container, "high")
+
+    return
+
 def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('decision_1() called')
 
@@ -31,27 +40,6 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
 
     # call connected blocks for 'else' condition 2
 
-    return
-
-def list_user_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('list_user_groups_1() called')
-
-    # collect data for 'list_user_groups_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.suser', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'list_user_groups_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'username': container_item[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("list user groups", parameters=parameters, assets=['domainctrl1'], callback=decision_3, name="list_user_groups_1")    
-    
     return
 
 def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -94,16 +82,24 @@ def decision_4(action=None, success=None, container=None, results=None, handle=N
 
     return
 
-def escalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('escalate_alert() called')
-    
-    # set container properties for: sensitivity, severity
-    update_data = {
-        "sensitivity" : "red",
-        "severity" : "high",
-    }
+def list_user_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('list_user_groups_1() called')
 
-    phantom.update(container, update_data)
+    # collect data for 'list_user_groups_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.suser', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'list_user_groups_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'username': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("list user groups", parameters=parameters, assets=['domainctrl1'], callback=decision_3, name="list_user_groups_1")
 
     return
 
