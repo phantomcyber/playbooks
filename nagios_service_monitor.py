@@ -38,34 +38,6 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
     return
 
 """
-Parse the hostname or IP address of the SSH target server and check it against a whitelist (a Custom List).
-"""
-def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_1() called')
-    
-    container_data = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.emailHeaders.Subject'])
-    
-    command = ""
-    for result in container_data:
-        if result[0] and "Service Alert" in result[0]:
-            parts = result[0].split("** PROBLEM Service Alert: ")
-            hostname_ip = parts[1].split('/')[0]
-
-    success, message, whitelist = phantom.get_list("nagios_service_monitoring_hostname_ip_whitelist")
-    if [hostname_ip] in whitelist:
-        phantom.debug("hostname whitelist check passed")
-    else:
-        phantom.error("hostname whitelist check failed")
-        phantom.comment(container=container, comment="hostname whitelist check failed")
-        hostname_ip = "hostname whitelist check failed"
-
-    phantom.format(container=container, template=hostname_ip, parameters=[""], name="format_1")
-
-    #join_execute_program_1(container=container)
-
-    return
-
-"""
 Build the "service restart" SSH command with the parsed target hostname or IP and the parsed service name.
 """
 def execute_program_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -101,6 +73,34 @@ def join_execute_program_1(action=None, success=None, container=None, results=No
 
     execute_program_1(container=container, handle=handle)
     
+    return
+
+"""
+Parse the hostname or IP address of the SSH target server and check it against a whitelist (a Custom List).
+"""
+def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_1() called')
+    
+    container_data = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.emailHeaders.Subject'])
+    
+    command = ""
+    for result in container_data:
+        if result[0] and "Service Alert" in result[0]:
+            parts = result[0].split("** PROBLEM Service Alert: ")
+            hostname_ip = parts[1].split('/')[0]
+
+    success, message, whitelist = phantom.get_list("nagios_service_monitoring_hostname_ip_whitelist")
+    if [hostname_ip] in whitelist:
+        phantom.debug("hostname whitelist check passed")
+    else:
+        phantom.error("hostname whitelist check failed")
+        phantom.comment(container=container, comment="hostname whitelist check failed")
+        hostname_ip = "hostname whitelist check failed"
+
+    phantom.format(container=container, template=hostname_ip, parameters=[""], name="format_1")
+
+    #join_execute_program_1(container=container)
+
     return
 
 """
