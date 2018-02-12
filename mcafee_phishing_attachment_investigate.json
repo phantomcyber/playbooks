@@ -8,7 +8,6 @@
             "clean": true,
             "code_block": "",
             "description": "Originally written as an example playbook for BlackHat 2017, this playbook investigates a potential phishing email with a suspicious attachment. Execution starts when a suspicious email with an attachment is forwarded to an inbox which Phantom is polling. McAfee Advanced Threat Defense is used to do static and dynamic analysis on any attachments to the email. If the attachment(s) appear malicious, any IP addresses identified during the ATD detonation are used to do geolocation and IP address reputation, further enriching the data in the original container. The ATD detonation also records the hashes of files that are created or touched. McAfee Active Response is used to search within the enterprise for those hashes, and if there are any matches they are shared on the OpenDXL message fabric.",
-            "hash": "fe5de5f2ed94d08310013dbc1bdddbb6f4dd86cf",
             "joint": {
                 "cells": [
                     {
@@ -31,18 +30,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -68,8 +66,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 380,
-                        "line_start": 367,
+                        "line_end": 382,
+                        "line_start": 369,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -127,15 +125,15 @@
                             }
                         },
                         "position": {
-                            "x": 1560,
-                            "y": 220
+                            "x": 1620,
+                            "y": 80
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -163,20 +161,21 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'decision_1' block\n    decision_1(container=container)\n\n    return",
@@ -262,14 +261,14 @@
                         },
                         "position": {
                             "x": 100,
-                            "y": 220
+                            "y": 80
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -315,7 +314,12 @@
                             "selector": ".port-body[type=\"input\"]"
                         },
                         "type": "link",
-                        "vertices": [],
+                        "vertices": [
+                            {
+                                "x": 600,
+                                "y": 140
+                            }
+                        ],
                         "z": 50
                     },
                     {
@@ -513,12 +517,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.vaultId\", \"!=\", \"\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        atd_detonate_file(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
@@ -545,8 +555,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 169,
-                        "line_start": 152,
+                        "line_end": 37,
+                        "line_start": 20,
                         "name": "decision",
                         "notes": "Only proceed with the playbook if the ingested email has an artifact with a vaultId, which will be present if the email has one or more file attachments.",
                         "number": 1,
@@ -621,8 +631,8 @@
                             }
                         },
                         "position": {
-                            "x": 260,
-                            "y": 200
+                            "x": 240,
+                            "y": 60
                         },
                         "previous_function": "",
                         "previous_name": "decision_1",
@@ -807,12 +817,21 @@
                             "ip": "filtered-data:filter_1:condition_1:detonate_file_1:action_result.data.*.Summary.Ips.*.Ipv4"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
                                 "fields": {
                                     "ip": "filtered-data:filter_1:condition_1:atd_detonate_file:action_result.data.*.Summary.Ips.*.Ipv4"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "maxmind",
                                 "output": [
                                     {
@@ -899,18 +918,14 @@
                                         "data_type": "numeric"
                                     }
                                 ],
+                                "product_name": "",
+                                "product_vendor": "",
                                 "type": "information"
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "geolocate ip"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -923,9 +938,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -937,19 +957,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -958,7 +983,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def geolocate_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('geolocate_ip() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'geolocate_ip' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.data.*.Summary.Ips.*.Ipv4\", \"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'geolocate_ip' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        parameters.append({\n            'ip': filtered_results_item_1[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': filtered_results_item_1[1]},\n        })\n\n    phantom.act(\"geolocate ip\", parameters=parameters, assets=['maxmind'], name=\"geolocate_ip\")    \n    \n    return",
+                        "block_code": "def geolocate_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('geolocate_ip() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'geolocate_ip' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.data.*.Summary.Ips.*.Ipv4\", \"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'geolocate_ip' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'ip': filtered_results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"geolocate ip\", parameters=parameters, assets=['maxmind'], name=\"geolocate_ip\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -983,9 +1008,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 87,
-                        "line_start": 65,
-                        "message": "",
+                        "line_end": 63,
+                        "line_start": 40,
+                        "message": "Configuring now",
                         "name": "geolocate ip",
                         "notes": "Enrich the container with the geolocation of any IP addresses found in the detonation to inform any further analysis.",
                         "number": 1,
@@ -1045,12 +1070,14 @@
                             }
                         },
                         "position": {
-                            "x": 800,
+                            "x": 760,
                             "y": 200
                         },
                         "previous_function": "",
                         "previous_name": "geolocate_ip",
-                        "required_params": {},
+                        "required_params": {
+                            "ip": true
+                        },
                         "reviewer": "",
                         "show_number": false,
                         "size": {
@@ -1177,15 +1204,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"atd_detonate_file:action_result.data.*.Summary.Verdict.Severity\", \">=\", \"3\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        geolocate_ip(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        opendxl_push_ip(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        mar_lookup_hash(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
@@ -1211,8 +1241,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 40,
-                        "line_start": 20,
+                        "line_end": 86,
+                        "line_start": 66,
                         "name": "filter",
                         "notes": "Only proceed with investigation if the final severity verdict returned by ATD is greater than or equal to 3, indicating the file is probably malicious.",
                         "number": 1,
@@ -1287,8 +1317,8 @@
                             }
                         },
                         "position": {
-                            "x": 640,
-                            "y": 200
+                            "x": 620,
+                            "y": 60
                         },
                         "previous_function": "",
                         "previous_name": "filter_1",
@@ -1381,6 +1411,12 @@
                             "selector": ".port-body[type=\"input\"]"
                         },
                         "type": "link",
+                        "vertices": [
+                            {
+                                "x": 1340,
+                                "y": 380
+                            }
+                        ],
                         "z": 199
                     },
                     {
@@ -1580,15 +1616,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_2() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"mar_lookup_hash:action_result.data.*.items.*.count\", \">\", 0],\n        ],\n        name=\"filter_2:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        opendxl_push_hash(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        format_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
@@ -1614,8 +1653,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 62,
-                        "line_start": 43,
+                        "line_end": 108,
+                        "line_start": 89,
                         "name": "filter",
                         "notes": "Investigate further for any hashes that were identified in the MAR lookup.",
                         "number": 2,
@@ -1690,7 +1729,7 @@
                             }
                         },
                         "position": {
-                            "x": 1040,
+                            "x": 1000,
                             "y": 340
                         },
                         "previous_function": "",
@@ -1703,175 +1742,8 @@
                         "state": "filter",
                         "status": "",
                         "type": "coa.Filter",
-                        "warn": "",
-                        "z": 211
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".border": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".inPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 1
-                            },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
-                            },
-                            ".outPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_1() called')\n    \n    template = \"\"\"Phantom received a potential phishing email from {0} with source_id {1}\n\nSince the email contained an attachment, Phantom used McAfee ATD to detonate the file. The detonation returned a severity verdict of {2}\n\nPhantom proceeded to use McAfee Active Response to hunt internally for endpoints associated with any of the hashes identified during ATD detonation. The following internal hostnames were identified:\n\n{3}\n\nPlease continue to investigate these endpoints as soon as possible.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.fromEmail\",\n        \"container:source_data_identifier\",\n        \"atd_detonate_file:action_result.data.*.Summary.Verdict.Severity\",\n        \"filtered-data:filter_2:condition_1:mar_lookup_hash:action_result.data.*.items.*.output.HostInfo|hostname\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_1\")\n\n    create_ticket_2(container=container)\n    send_email_to_analyst(container=container)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "mar lookup hash",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "Summarize the key findings from the investigation to populate a new ticket and an email to an analyst.",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "5d65bcdb-8ed8-4e74-a021-6c4ac80097b6",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 307,
-                        "line_start": 279,
-                        "name": "format",
-                        "notes": "Summarize the key findings from the investigation to populate a new ticket and an email to an analyst.",
-                        "number": 1,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "parameters": [
-                            {
-                                "position": 0,
-                                "type": "",
-                                "value": "artifact:*.cef.fromEmail"
-                            },
-                            {
-                                "position": 1,
-                                "type": "",
-                                "value": "container:source_data_identifier"
-                            },
-                            {
-                                "position": 2,
-                                "type": "",
-                                "value": "atd_detonate_file:action_result.data.*.Summary.Verdict.Severity"
-                            },
-                            {
-                                "position": 3,
-                                "type": "",
-                                "value": "filtered-data:filter_2:condition_1:mar_lookup_hash:action_result.data.*.items.*.output.HostInfo|hostname"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1180,
-                            "y": 340
-                        },
-                        "previous_function": "",
-                        "previous_name": "format_1",
-                        "show_number": true,
-                        "size": {
-                            "height": 82,
-                            "width": 82
-                        },
-                        "state": "format",
-                        "status": "",
-                        "template": "Phantom received a potential phishing email from {0} with source_id {1}\n\nSince the email contained an attachment, Phantom used McAfee ATD to detonate the file. The detonation returned a severity verdict of {2}\n\nPhantom proceeded to use McAfee Active Response to hunt internally for endpoints associated with any of the hashes identified during ATD detonation. The following internal hostnames were identified:\n\n{3}\n\nPlease continue to investigate these endpoints as soon as possible.",
-                        "type": "coa.Format",
                         "warn": false,
-                        "z": 218
+                        "z": 211
                     },
                     {
                         "action": "create ticket",
@@ -1886,11 +1758,15 @@
                             "vault_id": "artifact:*.cef.vaultId"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "ServiceNow",
                                 "app_version": "1.2.33",
+                                "config_type": "asset",
                                 "fields": {
                                     "description": "format_1:formatted_data",
                                     "fields": "",
@@ -1898,6 +1774,9 @@
                                     "table": "",
                                     "vault_id": "artifact:*.cef.vaultId"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "servicenow",
                                 "output": [
                                     {
@@ -2388,18 +2267,13 @@
                                     }
                                 ],
                                 "product_name": "ServiceNow",
-                                "product_vendor": "ServiceNow"
+                                "product_vendor": "ServiceNow",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "create ticket"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2412,9 +2286,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2426,19 +2305,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2447,7 +2331,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def create_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_ticket_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_ticket_2' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.id'])\n    formatted_data_1 = phantom.get_format_data(name='format_1')\n\n    parameters = []\n    \n    # build parameters list for 'create_ticket_2' call\n    for container_item in container_data:\n        parameters.append({\n            'short_description': \"phishing attachment present on endpoints\",\n            'description': formatted_data_1,\n            'table': \"\",\n            'fields': \"\",\n            'vault_id': container_item[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[1]},\n        })\n\n    phantom.act(\"create ticket\", parameters=parameters, assets=['servicenow'], name=\"create_ticket_2\")    \n    \n    return",
+                        "block_code": "def create_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_ticket_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_ticket_2' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.id'])\n    formatted_data_1 = phantom.get_format_data(name='format_1')\n\n    parameters = []\n    \n    # build parameters list for 'create_ticket_2' call\n    for container_item in container_data:\n        parameters.append({\n            'short_description': \"phishing attachment present on endpoints\",\n            'table': \"\",\n            'vault_id': container_item[0],\n            'description': formatted_data_1,\n            'fields': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[1]},\n        })\n\n    phantom.act(\"create ticket\", parameters=parameters, assets=['servicenow'], name=\"create_ticket_2\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2472,9 +2356,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 337,
-                        "line_start": 310,
-                        "message": "",
+                        "line_end": 169,
+                        "line_start": 142,
+                        "message": "Configuring now",
                         "name": "create ticket",
                         "notes": "Create a new ticket with a summary of the information needed to start remediation.",
                         "number": 2,
@@ -2534,7 +2418,7 @@
                             }
                         },
                         "position": {
-                            "x": 1320,
+                            "x": 1380,
                             "y": 340
                         },
                         "previous_function": "",
@@ -2550,7 +2434,7 @@
                         "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 219
                     },
                     {
@@ -2566,11 +2450,15 @@
                             "to": "analyst@mcafee-ebc.com"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "SMTP",
                                 "app_version": "1.2.29",
+                                "config_type": "asset",
                                 "fields": {
                                     "attachments": "artifact:*.cef.vaultId",
                                     "body": "format_1:formatted_data",
@@ -2578,6 +2466,9 @@
                                     "subject": "phishing attachment present on endpoints",
                                     "to": "analyst@mcafee-ebc.com"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "smtp",
                                 "output": [
                                     {
@@ -2627,18 +2518,13 @@
                                     }
                                 ],
                                 "product_name": "SMTP",
-                                "product_vendor": "Generic"
+                                "product_vendor": "Generic",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "send email to analyst"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2651,9 +2537,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2665,19 +2556,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2686,7 +2582,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def send_email_to_analyst(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_email_to_analyst() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_email_to_analyst' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.id'])\n    formatted_data_1 = phantom.get_format_data(name='format_1')\n\n    parameters = []\n    \n    # build parameters list for 'send_email_to_analyst' call\n    for container_item in container_data:\n        parameters.append({\n            'from': \"phantom@mcafee-ebc.com\",\n            'to': \"analyst@mcafee-ebc.com\",\n            'subject': \"phishing attachment present on endpoints\",\n            'body': formatted_data_1,\n            'attachments': container_item[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[1]},\n        })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"send_email_to_analyst\")    \n    \n    return",
+                        "block_code": "def send_email_to_analyst(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_email_to_analyst() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_email_to_analyst' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.id'])\n    formatted_data_1 = phantom.get_format_data(name='format_1')\n\n    parameters = []\n    \n    # build parameters list for 'send_email_to_analyst' call\n    for container_item in container_data:\n        parameters.append({\n            'body': formatted_data_1,\n            'to': \"analyst@mcafee-ebc.com\",\n            'from': \"phantom@mcafee-ebc.com\",\n            'attachments': container_item[0],\n            'subject': \"phishing attachment present on endpoints\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[1]},\n        })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"send_email_to_analyst\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2711,9 +2607,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 367,
-                        "line_start": 340,
-                        "message": "",
+                        "line_end": 199,
+                        "line_start": 172,
+                        "message": "Configuring now",
                         "name": "send email",
                         "notes": "Email an analyst with a summary of the information needed to start remediation.",
                         "number": 3,
@@ -2773,7 +2669,7 @@
                             }
                         },
                         "position": {
-                            "x": 1320,
+                            "x": 1380,
                             "y": 480
                         },
                         "previous_function": "",
@@ -2792,7 +2688,7 @@
                         "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 220
                     },
                     {
@@ -2804,14 +2700,21 @@
                             "vault_id": "artifact:*.cef.vaultId"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "McAfee Advanced Threat Defense (ATD)",
                                 "app_version": "1.0.1",
+                                "config_type": "asset",
                                 "fields": {
                                     "vault_id": "artifact:*.cef.vaultId"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "atd",
                                 "output": [
                                     {
@@ -3325,7 +3228,8 @@
                                     }
                                 ],
                                 "product_name": "ATD",
-                                "product_vendor": "McAfee"
+                                "product_vendor": "McAfee",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -3333,10 +3237,7 @@
                                 "text": "atd detonate file"
                             },
                             ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
+                                "stroke": "#E6984E"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -3349,9 +3250,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -3363,19 +3269,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Investigate"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -3384,9 +3298,9 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def atd_detonate_file(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('atd_detonate_file() called')\n\n    # collect data for 'atd_detonate_file' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'atd_detonate_file' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'vault_id': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"detonate file\", parameters=parameters, assets=['atd'], callback=atd_detonate_file_callback, name=\"atd_detonate_file\", parent_action=action)    \n    \n    return",
+                        "block_code": "def atd_detonate_file(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('atd_detonate_file() called')\n\n    # collect data for 'atd_detonate_file' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'atd_detonate_file' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'vault_id': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"detonate file\", parameters=parameters, assets=['atd'], callback=atd_detonate_file_callback, name=\"atd_detonate_file\")\n\n    return",
                         "callback_code": "def atd_detonate_file_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('atd_detonate_file_callback() called')\n    \n    send_email_to_admin(action=action, success=success, container=container, results=results, handle=handle)\n    filter_1(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
-                        "callback_start": 141,
+                        "callback_start": 223,
                         "callsback": true,
                         "color": "#654796",
                         "connected_to_start": true,
@@ -3409,9 +3323,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 149,
-                        "line_start": 120,
-                        "message": "",
+                        "line_end": 231,
+                        "line_start": 202,
+                        "message": "Configuring now",
                         "name": "detonate file",
                         "notes": "Submit the file(s) to ATD for both static and dynamic analysis. The combined analysis will provide a security verdict about how dangerous the file looks as well as one or more hashes from different stages of its execution and one or more IP addresses hard-coded within it (static analysis) or detected during execution (dynamic analysis).",
                         "number": 1,
@@ -3471,8 +3385,8 @@
                             }
                         },
                         "position": {
-                            "x": 400,
-                            "y": 200
+                            "x": 380,
+                            "y": 60
                         },
                         "previous_function": "",
                         "previous_name": "atd_detonate_file",
@@ -3486,10 +3400,10 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 221
                     },
                     {
@@ -3501,14 +3415,21 @@
                             "dxl_ip": "filtered-data:filter_1:condition_1:Detonate_file_in_ATD:action_result.data.*.Summary.Ips.*.Ipv4"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "McAfee OpenDXL",
                                 "app_version": "1.1.1",
+                                "config_type": "asset",
                                 "fields": {
                                     "dxl_ip": "filtered-data:filter_1:condition_1:atd_detonate_file:action_result.data.*.Summary.Ips.*.Ipv4"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "opendxl",
                                 "output": [
                                     {
@@ -3540,7 +3461,8 @@
                                     }
                                 ],
                                 "product_name": "OpenDXL",
-                                "product_vendor": "McAfee"
+                                "product_vendor": "McAfee",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -3548,10 +3470,7 @@
                                 "text": "opendxl push ip"
                             },
                             ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#3D9959"
+                                "stroke": "#E6984E"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -3564,9 +3483,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -3578,19 +3502,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Contain"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_contain.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -3599,7 +3531,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def opendxl_push_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('opendxl_push_ip() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'opendxl_push_ip' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.data.*.Summary.Ips.*.Ipv4\", \"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'opendxl_push_ip' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'dxl_ip': filtered_results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"post ip\", parameters=parameters, assets=['opendxl'], callback=ip_reputation_1, name=\"opendxl_push_ip\")    \n    \n    return",
+                        "block_code": "def opendxl_push_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('opendxl_push_ip() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'opendxl_push_ip' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.data.*.Summary.Ips.*.Ipv4\", \"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'opendxl_push_ip' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'dxl_ip': filtered_results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"post ip\", parameters=parameters, assets=['opendxl'], callback=ip_reputation_1, name=\"opendxl_push_ip\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3624,9 +3556,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 195,
-                        "line_start": 172,
-                        "message": "",
+                        "line_end": 257,
+                        "line_start": 234,
+                        "message": "Configuring now",
                         "name": "post ip",
                         "notes": "Push any IP addresses identified in the ATD detonation to the OpenDXL message fabric. These can be received by any number of other tools listening on OpenDXL.",
                         "number": 1,
@@ -3686,7 +3618,7 @@
                             }
                         },
                         "position": {
-                            "x": 800,
+                            "x": 760,
                             "y": 60
                         },
                         "previous_function": "",
@@ -3701,10 +3633,10 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Contain",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 222
                     },
                     {
@@ -3718,16 +3650,24 @@
                             "to": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "PassiveTotal",
                                 "app_version": "1.2.25",
+                                "config_type": "asset",
                                 "fields": {
                                     "from": "",
                                     "ip": "opendxl_push_ip:action_result.parameter.dxl_ip",
+                                    "ph": "",
                                     "to": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "passivetotal",
                                 "output": [
                                     {
@@ -3945,18 +3885,13 @@
                                     }
                                 ],
                                 "product_name": "PassiveTotal",
-                                "product_vendor": "PassiveTotal"
+                                "product_vendor": "PassiveTotal",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "ip reputation"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -3969,9 +3904,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -3983,19 +3923,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -4004,7 +3949,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('ip_reputation_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'ip_reputation_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['opendxl_push_ip:action_result.parameter.dxl_ip', 'opendxl_push_ip:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'ip_reputation_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'from': \"\",\n                'to': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"ip reputation\", parameters=parameters, assets=['passivetotal'], name=\"ip_reputation_1\", parent_action=action)    \n    \n    return",
+                        "block_code": "def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('ip_reputation_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'ip_reputation_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['opendxl_push_ip:action_result.parameter.dxl_ip', 'opendxl_push_ip:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'ip_reputation_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'ph': \"\",\n                'from': \"\",\n                'to': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"ip reputation\", parameters=parameters, assets=['passivetotal'], name=\"ip_reputation_1\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -4029,9 +3974,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 223,
-                        "line_start": 198,
-                        "message": "",
+                        "line_end": 286,
+                        "line_start": 260,
+                        "message": "Configuring now",
                         "name": "ip reputation",
                         "notes": "Enrich the container with the reputation of any IP addresses found in the detonation to inform any further analysis.",
                         "number": 1,
@@ -4091,7 +4036,7 @@
                             }
                         },
                         "position": {
-                            "x": 1320,
+                            "x": 1140,
                             "y": 60
                         },
                         "previous_function": "",
@@ -4109,7 +4054,7 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 223
                     },
                     {
@@ -4121,14 +4066,21 @@
                             "mar_md5": "filtered-data:filter_1:condition_1:atd_detonate_file:action_result.data.*.Summary.Files.*.Md5"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "McAfee OpenDXL",
                                 "app_version": "1.1.1",
+                                "config_type": "asset",
                                 "fields": {
                                     "mar_md5": "filtered-data:filter_1:condition_1:atd_detonate_file:action_result.data.*.Summary.Files.*.Md5"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "opendxl",
                                 "output": [
                                     {
@@ -4225,7 +4177,8 @@
                                     }
                                 ],
                                 "product_name": "OpenDXL",
-                                "product_vendor": "McAfee"
+                                "product_vendor": "McAfee",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -4233,10 +4186,7 @@
                                 "text": "mar lookup hash"
                             },
                             ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
+                                "stroke": "#E6984E"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -4249,9 +4199,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -4263,19 +4218,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Investigate"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -4284,7 +4247,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def mar_lookup_hash(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('mar_lookup_hash() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'mar_lookup_hash' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.data.*.Summary.Files.*.Md5\", \"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'mar_lookup_hash' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'mar_md5': filtered_results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"lookup hash\", parameters=parameters, assets=['opendxl'], callback=filter_2, name=\"mar_lookup_hash\")    \n    \n    return",
+                        "block_code": "def mar_lookup_hash(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('mar_lookup_hash() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'mar_lookup_hash' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.data.*.Summary.Files.*.Md5\", \"filtered-data:filter_1:condition_1:atd_detonate_file:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'mar_lookup_hash' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'mar_md5': filtered_results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"lookup hash\", parameters=parameters, assets=['opendxl'], callback=filter_2, name=\"mar_lookup_hash\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -4309,9 +4272,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 249,
-                        "line_start": 226,
-                        "message": "",
+                        "line_end": 312,
+                        "line_start": 289,
+                        "message": "Configuring now",
                         "name": "lookup hash",
                         "notes": "Use OpenDXL to connect to McAfee Active Response (MAR), querying for the existence of the detected hashes on any endpoints within the enterprise. MAR searches for the hash on disk, in netflow, or in processes and registry keys.",
                         "number": 1,
@@ -4371,7 +4334,7 @@
                             }
                         },
                         "position": {
-                            "x": 800,
+                            "x": 760,
                             "y": 340
                         },
                         "previous_function": "",
@@ -4386,10 +4349,10 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 225
                     },
                     {
@@ -4405,9 +4368,15 @@
                             "to": "admin@mcafee-ebc.com"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
                                 "fields": {
                                     "attachments": "",
                                     "body": "atd_detonate_file:action_result.data.*.Summary.Verdict.Description",
@@ -4415,6 +4384,9 @@
                                     "subject": "atd_detonate_file:action_result.summary.verdict",
                                     "to": "admin@mcafee-ebc.com"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "smtp",
                                 "output": [
                                     {
@@ -4463,18 +4435,14 @@
                                         "data_type": "numeric"
                                     }
                                 ],
+                                "product_name": "",
+                                "product_vendor": "",
                                 "type": "email"
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "send email to admin"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -4487,9 +4455,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -4501,19 +4474,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -4522,7 +4500,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def send_email_to_admin(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_email_to_admin() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_email_to_admin' call\n    results_data_1 = phantom.collect2(container=container, datapath=['atd_detonate_file:action_result.data.*.Summary.Verdict.Description', 'atd_detonate_file:action_result.summary.verdict', 'atd_detonate_file:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'send_email_to_admin' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'body': results_item_1[0],\n                'to': \"admin@mcafee-ebc.com\",\n                'from': \"phantom@mcafee-ebc.com\",\n                'attachments': \"\",\n                'subject': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"send_email_to_admin\", parent_action=action)    \n    \n    return",
+                        "block_code": "def send_email_to_admin(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_email_to_admin() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_email_to_admin' call\n    results_data_1 = phantom.collect2(container=container, datapath=['atd_detonate_file:action_result.data.*.Summary.Verdict.Description', 'atd_detonate_file:action_result.summary.verdict', 'atd_detonate_file:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'send_email_to_admin' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'body': results_item_1[0],\n                'to': \"admin@mcafee-ebc.com\",\n                'from': \"phantom@mcafee-ebc.com\",\n                'attachments': \"\",\n                'subject': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"send_email_to_admin\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -4547,9 +4525,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 117,
-                        "line_start": 90,
-                        "message": "",
+                        "line_end": 342,
+                        "line_start": 315,
+                        "message": "Configuring now",
                         "name": "send email",
                         "notes": "Always send the high-level ATD verdict description to the admin to keep them in the loop.",
                         "number": 1,
@@ -4609,7 +4587,7 @@
                             }
                         },
                         "position": {
-                            "x": 800,
+                            "x": 760,
                             "y": 480
                         },
                         "previous_function": "",
@@ -4641,15 +4619,22 @@
                             "tie_md5": "filtered-data:filter_2:condition_1:mar_lookup_hash:action_result.data.*.items.*.output.Files|md5"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "McAfee OpenDXL",
                                 "app_version": "1.1.1",
+                                "config_type": "asset",
                                 "fields": {
                                     "dxl_rep": "KNOWN_MALICIOUS",
                                     "tie_md5": "filtered-data:filter_2:condition_1:mar_lookup_hash:action_result.data.*.items.*.output.Files|md5"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "opendxl",
                                 "output": [
                                     {
@@ -4688,7 +4673,8 @@
                                     }
                                 ],
                                 "product_name": "OpenDXL",
-                                "product_vendor": "McAfee"
+                                "product_vendor": "McAfee",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -4696,10 +4682,7 @@
                                 "text": "opendxl push hash"
                             },
                             ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#3D9959"
+                                "stroke": "#E6984E"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -4712,9 +4695,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -4726,19 +4714,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Contain"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_contain.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -4747,7 +4743,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def opendxl_push_hash(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('opendxl_push_hash() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'opendxl_push_hash' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_2:condition_1:mar_lookup_hash:action_result.data.*.items.*.output.Files|md5\", \"filtered-data:filter_2:condition_1:mar_lookup_hash:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'opendxl_push_hash' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'tie_md5': filtered_results_item_1[0],\n                'dxl_rep': \"KNOWN_MALICIOUS\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"post hash\", parameters=parameters, assets=['opendxl'], name=\"opendxl_push_hash\")    \n    \n    return",
+                        "block_code": "def opendxl_push_hash(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('opendxl_push_hash() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'opendxl_push_hash' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_2:condition_1:mar_lookup_hash:action_result.data.*.items.*.output.Files|md5\", \"filtered-data:filter_2:condition_1:mar_lookup_hash:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'opendxl_push_hash' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'tie_md5': filtered_results_item_1[0],\n                'dxl_rep': \"KNOWN_MALICIOUS\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"post hash\", parameters=parameters, assets=['opendxl'], name=\"opendxl_push_hash\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -4772,9 +4768,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 276,
-                        "line_start": 252,
-                        "message": "",
+                        "line_end": 369,
+                        "line_start": 345,
+                        "message": "Configuring now",
                         "name": "post hash",
                         "notes": "Push out the identified hashes for use by McAfee Threat Intelligence Exchange (TIE). From there the hash can be blocked depending on the reputation threshold configured in TIE policy and whether or not files with that hash are signed by a trusted source.",
                         "number": 1,
@@ -4834,7 +4830,7 @@
                             }
                         },
                         "position": {
-                            "x": 1320,
+                            "x": 1140,
                             "y": 200
                         },
                         "previous_function": "",
@@ -4850,20 +4846,227 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Contain",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 227
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(0 0 0)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".format": {
+                                "text": "format 1"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port": {
+                                "ref-x": 0,
+                                "ref-y": 0
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_1() called')\n    \n    template = \"\"\"Phantom received a potential phishing email from {0} with source_id {1}\n\nSince the email contained an attachment, Phantom used McAfee ATD to detonate the file. The detonation returned a severity verdict of {2}\n\nPhantom proceeded to use McAfee Active Response to hunt internally for endpoints associated with any of the hashes identified during ATD detonation. The following internal hostnames were identified:\n\n{3}\n\nPlease continue to investigate these endpoints as soon as possible.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.fromEmail\",\n        \"container:source_data_identifier\",\n        \"atd_detonate_file:action_result.data.*.Summary.Verdict.Severity\",\n        \"filtered-data:filter_2:condition_1:mar_lookup_hash:action_result.data.*.items.*.output.HostInfo|hostname\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_1\")\n\n    create_ticket_2(container=container)\n    send_email_to_analyst(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "mar lookup hash",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "format 1",
+                        "description": "Summarize the key findings from the investigation to populate a new ticket and an email to an analyst.",
+                        "format": "format",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "5d65bcdb-8ed8-4e74-a021-6c4ac80097b6",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 139,
+                        "line_start": 111,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "Summarize the key findings from the investigation to populate a new ticket and an email to an analyst.",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": "artifact:*.cef.fromEmail"
+                            },
+                            {
+                                "position": 1,
+                                "type": "",
+                                "value": "container:source_data_identifier"
+                            },
+                            {
+                                "position": 2,
+                                "type": "",
+                                "value": "atd_detonate_file:action_result.data.*.Summary.Verdict.Severity"
+                            },
+                            {
+                                "position": 3,
+                                "type": "",
+                                "value": "filtered-data:filter_2:condition_1:mar_lookup_hash:action_result.data.*.items.*.output.HostInfo|hostname"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1140,
+                            "y": 340
+                        },
+                        "previous_function": "",
+                        "previous_name": "format_1",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "Phantom received a potential phishing email from {0} with source_id {1}\n\nSince the email contained an attachment, Phantom used McAfee ATD to detonate the file. The detonation returned a severity verdict of {2}\n\nPhantom proceeded to use McAfee Active Response to hunt internally for endpoints associated with any of the hashes identified during ATD detonation. The following internal hostnames were identified:\n\n{3}\n\nPlease continue to investigate these endpoints as soon as possible.",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 229
                     }
                 ]
             },
             "notes": "This playbook uses the following Apps:\n - McAfee Advanced Threat Defense (ATD) (detonate file) [asset name = atd]\n - McAfee OpenDXL (post ip, lookup hash, and post hash) [asset name = opendxl]\n - Maxmind (geolocate ip) [asset name = maxmind]\n - SMTP (send email) [asset name = smtp]\n - Passivetotal (ip reputation) [asset name = passivetotal]\n - Servicenow (create ticket) [asset name = servicenow]\n\nThis playbook is meant to be set as Active, and the IMAP app should be automatically polling the desired email inbox and labelling the resulting containers as \"Email\".\n\nThe destination email addresses used are:\n - admin@mcafee-ebc.com for the results of all ATD file detonations\n - analyst@mcafee-ebc.com for a summary of all successful MAR lookups\n\nThe receiving end of both OpenDXL push actions is not defined here and will depend on your environment. In \"opendxl push hash\" the reputation \"KNOWN_MALICIOUS\" is sent along with the hash, which will have a different behavior depending on your TIE reputation threshold.\n\nThe Format block before \"create ticket\" and \"send email to analyst\" can be modified to share more or less information."
         },
-        "schema": 2,
-        "version": "3.0.251"
+        "schema": 3,
+        "version": "3.5.137"
     },
-    "create_time": "2017-09-26T00:07:45.654731+00:00",
+    "create_time": "2018-02-12T22:03:17.777907+00:00",
     "draft_mode": false,
     "labels": [
         "email"
