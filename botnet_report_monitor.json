@@ -8,6 +8,7 @@
             "clean": true,
             "code_block": "import json\nimport requests\nimport urllib3\nimport xmltodict\n\nURL = '/api/?type=report&reporttype=predefined&reportname=botnet&key='\nAPI = '<API_Key>'\n# Min confidence\nCONFIDENCE = 2\n# Firewall addresses\nPAN = ['<PAN_URL#1>', '<PAN_URL#2>', '<PAN_URL#3>']",
             "description": "This Playbook connects to multiple PAN Firewalls to monitor for behavior-based botnet detections. Any detections found by the PAN Firewall are processed by this Playbook if they have a confidence score higher than the configured value. First each of the detections is checked against a whitelist of known false positives and if the traffic source is not whitelisted the botnet detection is used to create a ticket in ServiceNow and notify collaborators using Slack.\n\nAuthor: Irek Romaniuk (minor changes by the Phantom team)",
+            "hash": "a86cd7a44eeefdd09f85880a693cd969967db73c",
             "joint": {
                 "cells": [
                     {
@@ -30,18 +31,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -133,8 +133,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -283,30 +283,31 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
-                        "connected_to_start": false,
+                        "connected_to_start": true,
                         "connection_name": "",
                         "connection_type": "",
                         "custom_callback": "",
@@ -314,7 +315,7 @@
                         "custom_join": "",
                         "custom_name": "",
                         "description": "",
-                        "has_custom": false,
+                        "has_custom": true,
                         "has_custom_block": true,
                         "has_custom_callback": false,
                         "has_custom_join": false,
@@ -391,8 +392,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -413,11 +414,15 @@
                             "vault_id": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "ServiceNow",
                                 "app_version": "1.2.33",
+                                "config_type": "asset",
                                 "fields": {
                                     "description": "",
                                     "fields": "",
@@ -425,6 +430,9 @@
                                     "table": "",
                                     "vault_id": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "servicenow",
                                 "output": [
                                     {
@@ -915,18 +923,13 @@
                                     }
                                 ],
                                 "product_name": "ServiceNow",
-                                "product_vendor": "ServiceNow"
+                                "product_vendor": "ServiceNow",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "create ticket"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -939,9 +942,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -953,22 +961,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -991,7 +1004,7 @@
                         "custom_name": "",
                         "delay": 0,
                         "description": "Create a ticket in ServiceNow with the context to investigate and mitigate the potential botnet infection.",
-                        "has_custom": false,
+                        "has_custom": true,
                         "has_custom_block": true,
                         "has_custom_callback": false,
                         "has_custom_join": false,
@@ -1004,7 +1017,7 @@
                         "join_start": 1,
                         "line_end": 139,
                         "line_start": 91,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "create ticket",
                         "notes": "Create a ticket in ServiceNow with the context to investigate and mitigate the potential botnet infection.",
                         "number": 1,
@@ -1093,15 +1106,22 @@
                             "message": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Slack",
                                 "app_version": "1.2.4",
+                                "config_type": "asset",
                                 "fields": {
                                     "destination": "",
                                     "message": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "slack",
                                 "output": [
                                     {
@@ -1179,18 +1199,13 @@
                                     }
                                 ],
                                 "product_name": "Slack",
-                                "product_vendor": "Slack Technologies"
+                                "product_vendor": "Slack Technologies",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "send message"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1203,9 +1218,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1217,22 +1237,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1255,7 +1280,7 @@
                         "custom_name": "",
                         "delay": 0,
                         "description": "Notify the necessary team members via Slack including the ServiceNow ticket ID.",
-                        "has_custom": false,
+                        "has_custom": true,
                         "has_custom_block": true,
                         "has_custom_callback": false,
                         "has_custom_join": false,
@@ -1268,7 +1293,7 @@
                         "join_start": 1,
                         "line_end": 164,
                         "line_start": 142,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "send message",
                         "notes": "Notify the necessary team members via Slack including the ServiceNow ticket ID.",
                         "number": 1,
@@ -1354,12 +1379,12 @@
             },
             "notes": "This playbook uses the following Apps:\n  - ServiceNow (create ticket) [asset name = servicenow] - provide context in a ticket for the security team\n  - Slack (send message) [asset name = slack] - notify the team including the ID of the created ServiceNow ticket\n\nDeployment Notes:\n  - Configure a Generator asset to run on the desired interval and create a blank Event with the label \"generator_botnet_report\", which will initiate this Playbook (see the community Playbook called \"track_active_directory_admin_users\" to do this programmatically)\n  - Customize the CONFIDENCE variable according to your risk policy\n  - Change the PAN values to the network addresses of your PAN Firewalls\n  - Populate the API variable with the API key for the PAN Firewalls\n  - The PAN Firewall botnet report API can be tested with the following:\ncurl -kgX GET 'https://<pan_url>/api/?type=report&reporttype=predefined&reportname=botnet&key=<API_key>'\n  - Set the fields of the ServiceNow ticket according to your organization's best practices\n  - Set the Slack message destination to the desired target account"
         },
-        "schema": 2,
-        "version": "3.0.264"
+        "schema": 3,
+        "version": "3.5.135"
     },
-    "create_time": "2018-01-08T23:46:20.056577+00:00",
+    "create_time": "2018-02-12T02:08:19.122341+00:00",
     "draft_mode": false,
     "labels": [
-        "generator_botnet_report"
+        "events"
     ]
 }
