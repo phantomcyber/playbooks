@@ -39,8 +39,8 @@ def block_ip_1(action=None, success=None, container=None, results=None, handle=N
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("block ip", parameters=parameters, assets=['pan'], callback=Add_to_IP_blacklist, name="block_ip_1")    
-    
+    phantom.act("block ip", parameters=parameters, assets=['pan'], callback=Add_to_IP_blacklist, name="block_ip_1")
+
     return
 
 def block_hash_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -61,8 +61,8 @@ def block_hash_2(action=None, success=None, container=None, results=None, handle
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("block hash", parameters=parameters, assets=['carbonblack'], callback=Add_hash_to_blacklist, name="block_hash_2")    
-    
+    phantom.act("block hash", parameters=parameters, assets=['carbonblack'], callback=Add_hash_to_blacklist, name="block_hash_2")
+
     return
 
 def block_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -83,24 +83,7 @@ def block_domain_1(action=None, success=None, container=None, results=None, hand
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("block domain", parameters=parameters, assets=['opendns_umbrella'], callback=Add_domain_to_blacklist, name="block_domain_1")    
-    
-    return
-
-def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_1() called')
-
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        conditions=[
-            ["artifact:*.cef.destinationAddress", "!=", ""],
-        ],
-        name="filter_1:condition_1")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        filter_4(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+    phantom.act("block domain", parameters=parameters, assets=['opendns_umbrella'], callback=Add_domain_to_blacklist, name="block_domain_1")
 
     return
 
@@ -135,23 +118,6 @@ def filter_3(action=None, success=None, container=None, results=None, handle=Non
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
         filter_6(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
-def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_4() called')
-
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        conditions=[
-            ["filtered-data:filter_1:condition_1:artifact:*.cef.destinationAddress", "not in", "custom_list:ip_address_blacklist"],
-        ],
-        name="filter_4:condition_1")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        block_ip_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -203,15 +169,15 @@ def Add_hash_to_blacklist(action=None, success=None, container=None, results=Non
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'new_row': results_item_1[0],
-                'create': True,
                 'list': "custom_list:filehash_blacklist",
+                'create': True,
+                'new_row': results_item_1[0],
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_hash_to_blacklist", parent_action=action)    
-    
+    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_hash_to_blacklist", parent_action=action)
+
     return
 
 def Add_domain_to_blacklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -228,15 +194,15 @@ def Add_domain_to_blacklist(action=None, success=None, container=None, results=N
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'new_row': results_item_1[0],
-                'create': True,
                 'list': "custom_list:domain_blacklist",
+                'create': True,
+                'new_row': results_item_1[0],
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_domain_to_blacklist", parent_action=action)    
-    
+    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_domain_to_blacklist", parent_action=action)
+
     return
 
 def Add_to_IP_blacklist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -253,15 +219,49 @@ def Add_to_IP_blacklist(action=None, success=None, container=None, results=None,
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'new_row': results_item_1[0],
-                'create': True,
                 'list': "custom_list:blacklisted_ips",
+                'create': True,
+                'new_row': results_item_1[0],
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_to_IP_blacklist", parent_action=action)    
-    
+    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_to_IP_blacklist", parent_action=action)
+
+    return
+
+def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_1() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        conditions=[
+            ["artifact:*.cef.destinationAddress", "!=", ""],
+        ],
+        name="filter_1:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        filter_4(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    return
+
+def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_4() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        conditions=[
+            ["filtered-data:filter_1:condition_1:artifact:*.cef.destinationAddress", "not in", "custom_list:ip_address_blacklist"],
+        ],
+        name="filter_4:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        block_ip_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
     return
 
 def on_finish(container, summary):
