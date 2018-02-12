@@ -212,29 +212,6 @@ def severity_high(action=None, success=None, container=None, results=None, handl
 
     return
 
-def notify_status(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('notify_status() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'notify_status' call
-    formatted_data_1 = phantom.get_format_data(name='format_3')
-
-    parameters = []
-    
-    # build parameters list for 'notify_status' call
-    parameters.append({
-        'body': "The container has been closed.",
-        'to': "demo.phantom@gmail.com",
-        'from': "local@localhost",
-        'attachments': "",
-        'subject': formatted_data_1,
-    })
-
-    phantom.act("send email", parameters=parameters, assets=['smtp'], name="notify_status")
-
-    return
-
 def resolve(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('resolve() called')
 
@@ -276,22 +253,6 @@ def block_ip_2_callback(action=None, success=None, container=None, results=None,
 
     return
 
-def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_1() called')
-    
-    template = """Deployed Block IP: {0}"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "block_ip_2:action_result.parameter.ip",
-    ]
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_1")
-
-    join_create_ticket_2(container=container)
-
-    return
-
 def create_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('create_ticket_2() called')
     
@@ -327,23 +288,6 @@ def join_create_ticket_2(action=None, success=None, container=None, results=None
         # call connected block "create_ticket_2"
         create_ticket_2(container=container, handle=handle)
     
-    return
-
-def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_2() called')
-    
-    template = """Follow-up will be required for the block rules on the following IP addresses:
-{0}"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "block_ip_2:action_result.parameter.ip",
-    ]
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_2")
-
-    join_create_ticket_2(container=container)
-
     return
 
 def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -385,6 +329,62 @@ def file_reputation_1(action=None, success=None, container=None, results=None, h
             })
 
     phantom.act("file reputation", parameters=parameters, assets=['virustotal'], callback=filter_3, name="file_reputation_1")
+
+    return
+
+def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_2() called')
+    
+    template = """Follow-up will be required for the block rules on the following IP addresses:
+{0}"""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "block_ip_2:action_result.parameter.ip",
+    ]
+
+    phantom.format(container=container, template=template, parameters=parameters, name="format_2")
+
+    join_create_ticket_2(container=container)
+
+    return
+
+def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_1() called')
+    
+    template = """Deployed Block IP: {0}"""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "block_ip_2:action_result.parameter.ip",
+    ]
+
+    phantom.format(container=container, template=template, parameters=parameters, name="format_1")
+
+    join_create_ticket_2(container=container)
+
+    return
+
+def notify_status(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('notify_status() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'notify_status' call
+    formatted_data_1 = phantom.get_format_data(name='format_3')
+
+    parameters = []
+    
+    # build parameters list for 'notify_status' call
+    parameters.append({
+        'body': "The container has been closed.",
+        'to': "demo.phantom@gmail.com",
+        'from': "local@localhost",
+        'attachments': "",
+        'subject': formatted_data_1,
+    })
+
+    phantom.act("send email", parameters=parameters, assets=['smtp'], name="notify_status")
 
     return
 
