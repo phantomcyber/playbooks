@@ -15,16 +15,25 @@ def on_start(container):
     return
 
 """
-Create a custom list with the given IP addresses or add to one if it exists.
+Scan the given subnet with a TCP syn-ack on port 5900 to detect VNC or ARD services.
 """
-def add_addresses_to_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('add_addresses_to_list() called')
+def scan_port_5900(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('scan_port_5900() called')
 
-    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:filter_1:condition_1:scan_port_5900:action_result.data.*.addresses.ipv4.*.ip"])
+    # collect data for 'scan_port_5900' call
 
-    filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]
+    parameters = []
+    
+    # build parameters list for 'scan_port_5900' call
+    parameters.append({
+        'portlist': 5900,
+        'script-args': "",
+        'script': "",
+        'ip_hostname': "198.51.100.*",
+        'udp_scan': "",
+    })
 
-    phantom.add_list("macos_endpoints", filtered_results_item_1_0)
+    phantom.act("scan network", parameters=parameters, assets=['nmap'], callback=filter_1, name="scan_port_5900")
 
     return
 
@@ -50,26 +59,17 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
     return
 
 """
-Scan the given subnet with a TCP syn-ack on port 5900 to detect VNC or ARD services.
+Create a custom list with the given IP addresses or add to one if it exists.
 """
-def scan_port_5900(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('scan_port_5900() called')
+def add_addresses_to_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('add_addresses_to_list() called')
 
-    # collect data for 'scan_port_5900' call
+    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:filter_1:condition_1:scan_port_5900:action_result.data.*.addresses.ipv4.*.ip"])
 
-    parameters = []
-    
-    # build parameters list for 'scan_port_5900' call
-    parameters.append({
-        'portlist': 5900,
-        'script-args': "",
-        'script': "",
-        'ip_hostname': "198.51.100.*",
-        'udp_scan': "",
-    })
+    filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]
 
-    phantom.act("scan network", parameters=parameters, assets=['nmap'], callback=filter_1, name="scan_port_5900")    
-    
+    phantom.add_list("macos_endpoints", filtered_results_item_1_0)
+
     return
 
 def on_finish(container, summary):

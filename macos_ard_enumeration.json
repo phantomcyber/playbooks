@@ -8,6 +8,7 @@
             "clean": true,
             "code_block": "",
             "description": "This helper playbook uses an nmap scan to build a custom list of endpoints running an open service on TCP port 5900. This custom list will be used to enumerate MacOS High Sierra endpoints to respond to the 2017-11-28 disclosure of root user access without a password.",
+            "hash": "393d8eeb29a9bf4ac6f221d8b742fce161e9ff20",
             "joint": {
                 "cells": [
                     {
@@ -30,19 +31,21 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'scan_port_5900' block\n    scan_port_5900(container=container)\n\n    return",
@@ -134,8 +137,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -163,18 +166,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -266,8 +268,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -450,11 +452,15 @@
                             "udp_scan": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "NMAP Scanner",
                                 "app_version": "1.0.25",
+                                "config_type": "asset",
                                 "fields": {
                                     "ip_hostname": "198.51.100.*",
                                     "portlist": "5900",
@@ -462,6 +468,9 @@
                                     "script-args": "",
                                     "udp_scan": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "nmap",
                                 "output": [
                                     {
@@ -635,18 +644,13 @@
                                     }
                                 ],
                                 "product_name": "NMAP",
-                                "product_vendor": "Generic"
+                                "product_vendor": "Generic",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "scan port 5900"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -659,9 +663,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -673,19 +682,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -694,7 +708,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def scan_port_5900(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('scan_port_5900() called')\n\n    # collect data for 'scan_port_5900' call\n\n    parameters = []\n    \n    # build parameters list for 'scan_port_5900' call\n    parameters.append({\n        'portlist': 5900,\n        'script-args': \"\",\n        'script': \"\",\n        'ip_hostname': \"198.51.100.*\",\n        'udp_scan': \"\",\n    })\n\n    phantom.act(\"scan network\", parameters=parameters, assets=['nmap'], callback=filter_1, name=\"scan_port_5900\")    \n    \n    return",
+                        "block_code": "def scan_port_5900(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('scan_port_5900() called')\n\n    # collect data for 'scan_port_5900' call\n\n    parameters = []\n    \n    # build parameters list for 'scan_port_5900' call\n    parameters.append({\n        'portlist': 5900,\n        'script-args': \"\",\n        'script': \"\",\n        'ip_hostname': \"198.51.100.*\",\n        'udp_scan': \"\",\n    })\n\n    phantom.act(\"scan network\", parameters=parameters, assets=['nmap'], callback=filter_1, name=\"scan_port_5900\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 36,
                         "callsback": true,
@@ -719,9 +733,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 75,
-                        "line_start": 55,
-                        "message": "",
+                        "line_end": 40,
+                        "line_start": 20,
+                        "message": "Configuring now",
                         "name": "scan network",
                         "notes": "Scan the given subnet with a TCP syn-ack on port 5900 to detect VNC or ARD services.",
                         "number": 1,
@@ -786,7 +800,9 @@
                         },
                         "previous_function": "",
                         "previous_name": "scan_port_5900",
-                        "required_params": {},
+                        "required_params": {
+                            "ip_hostname": true
+                        },
                         "reviewer": "",
                         "show_number": false,
                         "size": {
@@ -833,15 +849,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"scan_port_5900:action_result.data.*.tcp.*.state\", \"==\", \"open\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        add_addresses_to_list(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
@@ -867,8 +886,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 52,
-                        "line_start": 34,
+                        "line_end": 61,
+                        "line_start": 43,
                         "name": "filter",
                         "notes": "Only pass on ip addresses that are found to have open ports.",
                         "number": 1,
@@ -964,10 +983,7 @@
                         "angle": 0,
                         "attrs": {
                             ".api": {
-                                "text": "add addresses to list"
-                            },
-                            ".background": {
-                                "height": 88
+                                "text": "add list"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -980,9 +996,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -994,9 +1015,11 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
+                            ".title": {
+                                "text": "API"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -1043,9 +1066,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 31,
-                        "line_start": 20,
-                        "message": "",
+                        "line_end": 75,
+                        "line_start": 64,
+                        "message": "Configuring now",
                         "name": "add list",
                         "notes": "Create a custom list with the given IP addresses or add to one if it exists.",
                         "number": 1,
@@ -1117,6 +1140,7 @@
                         },
                         "state": "api",
                         "status": "",
+                        "title": "API",
                         "type": "coa.API",
                         "warn": false,
                         "z": 67
@@ -1125,12 +1149,12 @@
             },
             "notes": "This playbook uses the following App:\n - nmap (scan network) [asset name = nmap] - a network scan of endpoints with TCP port 5900 allows us to build the custom list in this playbook\n\nDeployment notes\n - the hard-coded custom list name \"macos_endpoints\" is created or appended to by this playbook\n - this playbook is originally designed to be run manually as needed, but it could be configured to auto-start using Generator if desired"
         },
-        "schema": 2,
-        "version": "3.0.264"
+        "schema": 3,
+        "version": "3.5.137"
     },
-    "create_time": "2017-11-29T22:29:13.908886+00:00",
+    "create_time": "2018-02-12T21:21:34.568485+00:00",
     "draft_mode": false,
     "labels": [
-        "cve_2017_13872"
+        "events"
     ]
 }
