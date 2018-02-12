@@ -15,108 +15,6 @@ def on_start(container):
     return
 
 """
-Unblock traffic by destination IP address.
-"""
-def unblock_dst_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('unblock_dst_ip() called')
-
-    # collect data for 'unblock_dst_ip' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'unblock_dst_ip' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'is_source_address': False,
-            'ip': filtered_artifacts_item_1[0],
-            'vsys': "",
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
-
-    phantom.act("unblock ip", parameters=parameters, assets=['pan_firewall'], name="unblock_dst_ip")    
-    
-    return
-
-"""
-Unblock traffic by source IP address.
-"""
-def unblock_src_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('unblock_src_ip() called')
-
-    # collect data for 'unblock_src_ip' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'unblock_src_ip' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'is_source_address': True,
-            'ip': filtered_artifacts_item_1[0],
-            'vsys': "",
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
-
-    phantom.act("unblock ip", parameters=parameters, assets=['pan_firewall'], name="unblock_src_ip")    
-    
-    return
-
-"""
-Block traffic by source IP address.
-"""
-def block_src_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('block_src_ip() called')
-
-    # collect data for 'block_src_ip' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'block_src_ip' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        if filtered_artifacts_item_1[0]:
-            parameters.append({
-                'is_source_address': True,
-                'ip': filtered_artifacts_item_1[0],
-                'vsys': "",
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': filtered_artifacts_item_1[1]},
-            })
-
-    phantom.act("block ip", parameters=parameters, assets=['pan_firewall'], name="block_src_ip")    
-    
-    return
-
-"""
-Block traffic by destination IP address.
-"""
-def block_dst_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('block_dst_ip() called')
-
-    # collect data for 'block_dst_ip' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'block_dst_ip' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        if filtered_artifacts_item_1[0]:
-            parameters.append({
-                'is_source_address': False,
-                'ip': filtered_artifacts_item_1[0],
-                'vsys': "",
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': filtered_artifacts_item_1[1]},
-            })
-
-    phantom.act("block ip", parameters=parameters, assets=['pan_firewall'], name="block_dst_ip")    
-    
-    return
-
-"""
 Artifacts must have the label "customer_request" to be processed.
 """
 def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -201,6 +99,108 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_4 or matched_results_4:
         unblock_dst_ip(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_4, filtered_results=matched_results_4)
+
+    return
+
+"""
+Unblock traffic by source IP address.
+"""
+def unblock_src_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('unblock_src_ip() called')
+
+    # collect data for 'unblock_src_ip' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'unblock_src_ip' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        parameters.append({
+            'is_source_address': True,
+            'ip': filtered_artifacts_item_1[0],
+            'vsys': "",
+            # context (artifact id) is added to associate results with the artifact
+            'context': {'artifact_id': filtered_artifacts_item_1[1]},
+        })
+
+    phantom.act("unblock ip", parameters=parameters, assets=['pan_firewall'], name="unblock_src_ip")
+
+    return
+
+"""
+Block traffic by destination IP address.
+"""
+def block_dst_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('block_dst_ip() called')
+
+    # collect data for 'block_dst_ip' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'block_dst_ip' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'is_source_address': False,
+                'ip': filtered_artifacts_item_1[0],
+                'vsys': "",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
+
+    phantom.act("block ip", parameters=parameters, assets=['pan_firewall'], name="block_dst_ip")
+
+    return
+
+"""
+Unblock traffic by destination IP address.
+"""
+def unblock_dst_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('unblock_dst_ip() called')
+
+    # collect data for 'unblock_dst_ip' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'unblock_dst_ip' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        parameters.append({
+            'is_source_address': False,
+            'ip': filtered_artifacts_item_1[0],
+            'vsys': "",
+            # context (artifact id) is added to associate results with the artifact
+            'context': {'artifact_id': filtered_artifacts_item_1[1]},
+        })
+
+    phantom.act("unblock ip", parameters=parameters, assets=['pan_firewall'], name="unblock_dst_ip")
+
+    return
+
+"""
+Block traffic by source IP address.
+"""
+def block_src_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('block_src_ip() called')
+
+    # collect data for 'block_src_ip' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'block_src_ip' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'is_source_address': True,
+                'ip': filtered_artifacts_item_1[0],
+                'vsys': "",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
+
+    phantom.act("block ip", parameters=parameters, assets=['pan_firewall'], name="block_src_ip")
 
     return
 

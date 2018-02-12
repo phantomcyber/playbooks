@@ -8,6 +8,7 @@
             "clean": true,
             "code_block": "",
             "description": "This playbook works in conjunction with \"customer_firewall_request_parse_csv\". After the first playbook parses the data into artifacts with the label \"customer_request\", this playbook takes the appropriate block/unblock actions. Between the combination of blocking or unblocking source or destination IP addresses there are four possible actions that can be taken.",
+            "hash": "b227feb599eee506026ba809d5fe7d195d5cb7c1",
             "joint": {
                 "cells": [
                     {
@@ -448,12 +449,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_2() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.label\", \"==\", \"customer_request\"],\n        ],\n        name=\"filter_2:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        filter_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
@@ -479,8 +486,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 139,
-                        "line_start": 122,
+                        "line_end": 37,
+                        "line_start": 20,
                         "name": "filter",
                         "notes": "Artifacts must have the label \"customer_request\" to be processed.",
                         "number": 2,
@@ -568,7 +575,7 @@
                         "state": "filter",
                         "status": "",
                         "type": "coa.Filter",
-                        "warn": "",
+                        "warn": false,
                         "z": 109
                     },
                     {
@@ -646,15 +653,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.sourceAddress\", \"!=\", \"\"],\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress\", \"==\", \"\"],\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.action\", \"==\", \"block_ip\"],\n        ],\n        logical_operator='and',\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        block_src_ip(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    # collect filtered artifact ids for 'if' condition 2\n    matched_artifacts_2, matched_results_2 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress\", \"==\", \"\"],\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress\", \"!=\", \"\"],\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.action\", \"==\", \"block_ip\"],\n        ],\n        logical_operator='and',\n        name=\"filter_1:condition_2\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_2 or matched_results_2:\n        block_dst_ip(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n\n    # collect filtered artifact ids for 'if' condition 3\n    matched_artifacts_3, matched_results_3 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress\", \"!=\", \"\"],\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress\", \"==\", \"\"],\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.action\", \"==\", \"unblock_ip\"],\n        ],\n        logical_operator='and',\n        name=\"filter_1:condition_3\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_3 or matched_results_3:\n        unblock_src_ip(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_3, filtered_results=matched_results_3)\n\n    # collect filtered artifact ids for 'if' condition 4\n    matched_artifacts_4, matched_results_4 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress\", \"==\", \"\"],\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress\", \"!=\", \"\"],\n            [\"filtered-data:filter_2:condition_1:artifact:*.cef.action\", \"==\", \"unblock_ip\"],\n        ],\n        logical_operator='and',\n        name=\"filter_1:condition_4\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_4 or matched_results_4:\n        unblock_dst_ip(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_4, filtered_results=matched_results_4)\n\n    return",
@@ -680,8 +690,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 207,
-                        "line_start": 142,
+                        "line_end": 105,
+                        "line_start": 40,
                         "name": "filter",
                         "notes": "Split processing based on \"block_ip\" vs. \"unblock_ip\" and \"sourceAddress\" vs. \"destinationAddress\".",
                         "number": 1,
@@ -859,7 +869,7 @@
                         "state": "filter",
                         "status": "",
                         "type": "coa.Filter",
-                        "warn": "",
+                        "warn": false,
                         "z": 110
                     },
                     {
@@ -873,16 +883,23 @@
                             "vsys": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Palo Alto Networks Firewall",
                                 "app_version": "1.2.24",
+                                "config_type": "asset",
                                 "fields": {
                                     "ip": "filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress",
                                     "is_source_address": "True",
                                     "vsys": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "pan_firewall",
                                 "output": [
                                     {
@@ -924,7 +941,8 @@
                                     }
                                 ],
                                 "product_name": "Firewall",
-                                "product_vendor": "Palo Alto Networks"
+                                "product_vendor": "Palo Alto Networks",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -932,10 +950,7 @@
                                 "text": "unblock src ip"
                             },
                             ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#E65100"
+                                "stroke": "#E6984E"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -948,9 +963,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -962,19 +982,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Correct"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_correct.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -983,7 +1011,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def unblock_src_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('unblock_src_ip() called')\n\n    # collect data for 'unblock_src_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'unblock_src_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        parameters.append({\n            'is_source_address': True,\n            'ip': filtered_artifacts_item_1[0],\n            'vsys': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': filtered_artifacts_item_1[1]},\n        })\n\n    phantom.act(\"unblock ip\", parameters=parameters, assets=['pan_firewall'], name=\"unblock_src_ip\")    \n    \n    return",
+                        "block_code": "def unblock_src_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('unblock_src_ip() called')\n\n    # collect data for 'unblock_src_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'unblock_src_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        parameters.append({\n            'is_source_address': True,\n            'ip': filtered_artifacts_item_1[0],\n            'vsys': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': filtered_artifacts_item_1[1]},\n        })\n\n    phantom.act(\"unblock ip\", parameters=parameters, assets=['pan_firewall'], name=\"unblock_src_ip\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1008,9 +1036,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 67,
-                        "line_start": 45,
-                        "message": "",
+                        "line_end": 130,
+                        "line_start": 108,
+                        "message": "Configuring now",
                         "name": "unblock ip",
                         "notes": "Unblock traffic by source IP address.",
                         "number": 1,
@@ -1083,7 +1111,7 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Correct",
                         "type": "coa.Action",
                         "warn": false,
@@ -1106,16 +1134,23 @@
                             "vsys": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Palo Alto Networks Firewall",
                                 "app_version": "1.2.24",
+                                "config_type": "asset",
                                 "fields": {
                                     "ip": "filtered-data:filter_1:condition_2:artifact:*.cef.destinationAddress",
                                     "is_source_address": "False",
                                     "vsys": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "pan_firewall",
                                 "output": [
                                     {
@@ -1157,7 +1192,8 @@
                                     }
                                 ],
                                 "product_name": "Firewall",
-                                "product_vendor": "Palo Alto Networks"
+                                "product_vendor": "Palo Alto Networks",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -1165,10 +1201,7 @@
                                 "text": "block dst ip"
                             },
                             ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#3D9959"
+                                "stroke": "#E6984E"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1181,9 +1214,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1195,19 +1233,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Contain"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_contain.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1216,7 +1262,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def block_dst_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_dst_ip() called')\n\n    # collect data for 'block_dst_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_dst_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'is_source_address': False,\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['pan_firewall'], name=\"block_dst_ip\")    \n    \n    return",
+                        "block_code": "def block_dst_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_dst_ip() called')\n\n    # collect data for 'block_dst_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_dst_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'is_source_address': False,\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['pan_firewall'], name=\"block_dst_ip\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1241,9 +1287,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 119,
-                        "line_start": 96,
-                        "message": "",
+                        "line_end": 156,
+                        "line_start": 133,
+                        "message": "Configuring now",
                         "name": "block ip",
                         "notes": "Block traffic by destination IP address.",
                         "number": 2,
@@ -1318,7 +1364,7 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Contain",
                         "type": "coa.Action",
                         "warn": false,
@@ -1344,27 +1390,28 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'filter_2' block\n    filter_2(container=container)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
-                        "connected_to_start": false,
+                        "connected_to_start": true,
                         "connection_name": "",
                         "connection_type": "",
                         "custom_callback": "",
@@ -1449,8 +1496,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -1478,18 +1525,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -1581,8 +1627,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -1601,16 +1647,23 @@
                             "vsys": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Palo Alto Networks Firewall",
                                 "app_version": "1.2.24",
+                                "config_type": "asset",
                                 "fields": {
                                     "ip": "filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress",
                                     "is_source_address": "False",
                                     "vsys": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "pan_firewall",
                                 "output": [
                                     {
@@ -1652,7 +1705,8 @@
                                     }
                                 ],
                                 "product_name": "Firewall",
-                                "product_vendor": "Palo Alto Networks"
+                                "product_vendor": "Palo Alto Networks",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -1660,13 +1714,10 @@
                                 "text": "unblock dst ip"
                             },
                             ".background": {
-                                "height": 88
+                                "stroke": "#E6984E"
                             },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#E65100"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1679,9 +1730,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1693,19 +1749,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Correct"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_correct.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1714,7 +1778,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def unblock_dst_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('unblock_dst_ip() called')\n\n    # collect data for 'unblock_dst_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'unblock_dst_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        parameters.append({\n            'is_source_address': False,\n            'ip': filtered_artifacts_item_1[0],\n            'vsys': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': filtered_artifacts_item_1[1]},\n        })\n\n    phantom.act(\"unblock ip\", parameters=parameters, assets=['pan_firewall'], name=\"unblock_dst_ip\")    \n    \n    return",
+                        "block_code": "def unblock_dst_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('unblock_dst_ip() called')\n\n    # collect data for 'unblock_dst_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_2:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'unblock_dst_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        parameters.append({\n            'is_source_address': False,\n            'ip': filtered_artifacts_item_1[0],\n            'vsys': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': filtered_artifacts_item_1[1]},\n        })\n\n    phantom.act(\"unblock ip\", parameters=parameters, assets=['pan_firewall'], name=\"unblock_dst_ip\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1739,9 +1803,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 42,
-                        "line_start": 20,
-                        "message": "",
+                        "line_end": 181,
+                        "line_start": 159,
+                        "message": "Configuring now",
                         "name": "unblock ip",
                         "notes": "Unblock traffic by destination IP address.",
                         "number": 2,
@@ -1814,7 +1878,7 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Correct",
                         "type": "coa.Action",
                         "warn": false,
@@ -1837,16 +1901,23 @@
                             "vsys": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Palo Alto Networks Firewall",
                                 "app_version": "1.2.24",
+                                "config_type": "asset",
                                 "fields": {
                                     "ip": "filtered-data:filter_1:condition_1:artifact:*.cef.sourceAddress",
                                     "is_source_address": "True",
                                     "vsys": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "pan_firewall",
                                 "output": [
                                     {
@@ -1888,7 +1959,8 @@
                                     }
                                 ],
                                 "product_name": "Firewall",
-                                "product_vendor": "Palo Alto Networks"
+                                "product_vendor": "Palo Alto Networks",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -1896,10 +1968,7 @@
                                 "text": "block src ip"
                             },
                             ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#3D9959"
+                                "stroke": "#E6984E"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1912,9 +1981,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1926,19 +2000,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Contain"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_contain.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1947,7 +2029,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def block_src_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_src_ip() called')\n\n    # collect data for 'block_src_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_src_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'is_source_address': True,\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['pan_firewall'], name=\"block_src_ip\")    \n    \n    return",
+                        "block_code": "def block_src_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_src_ip() called')\n\n    # collect data for 'block_src_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_src_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'is_source_address': True,\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['pan_firewall'], name=\"block_src_ip\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1972,9 +2054,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 93,
-                        "line_start": 70,
-                        "message": "",
+                        "line_end": 207,
+                        "line_start": 184,
+                        "message": "Configuring now",
                         "name": "block ip",
                         "notes": "Block traffic by source IP address.",
                         "number": 1,
@@ -2049,7 +2131,7 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Contain",
                         "type": "coa.Action",
                         "warn": false,
@@ -2059,12 +2141,12 @@
             },
             "notes": "This playbook uses the following Apps:\n - Palo Alto Networks Firewall (block ip, unblock ip) [asset name = pan_firewall] - blocks and unblocks source and destination IP addresses\n\nDeployment Notes:\n - The artifacts are expected to have the following properties:\n    * the artifact label must be \"customer_request\" to take action\n    * the field \"cef.action\" must either be \"block_ip\" or \"unblock_ip\"\n    * there must be either a \"destinationAddress\" or a \"sourceAddress\"\n - Further assets can be added to take action on multiple firewalls or add more types of actions"
         },
-        "schema": 2,
-        "version": "3.0.284"
+        "schema": 3,
+        "version": "3.5.137"
     },
-    "create_time": "2018-02-06T00:32:23.009205+00:00",
+    "create_time": "2018-02-12T17:50:12.558161+00:00",
     "draft_mode": false,
     "labels": [
-        "customer_request"
+        "events"
     ]
 }
