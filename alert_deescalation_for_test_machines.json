@@ -8,7 +8,7 @@
             "clean": true,
             "code_block": "",
             "description": "This playbook de-escalates the severity level of a particular event based upon whether it's cef.sourceAddress is found in the custom list \"test_machine_ips.\"  If the source address is not found within \"test machine ips\", and is not found in the custom list \"non_test_machine_ips\", a role is prompted as to whether the source address is a test machine.  If it is, it is added to the \"test_machine_ips\" custom list, and the severity of the event is set to LOW with a sensitivity of TLP:WHITE.  Otherwise, the source address is added to \"non_test_machine_ips\", and the playbook completes.",
-            "hash": "b075a9ebf06cba848fd921404ad50677020c7dca",
+            "hash": "639f6209fd24113749388ed449dbbee16a709900",
             "joint": {
                 "cells": [
                     {
@@ -31,19 +31,21 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'decision_1' block\n    decision_1(container=container)\n\n    return",
@@ -135,8 +137,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -164,17 +166,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -200,8 +202,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 208,
-                        "line_start": 195,
+                        "line_end": 204,
+                        "line_start": 191,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -266,8 +268,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -779,12 +781,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.sourceAddress\", \"!=\", \"\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        decision_3(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
@@ -964,12 +972,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_3() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.sourceAddress\", \"in\", \"custom_list:test_machine_ips\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        join_deescalate_alert(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n    decision_5(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
@@ -1195,12 +1209,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def decision_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_5() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.sourceAddress\", \"not in\", \"custom_list:non_test_machine_ips\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        prompt_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
@@ -1391,14 +1411,23 @@
                             "new_row": "artifact:*.cef.sourceAddress"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
                                 "fields": {
                                     "create": "True",
                                     "list": "custom_list:test_machine_ips",
                                     "new_row": "artifact:*.cef.sourceAddress"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "helper",
                                 "output": [
                                     {
@@ -1445,6 +1474,8 @@
                                         "data_type": "boolean"
                                     }
                                 ],
+                                "product_name": "",
+                                "product_vendor": "",
                                 "type": "information"
                             }
                         ],
@@ -1452,14 +1483,8 @@
                             ".action": {
                                 "text": "Add to test machine ..."
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1472,9 +1497,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1486,19 +1516,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1507,7 +1542,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def Add_to_test_machine_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('Add_to_test_machine_list() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Add_to_test_machine_list' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'Add_to_test_machine_list' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'list': \"custom_list:test_machine_ips\",\n                'create': True,\n                'new_row': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"add listitem\", parameters=parameters, assets=['helper'], callback=join_deescalate_alert, name=\"Add_to_test_machine_list\")    \n    \n    return",
+                        "block_code": "def Add_to_test_machine_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('Add_to_test_machine_list() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Add_to_test_machine_list' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'Add_to_test_machine_list' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'list': \"custom_list:test_machine_ips\",\n                'create': True,\n                'new_row': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"add listitem\", parameters=parameters, assets=['helper'], callback=join_deescalate_alert, name=\"Add_to_test_machine_list\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1532,9 +1567,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 125,
-                        "line_start": 100,
-                        "message": "",
+                        "line_end": 100,
+                        "line_start": 75,
+                        "message": "Configuring now",
                         "name": "add listitem",
                         "notes": "This block adds the IP to \"test_machine_ips\".",
                         "number": 1,
@@ -1627,14 +1662,23 @@
                             "new_row": "artifact:*.cef.sourceAddress"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
                                 "fields": {
                                     "create": "True",
                                     "list": "custom_list:non_test_machine_ips",
                                     "new_row": "artifact:*.cef.sourceAddress"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "helper",
                                 "output": [
                                     {
@@ -1681,6 +1725,8 @@
                                         "data_type": "boolean"
                                     }
                                 ],
+                                "product_name": "",
+                                "product_vendor": "",
                                 "type": "information"
                             }
                         ],
@@ -1688,14 +1734,8 @@
                             ".action": {
                                 "text": "Add to non test mac..."
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1708,9 +1748,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1722,19 +1767,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1743,7 +1793,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def Add_to_non_test_machine_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('Add_to_non_test_machine_list() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Add_to_non_test_machine_list' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'Add_to_non_test_machine_list' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'list': \"custom_list:non_test_machine_ips\",\n                'create': True,\n                'new_row': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"add listitem\", parameters=parameters, assets=['helper'], name=\"Add_to_non_test_machine_list\")    \n    \n    return",
+                        "block_code": "def Add_to_non_test_machine_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('Add_to_non_test_machine_list() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Add_to_non_test_machine_list' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'Add_to_non_test_machine_list' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'list': \"custom_list:non_test_machine_ips\",\n                'create': True,\n                'new_row': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"add listitem\", parameters=parameters, assets=['helper'], name=\"Add_to_non_test_machine_list\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1768,9 +1818,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 150,
-                        "line_start": 125,
-                        "message": "",
+                        "line_end": 125,
+                        "line_start": 100,
+                        "message": "Configuring now",
                         "name": "add listitem",
                         "notes": "This block adds the IP to the custom list, \"non_test_machine_ips\"",
                         "number": 2,
@@ -1899,15 +1949,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_4() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"prompt_1:action_result.summary.response\", \"!=\", \"Yes\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        Add_to_test_machine_list(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n    Add_to_non_test_machine_list(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
@@ -1934,8 +1987,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 171,
-                        "line_start": 150,
+                        "line_end": 146,
+                        "line_start": 125,
                         "name": "decision",
                         "notes": "This decision block processes the response from the prompt.",
                         "number": 4,
@@ -2045,10 +2098,7 @@
                         "angle": 0,
                         "attrs": {
                             ".api": {
-                                "text": "deescalate alert"
-                            },
-                            ".background": {
-                                "height": 88
+                                "text": "set sensitivity, severity"
                             },
                             ".border": {
                                 "height": 88
@@ -2064,9 +2114,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2078,9 +2133,11 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
+                            ".title": {
+                                "text": "API"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -2096,19 +2153,19 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def deescalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('deescalate_alert() called')\n    \n    # set container properties for: sensitivity, severity\n    update_data = {\n        \"sensitivity\" : \"white\",\n        \"severity\" : \"low\",\n    }\n\n    phantom.update(container, update_data)\n\n    return",
+                        "block_code": "def deescalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('deescalate_alert() called')\n\n    phantom.set_sensitivity(container, \"white\")\n\n    phantom.set_severity(container, \"low\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
                         "color": "",
                         "configured": [
                             {
-                                "name": "sensitivity",
-                                "value": "white"
+                                "key": "set-sensitivity",
+                                "setSensitivitySensitivity": "white"
                             },
                             {
-                                "name": "severity",
-                                "value": "low"
+                                "key": "set-severity",
+                                "setSeveritySeverity": "low"
                             }
                         ],
                         "connected_to_start": true,
@@ -2129,10 +2186,10 @@
                         ],
                         "join_code": "def join_deescalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('join_deescalate_alert() called')\n\n    # check if all connected incoming actions are done i.e. have succeeded or failed\n    if phantom.actions_done([ 'Add_to_test_machine_list' ]):\n        \n        # call connected block \"deescalate_alert\"\n        deescalate_alert(container=container, handle=handle)\n    \n    return",
                         "join_optional": [],
-                        "join_start": 184,
-                        "line_end": 195,
-                        "line_start": 171,
-                        "message": "",
+                        "join_start": 155,
+                        "line_end": 166,
+                        "line_start": 146,
+                        "message": "Configuring now",
                         "name": "set sensitivity, severity",
                         "notes": "This block sets the container sensitivity to TLP:WHITE and the severity to LOW.",
                         "number": 1,
@@ -2204,6 +2261,7 @@
                         },
                         "state": "api",
                         "status": "",
+                        "title": "API",
                         "type": "coa.API",
                         "warn": false,
                         "z": 54
@@ -2213,6 +2271,9 @@
                         "angle": 0,
                         "approver": "Automation Engineer",
                         "attrs": {
+                            ".background": {
+                                "stroke": "#637282"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -2236,15 +2297,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('prompt_1() called')\n    \n    # set user and message variables for phantom.prompt call\n    user = \"Automation Engineer\"\n    message = \"\"\"sourceAddress \\\"{0}\\\" has been compromised - is this a test machine?\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.sourceAddress\",\n    ]\n\n    # response options\n    options = {\n        \"type\": \"list\",\n        \"choices\": [\n            \"Yes\",\n            \"No\",\n        ]\n    }\n\n    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name=\"prompt_1\", parameters=parameters, options=options, callback=decision_4)\n\n    return",
@@ -2270,8 +2334,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 100,
-                        "line_start": 75,
+                        "line_end": 191,
+                        "line_start": 166,
                         "message": "sourceAddress \"{0}\" has been compromised - is this a test machine?",
                         "name": "prompt",
                         "notes": "The role \"Automation Engineer\" is prompted for whether this source address is a test machine.  If the response is Yes, it's added to test_machine_ips.  Otherwise, it's added to non_test_machine_ips.",
@@ -2366,20 +2430,12 @@
             },
             "notes": "Apps Used:\n - Phantom\n\nCustom Lists Referenced:\n - custom_list:test_machine_ips\n - custom_list:non_test_machine_ips\n\nBy utilizing the power of Phantom's own API, user prompts, and custom lists, any source address encountered by this playbook will be taken advantage of.  Whether it's a test machine or not, the automation process continues to refine itself.  The custom lists can also be pre-populated with known source IP addresses to further speed up the processing of alert data."
         },
-        "schema": 2,
-        "version": "2.1.478"
+        "schema": 3,
+        "version": "3.5.135"
     },
-    "create_time": "2017-06-16T00:26:28.040750+00:00",
+    "create_time": "2018-02-12T01:58:28.080712+00:00",
     "draft_mode": false,
     "labels": [
-        "o365email",
-        "campaign",
-        "kafka message",
-        "generator",
-        "email",
-        "incident",
-        "splunk",
-        "report",
         "events"
     ]
 }

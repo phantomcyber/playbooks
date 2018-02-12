@@ -72,31 +72,6 @@ def decision_5(action=None, success=None, container=None, results=None, handle=N
 
     return
 
-def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('prompt_1() called')
-    
-    # set user and message variables for phantom.prompt call
-    user = "Automation Engineer"
-    message = """sourceAddress \"{0}\" has been compromised - is this a test machine?"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "artifact:*.cef.sourceAddress",
-    ]
-
-    # response options
-    options = {
-        "type": "list",
-        "choices": [
-            "Yes",
-            "No",
-        ]
-    }
-
-    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name="prompt_1", parameters=parameters, options=options, callback=decision_4)
-
-    return
-
 def Add_to_test_machine_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('Add_to_test_machine_list() called')
     
@@ -118,8 +93,8 @@ def Add_to_test_machine_list(action=None, success=None, container=None, results=
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("add listitem", parameters=parameters, assets=['helper'], callback=join_deescalate_alert, name="Add_to_test_machine_list")    
-    
+    phantom.act("add listitem", parameters=parameters, assets=['helper'], callback=join_deescalate_alert, name="Add_to_test_machine_list")
+
     return
 
 def Add_to_non_test_machine_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -143,8 +118,8 @@ def Add_to_non_test_machine_list(action=None, success=None, container=None, resu
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_to_non_test_machine_list")    
-    
+    phantom.act("add listitem", parameters=parameters, assets=['helper'], name="Add_to_non_test_machine_list")
+
     return
 
 def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -170,14 +145,10 @@ def decision_4(action=None, success=None, container=None, results=None, handle=N
 
 def deescalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('deescalate_alert() called')
-    
-    # set container properties for: sensitivity, severity
-    update_data = {
-        "sensitivity" : "white",
-        "severity" : "low",
-    }
 
-    phantom.update(container, update_data)
+    phantom.set_sensitivity(container, "white")
+
+    phantom.set_severity(container, "low")
 
     return
 
@@ -190,6 +161,31 @@ def join_deescalate_alert(action=None, success=None, container=None, results=Non
         # call connected block "deescalate_alert"
         deescalate_alert(container=container, handle=handle)
     
+    return
+
+def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('prompt_1() called')
+    
+    # set user and message variables for phantom.prompt call
+    user = "Automation Engineer"
+    message = """sourceAddress \"{0}\" has been compromised - is this a test machine?"""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "artifact:*.cef.sourceAddress",
+    ]
+
+    # response options
+    options = {
+        "type": "list",
+        "choices": [
+            "Yes",
+            "No",
+        ]
+    }
+
+    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name="prompt_1", parameters=parameters, options=options, callback=decision_4)
+
     return
 
 def on_finish(container, summary):
