@@ -21,7 +21,7 @@ def prompt_1(action=None, success=None, container=None, results=None, handle=Non
     user = "Incident Commander"
     message = """Remediate the rootkit?"""
 
-    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name="prompt_1", callback=playbook_platinum_rootkit_remediate_1)
+    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name="prompt_1", callback=playbook_community_rootkit_remediate_1)
 
     return
 
@@ -32,11 +32,11 @@ def set_status_2(action=None, success=None, container=None, results=None, handle
 
     return
 
-def playbook_platinum_rootkit_remediate_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('playbook_platinum_rootkit_remediate_1() called')
+def playbook_community_rootkit_remediate_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('playbook_community_rootkit_remediate_1() called')
     
-    # call playbook "platinum/rootkit_remediate", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("platinum/rootkit_remediate", container)
+    # call playbook "community/rootkit_remediate", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/rootkit_remediate", container)
 
     return
 
