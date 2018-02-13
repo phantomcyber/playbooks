@@ -14,27 +14,30 @@ def on_start(container):
 
     return
 
-def get_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('get_file_1() called')
+def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('prompt_1() called')
     
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'get_file_1' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_8:condition_1:artifact:*.cef.fileHash', 'filtered-data:filter_8:condition_1:artifact:*.id'])
+    # set user and message variables for phantom.prompt call
+    user = "Incident Commander"
+    message = """Remediate the rootkit?"""
 
-    parameters = []
-    
-    # build parameters list for 'get_file_1' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        if filtered_artifacts_item_1[0]:
-            parameters.append({
-                'hash': filtered_artifacts_item_1[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': filtered_artifacts_item_1[1]},
-            })
+    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name="prompt_1", callback=playbook_platinum_rootkit_remediate_1)
 
-    phantom.act("get file", parameters=parameters, assets=['carbonblack'], callback=detonate_file_1, name="get_file_1")    
+    return
+
+def set_status_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('set_status_2() called')
+
+    phantom.set_status(container, "closed")
+
+    return
+
+def playbook_platinum_rootkit_remediate_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('playbook_platinum_rootkit_remediate_1() called')
     
+    # call playbook "platinum/rootkit_remediate", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("platinum/rootkit_remediate", container)
+
     return
 
 def snapshot_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -57,8 +60,82 @@ def snapshot_vm_1(action=None, success=None, container=None, results=None, handl
                 'context': {'artifact_id': passed_filtered_results_item_1[1]},
             })
 
-    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], name="snapshot_vm_1")    
+    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], name="snapshot_vm_1")
+
+    return
+
+def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('file_reputation_1() called')
+
+    # collect data for 'file_reputation_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])
+
+    parameters = []
     
+    # build parameters list for 'file_reputation_1' call
+    for container_item in container_data:
+        parameters.append({
+            'hash': container_item[0],
+            # context (artifact id) is added to associate results with the artifact
+            'context': {'artifact_id': container_item[1]},
+        })
+
+    phantom.act("file reputation", parameters=parameters, assets=['reversinglabs'], callback=filter_6, name="file_reputation_1")
+
+    return
+
+def filter_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_6() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["file_reputation_1:action_result.summary.positives", ">", 0],
+        ],
+        name="filter_6:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        filter_7(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    # collect filtered artifact ids for 'if' condition 2
+    matched_artifacts_2, matched_results_2 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["file_reputation_1:action_result.summary.positives", "==", 0],
+        ],
+        name="filter_6:condition_2")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_2 or matched_results_2:
+        filter_8(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
+
+    return
+
+def get_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('get_file_1() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'get_file_1' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_8:condition_1:artifact:*.cef.fileHash', 'filtered-data:filter_8:condition_1:artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'get_file_1' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'hash': filtered_artifacts_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
+
+    phantom.act("get file", parameters=parameters, assets=['carbonblack'], callback=detonate_file_1, name="get_file_1")
+
     return
 
 def detonate_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -75,56 +152,16 @@ def detonate_file_1(action=None, success=None, container=None, results=None, han
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
         if filtered_artifacts_item_1[0]:
             parameters.append({
-                'vault_id': filtered_artifacts_item_1[0],
                 'file_name': "",
-                'vm': "",
+                'vault_id': filtered_artifacts_item_1[0],
                 'force_analysis': "",
+                'vm': "",
                 'private': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("detonate file", parameters=parameters, assets=['threatgrid'], callback=filter_5, name="detonate_file_1", parent_action=action)    
-    
-    return
-
-def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('file_reputation_1() called')
-
-    # collect data for 'file_reputation_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'file_reputation_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'hash': container_item[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("file reputation", parameters=parameters, assets=['reversinglabs_private'], callback=filter_6, name="file_reputation_1")    
-    
-    return
-
-def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('prompt_1() called')
-    
-    # set user and message variables for phantom.prompt call
-    user = "Incident Commander"
-    message = """Remediate the rootkit?"""
-
-    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name="prompt_1", callback=playbook_platinum_rootkit_remediate_1)
-
-    return
-
-def playbook_platinum_rootkit_remediate_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('playbook_platinum_rootkit_remediate_1() called')
-    
-    # call playbook "platinum/rootkit_remediate", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("platinum/rootkit_remediate", container)
+    phantom.act("detonate file", parameters=parameters, assets=['threatgrid'], callback=filter_5, name="detonate_file_1", parent_action=action)
 
     return
 
@@ -144,43 +181,6 @@ def filter_4(action=None, success=None, container=None, results=None, handle=Non
     if matched_artifacts_1 or matched_results_1:
         snapshot_vm_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
-    return
-
-def get_system_info_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('get_system_info_2() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'get_system_info_2' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_5:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_5:condition_1:artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'get_system_info_2' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        if filtered_artifacts_item_1[0]:
-            parameters.append({
-                'ip_hostname': filtered_artifacts_item_1[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': filtered_artifacts_item_1[1]},
-            })
-
-    phantom.act("get system info", parameters=parameters, assets=['vmwarevsphere'], callback=filter_4, name="get_system_info_2")    
-    
-    return
-
-def join_get_system_info_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('join_get_system_info_2() called')
-    
-    # if the joined function has already been called, do nothing
-    if phantom.get_run_data(key='join_get_system_info_2_called'):
-        return
-
-    # no callbacks to check, call connected block "get_system_info_2"
-    phantom.save_run_data(key='join_get_system_info_2_called', value='get_system_info_2', auto=True)
-
-    get_system_info_2(container=container, handle=handle)
-    
     return
 
 def filter_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -213,43 +213,44 @@ def filter_5(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_2 or matched_results_2:
-        Send_FP_Email(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
+        send_fp_email(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
 
     return
 
-def Send_FP_Email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('Send_FP_Email() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'Send_FP_Email' call
+def filter_7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_7() called')
 
-    parameters = []
-    
-    # build parameters list for 'Send_FP_Email' call
-    parameters.append({
-        'body': "There was a reported rootkit that was identified as a false positive.  See Phantom for more info.",
-        'to': "test@phantom.us",
-        'from': "admin@phantom.us",
-        'attachments': "",
-        'subject': "False positive rootkit identified",
-    })
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["file_reputation_1:action_result.parameter.hash", "==", "artifact:*.cef.fileHash"],
+        ],
+        name="filter_7:condition_1")
 
-    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=set_severity_1, name="Send_FP_Email")    
-    
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        join_get_system_info_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        join_get_system_info_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
     return
 
-def set_severity_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('set_severity_1() called')
-    
-    # set container properties for: severity
-    update_data = {
-        "severity" : "low",
-    }
+def filter_8(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_8() called')
 
-    phantom.update(container, update_data)
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["filtered-data:filter_6:condition_2:file_reputation_1:action_result.parameter.hash", "==", "artifact:*.cef.fileHash"],
+        ],
+        name="filter_8:condition_1")
 
-    set_status_2(container=container)
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        get_file_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -290,34 +291,25 @@ def join_get_system_info_1(action=None, success=None, container=None, results=No
     
     return
 
-def filter_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_6() called')
+def send_fp_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('send_fp_email() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'send_fp_email' call
 
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["file_reputation_1:action_result.summary.positives", ">", 0],
-        ],
-        name="filter_6:condition_1")
+    parameters = []
+    
+    # build parameters list for 'send_fp_email' call
+    parameters.append({
+        'body': "There was a reported rootkit that was identified as a false positive.  See Phantom for more info.",
+        'to': "test@phantom.us",
+        'from': "admin@phantom.us",
+        'attachments': "",
+        'subject': "False positive rootkit identified",
+    })
 
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        filter_7(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    # collect filtered artifact ids for 'if' condition 2
-    matched_artifacts_2, matched_results_2 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["file_reputation_1:action_result.summary.positives", "==", 0],
-        ],
-        name="filter_6:condition_2")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_2 or matched_results_2:
-        filter_8(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
+    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=set_severity_1, name="send_fp_email")
 
     return
 
@@ -339,56 +331,52 @@ def Send_Email_malicious(action=None, success=None, container=None, results=None
         'subject': "Malicious rootkit detected",
     })
 
-    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=prompt_1, name="Send_Email_malicious", parent_action=action)    
+    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=prompt_1, name="Send_Email_malicious", parent_action=action)
+
+    return
+
+def get_system_info_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('get_system_info_2() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'get_system_info_2' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_5:condition_1:artifact:*.cef.sourceAddress', 'filtered-data:filter_5:condition_1:artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'get_system_info_2' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'ip_hostname': filtered_artifacts_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
+
+    phantom.act("get system info", parameters=parameters, assets=['vmwarevsphere'], callback=filter_4, name="get_system_info_2")
+
+    return
+
+def join_get_system_info_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('join_get_system_info_2() called')
+    
+    # if the joined function has already been called, do nothing
+    if phantom.get_run_data(key='join_get_system_info_2_called'):
+        return
+
+    # no callbacks to check, call connected block "get_system_info_2"
+    phantom.save_run_data(key='join_get_system_info_2_called', value='get_system_info_2', auto=True)
+
+    get_system_info_2(container=container, handle=handle)
     
     return
 
-def set_status_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('set_status_2() called')
-    
-    # set container properties for: status
-    update_data = {
-        "status" : "closed",
-    }
+def set_severity_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('set_severity_1() called')
 
-    phantom.update(container, update_data)
-
-    return
-
-def filter_7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_7() called')
-
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["file_reputation_1:action_result.parameter.hash", "==", "artifact:*.cef.fileHash"],
-        ],
-        name="filter_7:condition_1")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        join_get_system_info_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        join_get_system_info_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
-def filter_8(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_8() called')
-
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["filtered-data:filter_6:condition_2:file_reputation_1:action_result.parameter.hash", "==", "artifact:*.cef.fileHash"],
-        ],
-        name="filter_8:condition_1")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        get_file_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+    phantom.set_severity(container, "low")
+    set_status_2(container=container)
 
     return
 
