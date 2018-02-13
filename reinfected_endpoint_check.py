@@ -26,15 +26,15 @@ def add_endpoint_to_list(action=None, success=None, container=None, results=None
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
         if filtered_artifacts_item_1[0]:
             parameters.append({
-                'new_row': filtered_artifacts_item_1[0],
-                'create': "",
                 'list': "infected_endpoints",
+                'create': "",
+                'new_row': filtered_artifacts_item_1[0],
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("add listitem", parameters=parameters, assets=['helper'], callback=format_2, name="add_endpoint_to_list")    
-    
+    phantom.act("add listitem", parameters=parameters, assets=['helper'], callback=format_2, name="add_endpoint_to_list")
+
     return
 
 def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -76,13 +76,8 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
 
 def close_container(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('close_container() called')
-    
-    # set container properties for: status
-    update_data = {
-        "status" : "closed",
-    }
 
-    phantom.update(container, update_data)
+    phantom.set_status(container, "closed")
 
     return
 
@@ -95,35 +90,6 @@ def join_close_container(action=None, success=None, container=None, results=None
         # call connected block "close_container"
         close_container(container=container, handle=handle)
     
-    return
-
-def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_2() called')
-
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        conditions=[
-            ["artifact:*.cef.sourceAddress", "in", "custom_list:infected_endpoints"],
-        ],
-        name="filter_2:condition_1")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        format_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    # collect filtered artifact ids for 'if' condition 2
-    matched_artifacts_2, matched_results_2 = phantom.condition(
-        container=container,
-        conditions=[
-            ["artifact:*.cef.sourceAddress", "not in", "custom_list:infected_endpoints"],
-        ],
-        name="filter_2:condition_2")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_2 or matched_results_2:
-        add_endpoint_to_list(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
-
     return
 
 def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -160,8 +126,8 @@ def create_ticket_1(action=None, success=None, container=None, results=None, han
         'fields': "",
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=join_close_container, name="create_ticket_1")    
-    
+    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=join_close_container, name="create_ticket_1")
+
     return
 
 def create_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -183,8 +149,37 @@ def create_ticket_2(action=None, success=None, container=None, results=None, han
         'fields': "",
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=join_close_container, name="create_ticket_2")    
-    
+    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=join_close_container, name="create_ticket_2")
+
+    return
+
+def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_2() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        conditions=[
+            ["artifact:*.cef.sourceAddress", "in", "custom_list:infected_endpoints"],
+        ],
+        name="filter_2:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        format_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    # collect filtered artifact ids for 'if' condition 2
+    matched_artifacts_2, matched_results_2 = phantom.condition(
+        container=container,
+        conditions=[
+            ["artifact:*.cef.sourceAddress", "not in", "custom_list:infected_endpoints"],
+        ],
+        name="filter_2:condition_2")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_2 or matched_results_2:
+        add_endpoint_to_list(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
+
     return
 
 def on_finish(container, summary):

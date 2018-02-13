@@ -2,12 +2,13 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
+    "misc": { "apps_list": ["ServiceNow", "Phantom"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "",
             "description": "This playbook will operate on infected sourceAddress CEF values and determine if it is a new infection or repeat by checking the sourceAddress against the infected_endpoint custom list.",
-            "hash": "1b6c4570a416d6ca4874d07d2cd8d03ab1349c4b",
+            "hash": "d6bf44b86a9882327d67fdc6035b3f24bfb22b4b",
             "joint": {
                 "cells": [
                     {
@@ -411,6 +412,12 @@
                             "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
                         },
                         "type": "link",
+                        "vertices": [
+                            {
+                                "x": 980,
+                                "y": 120
+                            }
+                        ],
                         "z": 533
                     },
                     {
@@ -474,17 +481,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -510,8 +517,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 203,
-                        "line_start": 190,
+                        "line_end": 198,
+                        "line_start": 185,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -569,15 +576,15 @@
                             }
                         },
                         "position": {
-                            "x": 1560,
-                            "y": 200
+                            "x": 1480,
+                            "y": 300
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -596,14 +603,23 @@
                             "new_row": "filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
                                 "fields": {
                                     "create": "",
                                     "list": "infected_endpoints",
                                     "new_row": "filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "helper",
                                 "output": [
                                     {
@@ -650,6 +666,8 @@
                                         "data_type": "boolean"
                                     }
                                 ],
+                                "product_name": "",
+                                "product_vendor": "",
                                 "type": "information"
                             }
                         ],
@@ -657,16 +675,10 @@
                             ".action": {
                                 "text": "add endpoint to list"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88,
                                 "opacity": 1,
                                 "stroke": "#E6984E"
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -679,9 +691,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -693,19 +710,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 1
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#E6984E"
@@ -714,7 +736,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def add_endpoint_to_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('add_endpoint_to_list() called')\n\n    # collect data for 'add_endpoint_to_list' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_2:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'add_endpoint_to_list' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'new_row': filtered_artifacts_item_1[0],\n                'create': \"\",\n                'list': \"infected_endpoints\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"add listitem\", parameters=parameters, assets=['helper'], callback=format_2, name=\"add_endpoint_to_list\")    \n    \n    return",
+                        "block_code": "def add_endpoint_to_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('add_endpoint_to_list() called')\n\n    # collect data for 'add_endpoint_to_list' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_2:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'add_endpoint_to_list' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'list': \"infected_endpoints\",\n                'create': \"\",\n                'new_row': filtered_artifacts_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"add listitem\", parameters=parameters, assets=['helper'], callback=format_2, name=\"add_endpoint_to_list\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -741,7 +763,7 @@
                         "join_start": 1,
                         "line_end": 40,
                         "line_start": 17,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "add listitem",
                         "notes": "Add a new endpoint to the infected_endpoints custom list.\n",
                         "number": 2,
@@ -801,7 +823,7 @@
                             }
                         },
                         "position": {
-                            "x": 620,
+                            "x": 520,
                             "y": 280
                         },
                         "previous_function": "",
@@ -817,163 +839,11 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "warn",
+                        "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": false,
                         "z": 693
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".border": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".inPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 2
-                            },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
-                            },
-                            ".outPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_2() called')\n    \n    template = \"\"\"The following infected endpoints are new infection instances and have been added to the infected_endpoints custom list:\n{0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_2\")\n\n    create_ticket_2(container=container)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "add endpoint to list",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "8a8907a4-c472-48d3-a04a-4bfbb189dcbb",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 57,
-                        "line_start": 40,
-                        "name": "format",
-                        "notes": "Aggregate the action results for the purposes of filing a ticket. ",
-                        "number": 2,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "parameters": [
-                            {
-                                "position": 0,
-                                "type": "",
-                                "value": "filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 880,
-                            "y": 280
-                        },
-                        "previous_function": "",
-                        "previous_name": "format_2",
-                        "show_number": true,
-                        "size": {
-                            "height": 82,
-                            "width": 82
-                        },
-                        "state": "format",
-                        "status": "",
-                        "template": "The following infected endpoints are new infection instances and have been added to the infected_endpoints custom list:\n{0}",
-                        "type": "coa.Format",
-                        "warn": false,
-                        "z": 706
                     },
                     {
                         "active": false,
@@ -1022,12 +892,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.sourceAddress\", \"!=\", \"\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        filter_2(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n    join_close_container(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
@@ -1144,7 +1020,7 @@
                             }
                         },
                         "position": {
-                            "x": 320,
+                            "x": 240,
                             "y": 80
                         },
                         "previous_function": "",
@@ -1180,19 +1056,21 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'decision_1' block\n    decision_1(container=container)\n\n    return",
@@ -1284,327 +1162,14 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
                         "type": "coa.StartEnd",
                         "warn": false,
                         "z": 718
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".api": {
-                                "text": "close container"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "height": 88
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "fill": "#FFFFFF"
-                            }
-                        },
-                        "block_code": "def close_container(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('close_container() called')\n    \n    # set container properties for: status\n    update_data = {\n        \"status\" : \"closed\",\n    }\n\n    phantom.update(container, update_data)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "color": "",
-                        "configured": [
-                            {
-                                "name": "status",
-                                "value": "closed"
-                            }
-                        ],
-                        "connected_to_start": true,
-                        "connection_name": "create ticket 2, create ticket 1",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "close container",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "f16b3dc3-5c5e-4a12-b2e5-77cb39e342f1",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "def join_close_container(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('join_close_container() called')\n\n    # check if all connected incoming actions are done i.e. have succeeded or failed\n    if phantom.actions_done([ 'create_ticket_2', 'create_ticket_1' ]):\n        \n        # call connected block \"close_container\"\n        close_container(container=container, handle=handle)\n    \n    return",
-                        "join_optional": [],
-                        "join_start": 89,
-                        "line_end": 100,
-                        "line_start": 77,
-                        "message": "",
-                        "name": "set status",
-                        "notes": "Close the container.",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1280,
-                            "y": 180
-                        },
-                        "previous_function": "",
-                        "previous_name": "close_container",
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "api",
-                        "status": "",
-                        "type": "coa.API",
-                        "warn": false,
-                        "z": 733
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".border": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".inPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 1
-                            },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
-                            },
-                            ".outPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_1() called')\n    \n    template = \"\"\"The following infected endpoints are repeat offenders who have matched on the infected_endpoints custom list:\n{0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_1\")\n\n    create_ticket_1(container=container)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "897240bd-e235-4427-8a20-927373567bf5",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 146,
-                        "line_start": 129,
-                        "name": "format",
-                        "notes": "Aggregate the action results for the purposes of filing a ticket. ",
-                        "number": 1,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "parameters": [
-                            {
-                                "position": 0,
-                                "type": "",
-                                "value": "filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 880,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "format_1",
-                        "show_number": true,
-                        "size": {
-                            "height": 82,
-                            "width": 82
-                        },
-                        "state": "format",
-                        "status": "",
-                        "template": "The following infected endpoints are repeat offenders who have matched on the infected_endpoints custom list:\n{0}",
-                        "type": "coa.Format",
-                        "warn": false,
-                        "z": 741
                     },
                     {
                         "action": "create ticket",
@@ -1619,9 +1184,15 @@
                             "vault_id": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
                                 "fields": {
                                     "description": "format_1:formatted_data",
                                     "fields": "",
@@ -1629,6 +1200,9 @@
                                     "table": "",
                                     "vault_id": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "servicenow",
                                 "output": [
                                     {
@@ -2118,6 +1692,8 @@
                                         "data_type": "numeric"
                                     }
                                 ],
+                                "product_name": "",
+                                "product_vendor": "",
                                 "type": "ticketing"
                             }
                         ],
@@ -2125,16 +1701,10 @@
                             ".action": {
                                 "text": "create ticket 1"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88,
                                 "opacity": 1,
                                 "stroke": "#E6984E"
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2147,9 +1717,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2161,19 +1736,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 1
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#E6984E"
@@ -2182,7 +1762,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_ticket_1() called')\n\n    # collect data for 'create_ticket_1' call\n    formatted_data_1 = phantom.get_format_data(name='format_1')\n\n    parameters = []\n    \n    # build parameters list for 'create_ticket_1' call\n    parameters.append({\n        'short_description': \"Reinfected Endpoint Instance\",\n        'table': \"\",\n        'vault_id': \"\",\n        'description': formatted_data_1,\n        'fields': \"\",\n    })\n\n    phantom.act(\"create ticket\", parameters=parameters, assets=['servicenow'], callback=join_close_container, name=\"create_ticket_1\")    \n    \n    return",
+                        "block_code": "def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_ticket_1() called')\n\n    # collect data for 'create_ticket_1' call\n    formatted_data_1 = phantom.get_format_data(name='format_1')\n\n    parameters = []\n    \n    # build parameters list for 'create_ticket_1' call\n    parameters.append({\n        'short_description': \"Reinfected Endpoint Instance\",\n        'table': \"\",\n        'vault_id': \"\",\n        'description': formatted_data_1,\n        'fields': \"\",\n    })\n\n    phantom.act(\"create ticket\", parameters=parameters, assets=['servicenow'], callback=join_close_container, name=\"create_ticket_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2207,9 +1787,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 90,
-                        "line_end": 167,
-                        "line_start": 146,
-                        "message": "",
+                        "line_end": 133,
+                        "line_start": 112,
+                        "message": "Configuring now",
                         "name": "create ticket",
                         "notes": "Create ticket documenting repeat infected endpoints.",
                         "number": 1,
@@ -2269,7 +1849,7 @@
                             }
                         },
                         "position": {
-                            "x": 1040,
+                            "x": 760,
                             "y": 80
                         },
                         "previous_function": "",
@@ -2282,7 +1862,7 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "warn",
+                        "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": false,
@@ -2301,9 +1881,15 @@
                             "vault_id": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
+                                "app_name": "",
+                                "app_version": "",
+                                "config_type": "asset",
                                 "fields": {
                                     "description": "format_2:formatted_data",
                                     "fields": "",
@@ -2311,6 +1897,9 @@
                                     "table": "",
                                     "vault_id": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "servicenow",
                                 "output": [
                                     {
@@ -2800,6 +2389,8 @@
                                         "data_type": "numeric"
                                     }
                                 ],
+                                "product_name": "",
+                                "product_vendor": "",
                                 "type": "ticketing"
                             }
                         ],
@@ -2807,16 +2398,10 @@
                             ".action": {
                                 "text": "create ticket 2"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88,
                                 "opacity": 1,
                                 "stroke": "#E6984E"
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2829,9 +2414,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2843,19 +2433,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 1
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#E6984E"
@@ -2864,7 +2459,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def create_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_ticket_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_ticket_2' call\n    formatted_data_1 = phantom.get_format_data(name='format_2')\n\n    parameters = []\n    \n    # build parameters list for 'create_ticket_2' call\n    parameters.append({\n        'short_description': \"New Infected Endpoints\",\n        'table': \"\",\n        'vault_id': \"\",\n        'description': formatted_data_1,\n        'fields': \"\",\n    })\n\n    phantom.act(\"create ticket\", parameters=parameters, assets=['servicenow'], callback=join_close_container, name=\"create_ticket_2\")    \n    \n    return",
+                        "block_code": "def create_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_ticket_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_ticket_2' call\n    formatted_data_1 = phantom.get_format_data(name='format_2')\n\n    parameters = []\n    \n    # build parameters list for 'create_ticket_2' call\n    parameters.append({\n        'short_description': \"New Infected Endpoints\",\n        'table': \"\",\n        'vault_id': \"\",\n        'description': formatted_data_1,\n        'fields': \"\",\n    })\n\n    phantom.act(\"create ticket\", parameters=parameters, assets=['servicenow'], callback=join_close_container, name=\"create_ticket_2\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2889,9 +2484,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 190,
-                        "line_start": 167,
-                        "message": "",
+                        "line_end": 156,
+                        "line_start": 133,
+                        "message": "Configuring now",
                         "name": "create ticket",
                         "notes": "Create ticket documenting newly discovered infected endpoints.",
                         "number": 2,
@@ -2951,7 +2546,7 @@
                             }
                         },
                         "position": {
-                            "x": 1040,
+                            "x": 1000,
                             "y": 280
                         },
                         "previous_function": "",
@@ -2964,7 +2559,7 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "warn",
+                        "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": false,
@@ -3017,12 +2612,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_2() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.sourceAddress\", \"in\", \"custom_list:infected_endpoints\"],\n        ],\n        name=\"filter_2:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        format_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    # collect filtered artifact ids for 'if' condition 2\n    matched_artifacts_2, matched_results_2 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.sourceAddress\", \"not in\", \"custom_list:infected_endpoints\"],\n        ],\n        name=\"filter_2:condition_2\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_2 or matched_results_2:\n        add_endpoint_to_list(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n\n    return",
@@ -3048,8 +2649,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 129,
-                        "line_start": 100,
+                        "line_end": 185,
+                        "line_start": 156,
                         "name": "filter",
                         "notes": "Apply a filter to separate infected endpoints that are repeats from newly discovered infections.",
                         "number": 2,
@@ -3138,7 +2739,7 @@
                             }
                         },
                         "position": {
-                            "x": 500,
+                            "x": 380,
                             "y": 80
                         },
                         "previous_function": "",
@@ -3153,17 +2754,573 @@
                         "type": "coa.Filter",
                         "warn": false,
                         "z": 744
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(0 0 0)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".format": {
+                                "text": "format 1"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port": {
+                                "ref-x": 0,
+                                "ref-y": 0
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_1() called')\n    \n    template = \"\"\"The following infected endpoints are repeat offenders who have matched on the infected_endpoints custom list:\n{0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_1\")\n\n    create_ticket_1(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "format 1",
+                        "description": "",
+                        "format": "format",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "897240bd-e235-4427-8a20-927373567bf5",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 112,
+                        "line_start": 95,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "Aggregate the action results for the purposes of filing a ticket.",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": "filtered-data:filter_2:condition_1:artifact:*.cef.sourceAddress"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 520,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "format_1",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "The following infected endpoints are repeat offenders who have matched on the infected_endpoints custom list:\n{0}",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 746
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(0 0 0)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".format": {
+                                "text": "format 2"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".number": {
+                                "text": 2
+                            },
+                            ".outPorts>.port": {
+                                "ref-x": 0,
+                                "ref-y": 0
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_2() called')\n    \n    template = \"\"\"The following infected endpoints are new infection instances and have been added to the infected_endpoints custom list:\n{0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_2\")\n\n    create_ticket_2(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "add endpoint to list",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "format 2",
+                        "description": "",
+                        "format": "format",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "8a8907a4-c472-48d3-a04a-4bfbb189dcbb",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 57,
+                        "line_start": 40,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "Aggregate the action results for the purposes of filing a ticket.",
+                        "number": 2,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": "filtered-data:filter_2:condition_2:artifact:*.cef.sourceAddress"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 760,
+                            "y": 280
+                        },
+                        "previous_function": "",
+                        "previous_name": "format_2",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "The following infected endpoints are new infection instances and have been added to the infected_endpoints custom list:\n{0}",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 748
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".api": {
+                                "text": "set status"
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "API"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def close_container(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('close_container() called')\n\n    phantom.set_status(container, \"closed\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "color": "",
+                        "configured": [
+                            {
+                                "key": "set-status",
+                                "setStatusStatus": "closed"
+                            }
+                        ],
+                        "connected_to_start": true,
+                        "connection_name": "create ticket 2, create ticket 1",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "close container",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "f16b3dc3-5c5e-4a12-b2e5-77cb39e342f1",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "def join_close_container(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('join_close_container() called')\n\n    # check if all connected incoming actions are done i.e. have succeeded or failed\n    if phantom.actions_done([ 'create_ticket_2', 'create_ticket_1' ]):\n        \n        # call connected block \"close_container\"\n        close_container(container=container, handle=handle)\n    \n    return",
+                        "join_optional": [],
+                        "join_start": 84,
+                        "line_end": 95,
+                        "line_start": 77,
+                        "message": "Configuring now",
+                        "name": "set status",
+                        "notes": "Close the container.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1240,
+                            "y": 280
+                        },
+                        "previous_function": "",
+                        "previous_name": "close_container",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "api",
+                        "status": "",
+                        "title": "API",
+                        "type": "coa.API",
+                        "warn": false,
+                        "z": 750
                     }
                 ]
             },
             "notes": "This playbook uses the following Apps: \n\n- ServiceNow\n\nThis playbook uses the following custom list: \n - infected_endpoints\n\nThe objective of the infected_endpoints custom list is to keep track endpoints who have been infected in the past for the purposes of context and comparison for future infections.  That is the purpose of this playbook, which demonstrates how to compare attributes of an artifact against a custom list.  If the infected endpoint successfully matches against the custom list, this suggests the endpoint is a repeat infection and this should be made clear in the ticket.   For new infections (endpoint is not in the infected_endpoints custom list), the playbook will add the endpoint to the list and file a ticket."
         },
-        "schema": 2,
-        "version": "2.1.458"
+        "schema": 3,
+        "version": "3.5.137"
     },
-    "create_time": "2017-04-25T21:18:11.578682+00:00",
+    "create_time": "2018-02-13T00:23:09.966409+00:00",
     "draft_mode": false,
     "labels": [
-        "event"
+        "events"
     ]
 }
