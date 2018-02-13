@@ -208,44 +208,6 @@ def check_whitelist(action=None, success=None, container=None, results=None, han
     return
 
 """
-Check the remaining access points against a greylist of several possible network names that an attacker might use to spoof an official company network. The greylist is loaded from the Custom List called "Potential Rogue Access Point ESSIDs". To account for small variations in network names, a Levenshtein edit distance is used so even non-exact matches will be considered suspicious.
-
-The resulting artifact saved to the Case will have a field called "matched_rule", which will show the first entry from the Custom List that matches the given network name.
-"""
-def check_greylist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('check_greylist() called')
-    
-    edit_distance_threshold = 5
-    
-    success, message, potentials = phantom.get_list(list_name='Potential Rogue Access Point ESSIDs')
-    whitelist_filtered_access_points = json.loads(phantom.get_run_data(key='whitelist_filtered_access_points'))
-    
-    scanned_ESSIDs = [ap['ESSID'] for ap in whitelist_filtered_access_points]
-    
-    # compare each ESSID against each potential evil twin and escalate those with a sufficiently small edit distance
-    matches = 0
-    for ap in whitelist_filtered_access_points:
-        ap['is_escalated'] = False
-        ap['matched_rule'] = None
-        for potential in potentials:
-            if edit_distance(ap['ESSID'], potential[0]) < edit_distance_threshold:
-                ap['is_escalated'] = True
-                ap['matched_rule'] = potential
-                matches += 1
-                break
-
-    message = '{} out of {} access points fuzzy-matched "Potential Rogue Access Point ESSIDs"'.format(
-        matches, len(whitelist_filtered_access_points))
-    phantom.debug(message)
-    live_comment(message)
-
-    phantom.save_run_data(value=json.dumps(whitelist_filtered_access_points), key='fuzzy_matched_access_points')
-
-    get_pins()
-    
-    return
-
-"""
 Retrieve a list of all the cards currently pinned to the Heads-up Display of the Case that will be used to track the results.
 """
 def get_pins(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -316,6 +278,67 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
     return
 
 """
+Use the HTTP app to query the REST API of this Phantom instance for the most recently created Case with the label Wireless. This is the Case that will be updated with new artifacts and Heads-up Display information containing the results of the WiFi scan.
+
+When testing and using this playbook it may be helpful to open up this Case in Mission Control to monitor the output.
+"""
+def find_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('find_case() called')
+
+    # collect data for 'find_case' call
+
+    parameters = []
+    
+    # build parameters list for 'find_case' call
+    parameters.append({
+        'headers': "",
+        'location': "rest/container?_filter_label=\"wireless\"&_filter_container_type=\"case\"&sort=start_time&order=desc&page_size=1",
+        'verify_certificate': False,
+    })
+
+    phantom.act("get data", parameters=parameters, assets=['http'], callback=join_collect_data, name="find_case")
+
+    return
+
+"""
+Check the remaining access points against a greylist of several possible network names that an attacker might use to spoof an official company network. The greylist is loaded from the Custom List called "Potential Rogue Access Point ESSIDs". To account for small variations in network names, a Levenshtein edit distance is used so even non-exact matches will be considered suspicious.
+
+The resulting artifact saved to the Case will have a field called "matched_rule", which will show the first entry from the Custom List that matches the given network name.
+"""
+def check_greylist(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('check_greylist() called')
+    
+    edit_distance_threshold = 5
+    
+    success, message, potentials = phantom.get_list(list_name='Potential Rogue Access Point ESSIDs')
+    whitelist_filtered_access_points = json.loads(phantom.get_run_data(key='whitelist_filtered_access_points'))
+    
+    scanned_ESSIDs = [ap['ESSID'] for ap in whitelist_filtered_access_points]
+    
+    # compare each ESSID against each potential evil twin and escalate those with a sufficiently small edit distance
+    matches = 0
+    for ap in whitelist_filtered_access_points:
+        ap['is_escalated'] = False
+        ap['matched_rule'] = None
+        for potential in potentials:
+            if edit_distance(ap['ESSID'], potential[0]) < edit_distance_threshold:
+                ap['is_escalated'] = True
+                ap['matched_rule'] = potential
+                matches += 1
+                break
+
+    message = '{} out of {} access points fuzzy-matched "Potential Rogue Access Point ESSIDs"'.format(
+        matches, len(whitelist_filtered_access_points))
+    phantom.debug(message)
+    live_comment(message)
+
+    phantom.save_run_data(value=json.dumps(whitelist_filtered_access_points), key='fuzzy_matched_access_points')
+
+    get_pins()
+    
+    return
+
+"""
 Assign a manual task for an operator to remediate. The HUD can be used to live-track the MAC addresses and signal strengths of the identified access points.
 """
 def find_and_disable_rogue_ap(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -335,29 +358,6 @@ def find_and_disable_rogue_ap(action=None, success=None, container=None, results
     return
 
 """
-Use the HTTP app to query the REST API of this Phantom instance for the most recently created Case with the label Wireless. This is the Case that will be updated with new artifacts and Heads-up Display information containing the results of the WiFi scan.
-
-When testing and using this playbook it may be helpful to open up this Case in Mission Control to monitor the output.
-"""
-def find_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('find_case() called')
-
-    # collect data for 'find_case' call
-
-    parameters = []
-    
-    # build parameters list for 'find_case' call
-    parameters.append({
-        'headers': "",
-        'location': "rest/container?_filter_label=\"wireless\"&_filter_container_type=\"case\"&sort=start_time&order=desc&page_size=1",
-        'verify_certificate': False,
-    })
-
-    phantom.act("get data", parameters=parameters, assets=['http'], callback=join_collect_data, name="find_case")    
-    
-    return
-
-"""
 Scan all WiFi access points in range of the Raspberry Pi using the command "iwlist wlan0 scanning". The following information will be returned for each access point: ESSID (network name), MAC address, channel, signal strength, signal quality, and security protocol.
 
 If adapting to scan from a Windows machine, "netsh.exe" should be able to list access points in range.
@@ -371,13 +371,13 @@ def execute_program_1(action=None, success=None, container=None, results=None, h
     
     # build parameters list for 'execute_program_1' call
     parameters.append({
-        'ip_hostname': "192.168.1.100",
         'command': "sudo /sbin/iwlist wlan0 scanning",
         'timeout': "",
+        'ip_hostname': "192.168.1.100",
     })
 
-    phantom.act("execute program", parameters=parameters, assets=['raspberry_pi_ssh'], callback=join_collect_data, name="execute_program_1")    
-    
+    phantom.act("execute program", parameters=parameters, assets=['raspberry_pi_ssh'], callback=join_collect_data, name="execute_program_1")
+
     return
 
 def on_finish(container, summary):

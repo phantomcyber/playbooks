@@ -2,12 +2,12 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": ["SSH", "HTTP"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "import re\n\n# parse the wireless scan results returned from ssh and save the run_data with key 'parsed_access_points'\ndef parse_and_save_iwlist(iwlist):\n    phantom.debug('parsing the iwlist data returned from the wireless scan')\n    \n    iwlist = iwlist[0][0]\n    \n    if not iwlist:\n        phantom.error(\"no results were received from the wifi sensor\")\n        return\n    \n    if 'Scan completed' not in iwlist.split('\\n')[0]:\n        phantom.error(\"failed to parse the results of iwlist\")\n        return\n    \n    # disregard the first line\n    iwlist = iwlist.split('\\n', 1)[1]\n    \n    # split on the string that starts the results for each access point (iwlist calls them \"Cells\")\n    access_points = re.split(\"          Cell \", iwlist)\n    access_points = access_points[1:]\n        \n    # parse out the mac address, ESSID, radio frequency, signal strength, and security protocol\n    for i, access_point in enumerate(access_points):\n        lines = access_point.split('\\n')\n        access_points[i] = {}\n        if re.match('\\d+ - Address: ', lines[0]):\n            access_points[i]['mac_address'] = lines[0].split(' - Address: ')[-1]\n        else:\n            phantom.error('failed to parse one of the access_points returned from iwlist')\n            return\n        \n        for line in lines[1:]:\n            if re.match('                    ESSID:\"', line):\n                access_points[i]['ESSID'] = line.split('ESSID:')[-1].strip('\"')\n            if re.match('                    Frequency:\\d', line):\n                access_points[i]['radio_frequency'] = line.split('Frequency:')[-1].strip()\n            if re.match('                    Quality=\\d', line):\n                access_points[i]['signal_strength'] = line.strip()\n            if re.match('                    IE: IEEE 802.11i', line):\n                access_points[i]['security_protocol'] = line.split('IE:')[-1].strip()\n        \n        # no string matching \"IEEE 802.11i\" means plaintext\n        if not access_points[i].get('security_protocol'):\n            access_points[i]['security_protocol'] = 'plaintext'\n\n    phantom.debug('parsed out the following wifi access points:')\n    phantom.debug(access_points)\n    \n    phantom.save_run_data(value=json.dumps(access_points), key='parsed_access_points')\n    \n    return\n\ndef parse_and_save_live_case(live_case_body):\n    phantom.debug('parsing the id of the live case to update')\n    \n    phantom.debug(live_case_body)\n    \n    live_case_id = live_case_body[0][0]['data'][0]['id']\n    phantom.debug('tracking wireless scans in the case with id {}'.format(live_case_id))\n    phantom.save_run_data(value=str(live_case_id), key='live_case_id')\n    \n    live_case_owner = live_case_body[0][0]['data'][0]['owner_name']\n    phantom.debug('this case is owned by {}'.format(live_case_owner))\n    phantom.save_run_data(value=json.dumps(live_case_owner), key='live_case_owner')\n    \n    return\n\n# write a one-line comment to the activity feed\ndef live_comment(message):\n    live_case_id = int(phantom.get_run_data(key='live_case_id'))\n    phantom.comment(container=live_case_id, comment=message)\n    return\n\ndef edit_distance(s1, s2):\n\n    # ignore non-letters and upper-case vs lower-case\n    s1 = s1.lower()\n    s1 = re.sub(r'[^a-z]', '', s1) \n    s2 = s2.lower()\n    s2 = re.sub(r'[^a-z]', '', s2) \n    \n    # ignore the potential usage of some generic terms\n    for generic in ['wifi', 'wireless', 'network', 'official', 'corp', 'corporate']:\n        s1 = re.sub(generic, '', s1) \n        s2 = re.sub(generic, '', s2) \n\n    # switch the order to make sure s1 is not shorter\n    if len(s1) < len(s2):\n        return edit_distance(s2, s1) \n\n    # len(s1) >= len(s2)\n    if len(s2) == 0:\n        return len(s1)\n\n    distances = range(len(s2) + 1)\n    # iterate through each character in s1\n    for i in range(len(s1)):\n        next_distances = []\n        next_distances.append(i + 1)\n        # iterate through each character in s2\n        for j in range(len(s2)):\n            # insert a new character\n            distance = distances[j + 1] + 1 \n            # delete a character\n            distance = min(distance, next_distances[j] + 1)\n            # change a character\n            if s1[i] != s2[j]:\n                distance = min(distance, distances[j] + 1)\n            # no change\n            if s1[i] == s2[j]:\n                distance = min(distance, distances[j])\n            # keep the smallest edit\n            next_distances.append(distance)\n\n        distances = next_distances\n\n    return next_distances[-1]",
             "description": "This playbook helps the security team detect and remove rogue wireless access points (WAPs). A Raspberry Pi 3 with a battery pack is used as a mobile scanner, periodically polling the 2.4 GHz frequency and collecting the ESSID (network name), MAC address, channel, signal strength, signal quality, and security protocol of each WAP in range. The results of each scan are compared against a whitelist of known-good network names and a greylist of potential \"evil twin\" network names. The results are tracked live using artifacts and Heads-up Display pins posted to the most recently created Case with the label \"wireless\". Finally, a team member is tasked to carry around the Raspberry Pi and use the live feed of MAC addresses and signal strengths to locate the rogue WAPs and remove them.",
+            "hash": "39460361f312389127cf88744c081f49c9fd9209",
             "joint": {
                 "cells": [
                     {
@@ -30,18 +30,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -126,15 +125,15 @@
                             }
                         },
                         "position": {
-                            "x": 2060,
+                            "x": 2020,
                             "y": 140
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -260,6 +259,12 @@
                             "selector": ".port-body[type=\"input\"]"
                         },
                         "type": "link",
+                        "vertices": [
+                            {
+                                "x": 500,
+                                "y": 120
+                            }
+                        ],
                         "z": 11
                     },
                     {
@@ -301,6 +306,12 @@
                             "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
                         },
                         "type": "link",
+                        "vertices": [
+                            {
+                                "x": 500,
+                                "y": 180
+                            }
+                        ],
                         "z": 13
                     },
                     {
@@ -604,20 +615,21 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'execute_program_1' block\n    execute_program_1(container=container)\n\n    # call 'find_case' block\n    find_case(container=container)\n\n    return",
@@ -702,15 +714,15 @@
                             }
                         },
                         "position": {
-                            "x": 40,
+                            "x": 100,
                             "y": 140
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -732,11 +744,15 @@
                             "name": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Phantom",
                                 "app_version": "2.0.18",
+                                "config_type": "asset",
                                 "fields": {
                                     "cef_name": "",
                                     "cef_value": "",
@@ -745,6 +761,9 @@
                                     "label": "",
                                     "name": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "helper",
                                 "output": [
                                     {
@@ -826,21 +845,16 @@
                                     }
                                 ],
                                 "product_name": "Phantom",
-                                "product_vendor": "Phantom"
+                                "product_vendor": "Phantom",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "collect data"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -853,9 +867,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -867,22 +886,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -918,7 +942,7 @@
                         "join_start": 166,
                         "line_end": 177,
                         "line_start": 151,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "add artifact",
                         "notes": "Join together the execution paths of the SSH command and the HTTP query, then call utility functions in the Global Block to parse the results of each and save the necessary data using phantom.save_run_data().",
                         "number": 1,
@@ -978,12 +1002,15 @@
                             }
                         },
                         "position": {
-                            "x": 580,
+                            "x": 540,
                             "y": 120
                         },
                         "previous_function": "",
                         "previous_name": "collect_data",
-                        "required_params": {},
+                        "required_params": {
+                            "cef_name": true,
+                            "cef_value": true
+                        },
                         "reviewer": "",
                         "show_number": true,
                         "size": {
@@ -1011,11 +1038,15 @@
                             "name": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Phantom",
                                 "app_version": "2.0.18",
+                                "config_type": "asset",
                                 "fields": {
                                     "cef_name": "",
                                     "cef_value": "",
@@ -1024,6 +1055,9 @@
                                     "label": "",
                                     "name": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "helper",
                                 "output": [
                                     {
@@ -1105,21 +1139,16 @@
                                     }
                                 ],
                                 "product_name": "Phantom",
-                                "product_vendor": "Phantom"
+                                "product_vendor": "Phantom",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "check whitelist"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1132,9 +1161,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1146,22 +1180,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1197,7 +1236,7 @@
                         "join_start": 1,
                         "line_end": 210,
                         "line_start": 182,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "add artifact",
                         "notes": "Check the results of the WiFi scan against our whitelist of official company networks which are saved as a Custom List called \"Example Company WiFi ESSID Whitelist\". Stop investigating any networks that are both on the whitelist and are using WPA2.",
                         "number": 2,
@@ -1257,12 +1296,15 @@
                             }
                         },
                         "position": {
-                            "x": 820,
+                            "x": 780,
                             "y": 120
                         },
                         "previous_function": "",
                         "previous_name": "check_whitelist",
-                        "required_params": {},
+                        "required_params": {
+                            "cef_name": true,
+                            "cef_value": true
+                        },
                         "reviewer": "",
                         "show_number": true,
                         "size": {
@@ -1290,11 +1332,15 @@
                             "name": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Phantom",
                                 "app_version": "2.0.18",
+                                "config_type": "asset",
                                 "fields": {
                                     "cef_name": "",
                                     "cef_value": "",
@@ -1303,6 +1349,9 @@
                                     "label": "",
                                     "name": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "helper",
                                 "output": [
                                     {
@@ -1384,21 +1433,16 @@
                                     }
                                 ],
                                 "product_name": "Phantom",
-                                "product_vendor": "Phantom"
+                                "product_vendor": "Phantom",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "get pins"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1411,9 +1455,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1425,22 +1474,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1474,9 +1528,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 269,
-                        "line_start": 251,
-                        "message": "",
+                        "line_end": 231,
+                        "line_start": 213,
+                        "message": "Configuring now",
                         "name": "add artifact",
                         "notes": "Retrieve a list of all the cards currently pinned to the Heads-up Display of the Case that will be used to track the results.",
                         "number": 4,
@@ -1536,12 +1590,15 @@
                             }
                         },
                         "position": {
-                            "x": 1300,
+                            "x": 1260,
                             "y": 120
                         },
                         "previous_function": "",
                         "previous_name": "get_pins",
-                        "required_params": {},
+                        "required_params": {
+                            "cef_name": true,
+                            "cef_value": true
+                        },
                         "reviewer": "",
                         "show_number": true,
                         "size": {
@@ -1554,168 +1611,6 @@
                         "type": "coa.Action",
                         "warn": false,
                         "z": 153
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".api": {
-                                "text": "update case"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "height": 88
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "fill": "#FFFFFF"
-                            }
-                        },
-                        "block_code": "def api_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('api_1() called')\n    \n    decision_1(container=container)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "color": "",
-                        "configured": [],
-                        "connected_to_start": true,
-                        "connection_name": "get pins",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "def update_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('update_case() called')\n    \n    get_pins_body = phantom.collect2(container=container, datapath=['get_pins:action_result.data.*.response_body'], action_results=results)\n\n    # get the necessary run_data\n    fuzzy_matched_access_points = json.loads(phantom.get_run_data(key='fuzzy_matched_access_points'))\n    live_case_id = int(phantom.get_run_data(key='live_case_id'))\n\n    # delete all the existing pins to prevent duplicates\n    for pin in get_pins_body[0][0]['data']:\n        phantom.delete_pin(int(pin['id']))\n    \n    # add a pin for each ap that fuzzy-matched the greylist\n    for ap in fuzzy_matched_access_points:\n        if ap['is_escalated']:\n            phantom.pin(container=live_case_id, message=ap['signal_strength'], data=ap['mac_address'], pin_type=\"card_medium\", pin_style=\"red\")\n            phantom.add_artifact(\n                container=live_case_id,\n                raw_data={},\n                cef_data=ap,\n                label='wireless',\n                name='suspicious access point detection',\n                severity='high',\n                identifier=None,\n                artifact_type='network')\n    \n    decision_1(container=container)\n\n    return",
-                        "custom_join": "",
-                        "custom_name": "update case",
-                        "description": "Update the Case with artifacts and Heads-up Display cards containing the results of this playbook run. This overwrites all existing Heads-up Display cards to keep the signal strength values fresh and prevent duplicates, but the artifacts will not be deleted so they will be sortable by timestamp for a historical record.",
-                        "has_custom": true,
-                        "has_custom_block": true,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "d71da3fe-1f03-43d3-ba30-befd63c21567",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 303,
-                        "line_start": 272,
-                        "message": "",
-                        "name": "api",
-                        "notes": "Update the Case with artifacts and Heads-up Display cards containing the results of this playbook run. This overwrites all existing Heads-up Display cards to keep the signal strength values fresh and prevent duplicates, but the artifacts will not be deleted so they will be sortable by timestamp for a historical record.",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1540,
-                            "y": 120
-                        },
-                        "previous_function": "",
-                        "previous_name": "update_case",
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "api",
-                        "status": "",
-                        "type": "coa.API",
-                        "warn": false,
-                        "z": 161
                     },
                     {
                         "active": false,
@@ -1750,15 +1645,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    return",
@@ -1785,8 +1683,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 318,
-                        "line_start": 306,
+                        "line_end": 280,
+                        "line_start": 268,
                         "name": "decision",
                         "notes": "Only proceed to assign a task if the Case has no owner. This prevents duplicate task assignments while the responder is actively completing the task.",
                         "number": 1,
@@ -1861,7 +1759,7 @@
                             }
                         },
                         "position": {
-                            "x": 1780,
+                            "x": 1740,
                             "y": 120
                         },
                         "previous_function": "",
@@ -1888,32 +1786,55 @@
                             "verify_certificate": "False"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "HTTP",
                                 "app_version": "2.0.10",
+                                "config_type": "asset",
                                 "fields": {
                                     "headers": "",
                                     "location": "rest/container?_filter_label=\"wireless\"&_filter_container_type=\"case\"&sort=start_time&order=desc&page_size=1",
                                     "verify_certificate": "False"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "http",
                                 "output": [
                                     {
                                         "data_path": "action_result.data.*.method",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "GET"
+                                        ]
                                     },
                                     {
                                         "contains": [
                                             "url"
                                         ],
                                         "data_path": "action_result.data.*.location",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://192.168.1.26/rest/cont"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.response_body",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "{\"failed\": true, \"message\": \"Requested item not found\"}"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.parsed_response_body",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "{\"failed\": true, \"message\": \"Requested item not found\"}"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.response_headers",
@@ -1921,19 +1842,31 @@
                                     },
                                     {
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "failed"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.message",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Can't process response from server. Status Code: 404 Data from server: {\"failed\": true, \"message\": \"Requested item not found\"}"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary.status_code",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            404
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary.reason",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Not Found"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.headers",
@@ -1941,29 +1874,44 @@
                                     },
                                     {
                                         "data_path": "action_result.parameter.location",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "/rest/cont"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.verify_certificate",
-                                        "data_type": "boolean"
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            "false"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
                                     }
                                 ],
                                 "product_name": "HTTP",
-                                "product_vendor": "Generic"
+                                "product_vendor": "Generic",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "find case"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1976,9 +1924,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1990,19 +1943,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2011,7 +1969,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def find_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('find_case() called')\n\n    # collect data for 'find_case' call\n\n    parameters = []\n    \n    # build parameters list for 'find_case' call\n    parameters.append({\n        'headers': \"\",\n        'location': \"rest/container?_filter_label=\\\"wireless\\\"&_filter_container_type=\\\"case\\\"&sort=start_time&order=desc&page_size=1\",\n        'verify_certificate': False,\n    })\n\n    phantom.act(\"get data\", parameters=parameters, assets=['http'], callback=join_collect_data, name=\"find_case\")    \n    \n    return",
+                        "block_code": "def find_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('find_case() called')\n\n    # collect data for 'find_case' call\n\n    parameters = []\n    \n    # build parameters list for 'find_case' call\n    parameters.append({\n        'headers': \"\",\n        'location': \"rest/container?_filter_label=\\\"wireless\\\"&_filter_container_type=\\\"case\\\"&sort=start_time&order=desc&page_size=1\",\n        'verify_certificate': False,\n    })\n\n    phantom.act(\"get data\", parameters=parameters, assets=['http'], callback=join_collect_data, name=\"find_case\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2036,9 +1994,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 360,
-                        "line_start": 342,
-                        "message": "",
+                        "line_end": 303,
+                        "line_start": 285,
+                        "message": "Configuring now",
                         "name": "get data",
                         "notes": "Use the HTTP app to query the REST API of this Phantom instance for the most recently created Case with the label Wireless. This is the Case that will be updated with new artifacts and Heads-up Display information containing the results of the WiFi scan.",
                         "number": 1,
@@ -2103,7 +2061,10 @@
                         },
                         "previous_function": "",
                         "previous_name": "find_case",
-                        "required_params": {},
+                        "required_params": {
+                            "location": true,
+                            "verify_certificate": true
+                        },
                         "reviewer": "",
                         "show_number": false,
                         "size": {
@@ -2131,11 +2092,15 @@
                             "name": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Phantom",
                                 "app_version": "2.0.18",
+                                "config_type": "asset",
                                 "fields": {
                                     "cef_name": "",
                                     "cef_value": "",
@@ -2144,6 +2109,9 @@
                                     "label": "",
                                     "name": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "helper",
                                 "output": [
                                     {
@@ -2225,18 +2193,13 @@
                                     }
                                 ],
                                 "product_name": "Phantom",
-                                "product_vendor": "Phantom"
+                                "product_vendor": "Phantom",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "check greylist"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2249,9 +2212,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2263,22 +2231,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2312,9 +2285,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 248,
-                        "line_start": 215,
-                        "message": "",
+                        "line_end": 341,
+                        "line_start": 308,
+                        "message": "Configuring now",
                         "name": "add artifact",
                         "notes": "Check the remaining access points against a greylist of several possible network names that an attacker might use to spoof an official company network. The greylist is loaded from the Custom List called \"Potential Rogue Access Point ESSIDs\". To account for small variations in network names, a Levenshtein edit distance of 5 is used so even non-exact matches will be considered suspicious.",
                         "number": 3,
@@ -2374,12 +2347,15 @@
                             }
                         },
                         "position": {
-                            "x": 1060,
+                            "x": 1020,
                             "y": 120
                         },
                         "previous_function": "",
                         "previous_name": "check_greylist",
-                        "required_params": {},
+                        "required_params": {
+                            "cef_name": true,
+                            "cef_value": true
+                        },
                         "reviewer": "",
                         "show_number": true,
                         "size": {
@@ -2394,147 +2370,6 @@
                         "z": 176
                     },
                     {
-                        "active": false,
-                        "angle": 0,
-                        "approver": "",
-                        "attrs": {
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 1
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def task_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('task_1() called')\n    \n    # set user and message variables for phantom.task call\n    user = \"\"\n    message = \"\"\n\n    phantom.task(user=user, message=message, respond_in_mins=30, name=\"task_1\")\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "connected_to_start": true,
-                        "connection_name": "get pins",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "def find_and_disable_rogue_ap(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('find_and_disable() called')\n    \n    live_case_id = phantom.get_run_data(key='live_case_id')\n    \n    # set user and message variables for phantom.task call\n    user = \"admin\"\n    message = \"Walk around the office with the Raspberry Pi. Use the MAC addresses and signal strengths on the Heads-up Display of Case #{} to find the potential rogue access points. For each one, consider doing a packet capture to find other devices that are connecting to it. Also consider unplugging it, placing it in a faraday cage, and bringing it back to the security operations center for further forensic analysis.\".format(live_case_id)\n\n    phantom.task(user=user, message=message, respond_in_mins=30, name=\"find_and_disable_rogue_ap\")\n    \n    # set the case owner to the same user\n    phantom.set_owner(container=int(live_case_id), user=user)\n\n    return",
-                        "custom_join": "",
-                        "custom_name": "find and disable rogue ap",
-                        "description": "Assign a manual task for an operator to remediate. The HUD can be used to live-track the MAC addresses and signal strengths of the identified access points.",
-                        "has_custom": true,
-                        "has_custom_block": true,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "f96874dd-7422-49ce-9771-cdaa0a20cc10",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 337,
-                        "line_start": 321,
-                        "message": "",
-                        "name": "task",
-                        "notes": "Assign a manual task for an operator to go and physically disable the access points. The HUD can be used to live-track the MAC addresses and signal strengths of the identified access points.",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1920,
-                            "y": 120
-                        },
-                        "previous_function": "",
-                        "previous_name": "find_and_disable_rogue_ap",
-                        "respond_in": "30",
-                        "show_number": true,
-                        "size": {
-                            "height": 80,
-                            "width": 80
-                        },
-                        "state": "task",
-                        "status": "",
-                        "type": "coa.Task",
-                        "warn": false,
-                        "z": 177
-                    },
-                    {
                         "action": "execute program",
                         "action_type": "generic",
                         "active": false,
@@ -2545,16 +2380,23 @@
                             "timeout": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "SSH",
                                 "app_version": "1.0.32",
+                                "config_type": "asset",
                                 "fields": {
                                     "command": "sudo /sbin/iwlist wlan0 scanning",
                                     "ip_hostname": "192.168.1.100",
                                     "timeout": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "raspberry_pi_ssh",
                                 "output": [
                                     {
@@ -2599,18 +2441,13 @@
                                     }
                                 ],
                                 "product_name": "SSH",
-                                "product_vendor": "Generic"
+                                "product_vendor": "Generic",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "execute program"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2623,9 +2460,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2637,19 +2479,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2658,7 +2505,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def execute_program_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('execute_program_1() called')\n\n    # collect data for 'execute_program_1' call\n\n    parameters = []\n    \n    # build parameters list for 'execute_program_1' call\n    parameters.append({\n        'ip_hostname': \"192.168.1.100\",\n        'command': \"sudo /sbin/iwlist wlan0 scanning\",\n        'timeout': \"\",\n    })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['raspberry_pi_ssh'], callback=join_collect_data, name=\"execute_program_1\")    \n    \n    return",
+                        "block_code": "def execute_program_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('execute_program_1() called')\n\n    # collect data for 'execute_program_1' call\n\n    parameters = []\n    \n    # build parameters list for 'execute_program_1' call\n    parameters.append({\n        'command': \"sudo /sbin/iwlist wlan0 scanning\",\n        'timeout': \"\",\n        'ip_hostname': \"192.168.1.100\",\n    })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['raspberry_pi_ssh'], callback=join_collect_data, name=\"execute_program_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2685,7 +2532,7 @@
                         "join_start": 1,
                         "line_end": 383,
                         "line_start": 365,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "execute program",
                         "notes": "Scan all WiFi access points in range of the Raspberry Pi using the command \"iwlist wlan0 scanning\". The following information will be returned for each access point: ESSID (network name), MAC address, channel, signal strength, signal quality, and security protocol.",
                         "number": 1,
@@ -2764,19 +2611,336 @@
                         "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 179
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".api": {
+                                "text": "update case"
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "API"
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def api_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('api_1() called')\n    \n    decision_1(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "color": "",
+                        "configured": [],
+                        "connected_to_start": true,
+                        "connection_name": "get pins",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def update_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('update_case() called')\n    \n    get_pins_body = phantom.collect2(container=container, datapath=['get_pins:action_result.data.*.response_body'], action_results=results)\n\n    # get the necessary run_data\n    fuzzy_matched_access_points = json.loads(phantom.get_run_data(key='fuzzy_matched_access_points'))\n    live_case_id = int(phantom.get_run_data(key='live_case_id'))\n\n    # delete all the existing pins to prevent duplicates\n    for pin in get_pins_body[0][0]['data']:\n        phantom.delete_pin(int(pin['id']))\n    \n    # add a pin for each ap that fuzzy-matched the greylist\n    for ap in fuzzy_matched_access_points:\n        if ap['is_escalated']:\n            phantom.pin(container=live_case_id, message=ap['signal_strength'], data=ap['mac_address'], pin_type=\"card_medium\", pin_style=\"red\")\n            phantom.add_artifact(\n                container=live_case_id,\n                raw_data={},\n                cef_data=ap,\n                label='wireless',\n                name='suspicious access point detection',\n                severity='high',\n                identifier=None,\n                artifact_type='network')\n    \n    decision_1(container=container)\n\n    return",
+                        "custom_join": "",
+                        "custom_name": "update case",
+                        "description": "Update the Case with artifacts and Heads-up Display cards containing the results of this playbook run. This overwrites all existing Heads-up Display cards to keep the signal strength values fresh and prevent duplicates, but the artifacts will not be deleted so they will be sortable by timestamp for a historical record.",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "d71da3fe-1f03-43d3-ba30-befd63c21567",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 265,
+                        "line_start": 234,
+                        "message": "Configuring now",
+                        "name": "call api",
+                        "notes": "Update the Case with artifacts and Heads-up Display cards containing the results of this playbook run. This overwrites all existing Heads-up Display cards to keep the signal strength values fresh and prevent duplicates, but the artifacts will not be deleted so they will be sortable by timestamp for a historical record.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1500,
+                            "y": 120
+                        },
+                        "previous_function": "",
+                        "previous_name": "update_case",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "api",
+                        "status": "",
+                        "title": "API",
+                        "type": "coa.API",
+                        "warn": false,
+                        "z": 182
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "approver": "",
+                        "attrs": {
+                            ".background": {
+                                "stroke": "#637282"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def task_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('task_1() called')\n    \n    # set user and message variables for phantom.task call\n    user = \"\"\n    message = \"\"\n\n    phantom.task(user=user, message=message, respond_in_mins=30, name=\"task_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "connected_to_start": true,
+                        "connection_name": "get pins",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "def find_and_disable_rogue_ap(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('find_and_disable() called')\n    \n    live_case_id = phantom.get_run_data(key='live_case_id')\n    \n    # set user and message variables for phantom.task call\n    user = \"admin\"\n    message = \"Walk around the office with the Raspberry Pi. Use the MAC addresses and signal strengths on the Heads-up Display of Case #{} to find the potential rogue access points. For each one, consider doing a packet capture to find other devices that are connecting to it. Also consider unplugging it, placing it in a faraday cage, and bringing it back to the security operations center for further forensic analysis.\".format(live_case_id)\n\n    phantom.task(user=user, message=message, respond_in_mins=30, name=\"find_and_disable_rogue_ap\")\n    \n    # set the case owner to the same user\n    phantom.set_owner(container=int(live_case_id), user=user)\n\n    return",
+                        "custom_join": "",
+                        "custom_name": "find and disable rogue ap",
+                        "description": "Assign a manual task for an operator to remediate. The HUD can be used to live-track the MAC addresses and signal strengths of the identified access points.",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "f96874dd-7422-49ce-9771-cdaa0a20cc10",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 360,
+                        "line_start": 344,
+                        "message": "",
+                        "name": "task",
+                        "notes": "Assign a manual task for an operator to go and physically disable the access points. The HUD can be used to live-track the MAC addresses and signal strengths of the identified access points.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1880,
+                            "y": 120
+                        },
+                        "previous_function": "",
+                        "previous_name": "find_and_disable_rogue_ap",
+                        "respond_in": "30",
+                        "show_number": true,
+                        "size": {
+                            "height": 80,
+                            "width": 80
+                        },
+                        "state": "task",
+                        "status": "",
+                        "type": "coa.Task",
+                        "warn": false,
+                        "z": 184
                     }
                 ]
             },
             "notes": "This playbook uses the following Apps:\n - SSH (execute program) [asset name = raspberry_pi_ssh]\n - HTTP (get data) [asset name = http] (the app should be configured with the address and credentials of the REST API of this Phantom instance)\n\nAfter the first two simultaneous actions, custom code is used for all other blocks.\n\nThis playbook was developed by scanning with a Raspberry Pi 3 running Raspbian 8.0, but the scanner could be any Linux machine with the package \"wireless-tools\". If using the Pi 3, the built-in WiFi chip only supports 2.4 GHz, so 5 GHz access points will not be visible.\n\nThe following hard-coded values are used and may need to be changed:\n - \"192.168.1.100\" is the IP address of the Raspberry Pi in the \"execute program\" action\n - \"wlan0\" is the name of the WiFi interface on the Raspberry Pi, which is used in the \"execute program\" action\n - the custom Phantom label \"wireless\" is used for artifacts and containers associated with this playbook. The most recently-created Case with this label will be used to track the results of this playbook.\n - the custom list \"Example Company WiFi ESSID Whitelist\" is used as a whitelist of the official company WiFi network names (for instance, if our company is called Example Company we might use the networks \"Example Company Staff\" and \"Example Company Guest\")\n - the custom list \"Potential Rogue Access Point ESSIDs\" is used as a greylist of possible network names used to spoof official company wireless (for instance, if our company is called Example Company, populate this list with strings like: \"Example Company\", \"ECompany\", \"EComp\", \"Ec Inc\", and \"ExmplCmpny\")\n - the threshold of the Levenshtein edit distance used in \"check greylist\" is hard-coded to 5. This may generate some false positives, particularly around shorter network names or network names with mostly numbers or special characters.\n - the Phantom user \"admin\" will be assigned the task of finding and disabling any rogue access points that are identified\n\nThe suggested workflow for using this playbook is to setup a Generator or external source to create a container with the label Wireless whenever a scan is desired. Then create a new Case with the label Wireless to track each batch of scans. The playbook will find that Case and keep the HUD updated for each run of the scan. When a Task is sent, the operator can open Mission Control on a wireless device and take the Raspberry Pi around the building, watching the signal strength change on the HUD until close enough to see the access point. Once that access point is physically disabled it will not show up in the next HUD refresh and the operator can move on to the next access point."
         },
-        "schema": 2,
-        "version": "3.0.250"
+        "schema": 3,
+        "version": "3.5.137"
     },
-    "create_time": "2017-09-20T19:44:32.185670+00:00",
+    "create_time": "2018-02-13T00:30:31.308401+00:00",
     "draft_mode": false,
     "labels": [
-        "wireless"
+        "events"
     ]
 }
