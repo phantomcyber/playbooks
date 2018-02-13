@@ -8,7 +8,7 @@
             "clean": true,
             "code_block": "import requests\n\nrequests.packages.urllib3.disable_warnings()  # pylint: disable=E1101\n\nAUTOMATION_HEADER = {\"ph-auth-token\": \"s43OVieY63GXAhXuC2fIPljDv5sVNksjH+B+5V2qlYc=\"}\nPHANTOM_BASE_URL = \"https://phantom\"\nPHANTOM_SELF_SIGNED_PATH = \"/opt/phantom/etc/certs/this_phantom_self_signed.pem\"\n\ndef find_matching_case(linking_tag):\n\n    # use elasticsearch to find the linking_tag anywhere it might be\n    search_url = \"{}/rest/search?query={}&page_size=0\".format(PHANTOM_BASE_URL, linking_tag)\n    search_results = requests.get(search_url, headers=AUTOMATION_HEADER, verify=PHANTOM_SELF_SIGNED_PATH).json()\n\n    # look at each returned container with a matching field to see if its a case\n    case_id = None\n    for result in search_results['results']:\n        if result['category'] == 'container':\n            container_result = requests.get(\"{}/rest/container/{}\".format(PHANTOM_BASE_URL, result['id']),\n                                            headers=AUTOMATION_HEADER, verify=PHANTOM_SELF_SIGNED_PATH).json()\n            \n            phantom.debug(\"looking at container: {}\".format(container_result))\n            \n            if container_result['container_type'] == 'case':\n                if container_result['data']['fields']['customfield_10201'][0] == linking_tag:\n                    if container_result['status'] != \"closed\":\n                        case_id = container_result['id']\n                        return case_id\n    return None",
             "description": "This playbook gathers basic system information from a CentOS 7 server using SSH. The investigation is kicked off automatically when the right type of Jira ticket is opened. The results of the SSH commands are formatted and added to the new Jira ticket as comments to help the analyst make a quick decision about how to handle the server. The first time one of these tickets comes through Phantom it will be turned into a Case, then any future tickets will be added to the existing Case to allow all of these servers to be treated as a batch.",
-            "hash": "95404679853f3d355c921099b9867ade146970ab",
+            "hash": "0c8125c635598a8d65ed183259ac7e2a01d09b59",
             "joint": {
                 "cells": [
                     {
@@ -31,17 +31,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -126,15 +126,15 @@
                             }
                         },
                         "position": {
-                            "x": 2200,
+                            "x": 2180,
                             "y": 920
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -502,6 +502,12 @@
                             "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
                         },
                         "type": "link",
+                        "vertices": [
+                            {
+                                "x": 2140,
+                                "y": 800
+                            }
+                        ],
                         "z": 64
                     },
                     {
@@ -624,6 +630,12 @@
                             "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
                         },
                         "type": "link",
+                        "vertices": [
+                            {
+                                "x": 2140,
+                                "y": 660
+                            }
+                        ],
                         "z": 176
                     },
                     {
@@ -687,19 +699,21 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'get_ticket_1' block\n    get_ticket_1(container=container)\n\n    return",
@@ -791,8 +805,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -833,12 +847,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def only_new_linux_server(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('only_new_linux_server() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"get_ticket_1:action_result.data.*.fields.Custom Label Field Two.0\", \"==\", \"new_linux_server\"],\n        ],\n        name=\"only_new_linux_server:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        promote_to_case(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
@@ -940,7 +960,7 @@
                             }
                         },
                         "position": {
-                            "x": 960,
+                            "x": 940,
                             "y": 620
                         },
                         "previous_function": "",
@@ -1003,15 +1023,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def fail_unless_centos7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('fail_unless_centos7() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"CentOS Linux release 7\", \"in\", \"check_centos_version:action_result.data.*.output\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        get_login_history(action=action, success=success, container=container, results=results, handle=handle)\n        list_open_ports(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n    report_failure(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
@@ -1128,7 +1151,7 @@
                             }
                         },
                         "position": {
-                            "x": 1580,
+                            "x": 1560,
                             "y": 620
                         },
                         "previous_function": "",
@@ -1154,15 +1177,22 @@
                             "id": "container:source_data_identifier"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Jira",
                                 "app_version": "2.0.8",
+                                "config_type": "asset",
                                 "fields": {
                                     "comment": "philscomment",
                                     "id": "container:source_data_identifier"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "jira",
                                 "output": [
                                     {
@@ -1194,21 +1224,16 @@
                                     }
                                 ],
                                 "product_name": "Jira",
-                                "product_vendor": "Atlassian"
+                                "product_vendor": "Atlassian",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "enrich ticket 2"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1221,9 +1246,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1235,22 +1265,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1286,7 +1321,7 @@
                         "join_start": 1,
                         "line_end": 137,
                         "line_start": 102,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "add comment",
                         "notes": "Format the output of \"ss -tunapl\" and add it to the Jira ticket as a Jira-markup table in a comment.",
                         "number": 3,
@@ -1346,12 +1381,15 @@
                             }
                         },
                         "position": {
-                            "x": 1960,
+                            "x": 1940,
                             "y": 760
                         },
                         "previous_function": "",
                         "previous_name": "enrich_ticket_2",
-                        "required_params": {},
+                        "required_params": {
+                            "comment": true,
+                            "id": true
+                        },
                         "reviewer": "",
                         "show_number": true,
                         "size": {
@@ -1370,10 +1408,7 @@
                         "angle": 0,
                         "attrs": {
                             ".api": {
-                                "text": "promote to case"
-                            },
-                            ".background": {
-                                "height": 88
+                                "text": "promote to-case"
                             },
                             ".border": {
                                 "height": 88
@@ -1389,9 +1424,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1403,12 +1443,14 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
+                            ".title": {
+                                "text": "API"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -1456,7 +1498,7 @@
                         "join_start": 1,
                         "line_end": 156,
                         "line_start": 140,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "promote to-case",
                         "notes": "Search for a Case that was created from this type of Jira ticket. If there is none, promote this container to a Case. If there is a matching Case, add this container to that Case.",
                         "number": 2,
@@ -1516,7 +1558,7 @@
                             }
                         },
                         "position": {
-                            "x": 1100,
+                            "x": 1080,
                             "y": 620
                         },
                         "previous_function": "",
@@ -1528,6 +1570,7 @@
                         },
                         "state": "api",
                         "status": "",
+                        "title": "API",
                         "type": "coa.API",
                         "warn": false,
                         "z": 313
@@ -1541,14 +1584,21 @@
                             "id": "container:source_data_identifier"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Jira",
                                 "app_version": "2.0.8",
+                                "config_type": "asset",
                                 "fields": {
                                     "id": "container:source_data_identifier"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "jira",
                                 "output": [
                                     {
@@ -2132,21 +2182,16 @@
                                     }
                                 ],
                                 "product_name": "Jira",
-                                "product_vendor": "Atlassian"
+                                "product_vendor": "Atlassian",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "get ticket"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2159,9 +2204,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2173,22 +2223,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2224,7 +2279,7 @@
                         "join_start": 1,
                         "line_end": 173,
                         "line_start": 159,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "get ticket",
                         "notes": "Pull the ticket from Jira to use its metadata for future actions and make sure the ingested container references a valid ticket.",
                         "number": 1,
@@ -2284,12 +2339,14 @@
                             }
                         },
                         "position": {
-                            "x": 720,
+                            "x": 700,
                             "y": 620
                         },
                         "previous_function": "",
                         "previous_name": "get_ticket_1",
-                        "required_params": {},
+                        "required_params": {
+                            "id": true
+                        },
                         "reviewer": "",
                         "show_number": false,
                         "size": {
@@ -2314,16 +2371,23 @@
                             "timeout": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "SSH",
                                 "app_version": "1.0.32",
+                                "config_type": "asset",
                                 "fields": {
                                     "command": "/usr/bin/last -a",
                                     "ip_hostname": "get_ticket_1:action_result.data.*.fields.Custom Text Field One",
                                     "timeout": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "ssh",
                                 "output": [
                                     {
@@ -2368,7 +2432,8 @@
                                     }
                                 ],
                                 "product_name": "SSH",
-                                "product_vendor": "Generic"
+                                "product_vendor": "Generic",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -2376,13 +2441,10 @@
                                 "text": "get login history"
                             },
                             ".background": {
-                                "height": 88
+                                "stroke": "#E6984E"
                             },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2395,9 +2457,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2409,19 +2476,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2430,7 +2505,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def get_login_history(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_login_history() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_login_history' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket_1:action_result.data.*.fields.Custom Text Field One', 'get_ticket_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_login_history' call\n    for results_item_1 in results_data_1:\n        parameters.append({\n            'command': \"/usr/bin/last -a\",\n            'timeout': \"\",\n            'ip_hostname': results_item_1[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': results_item_1[1]},\n        })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['ssh'], callback=enrich_ticket_1, name=\"get_login_history\")    \n    \n    return",
+                        "block_code": "def get_login_history(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_login_history() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_login_history' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket_1:action_result.data.*.fields.Custom Text Field One', 'get_ticket_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_login_history' call\n    for results_item_1 in results_data_1:\n        parameters.append({\n            'command': \"/usr/bin/last -a\",\n            'ip_hostname': results_item_1[0],\n            'timeout': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': results_item_1[1]},\n        })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['ssh'], callback=enrich_ticket_1, name=\"get_login_history\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2457,7 +2532,7 @@
                         "join_start": 1,
                         "line_end": 200,
                         "line_start": 176,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "execute program",
                         "notes": "Run \"/usr/bin/last -a\" to see the login history.",
                         "number": 2,
@@ -2517,7 +2592,7 @@
                             }
                         },
                         "position": {
-                            "x": 1720,
+                            "x": 1700,
                             "y": 620
                         },
                         "previous_function": "",
@@ -2530,7 +2605,7 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": false,
@@ -2547,16 +2622,23 @@
                             "timeout": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "SSH",
                                 "app_version": "1.0.32",
+                                "config_type": "asset",
                                 "fields": {
                                     "command": "/usr/sbin/ss -tunapl",
                                     "ip_hostname": "get_ticket_1:action_result.data.*.fields.Custom Text Field One",
                                     "timeout": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "ssh",
                                 "output": [
                                     {
@@ -2601,7 +2683,8 @@
                                     }
                                 ],
                                 "product_name": "SSH",
-                                "product_vendor": "Generic"
+                                "product_vendor": "Generic",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -2609,13 +2692,10 @@
                                 "text": "list open ports"
                             },
                             ".background": {
-                                "height": 88
+                                "stroke": "#E6984E"
                             },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2628,9 +2708,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2642,19 +2727,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2663,7 +2756,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def list_open_ports(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_open_ports() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_open_ports' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket_1:action_result.data.*.fields.Custom Text Field One', 'get_ticket_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_open_ports' call\n    for results_item_1 in results_data_1:\n        parameters.append({\n            'command': \"/usr/sbin/ss -tunapl\",\n            'timeout': \"\",\n            'ip_hostname': results_item_1[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': results_item_1[1]},\n        })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['ssh'], callback=enrich_ticket_2, name=\"list_open_ports\")    \n    \n    return",
+                        "block_code": "def list_open_ports(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_open_ports() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_open_ports' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket_1:action_result.data.*.fields.Custom Text Field One', 'get_ticket_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_open_ports' call\n    for results_item_1 in results_data_1:\n        parameters.append({\n            'command': \"/usr/sbin/ss -tunapl\",\n            'ip_hostname': results_item_1[0],\n            'timeout': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': results_item_1[1]},\n        })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['ssh'], callback=enrich_ticket_2, name=\"list_open_ports\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2690,7 +2783,7 @@
                         "join_start": 1,
                         "line_end": 227,
                         "line_start": 203,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "execute program",
                         "notes": "Run \"ss -tunapl\" to see which services are listening on which TCP and UDP ports. Note that \"ss\" is very similar to \"netstat\", which is deprecated and no longer installed by default on CentOS 7.",
                         "number": 3,
@@ -2750,7 +2843,7 @@
                             }
                         },
                         "position": {
-                            "x": 1720,
+                            "x": 1700,
                             "y": 760
                         },
                         "previous_function": "",
@@ -2763,7 +2856,7 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": false,
@@ -2779,15 +2872,22 @@
                             "id": "container:source_data_identifier"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Jira",
                                 "app_version": "2.0.8",
+                                "config_type": "asset",
                                 "fields": {
                                     "comment": "get_login_history:action_result.data.*.output",
                                     "id": "container:source_data_identifier"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "jira",
                                 "output": [
                                     {
@@ -2819,21 +2919,16 @@
                                     }
                                 ],
                                 "product_name": "Jira",
-                                "product_vendor": "Atlassian"
+                                "product_vendor": "Atlassian",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "enrich ticket 1"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2846,9 +2941,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2860,22 +2960,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2911,7 +3016,7 @@
                         "join_start": 1,
                         "line_end": 256,
                         "line_start": 230,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "add comment",
                         "notes": "Format the output of \"last -a\" and add it to the Jira ticket as a Jira-markup table in a comment.",
                         "number": 2,
@@ -2971,12 +3076,15 @@
                             }
                         },
                         "position": {
-                            "x": 1960,
+                            "x": 1940,
                             "y": 620
                         },
                         "previous_function": "",
                         "previous_name": "enrich_ticket_1",
-                        "required_params": {},
+                        "required_params": {
+                            "comment": true,
+                            "id": true
+                        },
                         "reviewer": "",
                         "show_number": true,
                         "size": {
@@ -3000,15 +3108,22 @@
                             "id": "container:source_data_identifier"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Jira",
                                 "app_version": "2.0.8",
+                                "config_type": "asset",
                                 "fields": {
                                     "comment": "Phantom failed to enrich this ticket because it looks like the server is not running CentOS 7, which is the only operating system supported by this playbook.",
                                     "id": "container:source_data_identifier"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "jira",
                                 "output": [
                                     {
@@ -3040,21 +3155,16 @@
                                     }
                                 ],
                                 "product_name": "Jira",
-                                "product_vendor": "Atlassian"
+                                "product_vendor": "Atlassian",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "report failure"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -3067,9 +3177,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -3081,19 +3196,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -3102,7 +3222,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def report_failure(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('report_failure() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    source_data_identifier_value = container.get('source_data_identifier', None)\n\n    # collect data for 'report_failure' call\n\n    parameters = []\n    \n    # build parameters list for 'report_failure' call\n    parameters.append({\n        'comment': \"Phantom failed to enrich this ticket because it looks like the server is not running CentOS 7, which is the only operating system supported by this playbook.\",\n        'id': source_data_identifier_value,\n    })\n\n    phantom.act(\"add comment\", parameters=parameters, assets=['jira'], name=\"report_failure\")    \n    \n    return",
+                        "block_code": "def report_failure(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('report_failure() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    source_data_identifier_value = container.get('source_data_identifier', None)\n\n    # collect data for 'report_failure' call\n\n    parameters = []\n    \n    # build parameters list for 'report_failure' call\n    parameters.append({\n        'comment': \"Phantom failed to enrich this ticket because it looks like the server is not running CentOS 7, which is the only operating system supported by this playbook.\",\n        'id': source_data_identifier_value,\n    })\n\n    phantom.act(\"add comment\", parameters=parameters, assets=['jira'], name=\"report_failure\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3129,7 +3249,7 @@
                         "join_start": 1,
                         "line_end": 280,
                         "line_start": 259,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "add comment",
                         "notes": "Leave a comment on the Jira ticket saying that the server is not running CentOS 7 therefore this playbook doesn't know how to handle it.",
                         "number": 1,
@@ -3189,12 +3309,15 @@
                             }
                         },
                         "position": {
-                            "x": 1720,
+                            "x": 1700,
                             "y": 900
                         },
                         "previous_function": "",
                         "previous_name": "report_failure",
-                        "required_params": {},
+                        "required_params": {
+                            "comment": true,
+                            "id": true
+                        },
                         "reviewer": "",
                         "show_number": true,
                         "size": {
@@ -3219,16 +3342,23 @@
                             "timeout": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "SSH",
                                 "app_version": "1.0.32",
+                                "config_type": "asset",
                                 "fields": {
                                     "command": "cat /etc/redhat-release",
                                     "ip_hostname": "get_ticket_1:action_result.data.*.fields.Custom Text Field One",
                                     "timeout": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "ssh",
                                 "output": [
                                     {
@@ -3273,7 +3403,8 @@
                                     }
                                 ],
                                 "product_name": "SSH",
-                                "product_vendor": "Generic"
+                                "product_vendor": "Generic",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -3281,10 +3412,7 @@
                                 "text": "check centos version"
                             },
                             ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
+                                "stroke": "#E6984E"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -3297,9 +3425,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -3311,19 +3444,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -3332,7 +3473,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def check_centos_version(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('check_centos_version() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'check_centos_version' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket_1:action_result.data.*.fields.Custom Text Field One', 'get_ticket_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'check_centos_version' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip_hostname': results_item_1[0],\n                'command': \"cat /etc/redhat-release\",\n                'timeout': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['ssh'], callback=fail_unless_centos7, name=\"check_centos_version\")    \n    \n    return",
+                        "block_code": "def check_centos_version(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('check_centos_version() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'check_centos_version' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket_1:action_result.data.*.fields.Custom Text Field One', 'get_ticket_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'check_centos_version' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'command': \"cat /etc/redhat-release\",\n                'ip_hostname': results_item_1[0],\n                'timeout': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['ssh'], callback=fail_unless_centos7, name=\"check_centos_version\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3346,7 +3487,7 @@
                         "custom_name": "check centos version",
                         "delay": 0,
                         "description": "Read the contents of /etc/redhat-release on the server to enable fail_unless_centos7().",
-                        "has_custom": true,
+                        "has_custom": false,
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
@@ -3359,7 +3500,7 @@
                         "join_start": 1,
                         "line_end": 308,
                         "line_start": 283,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "execute program",
                         "notes": "Read the contents of /etc/redhat-release on the server to enable fail_unless_centos7().",
                         "number": 1,
@@ -3419,7 +3560,7 @@
                             }
                         },
                         "position": {
-                            "x": 1340,
+                            "x": 1320,
                             "y": 620
                         },
                         "previous_function": "",
@@ -3435,7 +3576,7 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": false,
@@ -3445,12 +3586,12 @@
             },
             "notes": "This could easily be extended to use more commands and take more advanced actions specific to the results returned from the server."
         },
-        "schema": 2,
-        "version": "3.0.249"
+        "schema": 3,
+        "version": "3.5.137"
     },
-    "create_time": "2017-08-31T21:47:49.284714+00:00",
+    "create_time": "2018-02-13T00:58:41.268361+00:00",
     "draft_mode": false,
     "labels": [
-        "jira"
+        "events"
     ]
 }

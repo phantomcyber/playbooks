@@ -187,14 +187,14 @@ def get_login_history(action=None, success=None, container=None, results=None, h
     for results_item_1 in results_data_1:
         parameters.append({
             'command': "/usr/bin/last -a",
-            'timeout': "",
             'ip_hostname': results_item_1[0],
+            'timeout': "",
             # context (artifact id) is added to associate results with the artifact
             'context': {'artifact_id': results_item_1[1]},
         })
 
-    phantom.act("execute program", parameters=parameters, assets=['ssh'], callback=enrich_ticket_1, name="get_login_history")    
-    
+    phantom.act("execute program", parameters=parameters, assets=['ssh'], callback=enrich_ticket_1, name="get_login_history")
+
     return
 
 """
@@ -214,14 +214,14 @@ def list_open_ports(action=None, success=None, container=None, results=None, han
     for results_item_1 in results_data_1:
         parameters.append({
             'command': "/usr/sbin/ss -tunapl",
-            'timeout': "",
             'ip_hostname': results_item_1[0],
+            'timeout': "",
             # context (artifact id) is added to associate results with the artifact
             'context': {'artifact_id': results_item_1[1]},
         })
 
-    phantom.act("execute program", parameters=parameters, assets=['ssh'], callback=enrich_ticket_2, name="list_open_ports")    
-    
+    phantom.act("execute program", parameters=parameters, assets=['ssh'], callback=enrich_ticket_2, name="list_open_ports")
+
     return
 
 """
@@ -273,8 +273,8 @@ def report_failure(action=None, success=None, container=None, results=None, hand
         'id': source_data_identifier_value,
     })
 
-    phantom.act("add comment", parameters=parameters, assets=['jira'], name="report_failure")    
-    
+    phantom.act("add comment", parameters=parameters, assets=['jira'], name="report_failure")
+
     return
 
 """
@@ -294,15 +294,15 @@ def check_centos_version(action=None, success=None, container=None, results=None
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'ip_hostname': results_item_1[0],
                 'command': "cat /etc/redhat-release",
+                'ip_hostname': results_item_1[0],
                 'timeout': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("execute program", parameters=parameters, assets=['ssh'], callback=fail_unless_centos7, name="check_centos_version")    
-    
+    phantom.act("execute program", parameters=parameters, assets=['ssh'], callback=fail_unless_centos7, name="check_centos_version")
+
     return
 
 def on_finish(container, summary):
