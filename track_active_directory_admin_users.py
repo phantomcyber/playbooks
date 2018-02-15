@@ -25,7 +25,7 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
         container=container,
         action_results=results,
         conditions=[
-            ["track_active_directory_admin_users", "in", "format_3:formatted_data"],
+            ["track_active_directory_admin_users", "in", "extract_response_body:formatted_data"],
         ])
 
     # call connected blocks if condition 1 matched
@@ -55,15 +55,15 @@ def check_for_generator(action=None, success=None, container=None, results=None,
         'verify_certificate': False,
     })
 
-    phantom.act("get data", parameters=parameters, assets=['http'], callback=format_3, name="check_for_generator")    
-    
+    phantom.act("get data", parameters=parameters, assets=['http'], callback=extract_response_body, name="check_for_generator")
+
     return
 
 """
 Convert the returned HTTP response body into a flat string that can be used directly in a decision.
 """
-def format_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_3() called')
+def extract_response_body(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('extract_response_body() called')
     
     template = """{0}"""
 
@@ -72,7 +72,7 @@ def format_3(action=None, success=None, container=None, results=None, handle=Non
         "check_for_generator:action_result.data.*.response_body",
     ]
 
-    phantom.format(container=container, template=template, parameters=parameters, name="format_3")
+    phantom.format(container=container, template=template, parameters=parameters, name="extract_response_body")
 
     decision_1(container=container)
 
@@ -81,8 +81,8 @@ def format_3(action=None, success=None, container=None, results=None, handle=Non
 """
 Format a message for an email listing the new Administrators that were detected.
 """
-def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_1() called')
+def format_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_email() called')
     
     template = """The Phantom playbook called track_active_directory_admin_users detected that the following new users were added to the Administrators group in Active Directory:
 {0}"""
@@ -92,19 +92,9 @@ def format_1(action=None, success=None, container=None, results=None, handle=Non
         "filtered-data:filter_1:condition_1:get_users_1:action_result.data.*.samaccountname",
     ]
 
-    phantom.format(container=container, template=template, parameters=parameters, name="format_1")
+    phantom.format(container=container, template=template, parameters=parameters, name="format_email")
 
     send_email_1(container=container)
-
-    return
-
-"""
-Create the custom list called "Active Directory Administrators". This block should only be executed the first time this playbook is run.
-"""
-def create_custom_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('create_custom_list() called')
-
-    phantom.add_list("Active Directory Administrators", [])
 
     return
 
@@ -128,8 +118,8 @@ def get_users_1(action=None, success=None, container=None, results=None, handle=
         'all_users': False,
     })
 
-    phantom.act("get users", parameters=parameters, assets=['domainctrl1'], callback=filter_1, name="get_users_1")    
-    
+    phantom.act("get users", parameters=parameters, assets=['domainctrl1'], callback=filter_1, name="get_users_1")
+
     return
 
 """
@@ -149,7 +139,7 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        format_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        format_email(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -162,7 +152,7 @@ def send_email_1(action=None, success=None, container=None, results=None, handle
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'send_email_1' call
-    formatted_data_1 = phantom.get_format_data(name='format_1')
+    formatted_data_1 = phantom.get_format_data(name='format_email')
 
     parameters = []
     
@@ -175,8 +165,8 @@ def send_email_1(action=None, success=None, container=None, results=None, handle
         'subject': "New Admin Users",
     })
 
-    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=update_custom_list, name="send_email_1")    
-    
+    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=update_custom_list, name="send_email_1")
+
     return
 
 """
@@ -190,6 +180,16 @@ def update_custom_list(action=None, success=None, container=None, results=None, 
     filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]
 
     phantom.add_list("Active Directory Administrators", filtered_results_item_1_0)
+
+    return
+
+"""
+Create the custom list called "Active Directory Administrators". This block should only be executed the first time this playbook is run.
+"""
+def create_custom_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('create_custom_list() called')
+
+    phantom.add_list("Active Directory Administrators", [])
 
     return
 

@@ -8,7 +8,7 @@
             "clean": true,
             "code_block": "",
             "description": "This playbook queries Active Directory for a list of users in the Administrators group and uses the results to update a Custom List. When the playbook is executed for the first time it will create a Generator asset that will automatically launch future executions once each hour.",
-            "hash": "1d91639ed52f1f0c830c0cf8d18ca08cdc7c9da5",
+            "hash": "ae4d034387de8648839591fc80e36f63fe6b8892",
             "joint": {
                 "cells": [
                     {
@@ -31,19 +31,21 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'check_for_generator' block\n    check_for_generator(container=container)\n\n    return",
@@ -135,8 +137,8 @@
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -164,17 +166,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -259,15 +261,15 @@
                             }
                         },
                         "position": {
-                            "x": 1240,
+                            "x": 1420,
                             "y": 240
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -600,194 +602,6 @@
                         "z": 71
                     },
                     {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".border": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".inPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 1
-                            },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
-                            },
-                            ".outPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            ".outPorts>.port-1": {
-                                "port": {
-                                    "id": "out-2",
-                                    "type": "out"
-                                },
-                                "ref-x": 41,
-                                "ref-y": 82
-                            },
-                            ".outPorts>.port-1>.port-body": {
-                                "port": {
-                                    "id": "out-2",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"track_active_directory_admin_users\", \"in\", \"format_3:formatted_data\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        get_users_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n    create_generator(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "check for generator",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "Decide whether this is the first execution of this playbook, in which case a new Generator and Custom List will be created. If the Generator already exists the actual Active Directory query will be run.",
-                        "hasElse": true,
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "a3a89bee-26d1-4200-9e85-0c6ff2fb6674",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 41,
-                        "line_start": 20,
-                        "name": "decision",
-                        "notes": "Decide whether this is the first execution of this playbook, in which case a new Generator and Custom List will be created. If the Generator already exists the actual Active Directory query will be run.",
-                        "number": 1,
-                        "outPorts": [
-                            "out-1",
-                            "out-2"
-                        ],
-                        "outputs": [
-                            {
-                                "conditions": [
-                                    {
-                                        "comparison": "in",
-                                        "data_type": "",
-                                        "param": "track_active_directory_admin_users",
-                                        "value": "format_3:formatted_data"
-                                    }
-                                ],
-                                "display": "If",
-                                "logic": "and",
-                                "type": "if"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "comparison": "==",
-                                        "data_type": "",
-                                        "param": "",
-                                        "value": ""
-                                    }
-                                ],
-                                "display": "Else",
-                                "logic": "and",
-                                "type": "else"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 100,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "decision_1",
-                        "show_number": true,
-                        "size": {
-                            "height": 82,
-                            "width": 82
-                        },
-                        "state": "decision",
-                        "status": "",
-                        "type": "coa.Decision",
-                        "warn": "",
-                        "z": 192
-                    },
-                    {
                         "action": "get data",
                         "action_type": "generic",
                         "active": false,
@@ -798,32 +612,55 @@
                             "verify_certificate": "False"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "HTTP",
                                 "app_version": "2.0.10",
+                                "config_type": "asset",
                                 "fields": {
                                     "headers": "",
                                     "location": "/rest/asset?_filter_tags=[\"track_active_directory_admin_users\"]",
                                     "verify_certificate": "False"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "http",
                                 "output": [
                                     {
                                         "data_path": "action_result.data.*.method",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "GET"
+                                        ]
                                     },
                                     {
                                         "contains": [
                                             "url"
                                         ],
                                         "data_path": "action_result.data.*.location",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://192.168.1.26/rest/cont"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.response_body",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "{\"failed\": true, \"message\": \"Requested item not found\"}"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.parsed_response_body",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "{\"failed\": true, \"message\": \"Requested item not found\"}"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.response_headers",
@@ -831,19 +668,31 @@
                                     },
                                     {
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "failed"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.message",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Can't process response from server. Status Code: 404 Data from server: {\"failed\": true, \"message\": \"Requested item not found\"}"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary.status_code",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            404
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary.reason",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Not Found"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.headers",
@@ -851,29 +700,44 @@
                                     },
                                     {
                                         "data_path": "action_result.parameter.location",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "/rest/cont"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.verify_certificate",
-                                        "data_type": "boolean"
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            "false"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
                                     }
                                 ],
                                 "product_name": "HTTP",
-                                "product_vendor": "Generic"
+                                "product_vendor": "Generic",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "check for generator"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -886,9 +750,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -900,19 +769,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -921,7 +795,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def check_for_generator(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('check_for_generator() called')\n\n    # collect data for 'check_for_generator' call\n\n    parameters = []\n    \n    # build parameters list for 'check_for_generator' call\n    parameters.append({\n        'headers': \"\",\n        'location': \"/rest/asset?_filter_tags=[\\\"track_active_directory_admin_users\\\"]\",\n        'verify_certificate': False,\n    })\n\n    phantom.act(\"get data\", parameters=parameters, assets=['http'], callback=format_3, name=\"check_for_generator\")    \n    \n    return",
+                        "block_code": "def check_for_generator(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('check_for_generator() called')\n\n    # collect data for 'check_for_generator' call\n\n    parameters = []\n    \n    # build parameters list for 'check_for_generator' call\n    parameters.append({\n        'headers': \"\",\n        'location': \"/rest/asset?_filter_tags=[\\\"track_active_directory_admin_users\\\"]\",\n        'verify_certificate': False,\n    })\n\n    phantom.act(\"get data\", parameters=parameters, assets=['http'], callback=extract_response_body, name=\"check_for_generator\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -948,7 +822,7 @@
                         "join_start": 1,
                         "line_end": 62,
                         "line_start": 44,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "get data",
                         "notes": "Check to see if there is already a Generator asset with the tag \"track_active_directory_admin_users\". This will be used to decide if a new Generator asset should be created.",
                         "number": 3,
@@ -1008,12 +882,15 @@
                             }
                         },
                         "position": {
-                            "x": -280,
+                            "x": -300,
                             "y": 80
                         },
                         "previous_function": "",
                         "previous_name": "check_for_generator",
-                        "required_params": {},
+                        "required_params": {
+                            "location": true,
+                            "verify_certificate": true
+                        },
                         "reviewer": "",
                         "show_number": false,
                         "size": {
@@ -1026,307 +903,6 @@
                         "type": "coa.Action",
                         "warn": false,
                         "z": 202
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".border": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".inPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 3
-                            },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
-                            },
-                            ".outPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def format_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_3() called')\n    \n    template = \"\"\"{0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"check_for_generator:action_result.data.*.response_body\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_3\")\n\n    decision_1(container=container)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "check for generator",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "Convert the returned HTTP response body into a flat string that can be used directly in a decision.",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "ea18541e-433b-401d-993c-67b527ac81ed",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 81,
-                        "line_start": 65,
-                        "name": "format",
-                        "notes": "Convert the returned HTTP response body into a flat string that can be used directly in a decision.",
-                        "number": 3,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "parameters": [
-                            {
-                                "position": 0,
-                                "type": "",
-                                "value": "check_for_generator:action_result.data.*.response_body"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": -40,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "format_3",
-                        "show_number": true,
-                        "size": {
-                            "height": 82,
-                            "width": 82
-                        },
-                        "state": "format",
-                        "status": "",
-                        "template": "{0}",
-                        "type": "coa.Format",
-                        "warn": false,
-                        "z": 203
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".border": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".inPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 1
-                            },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
-                            },
-                            ".outPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_1() called')\n    \n    template = \"\"\"The Phantom playbook called track_active_directory_admin_users detected that the following new users were added to the Administrators group in Active Directory:\n{0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_1:condition_1:get_users_1:action_result.data.*.samaccountname\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_1\")\n\n    send_email_1(container=container)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "get users",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "Format a message for an email listing the new Administrators that were detected.",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "23992e96-9b03-45e4-b6d4-311792c7ee4b",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 101,
-                        "line_start": 84,
-                        "name": "format",
-                        "notes": "Format a message for an email listing the new Administrators that were detected.",
-                        "number": 1,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "parameters": [
-                            {
-                                "position": 0,
-                                "type": "",
-                                "value": "filtered-data:filter_1:condition_1:get_users_1:action_result.data.*.samaccountname"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 620,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "format_1",
-                        "show_number": true,
-                        "size": {
-                            "height": 82,
-                            "width": 82
-                        },
-                        "state": "format",
-                        "status": "",
-                        "template": "The Phantom playbook called track_active_directory_admin_users detected that the following new users were added to the Administrators group in Active Directory:\n{0}",
-                        "type": "coa.Format",
-                        "warn": false,
-                        "z": 207
                     },
                     {
                         "attrs": {
@@ -1488,6 +1064,12 @@
                             "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
                         },
                         "type": "link",
+                        "vertices": [
+                            {
+                                "x": 1380,
+                                "y": 120
+                            }
+                        ],
                         "z": 229
                     },
                     {
@@ -1501,17 +1083,24 @@
                             "object_name": "Administrators"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "LDAP",
                                 "app_version": "1.2.27",
+                                "config_type": "asset",
                                 "fields": {
                                     "all_users": "False",
                                     "object_class": "group",
                                     "object_name": "Administrators",
                                     "ph": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "domainctrl1",
                                 "output": [
                                     {
@@ -1587,14 +1176,8 @@
                             ".action": {
                                 "text": "get users"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1607,9 +1190,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1621,19 +1209,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1642,7 +1235,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def get_users_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_users_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_users_1' call\n\n    parameters = []\n    \n    # build parameters list for 'get_users_1' call\n    parameters.append({\n        'ph': \"\",\n        'object_class': \"group\",\n        'object_name': \"Administrators\",\n        'all_users': False,\n    })\n\n    phantom.act(\"get users\", parameters=parameters, assets=['domainctrl1'], callback=filter_1, name=\"get_users_1\")    \n    \n    return",
+                        "block_code": "def get_users_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_users_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_users_1' call\n\n    parameters = []\n    \n    # build parameters list for 'get_users_1' call\n    parameters.append({\n        'ph': \"\",\n        'object_class': \"group\",\n        'object_name': \"Administrators\",\n        'all_users': False,\n    })\n\n    phantom.act(\"get users\", parameters=parameters, assets=['domainctrl1'], callback=filter_1, name=\"get_users_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1667,9 +1260,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 135,
-                        "line_start": 114,
-                        "message": "",
+                        "line_end": 125,
+                        "line_start": 104,
+                        "message": "Configuring now",
                         "name": "get users",
                         "notes": "Get a list of all the users in the \"Administrators\" group in Active Directory, which includes \"Domain Admins\" and \"Enterprise Admins\" by default.",
                         "number": 1,
@@ -1729,12 +1322,14 @@
                             }
                         },
                         "position": {
-                            "x": 240,
+                            "x": 320,
                             "y": 80
                         },
                         "previous_function": "",
                         "previous_name": "get_users_1",
-                        "required_params": {},
+                        "required_params": {
+                            "all_users": true
+                        },
                         "reviewer": "",
                         "show_number": false,
                         "size": {
@@ -1781,18 +1376,21 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
-                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"get_users_1:action_result.data.*.samaccountname\", \"not in\", \"custom_list:Active Directory Administrators\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        format_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"get_users_1:action_result.data.*.samaccountname\", \"not in\", \"custom_list:Active Directory Administrators\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        format_email(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1815,8 +1413,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 156,
-                        "line_start": 138,
+                        "line_end": 146,
+                        "line_start": 128,
                         "name": "filter",
                         "notes": "Ignore the returned SAM account names that are already in the custom list called \"Active Directory Administrators\".",
                         "number": 1,
@@ -1891,7 +1489,7 @@
                             }
                         },
                         "position": {
-                            "x": 480,
+                            "x": 560,
                             "y": 80
                         },
                         "previous_function": "",
@@ -1908,257 +1506,11 @@
                         "z": 231
                     },
                     {
-                        "action": "send email",
-                        "action_type": "generic",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "attachments": "",
-                            "body": "format_1:formatted_data",
-                            "from": "notifications@example.com",
-                            "subject": "New Admin Users",
-                            "to": "notifications@example.com"
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "app_name": "SMTP",
-                                "app_version": "1.2.29",
-                                "fields": {
-                                    "attachments": "",
-                                    "body": "format_1:formatted_data",
-                                    "from": "notifications@example.com",
-                                    "subject": "New Admin Users",
-                                    "to": "notifications@example.com"
-                                },
-                                "name": "smtp",
-                                "output": [
-                                    {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.body",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "email"
-                                        ],
-                                        "data_path": "action_result.parameter.to",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "email"
-                                        ],
-                                        "data_path": "action_result.parameter.from",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "vault id"
-                                        ],
-                                        "data_path": "action_result.parameter.attachments",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.subject",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "product_name": "SMTP",
-                                "product_vendor": "Generic",
-                                "type": "email"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "send email"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".border": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Generic"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "fill": "#FFFFFF"
-                            }
-                        },
-                        "block_code": "def send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_email_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_email_1' call\n    formatted_data_1 = phantom.get_format_data(name='format_1')\n\n    parameters = []\n    \n    # build parameters list for 'send_email_1' call\n    parameters.append({\n        'body': formatted_data_1,\n        'to': \"notifications@example.com\",\n        'from': \"notifications@example.com\",\n        'attachments': \"\",\n        'subject': \"New Admin Users\",\n    })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['smtp'], callback=update_custom_list, name=\"send_email_1\")    \n    \n    return",
-                        "callback_code": "",
-                        "callback_start": 219,
-                        "callsback": true,
-                        "color": "#5094D4",
-                        "connected_to_start": true,
-                        "connection_name": "get users",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": 0,
-                        "description": "Send an email to notify appropriate personnel of any new Administrators that were detected.",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "a5500405-8132-44c9-b92d-349a08bde0f8",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 182,
-                        "line_start": 159,
-                        "message": "",
-                        "name": "send email",
-                        "notes": "Send an email to notify appropriate personnel of any new Administrators that were detected.",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 760,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "send_email_1",
-                        "required_params": {},
-                        "reviewer": "",
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Generic",
-                        "type": "coa.Action",
-                        "warn": false,
-                        "z": 233
-                    },
-                    {
                         "active": false,
                         "angle": 0,
                         "attrs": {
                             ".api": {
-                                "text": "update custom list"
-                            },
-                            ".background": {
-                                "height": 88
+                                "text": "add list"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2171,9 +1523,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2185,9 +1542,11 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
+                            ".title": {
+                                "text": "API"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -2195,6 +1554,9 @@
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2234,9 +1596,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 196,
-                        "line_start": 185,
-                        "message": "",
+                        "line_end": 186,
+                        "line_start": 175,
+                        "message": "Configuring now",
                         "name": "add list",
                         "notes": "Add the newly detected users to the custom list called \"Active Directory Administrators\".",
                         "number": 4,
@@ -2296,7 +1658,7 @@
                             }
                         },
                         "position": {
-                            "x": 1000,
+                            "x": 1180,
                             "y": 80
                         },
                         "previous_function": "",
@@ -2308,6 +1670,7 @@
                         },
                         "state": "api",
                         "status": "",
+                        "title": "API",
                         "type": "coa.API",
                         "warn": false,
                         "z": 236
@@ -2317,10 +1680,7 @@
                         "angle": 0,
                         "attrs": {
                             ".api": {
-                                "text": "create custom list"
-                            },
-                            ".background": {
-                                "height": 88
+                                "text": "add list"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2333,9 +1693,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2347,9 +1712,11 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
+                            ".title": {
+                                "text": "API"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -2357,6 +1724,9 @@
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2396,9 +1766,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 111,
-                        "line_start": 104,
-                        "message": "",
+                        "line_end": 196,
+                        "line_start": 189,
+                        "message": "Configuring now",
                         "name": "add list",
                         "notes": "Create the custom list called \"Active Directory Administrators\". This block should only be executed the first time this playbook is run.",
                         "number": 3,
@@ -2458,7 +1828,7 @@
                             }
                         },
                         "position": {
-                            "x": 480,
+                            "x": 500,
                             "y": 220
                         },
                         "previous_function": "",
@@ -2470,6 +1840,7 @@
                         },
                         "state": "api",
                         "status": "",
+                        "title": "API",
                         "type": "coa.API",
                         "warn": false,
                         "z": 239
@@ -2486,33 +1857,56 @@
                             "verify_certificate": "False"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "HTTP",
                                 "app_version": "2.0.10",
+                                "config_type": "asset",
                                 "fields": {
                                     "body": "{\"description\": \"A cronjob-style Generator to kick off the track_active_directory_admin_users Playbook\", \"tags\": [\"track_active_directory_admin_users\"], \"product_vendor\": \"Generic\", \"configuration\": \\{\"ingest\": \\{\"interval_mins\": \"1\", \"poll\": true, \"container_label\": \"report\", \"start_time_epoch_utc\": null\\}, \"create_artifacts\": \"1\", \"container_tag\": \"track_active_directory_admin_users\", \"create_containers\": \"1\", \"max_cef_per_artifact\": \"0\", \"min_cef_per_artifact\": \"0\", \"randomize_container_status\": false, \"container_prefix\": \"Track Active Directory Admin Users\", \"artifact_count_override\": true\\}, \"type\": \"generic\", \"product_name\": \"Generator\", \"name\": \"track_active_directory_admin_users_generator\"\\}",
                                     "headers": "",
                                     "location": "/rest/asset",
                                     "verify_certificate": "False"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "http",
                                 "output": [
                                     {
                                         "data_path": "action_result.data.*.method",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "POST"
+                                        ]
                                     },
                                     {
                                         "contains": [
                                             "url"
                                         ],
                                         "data_path": "action_result.data.*.location",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://192.168.1.26/rest/assets"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.response_body",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "{\"failed\": true, \"message\": \"Requested item not found\"}"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.parsed_response_body",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "{\"failed\": true, \"message\": \"Requested item not found\"}"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.response_headers",
@@ -2520,23 +1914,38 @@
                                     },
                                     {
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "failed"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.message",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Can't process response from server. Status Code: 404 Data from server: {\"failed\": true, \"message\": \"Requested item not found\"}"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary.status_code",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            404
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary.reason",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Not Found"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.body",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            "{\"name\": \"Bad IP\"}"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.headers",
@@ -2544,26 +1953,41 @@
                                     },
                                     {
                                         "data_path": "action_result.parameter.location",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "/rest/assets"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.verify_certificate",
-                                        "data_type": "boolean"
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            "false"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
                                     }
                                 ],
                                 "product_name": "HTTP",
-                                "product_vendor": "Generic"
+                                "product_vendor": "Generic",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "create generator"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2576,9 +2000,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2590,22 +2019,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2641,7 +2075,7 @@
                         "join_start": 1,
                         "line_end": 243,
                         "line_start": 199,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "post data",
                         "notes": "Create a Generator asset by POSTing the desired configuration to the REST API of this Phantom instance. This block should only be executed the first time this playbook is run.",
                         "number": 1,
@@ -2701,12 +2135,16 @@
                             }
                         },
                         "position": {
-                            "x": 240,
+                            "x": 260,
                             "y": 220
                         },
                         "previous_function": "",
                         "previous_name": "create_generator",
-                        "required_params": {},
+                        "required_params": {
+                            "body": true,
+                            "location": true,
+                            "verify_certificate": true
+                        },
                         "reviewer": "",
                         "show_number": false,
                         "size": {
@@ -2719,17 +2157,861 @@
                         "type": "coa.Action",
                         "warn": false,
                         "z": 240
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(0 0 0)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".format": {
+                                "text": "format email"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port": {
+                                "ref-x": 0,
+                                "ref-y": 0
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def format_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_email() called')\n    \n    template = \"\"\"The Phantom playbook called track_active_directory_admin_users detected that the following new users were added to the Administrators group in Active Directory:\n{0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_1:condition_1:get_users_1:action_result.data.*.samaccountname\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_email\")\n\n    send_email_1(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "get users",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "format email",
+                        "description": "Format a message for an email listing the new Administrators that were detected.",
+                        "format": "format",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "23992e96-9b03-45e4-b6d4-311792c7ee4b",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 101,
+                        "line_start": 84,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "Format a message for an email listing the new Administrators that were detected.",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": "filtered-data:filter_1:condition_1:get_users_1:action_result.data.*.samaccountname"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 700,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "format_email",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "The Phantom playbook called track_active_directory_admin_users detected that the following new users were added to the Administrators group in Active Directory:\n{0}",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 242
+                    },
+                    {
+                        "action": "send email",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "attachments": "",
+                            "body": "format_1:formatted_data",
+                            "from": "notifications@example.com",
+                            "subject": "New Admin Users",
+                            "to": "notifications@example.com"
+                        },
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "",
+                                "active": true,
+                                "app_name": "SMTP",
+                                "app_version": "1.2.29",
+                                "config_type": "asset",
+                                "fields": {
+                                    "attachments": "",
+                                    "body": "format_email:formatted_data",
+                                    "from": "notifications@example.com",
+                                    "subject": "New Admin Users",
+                                    "to": "notifications@example.com"
+                                },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
+                                "name": "smtp",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.body",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.parameter.to",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.parameter.from",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "vault id"
+                                        ],
+                                        "data_path": "action_result.parameter.attachments",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.subject",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "product_name": "SMTP",
+                                "product_vendor": "Generic",
+                                "type": "email"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "send email"
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_email_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_email_1' call\n    formatted_data_1 = phantom.get_format_data(name='format_email')\n\n    parameters = []\n    \n    # build parameters list for 'send_email_1' call\n    parameters.append({\n        'body': formatted_data_1,\n        'to': \"notifications@example.com\",\n        'from': \"notifications@example.com\",\n        'attachments': \"\",\n        'subject': \"New Admin Users\",\n    })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['smtp'], callback=update_custom_list, name=\"send_email_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 219,
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": true,
+                        "connection_name": "get users",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Send an email to notify appropriate personnel of any new Administrators that were detected.",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "a5500405-8132-44c9-b92d-349a08bde0f8",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 172,
+                        "line_start": 149,
+                        "message": "Configuring now",
+                        "name": "send email",
+                        "notes": "Send an email to notify appropriate personnel of any new Administrators that were detected.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 940,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "send_email_1",
+                        "required_params": {
+                            "body": true,
+                            "to": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Generic",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 243
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".outPorts>.port-1": {
+                                "port": {
+                                    "id": "out-2",
+                                    "type": "out"
+                                },
+                                "ref-x": 41,
+                                "ref-y": 82
+                            },
+                            ".outPorts>.port-1>.port-body": {
+                                "port": {
+                                    "id": "out-2",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"track_active_directory_admin_users\", \"in\", \"extract_response_body:formatted_data\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        get_users_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n    create_generator(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "check for generator",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "Decide whether this is the first execution of this playbook, in which case a new Generator and Custom List will be created. If the Generator already exists the actual Active Directory query will be run.",
+                        "hasElse": true,
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "a3a89bee-26d1-4200-9e85-0c6ff2fb6674",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 41,
+                        "line_start": 20,
+                        "name": "decision",
+                        "notes": "Decide whether this is the first execution of this playbook, in which case a new Generator and Custom List will be created. If the Generator already exists the actual Active Directory query will be run.",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1",
+                            "out-2"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "in",
+                                        "data_type": "",
+                                        "param": "track_active_directory_admin_users",
+                                        "value": "extract_response_body:formatted_data"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "",
+                                        "value": ""
+                                    }
+                                ],
+                                "display": "Else",
+                                "logic": "and",
+                                "type": "else"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 180,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "decision_1",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "decision",
+                        "status": "",
+                        "type": "coa.Decision",
+                        "warn": "",
+                        "z": 245
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(0 0 0)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".format": {
+                                "text": "extract response body"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".number": {
+                                "text": 3
+                            },
+                            ".outPorts>.port": {
+                                "ref-x": 0,
+                                "ref-y": 0
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def extract_response_body(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('extract_response_body() called')\n    \n    template = \"\"\"{0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"check_for_generator:action_result.data.*.response_body\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"extract_response_body\")\n\n    decision_1(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "check for generator",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "extract response body",
+                        "description": "Convert the returned HTTP response body into a flat string that can be used directly in a decision.",
+                        "format": "format",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "ea18541e-433b-401d-993c-67b527ac81ed",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 81,
+                        "line_start": 65,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "Convert the returned HTTP response body into a flat string that can be used directly in a decision.",
+                        "number": 3,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": "check_for_generator:action_result.data.*.response_body"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": -60,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "extract_response_body",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "{0}",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 247
                     }
                 ]
             },
             "notes": "This playbook uses the following Apps:\n - HTTP (get data) [asset name = http] - this asset should be configured with the address and credentials of the REST API of this Phantom instance\n - Generator (ingest) [asset name = track_active_directory_admin_users_generator] - if this asset does not exist it will be created automatically the first time this playbook is run\n - LDAP (get users) [asset name = ldap] - this asset should be configured with the address and credentials of the domain controller to use for Active Directory queries. Version 1.2.30 or later is required so an app update may be necessary.\n - SMTP (send email) [asset name = smtp]\n\nDeployment notes:\n - The Generator created and used by this playbook is similar to a cronjob. The configuration used in \"create generator\" causes it to create new empty containers with the label Report every 60 minutes. These values can be customized to the desired behavior. The goal of creating the asset within the playbook is to make the playbook self-configuring to some degree.\n - After the initial manual run the playbook should be set to Active.\n - The name of this playbook (track_active_directory_admin_users) is also used in the Generator asset name and the tag on that asset\n - The custom list called \"Active Directory Administrators\" is created by this playbook and updated when new Administrator group members are found\n - The email address notification@example.com is used as both the sender and receiver in \"send email\". These values should also be customized.\n - Note that other Active Directory groups could be easily added, such as Enterprise Admins, Domain Admins, or Schema Admins"
         },
-        "schema": 2,
-        "version": "3.0.251"
+        "schema": 3,
+        "version": "3.5.149"
     },
-    "create_time": "2017-10-02T22:20:09.394843+00:00",
+    "create_time": "2018-02-15T20:39:55.697484+00:00",
     "draft_mode": false,
     "labels": [
-        "report"
+        "events"
     ]
 }
