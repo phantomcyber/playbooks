@@ -1,6 +1,5 @@
 """
-This playbook runs the 'test connectivity' action on all possible assets currently configured
-Last updated by Phantom Team: June 02, 2017
+This playbook runs the 'test connectivity' action on all possible assets currently configured.
 """
 
 import phantom.rules as phantom
