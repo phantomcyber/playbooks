@@ -117,19 +117,14 @@ def list_processes_1(action=None, success=None, container=None, results=None, ha
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act("list processes", parameters=parameters, assets=['carbonblack'], callback=join_format_1, name="list_processes_1")    
-    
+    phantom.act("list processes", parameters=parameters, assets=['carbonblack'], callback=join_format_ticket, name="list_processes_1")
+
     return
 
 def set_status_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('set_status_2() called')
-    
-    # set container properties for: status
-    update_data = {
-        "status" : "open",
-    }
 
-    phantom.update(container, update_data)
+    phantom.set_status(container, "open")
 
     return
 
@@ -153,8 +148,8 @@ def snapshot_vm_1(action=None, success=None, container=None, results=None, handl
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], callback=join_format_1, name="snapshot_vm_1", parent_action=action)    
-    
+    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], callback=join_format_ticket, name="snapshot_vm_1", parent_action=action)
+
     return
 
 def get_system_info_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -174,8 +169,8 @@ def get_system_info_2(action=None, success=None, container=None, results=None, h
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("get system info", parameters=parameters, assets=['vmwarevsphere'], callback=snapshot_vm_1, name="get_system_info_2")    
-    
+    phantom.act("get system info", parameters=parameters, assets=['vmwarevsphere'], callback=snapshot_vm_1, name="get_system_info_2")
+
     return
 
 def get_system_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -195,15 +190,15 @@ def get_system_info_1(action=None, success=None, container=None, results=None, h
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act("get system info", parameters=parameters, assets=['carbonblack'], callback=get_system_info_1_callback, name="get_system_info_1")    
-    
+    phantom.act("get system info", parameters=parameters, assets=['carbonblack'], callback=get_system_info_1_callback, name="get_system_info_1")
+
     return
 
 def get_system_info_1_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('get_system_info_1_callback() called')
     
     update_infected_list(action=action, success=success, container=container, results=results, handle=handle)
-    join_format_1(action=action, success=success, container=container, results=results, handle=handle)
+    join_format_ticket(action=action, success=success, container=container, results=results, handle=handle)
 
     return
 
@@ -226,8 +221,8 @@ def list_connections_1(action=None, success=None, container=None, results=None, 
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act("list connections", parameters=parameters, assets=['carbonblack'], callback=join_format_1, name="list_connections_1")    
-    
+    phantom.act("list connections", parameters=parameters, assets=['carbonblack'], callback=join_format_ticket, name="list_connections_1")
+
     return
 
 def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -236,7 +231,7 @@ def create_ticket_1(action=None, success=None, container=None, results=None, han
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'create_ticket_1' call
-    formatted_data_1 = phantom.get_format_data(name='format_1')
+    formatted_data_1 = phantom.get_format_data(name='format_ticket')
 
     parameters = []
     
@@ -249,20 +244,16 @@ def create_ticket_1(action=None, success=None, container=None, results=None, han
         'fields': "",
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=set_severity_status_1, name="create_ticket_1")    
-    
+    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=set_severity_status_1, name="create_ticket_1")
+
     return
 
 def set_severity_status_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('set_severity_status_1() called')
-    
-    # set container properties for: severity, status
-    update_data = {
-        "severity" : "high",
-        "status" : "closed",
-    }
 
-    phantom.update(container, update_data)
+    phantom.set_severity(container, "high")
+
+    phantom.set_status(container, "closed")
 
     return
 
@@ -283,8 +274,8 @@ def update_infected_list(action=None, success=None, container=None, results=None
     
     return
 
-def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_1() called')
+def format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_ticket() called')
     
     template = """VM Snapshots have been taken.  They are stored at the following vault IDs:
 {0}
@@ -310,20 +301,20 @@ Full system info results from Carbon Black:
         "get_system_info_1:action_result",
     ]
 
-    phantom.format(container=container, template=template, parameters=parameters, name="format_1")
+    phantom.format(container=container, template=template, parameters=parameters, name="format_ticket")
 
     create_ticket_1(container=container)
 
     return
 
-def join_format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('join_format_1() called')
+def join_format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('join_format_ticket() called')
 
     # check if all connected incoming actions are done i.e. have succeeded or failed
     if phantom.actions_done([ 'list_connections_1', 'list_processes_1', 'snapshot_vm_1', 'get_system_info_1' ]):
         
-        # call connected block "format_1"
-        format_1(container=container, handle=handle)
+        # call connected block "format_ticket"
+        format_ticket(container=container, handle=handle)
     
     return
 
