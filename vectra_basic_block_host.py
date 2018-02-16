@@ -17,58 +17,6 @@ def on_start(container):
     return
 
 """
-Unblock the specified source IP address for the device.
-"""
-def unblock_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('unblock_ip_1() called')
-
-    # collect data for 'unblock_ip_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.dvc', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'unblock_ip_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'ip': container_item[0],
-                'vsys': "",
-                'is_source_address': True,
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("unblock ip", parameters=parameters, assets=['pan_firewall'], name="unblock_ip_1")    
-    
-    return
-
-"""
-Block the specified source IP address for the device.
-"""
-def block_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('block_ip_1() called')
-
-    # collect data for 'block_ip_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.dvc', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'block_ip_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'ip': container_item[0],
-                'vsys': "",
-                'is_source_address': True,
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("block ip", parameters=parameters, assets=['pan_firewall'], name="block_ip_1")    
-    
-    return
-
-"""
 Determine whether the Vectra request specifies a block or an unblock.
 """
 def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -86,7 +34,7 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
 
     # call connected blocks if condition 1 matched
     if matched_artifacts_1 or matched_results_1:
-        block_ip_1(action=action, success=success, container=container, results=results, handle=handle)
+        block_ip_2(action=action, success=success, container=container, results=results, handle=handle)
         return
 
     # check for 'elif' condition 2
@@ -98,8 +46,60 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
 
     # call connected blocks if condition 2 matched
     if matched_artifacts_2 or matched_results_2:
-        unblock_ip_1(action=action, success=success, container=container, results=results, handle=handle)
+        unblock_ip_2(action=action, success=success, container=container, results=results, handle=handle)
         return
+
+    return
+
+"""
+Block the specified source IP address for the device.
+"""
+def block_ip_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('block_ip_2() called')
+
+    # collect data for 'block_ip_2' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.dvc', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'block_ip_2' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'ip': container_item[0],
+                'vsys': "vsys1",
+                'is_source_address': True,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("block ip", parameters=parameters, assets=['pan'], name="block_ip_2")
+
+    return
+
+"""
+Unblock the specified source IP address for the device.
+"""
+def unblock_ip_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('unblock_ip_2() called')
+
+    # collect data for 'unblock_ip_2' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.dvc', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'unblock_ip_2' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'ip': container_item[0],
+                'vsys': "vsys1",
+                'is_source_address': True,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("unblock ip", parameters=parameters, assets=['pan'], name="unblock_ip_2")
 
     return
 
