@@ -31,8 +31,8 @@ def domain_reputation_1(action=None, success=None, container=None, results=None,
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("domain reputation", parameters=parameters, assets=['domaintools'], callback=decision_2, name="domain_reputation_1")    
-    
+    phantom.act("domain reputation", parameters=parameters, assets=['domaintools'], callback=decision_2, name="domain_reputation_1")
+
     return
 
 def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -121,8 +121,8 @@ def block_domain_1(action=None, success=None, container=None, results=None, hand
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("block domain", parameters=parameters, assets=['opendns_umbrella'], callback=unblock_domain_1, name="block_domain_1")    
-    
+    phantom.act("block domain", parameters=parameters, assets=['opendns_umbrella'], callback=unblock_domain_1, name="block_domain_1")
+
     return
 
 def unblock_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -146,8 +146,8 @@ def unblock_domain_1(action=None, success=None, container=None, results=None, ha
     # calculate start time using delay of 60 minutes
     start_time = datetime.now() + timedelta(minutes=60)
 
-    phantom.act("unblock domain", parameters=parameters, assets=['opendns_umbrella'], start_time=start_time, name="unblock_domain_1", parent_action=action)    
-    
+    phantom.act("unblock domain", parameters=parameters, assets=['opendns_umbrella'], start_time=start_time, name="unblock_domain_1", parent_action=action)
+
     return
 
 def on_finish(container, summary):
