@@ -26,31 +26,7 @@ def vsphere_list_vms(action=None, success=None, container=None, results=None, ha
     parameters = []
 
     phantom.act("list vms", parameters=parameters, assets=['vmwarevsphere'], callback=filter_1, name="vsphere_list_vms")
-    
-    return
 
-"""
-Use the virtual firewall to block command and control traffic by the ransomware.
-"""
-def NSX_block_port(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('NSX_block_port() called')
-
-    # collect data for 'NSX_block_port' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'NSX_block_port' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'ip': container_item[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("block ip", parameters=parameters, assets=['vmwarensx'], callback=should_quarantine_devices_prompt, name="NSX_block_port")    
-    
     return
 
 """
@@ -104,7 +80,7 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
         return
 
     # call connected blocks for 'else' condition 2
-    format_1(action=action, success=success, container=container, results=results, handle=handle)
+    format_ticket(action=action, success=success, container=container, results=results, handle=handle)
 
     return
 
@@ -130,6 +106,55 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
     return
 
 """
+Format a message to create a ticket if the devices are not being quarantined.
+"""
+def format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_ticket() called')
+    
+    template = """The following endpoints were affected:
+{0}
+
+An incident responder determined that the affected hosts should not be qurantined, but they can be reviewed further and quarantined later in Mission Control."""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "NSX_block_port:action_result.parameter.ip",
+    ]
+
+    phantom.format(container=container, template=template, parameters=parameters, name="format_ticket")
+
+    create_ticket_1(container=container)
+
+    return
+
+"""
+Take a snapshot of each affected virtual machine to attempt to save data from encryption.
+"""
+def snapshot_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('snapshot_vm_1() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'snapshot_vm_1' call
+    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:filter_1:condition_1:vsphere_list_vms:action_result.data.*.vmx_path", "filtered-data:filter_1:condition_1:vsphere_list_vms:action_result.parameter.context.artifact_id"])
+
+    parameters = []
+    
+    # build parameters list for 'snapshot_vm_1' call
+    for filtered_results_item_1 in filtered_results_data_1:
+        if filtered_results_item_1[0]:
+            parameters.append({
+                'download': "",
+                'vmx_path': filtered_results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_results_item_1[1]},
+            })
+
+    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], name="snapshot_vm_1")
+
+    return
+
+"""
 Isolate the devices from the rest of the network to prevent malware propagation.
 """
 def quarantine_device_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -151,29 +176,7 @@ def quarantine_device_1(action=None, success=None, container=None, results=None,
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("quarantine device", parameters=parameters, assets=['carbonblack'], name="quarantine_device_1")    
-    
-    return
-
-"""
-Format a message to create a ticket if the devices are not being quarantined.
-"""
-def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_1() called')
-    
-    template = """The following endpoints were affected:
-{0}
-
-An incident responder determined that the affected hosts should not be qurantined, but they can be reviewed further and quarantined later in Mission Control."""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "NSX_block_port:action_result.parameter.ip",
-    ]
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_1")
-
-    create_ticket_1(container=container)
+    phantom.act("quarantine device", parameters=parameters, assets=['carbonblack'], name="quarantine_device_1")
 
     return
 
@@ -186,46 +189,45 @@ def create_ticket_1(action=None, success=None, container=None, results=None, han
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'create_ticket_1' call
+    formatted_data_1 = phantom.get_format_data(name='format_ticket')
 
     parameters = []
     
     # build parameters list for 'create_ticket_1' call
     parameters.append({
         'short_description': "Wanna Cry Endpoints Affected - No Quarantine",
-        'table': "",
+        'table': "incident",
         'vault_id': "",
-        'description': "The following endpoits were affected...",
+        'description': formatted_data_1,
         'fields': "",
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], name="create_ticket_1")    
-    
+    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], name="create_ticket_1")
+
     return
 
 """
-Take a snapshot of each affected virtual machine to attempt to save data from encryption.
+Use the virtual firewall to block command and control traffic by the ransomware.
 """
-def snapshot_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('snapshot_vm_1() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'snapshot_vm_1' call
-    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:filter_1:condition_1:vsphere_list_vms:action_result.data.*.vmx_path", "filtered-data:filter_1:condition_1:vsphere_list_vms:action_result.parameter.context.artifact_id"])
+def NSX_block_port(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('NSX_block_port() called')
+
+    # collect data for 'NSX_block_port' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])
 
     parameters = []
     
-    # build parameters list for 'snapshot_vm_1' call
-    for filtered_results_item_1 in filtered_results_data_1:
-        parameters.append({
-            'download': "",
-            'vmx_path': filtered_results_item_1[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_results_item_1[1]},
-        })
+    # build parameters list for 'NSX_block_port' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'ip': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
 
-    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], name="snapshot_vm_1")    
-    
+    phantom.act("block ip", parameters=parameters, assets=['vmwarensx'], callback=should_quarantine_devices_prompt, name="NSX_block_port")
+
     return
 
 def on_finish(container, summary):

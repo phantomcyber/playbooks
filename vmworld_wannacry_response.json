@@ -8,7 +8,7 @@
             "clean": true,
             "code_block": "",
             "description": "In virtualized environments the ability to take snapshots of VM's allows incident response systems to save crucial data from encryption, but only if the snapshot is triggered before encryption finishes. This is an area where security automation can play a particularly important role. In this playbook Phantom receives an alert from Vectra Cognito signifying that a ransomware variant such as Wannacry has been detected on one or more endpoints within the network. Phantom immediately snapshots the affected devices that are virtual machines managed by vSphere, and blocks command and control traffic using the VMWare NSX virtual firewall. Beyond that immediate response the security team is also asked whether or not to quarantine the affected hosts with Carbon Black.",
-            "hash": "6d1d97011900d0a3f4dc2d017ab025b09b73b47e",
+            "hash": "d2bffa76d8a4cdcd9249864717374b67081987b1",
             "joint": {
                 "cells": [
                     {
@@ -31,19 +31,21 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none"
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'NSX_block_port' block\n    NSX_block_port(container=container)\n\n    # call 'vsphere_list_vms' block\n    vsphere_list_vms(container=container)\n\n    return",
@@ -128,15 +130,15 @@
                             }
                         },
                         "position": {
-                            "x": 160,
-                            "y": 220
+                            "x": 180,
+                            "y": 100
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -164,18 +166,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -201,8 +202,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 244,
-                        "line_start": 231,
+                        "line_end": 246,
+                        "line_start": 233,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -260,15 +261,15 @@
                             }
                         },
                         "position": {
-                            "x": 1200,
-                            "y": 220
+                            "x": 1320,
+                            "y": 380
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -595,6 +596,12 @@
                             "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
                         },
                         "type": "link",
+                        "vertices": [
+                            {
+                                "x": 1280,
+                                "y": 120
+                            }
+                        ],
                         "z": 20
                     },
                     {
@@ -758,6 +765,12 @@
                             "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
                         },
                         "type": "link",
+                        "vertices": [
+                            {
+                                "x": 1280,
+                                "y": 260
+                            }
+                        ],
                         "z": 75
                     },
                     {
@@ -767,12 +780,19 @@
                         "active_keys": {},
                         "active_values": {},
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "vSphere",
                                 "app_version": "1.2.25",
+                                "config_type": "asset",
                                 "fields": {},
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "vmwarevsphere",
                                 "output": [
                                     {
@@ -846,21 +866,16 @@
                                     }
                                 ],
                                 "product_name": "vSphere",
-                                "product_vendor": "VMware"
+                                "product_vendor": "VMware",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "vsphere list vms"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -873,9 +888,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -887,19 +907,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -908,7 +933,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def vsphere_list_vms(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('vsphere_list_vms() called')\n\n    parameters = []\n\n    phantom.act(\"list vms\", parameters=parameters, assets=['vmwarevsphere'], callback=filter_1, name=\"vsphere_list_vms\")\n    \n    return",
+                        "block_code": "def vsphere_list_vms(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('vsphere_list_vms() called')\n\n    parameters = []\n\n    phantom.act(\"list vms\", parameters=parameters, assets=['vmwarevsphere'], callback=filter_1, name=\"vsphere_list_vms\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -935,7 +960,7 @@
                         "join_start": 1,
                         "line_end": 32,
                         "line_start": 23,
-                        "message": "",
+                        "message": "Configuring now",
                         "name": "list vms",
                         "notes": "Acquire the full list of vSphere virtual machines to determine which were affected.",
                         "number": 1,
@@ -996,7 +1021,7 @@
                         },
                         "position": {
                             "x": 320,
-                            "y": 320
+                            "y": 360
                         },
                         "previous_function": "",
                         "previous_name": "vsphere_list_vms",
@@ -1019,6 +1044,9 @@
                         "angle": 0,
                         "approver": "admin",
                         "attrs": {
+                            ".background": {
+                                "stroke": "#637282"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -1042,12 +1070,18 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def should_quarantine_devices_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('should_quarantine_devices_prompt() called')\n    \n    # set user and message variables for phantom.prompt call\n    user = \"admin\"\n    message = \"\"\"The following host has automatically had a block port rule deployed to it in response to a potential WannaCry sighting: \n{0}\n\nDo you want to proceed with a full quarantine of these hosts?  Yes/No\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.sourceAddress\",\n    ]\n\n    # response options\n    options = {\n        \"type\": \"list\",\n        \"choices\": [\n            \"Yes\",\n            \"No\",\n        ]\n    }\n\n    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name=\"should_quarantine_devices_prompt\", parameters=parameters, options=options, callback=decision_1)\n\n    return",
@@ -1073,8 +1107,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 87,
-                        "line_start": 59,
+                        "line_end": 63,
+                        "line_start": 35,
                         "message": "The following host has automatically had a block port rule deployed to it in response to a potential WannaCry sighting: \n{0}\n\nDo you want to proceed with a full quarantine of these hosts?  Yes/No",
                         "name": "prompt",
                         "notes": "Prompt the incident response team before quarantining devices.",
@@ -1198,19 +1232,8 @@
                                     "type": "out"
                                 }
                             },
-                            ".outPorts>.port-1": {
-                                "port": {
-                                    "id": "out-2",
-                                    "type": "out"
-                                },
-                                "ref-x": 41,
-                                "ref-y": 82
-                            },
-                            ".outPorts>.port-1>.port-body": {
-                                "port": {
-                                    "id": "out-2",
-                                    "type": "out"
-                                }
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -1218,177 +1241,9 @@
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
-                            }
-                        },
-                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"should_quarantine_devices_prompt:action_result.summary.response\", \"==\", \"Yes\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        quarantine_device_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n    format_1(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "should_quarantine_devices_prompt",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "Check the yes or no response from the prompt.",
-                        "hasElse": true,
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "7348aefb-fc36-4a50-840d-bd9cfe2c2e3b",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 111,
-                        "line_start": 90,
-                        "name": "decision",
-                        "notes": "Check the yes or no response from the prompt.",
-                        "number": 1,
-                        "outPorts": [
-                            "out-1",
-                            "out-2"
-                        ],
-                        "outputs": [
-                            {
-                                "conditions": [
-                                    {
-                                        "comparison": "==",
-                                        "data_type": "",
-                                        "param": "should_quarantine_devices_prompt:action_result.summary.response",
-                                        "value": "Yes"
-                                    }
-                                ],
-                                "display": "If",
-                                "logic": "and",
-                                "type": "if"
                             },
-                            {
-                                "conditions": [
-                                    {
-                                        "comparison": "==",
-                                        "data_type": "",
-                                        "param": "",
-                                        "value": ""
-                                    }
-                                ],
-                                "display": "Else",
-                                "logic": "and",
-                                "type": "else"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 700,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "decision_1",
-                        "show_number": true,
-                        "size": {
-                            "height": 82,
-                            "width": 82
-                        },
-                        "state": "decision",
-                        "status": "",
-                        "type": "coa.Decision",
-                        "warn": "",
-                        "z": 95
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".border": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".inPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 1
-                            },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
-                            },
-                            ".outPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
                         "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"vsphere_list_vms:action_result.data.*.ip\", \"==\", \"artifact:*.cef.sourceAddress\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        snapshot_vm_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
@@ -1414,8 +1269,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 132,
-                        "line_start": 114,
+                        "line_end": 108,
+                        "line_start": 90,
                         "name": "filter",
                         "notes": "Proceed to snapshot with virtual machines that were detected in the Vectra alert.",
                         "number": 1,
@@ -1490,8 +1345,8 @@
                             }
                         },
                         "position": {
-                            "x": 700,
-                            "y": 320
+                            "x": 560,
+                            "y": 360
                         },
                         "previous_function": "",
                         "previous_name": "filter_1",
@@ -1507,158 +1362,6 @@
                         "z": 98
                     },
                     {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".border": {
-                                "transform": "rotate(45 30 70)"
-                            },
-                            ".inPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 1
-                            },
-                            ".outPorts>.port-0": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                },
-                                "ref-x": 83,
-                                "ref-y": 40
-                            },
-                            ".outPorts>.port-0>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_1() called')\n    \n    template = \"\"\"The following endpoints were affected:\n{0}\n\nAn incident responder determined that the affected hosts should not be qurantined, but they can be reviewed further and quarantined later in Mission Control.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"NSX_block_port:action_result.parameter.ip\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_1\")\n\n    create_ticket_1(container=container)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "should_quarantine_devices_prompt",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "Format a message to create a ticket if the devices are not being quarantined.",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "3730bebc-c6b3-4dae-a487-14eb978a48ac",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 180,
-                        "line_start": 161,
-                        "name": "format",
-                        "notes": "Format a message to create a ticket if the devices are not being quarantined.",
-                        "number": 1,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "parameters": [
-                            {
-                                "position": 0,
-                                "type": "",
-                                "value": "NSX_block_port:action_result.parameter.ip"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 800,
-                            "y": 200
-                        },
-                        "previous_function": "",
-                        "previous_name": "format_1",
-                        "show_number": true,
-                        "size": {
-                            "height": 82,
-                            "width": 82
-                        },
-                        "state": "format",
-                        "status": "",
-                        "template": "The following endpoints were affected:\n{0}\n\nAn incident responder determined that the affected hosts should not be qurantined, but they can be reviewed further and quarantined later in Mission Control.",
-                        "type": "coa.Format",
-                        "warn": false,
-                        "z": 102
-                    },
-                    {
                         "action": "snapshot vm",
                         "action_type": "generic",
                         "active": false,
@@ -1668,15 +1371,22 @@
                             "vmx_path": "filtered-data:filter_1:condition_1:vsphere_list_vms:action_result.data.*.vmx_path"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "vSphere",
                                 "app_version": "1.2.25",
+                                "config_type": "asset",
                                 "fields": {
                                     "download": "",
                                     "vmx_path": "filtered-data:filter_1:condition_1:vsphere_list_vms:action_result.data.*.vmx_path"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "vmwarevsphere",
                                 "output": [
                                     {
@@ -1755,21 +1465,16 @@
                                     }
                                 ],
                                 "product_name": "vSphere",
-                                "product_vendor": "VMware"
+                                "product_vendor": "VMware",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "snapshot vm"
                             },
-                            ".background": {
-                                "height": 88
-                            },
                             ".border": {
                                 "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1782,9 +1487,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -1796,19 +1506,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1817,7 +1532,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def snapshot_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('snapshot_vm_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'snapshot_vm_1' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:vsphere_list_vms:action_result.data.*.vmx_path\", \"filtered-data:filter_1:condition_1:vsphere_list_vms:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'snapshot_vm_1' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        parameters.append({\n            'download': \"\",\n            'vmx_path': filtered_results_item_1[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': filtered_results_item_1[1]},\n        })\n\n    phantom.act(\"snapshot vm\", parameters=parameters, assets=['vmwarevsphere'], name=\"snapshot_vm_1\")    \n    \n    return",
+                        "block_code": "def snapshot_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('snapshot_vm_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'snapshot_vm_1' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:vsphere_list_vms:action_result.data.*.vmx_path\", \"filtered-data:filter_1:condition_1:vsphere_list_vms:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'snapshot_vm_1' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'download': \"\",\n                'vmx_path': filtered_results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"snapshot vm\", parameters=parameters, assets=['vmwarevsphere'], name=\"snapshot_vm_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1842,9 +1557,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 231,
-                        "line_start": 208,
-                        "message": "",
+                        "line_end": 157,
+                        "line_start": 133,
+                        "message": "Configuring now",
                         "name": "snapshot vm",
                         "notes": "Take a snapshot of each affected virtual machine to attempt to save data from encryption.",
                         "number": 1,
@@ -1904,12 +1619,14 @@
                             }
                         },
                         "position": {
-                            "x": 940,
-                            "y": 320
+                            "x": 840,
+                            "y": 360
                         },
                         "previous_function": "",
                         "previous_name": "snapshot_vm_1",
-                        "required_params": {},
+                        "required_params": {
+                            "vmx_path": true
+                        },
                         "reviewer": "",
                         "show_number": false,
                         "size": {
@@ -1924,43 +1641,49 @@
                         "z": 104
                     },
                     {
-                        "action": "quarantine device",
+                        "action": "block ip",
                         "action_type": "contain",
                         "active": false,
                         "active_keys": {},
                         "active_values": {
-                            "ip_hostname": "NSX_block_port:action_result.parameter.ip"
+                            "ip": "artifact:*.cef.sourceAddress",
+                            "is_source_address": "",
+                            "vsys": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
-                                "app_name": "Carbon Black Response",
-                                "app_version": "1.2.80",
+                                "action": "",
+                                "active": true,
+                                "app_name": "NSX",
+                                "app_version": "1.0.1",
+                                "config_type": "asset",
                                 "fields": {
-                                    "ip_hostname": "NSX_block_port:action_result.parameter.ip"
+                                    "ip": "artifact:*.cef.sourceAddress"
                                 },
-                                "name": "carbonblack",
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
+                                "name": "vmwarensx",
                                 "output": [
                                     {
-                                        "column_name": "Status",
+                                        "column_name": "ip",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "status",
                                         "column_order": 1,
                                         "data_path": "action_result.status",
                                         "data_type": "string"
                                     },
                                     {
-                                        "column_name": "Name/IP",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "host name",
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.parameter.ip_hostname",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Message",
-                                        "column_order": 1,
                                         "data_path": "action_result.message",
                                         "data_type": "string"
                                     },
@@ -1973,19 +1696,17 @@
                                         "data_type": "numeric"
                                     }
                                 ],
-                                "product_name": "Carbon Black",
-                                "product_vendor": "Bit9"
+                                "product_name": "NSX",
+                                "product_vendor": "VMware",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
-                                "text": "quarantine device"
+                                "text": "NSX block port"
                             },
                             ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#3D9959"
+                                "stroke": "#E6984E"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1998,9 +1719,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2012,19 +1738,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Contain"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_contain.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2033,36 +1767,36 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def quarantine_device_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('quarantine_device_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'quarantine_device_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['NSX_block_port:action_result.parameter.ip', 'NSX_block_port:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'quarantine_device_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip_hostname': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"quarantine device\", parameters=parameters, assets=['carbonblack'], name=\"quarantine_device_1\")    \n    \n    return",
+                        "block_code": "def NSX_block_port(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('NSX_block_port() called')\n\n    # collect data for 'NSX_block_port' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'NSX_block_port' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['vmwarensx'], callback=should_quarantine_devices_prompt, name=\"NSX_block_port\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
                         "color": "#3D9959",
                         "connected_to_start": true,
-                        "connection_name": "should_quarantine_devices_prompt",
-                        "connection_type": "action",
+                        "connection_name": "",
+                        "connection_type": "",
                         "custom_callback": "",
                         "custom_code": "",
                         "custom_join": "",
-                        "custom_name": "",
+                        "custom_name": "NSX block port",
                         "delay": 0,
-                        "description": "Isolate the devices from the rest of the network to prevent malware propagation.",
+                        "description": "Use the virtual firewall to block command and control traffic by the ransomware.",
                         "has_custom": false,
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
-                        "id": "ebfc9a85-f1ed-4b72-87a3-439017579eac",
+                        "id": "08ca52bb-b741-4516-aca3-2184d9df92d9",
                         "inPorts": [
                             "in"
                         ],
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 158,
-                        "line_start": 135,
-                        "message": "",
-                        "name": "quarantine device",
-                        "notes": "Isolate the devices from the rest of the network to prevent malware propagation.",
+                        "line_end": 233,
+                        "line_start": 212,
+                        "message": "Configuring now",
+                        "name": "block ip",
+                        "notes": "Use the virtual firewall to block command and control traffic by the ransomware.",
                         "number": 1,
                         "outPorts": [
                             "out"
@@ -2120,13 +1854,13 @@
                             }
                         },
                         "position": {
-                            "x": 940,
+                            "x": 320,
                             "y": 80
                         },
                         "previous_function": "",
-                        "previous_name": "quarantine_device_1",
+                        "previous_name": "NSX_block_port",
                         "required_params": {
-                            "ip_hostname": true
+                            "ip": true
                         },
                         "reviewer": "",
                         "show_number": false,
@@ -2135,11 +1869,209 @@
                             "width": 168
                         },
                         "state": "asset",
-                        "status": "",
+                        "status": "warn",
                         "title": "Contain",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 105
+                        "z": 107
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(0 0 0)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".format": {
+                                "text": "format ticket"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port": {
+                                "ref-x": 0,
+                                "ref-y": 0
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_ticket() called')\n    \n    template = \"\"\"The following endpoints were affected:\n{0}\n\nAn incident responder determined that the affected hosts should not be qurantined, but they can be reviewed further and quarantined later in Mission Control.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"NSX_block_port:action_result.parameter.ip\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_ticket\")\n\n    create_ticket_1(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "should_quarantine_devices_prompt",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "format ticket",
+                        "description": "Format a message to create a ticket if the devices are not being quarantined.",
+                        "format": "format",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "3730bebc-c6b3-4dae-a487-14eb978a48ac",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 130,
+                        "line_start": 111,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "Format a message to create a ticket if the devices are not being quarantined.",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": "NSX_block_port:action_result.parameter.ip"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 840,
+                            "y": 220
+                        },
+                        "previous_function": "",
+                        "previous_name": "format_ticket",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "The following endpoints were affected:\n{0}\n\nAn incident responder determined that the affected hosts should not be qurantined, but they can be reviewed further and quarantined later in Mission Control.",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 110
                     },
                     {
                         "action": "create ticket",
@@ -2147,25 +2079,32 @@
                         "active": false,
                         "active_keys": {},
                         "active_values": {
-                            "description": "The following endpoits were affected...",
+                            "description": "format_ticket:formatted_data",
                             "fields": "",
                             "short_description": "Wanna Cry Endpoints Affected - No Quarantine",
-                            "table": "",
+                            "table": "incident",
                             "vault_id": ""
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "ServiceNow",
                                 "app_version": "1.2.33",
+                                "config_type": "asset",
                                 "fields": {
-                                    "description": "The following endpoits were affected...",
+                                    "description": "format_ticket:formatted_data",
                                     "fields": "",
                                     "short_description": "Wanna Cry Endpoints Affected - No Quarantine",
-                                    "table": "",
+                                    "table": "incident",
                                     "vault_id": ""
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "servicenow",
                                 "output": [
                                     {
@@ -2656,18 +2595,13 @@
                                     }
                                 ],
                                 "product_name": "ServiceNow",
-                                "product_vendor": "ServiceNow"
+                                "product_vendor": "ServiceNow",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
                                 "text": "create ticket"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2680,9 +2614,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2694,19 +2633,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2715,7 +2659,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_ticket_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_ticket_1' call\n\n    parameters = []\n    \n    # build parameters list for 'create_ticket_1' call\n    parameters.append({\n        'short_description': \"Wanna Cry Endpoints Affected - No Quarantine\",\n        'table': \"\",\n        'vault_id': \"\",\n        'description': \"The following endpoits were affected...\",\n        'fields': \"\",\n    })\n\n    phantom.act(\"create ticket\", parameters=parameters, assets=['servicenow'], name=\"create_ticket_1\")    \n    \n    return",
+                        "block_code": "def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_ticket_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_ticket_1' call\n    formatted_data_1 = phantom.get_format_data(name='format_ticket')\n\n    parameters = []\n    \n    # build parameters list for 'create_ticket_1' call\n    parameters.append({\n        'short_description': \"Wanna Cry Endpoints Affected - No Quarantine\",\n        'table': \"incident\",\n        'vault_id': \"\",\n        'description': formatted_data_1,\n        'fields': \"\",\n    })\n\n    phantom.act(\"create ticket\", parameters=parameters, assets=['servicenow'], name=\"create_ticket_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2740,9 +2684,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 205,
-                        "line_start": 183,
-                        "message": "",
+                        "line_end": 209,
+                        "line_start": 186,
+                        "message": "Configuring now",
                         "name": "create ticket",
                         "notes": "Use a ticketing system to request further investigation of the ransomware alert.",
                         "number": 1,
@@ -2802,8 +2746,8 @@
                             }
                         },
                         "position": {
-                            "x": 940,
-                            "y": 200
+                            "x": 1080,
+                            "y": 220
                         },
                         "previous_function": "",
                         "previous_name": "create_ticket_1",
@@ -2814,50 +2758,58 @@
                             "height": 112,
                             "width": 168
                         },
-                        "state": "asset",
+                        "state": "action_assets",
                         "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
-                        "warn": false,
-                        "z": 106
+                        "warn": "",
+                        "z": 111
                     },
                     {
-                        "action": "block ip",
+                        "action": "quarantine device",
                         "action_type": "contain",
                         "active": false,
                         "active_keys": {},
                         "active_values": {
-                            "ip": "artifact:*.cef.sourceAddress",
-                            "is_source_address": "",
-                            "vsys": ""
+                            "ip_hostname": "NSX_block_port:action_result.parameter.ip"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
-                                "app_name": "NSX",
-                                "app_version": "1.0.1",
+                                "action": "",
+                                "active": true,
+                                "app_name": "Carbon Black Response",
+                                "app_version": "1.2.80",
+                                "config_type": "asset",
                                 "fields": {
-                                    "ip": "artifact:*.cef.sourceAddress"
+                                    "ip_hostname": "NSX_block_port:action_result.parameter.ip"
                                 },
-                                "name": "vmwarensx",
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
+                                "name": "carbonblack",
                                 "output": [
                                     {
-                                        "column_name": "ip",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.parameter.ip",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "status",
+                                        "column_name": "Status",
                                         "column_order": 1,
                                         "data_path": "action_result.status",
                                         "data_type": "string"
                                     },
                                     {
+                                        "column_name": "Name/IP",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "host name",
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Message",
+                                        "column_order": 1,
                                         "data_path": "action_result.message",
                                         "data_type": "string"
                                     },
@@ -2870,19 +2822,14 @@
                                         "data_type": "numeric"
                                     }
                                 ],
-                                "product_name": "NSX",
-                                "product_vendor": "VMware"
+                                "product_name": "Carbon Black",
+                                "product_vendor": "Bit9",
+                                "type": ""
                             }
                         ],
                         "attrs": {
                             ".action": {
-                                "text": "NSX block port"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#3D9959"
+                                "text": "quarantine device"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2895,9 +2842,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -2909,19 +2861,24 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Contain"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_contain.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2930,36 +2887,36 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def NSX_block_port(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('NSX_block_port() called')\n\n    # collect data for 'NSX_block_port' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'NSX_block_port' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['vmwarensx'], callback=should_quarantine_devices_prompt, name=\"NSX_block_port\")    \n    \n    return",
+                        "block_code": "def quarantine_device_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('quarantine_device_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'quarantine_device_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['NSX_block_port:action_result.parameter.ip', 'NSX_block_port:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'quarantine_device_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip_hostname': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"quarantine device\", parameters=parameters, assets=['carbonblack'], name=\"quarantine_device_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
                         "color": "#3D9959",
                         "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
+                        "connection_name": "should_quarantine_devices_prompt",
+                        "connection_type": "action",
                         "custom_callback": "",
                         "custom_code": "",
                         "custom_join": "",
-                        "custom_name": "NSX block port",
+                        "custom_name": "",
                         "delay": 0,
-                        "description": "Use the virtual firewall to block command and control traffic by the ransomware.",
+                        "description": "Isolate the devices from the rest of the network to prevent malware propagation.",
                         "has_custom": false,
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
-                        "id": "08ca52bb-b741-4516-aca3-2184d9df92d9",
+                        "id": "ebfc9a85-f1ed-4b72-87a3-439017579eac",
                         "inPorts": [
                             "in"
                         ],
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 56,
-                        "line_start": 35,
-                        "message": "",
-                        "name": "block ip",
-                        "notes": "Use the virtual firewall to block command and control traffic by the ransomware.",
+                        "line_end": 183,
+                        "line_start": 160,
+                        "message": "Configuring now",
+                        "name": "quarantine device",
+                        "notes": "Isolate the devices from the rest of the network to prevent malware propagation.",
                         "number": 1,
                         "outPorts": [
                             "out"
@@ -3017,13 +2974,13 @@
                             }
                         },
                         "position": {
-                            "x": 320,
+                            "x": 840,
                             "y": 80
                         },
                         "previous_function": "",
-                        "previous_name": "NSX_block_port",
+                        "previous_name": "quarantine_device_1",
                         "required_params": {
-                            "ip": true
+                            "ip_hostname": true
                         },
                         "reviewer": "",
                         "show_number": false,
@@ -3036,18 +2993,209 @@
                         "title": "Contain",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 107
+                        "z": 112
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".border": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".outPorts>.port-1": {
+                                "port": {
+                                    "id": "out-2",
+                                    "type": "out"
+                                },
+                                "ref-x": 41,
+                                "ref-y": 82
+                            },
+                            ".outPorts>.port-1>.port-body": {
+                                "port": {
+                                    "id": "out-2",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"should_quarantine_devices_prompt:action_result.summary.response\", \"==\", \"Yes\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        quarantine_device_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n    format_ticket(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "should_quarantine_devices_prompt",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "Check the yes or no response from the prompt.",
+                        "hasElse": true,
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "7348aefb-fc36-4a50-840d-bd9cfe2c2e3b",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 87,
+                        "line_start": 66,
+                        "name": "decision",
+                        "notes": "Check the yes or no response from the prompt.",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1",
+                            "out-2"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "should_quarantine_devices_prompt:action_result.summary.response",
+                                        "value": "Yes"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "",
+                                        "value": ""
+                                    }
+                                ],
+                                "display": "Else",
+                                "logic": "and",
+                                "type": "else"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 700,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "decision_1",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "decision",
+                        "status": "",
+                        "type": "coa.Decision",
+                        "warn": "",
+                        "z": 113
                     }
                 ]
             },
             "notes": "This playbook uses the following Apps:\n - VMWare vSphere (list vms, snapshot vm) [asset name = vmwaresphere] - enumerates and snapshots virtual machines\n - VMWare NSX (block ip) [asset name = vmwarensx] - allows control of the virtual firewall in NSX\n - CarbonBlack Response (quarantine device) [asset name = carbonblack] - isolate machines from the network using a Carbon Black Response endpoint agent\n - ServiceNow (create ticket) [asset name = servicenow] - track further investigation with a service ticket\n\nDeployment Notes:\n - non-virtual machines cannot be snapshotted but they can still be quarantined with Carbon Black\n - the user \"admin\" can be replaced by the correct team member in should_quarantine_devices_prompt()\n - Mission Control can be used to track which ip addresses have been blocked and which endpoints have been quarantined\n\nVMWorld 2017 Demonstration: https://rackconnection.rackspace.com/youtube-us-region/powering-next-level-security-with-vmware-technology"
         },
-        "schema": 2,
-        "version": "3.0.264"
+        "schema": 3,
+        "version": "3.5.149"
     },
-    "create_time": "2017-12-04T23:38:25.318715+00:00",
+    "create_time": "2018-02-16T21:11:12.704659+00:00",
     "draft_mode": false,
     "labels": [
-        "vectra"
+        "events"
     ]
 }
