@@ -17,53 +17,30 @@ def on_start(container):
     return
 
 """
-Unblock the specified source IP address for the device.
+Immediately suspend the virtual machine to prevent further damage.
 """
-def unblock_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('unblock_ip_1() called')
-
-    # collect data for 'unblock_ip_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.dvc', 'artifact:*.id'])
+def suspend_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('suspend_vm_1() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'suspend_vm_1' call
+    results_data_1 = phantom.collect2(container=container, datapath=['snapshot_vm_1:action_result.parameter.vmx_path', 'snapshot_vm_1:action_result.parameter.context.artifact_id'], action_results=results)
 
     parameters = []
     
-    # build parameters list for 'unblock_ip_1' call
-    for container_item in container_data:
-        parameters.append({
-            'ip': container_item[0],
-            'vsys': "",
-            'is_source_address': True,
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': container_item[1]},
-        })
+    # build parameters list for 'suspend_vm_1' call
+    for results_item_1 in results_data_1:
+        if results_item_1[0]:
+            parameters.append({
+                'download': False,
+                'vmx_path': results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[1]},
+            })
 
-    phantom.act("unblock ip", parameters=parameters, assets=['pan_firewall'], name="unblock_ip_1")    
-    
-    return
+    phantom.act("suspend vm", parameters=parameters, assets=['vmwarevsphere'], name="suspend_vm_1")
 
-"""
-Block the specified source IP address for the device.
-"""
-def block_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('block_ip_1() called')
-
-    # collect data for 'block_ip_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.dvc', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'block_ip_1' call
-    for container_item in container_data:
-        parameters.append({
-            'ip': container_item[0],
-            'vsys': "",
-            'is_source_address': True,
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': container_item[1]},
-        })
-
-    phantom.act("block ip", parameters=parameters, assets=['pan_firewall'], name="block_ip_1")    
-    
     return
 
 """
@@ -96,36 +73,9 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
 
     # call connected blocks if condition 2 matched
     if matched_artifacts_2 or matched_results_2:
-        unblock_ip_1(action=action, success=success, container=container, results=results, handle=handle)
+        unblock_ip(action=action, success=success, container=container, results=results, handle=handle)
         return
 
-    return
-
-"""
-Immediately suspend the virtual machine to prevent further damage.
-"""
-def suspend_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('suspend_vm_1() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'suspend_vm_1' call
-    results_data_1 = phantom.collect2(container=container, datapath=['snapshot_vm_1:action_result.parameter.vmx_path', 'snapshot_vm_1:action_result.parameter.context.artifact_id'], action_results=results)
-
-    parameters = []
-    
-    # build parameters list for 'suspend_vm_1' call
-    for results_item_1 in results_data_1:
-        if results_item_1[0]:
-            parameters.append({
-                'vmx_path': results_item_1[0],
-                'download': False,
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[1]},
-            })
-
-    phantom.act("suspend vm", parameters=parameters, assets=['vmwarevsphere'], name="suspend_vm_1")    
-    
     return
 
 """
@@ -147,7 +97,7 @@ def decision_2(action=None, success=None, container=None, results=None, handle=N
         return
 
     # call connected blocks for 'else' condition 2
-    block_ip_1(action=action, success=success, container=container, results=results, handle=handle)
+    block_ip(action=action, success=success, container=container, results=results, handle=handle)
 
     return
 
@@ -166,14 +116,14 @@ def snapshot_vm_1(action=None, success=None, container=None, results=None, handl
     for container_item in container_data:
         if container_item[0]:
             parameters.append({
-                'vmx_path': container_item[0],
                 'download': True,
+                'vmx_path': container_item[0],
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], callback=decision_3, name="snapshot_vm_1")    
-    
+    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], callback=decision_3, name="snapshot_vm_1")
+
     return
 
 """
@@ -194,6 +144,58 @@ def decision_3(action=None, success=None, container=None, results=None, handle=N
     if matched_artifacts_1 or matched_results_1:
         suspend_vm_1(action=action, success=success, container=container, results=results, handle=handle)
         return
+
+    return
+
+"""
+Block the specified source IP address for the device.
+"""
+def block_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('block_ip() called')
+
+    # collect data for 'block_ip' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.dvc', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'block_ip' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'ip': container_item[0],
+                'vsys': "vsys1",
+                'is_source_address': True,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("block ip", parameters=parameters, assets=['pan'], name="block_ip")
+
+    return
+
+"""
+Unblock the specified source IP address for the device.
+"""
+def unblock_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('unblock_ip() called')
+
+    # collect data for 'unblock_ip' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.dvc', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'unblock_ip' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'ip': container_item[0],
+                'vsys': "vsys1",
+                'is_source_address': True,
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("unblock ip", parameters=parameters, assets=['pan'], name="unblock_ip")
 
     return
 
