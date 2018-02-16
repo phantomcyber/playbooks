@@ -118,7 +118,7 @@ def filter_matching_IP(action=None, success=None, container=None, results=None, 
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        join_format_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        join_format_ticket(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -128,7 +128,7 @@ def list_endpoints_1(action=None, success=None, container=None, results=None, ha
     parameters = []
 
     phantom.act("list endpoints", parameters=parameters, assets=['carbonblack'], callback=filter_7, name="list_endpoints_1")
-    
+
     return
 
 def filter_7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -155,7 +155,7 @@ def create_ticket_1(action=None, success=None, container=None, results=None, han
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'create_ticket_1' call
-    formatted_data_1 = phantom.get_format_data(name='format_1')
+    formatted_data_1 = phantom.get_format_data(name='format_ticket')
 
     parameters = []
     
@@ -168,12 +168,12 @@ def create_ticket_1(action=None, success=None, container=None, results=None, han
         'fields': "",
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], name="create_ticket_1")    
-    
+    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], name="create_ticket_1")
+
     return
 
-def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_1() called')
+def format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_ticket() called')
     
     template = """The following endpoints have active connections with IP addresses associated with wannacry: 
 {0}
@@ -187,20 +187,20 @@ The following endpoints have a wannacry fileHash present on their system:
         "hunt_file_1:action_result.data.*.process.results.*.hostname",
     ]
 
-    phantom.format(container=container, template=template, parameters=parameters, name="format_1")
+    phantom.format(container=container, template=template, parameters=parameters, name="format_ticket")
 
     create_ticket_1(container=container)
 
     return
 
-def join_format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('join_format_1() called')
+def join_format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('join_format_ticket() called')
 
     # check if all connected incoming actions are done i.e. have succeeded or failed
     if phantom.actions_done([ 'list_connections_1', 'get_system_info_1' ]):
         
-        # call connected block "format_1"
-        format_1(container=container, handle=handle)
+        # call connected block "format_ticket"
+        format_ticket(container=container, handle=handle)
     
     return
 
@@ -221,7 +221,7 @@ def hunt_file_1(action=None, success=None, container=None, results=None, handle=
                 'type': "",
             })
 
-    phantom.act("hunt file", parameters=parameters, assets=['carbonblack'], callback=join_format_1, name="hunt_file_1")    
+    phantom.act("hunt file", parameters=parameters, assets=['carbonblack'], callback=get_system_info_1, name="hunt_file_1")    
     
     return
 
@@ -246,8 +246,8 @@ def list_connections_1(action=None, success=None, container=None, results=None, 
             'context': {'artifact_id': results_item_1[1]},
         })
 
-    phantom.act("list connections", parameters=parameters, assets=['carbonblack'], callback=filter_matching_IP, name="list_connections_1")    
-    
+    phantom.act("list connections", parameters=parameters, assets=['carbonblack'], callback=filter_matching_IP, name="list_connections_1")
+
     return
 
 def get_system_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -269,8 +269,8 @@ def get_system_info_1(action=None, success=None, container=None, results=None, h
             'context': {'artifact_id': results_item_1[1]},
         })
 
-    phantom.act("get system info", parameters=parameters, assets=['carbonblack'], callback=filter_6, name="get_system_info_1", parent_action=action)    
-    
+    phantom.act("get system info", parameters=parameters, assets=['carbonblack'], callback=filter_6, name="get_system_info_1", parent_action=action)
+
     return
 
 def filter_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -287,7 +287,7 @@ def filter_6(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        join_format_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        join_format_ticket(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
