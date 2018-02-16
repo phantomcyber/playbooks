@@ -8,7 +8,7 @@
             "clean": true,
             "code_block": "",
             "description": "Process a detection created by Vectra and send the relevant information in a notification email.\n\nAuthor: Chris Johnson",
-            "hash": "3271ba2d810b184330b7e3a76c949530012a8ac3",
+            "hash": "7cd10bb24ee9a48c94bb561cda93623d9f282fc8",
             "joint": {
                 "cells": [
                     {
@@ -31,18 +31,17 @@
                             ".title": {
                                 "text": "END"
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
@@ -127,15 +126,15 @@
                             }
                         },
                         "position": {
-                            "x": 1000,
-                            "y": 200
+                            "x": 1100,
+                            "y": 220
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "END",
@@ -163,20 +162,21 @@
                                 }
                             },
                             ".title": {
+                                "ref-x": 33,
                                 "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
                             },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
                             "g.notes": {
-                                "display": "none",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "color": "#FFFFFF"
+                                "display": "block"
                             }
                         },
                         "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'decision_1' block\n    decision_1(container=container)\n\n    return",
@@ -261,15 +261,15 @@
                             }
                         },
                         "position": {
-                            "x": 80,
+                            "x": 100,
                             "y": 100
                         },
                         "previous_function": "",
                         "previous_name": "",
                         "show_number": true,
                         "size": {
-                            "height": 48,
-                            "width": 96
+                            "height": 54,
+                            "width": 80
                         },
                         "status": "",
                         "title": "START",
@@ -396,6 +396,12 @@
                             "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
                         },
                         "type": "link",
+                        "vertices": [
+                            {
+                                "x": 1060,
+                                "y": 120
+                            }
+                        ],
                         "z": 25
                     },
                     {
@@ -521,6 +527,260 @@
                         "z": 52
                     },
                     {
+                        "action": "send email",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "attachments": "",
+                            "body": "format_1:formatted_data",
+                            "from": "phantom@example.com",
+                            "subject": "Notification from Vectra via Phantom",
+                            "to": "soc_team@example.com"
+                        },
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "",
+                                "active": true,
+                                "app_name": "SMTP",
+                                "app_version": "1.2.29",
+                                "config_type": "asset",
+                                "fields": {
+                                    "attachments": "",
+                                    "body": "format_email:formatted_data",
+                                    "from": "phantom@example.com",
+                                    "subject": "Notification from Vectra via Phantom",
+                                    "to": "soc_team@example.com"
+                                },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
+                                "name": "smtp",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.body",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.parameter.to",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.parameter.from",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "vault id"
+                                        ],
+                                        "data_path": "action_result.parameter.attachments",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.subject",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "product_name": "SMTP",
+                                "product_vendor": "Generic",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "send email"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Generic"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_email_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_email_1' call\n    formatted_data_1 = phantom.get_format_data(name='format_email')\n\n    parameters = []\n    \n    # build parameters list for 'send_email_1' call\n    parameters.append({\n        'body': formatted_data_1,\n        'to': \"soc_team@example.com\",\n        'from': \"phantom@example.com\",\n        'attachments': \"\",\n        'subject': \"Notification from Vectra via Phantom\",\n    })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"send_email_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#5094D4",
+                        "connected_to_start": true,
+                        "connection_name": "get detections",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Send the email.",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "39bb5fc4-bb2e-4ed1-b23a-43500bb071bf",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 120,
+                        "line_start": 97,
+                        "message": "Configuring now",
+                        "name": "send email",
+                        "notes": "Send the email.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 860,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "send_email_1",
+                        "required_params": {
+                            "body": true,
+                            "to": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "asset",
+                        "status": "",
+                        "title": "Generic",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 74
+                    },
+                    {
                         "active": false,
                         "angle": 0,
                         "attrs": {
@@ -567,11 +827,14 @@
                                     "type": "out"
                                 }
                             },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
                             },
                             "g.notes": {
-                                "display": "none",
+                                "display": "block",
                                 "opacity": 1
                             }
                         },
@@ -703,7 +966,7 @@
                         "status": "",
                         "type": "coa.Decision",
                         "warn": "",
-                        "z": 70
+                        "z": 76
                     },
                     {
                         "action": "get detections",
@@ -717,17 +980,24 @@
                             "state": "active"
                         },
                         "angle": 0,
+                        "app": "",
                         "approver": "",
                         "assets": [
                             {
+                                "action": "",
+                                "active": true,
                                 "app_name": "Vectra Active Enforcement",
                                 "app_version": "3.0.2",
+                                "config_type": "asset",
                                 "fields": {
                                     "dest_port": "",
                                     "dettypes": "Suspicious Remote Execution",
                                     "src_ip": "artifact:*.cef.dvc",
                                     "state": "active"
                                 },
+                                "id": "-",
+                                "loaded": false,
+                                "missing": false,
                                 "name": "vae-demo",
                                 "output": [
                                     {
@@ -841,7 +1111,8 @@
                                     }
                                 ],
                                 "product_name": "Vectra Active Enforcement",
-                                "product_vendor": "Vectra"
+                                "product_vendor": "Vectra",
+                                "type": ""
                             }
                         ],
                         "attrs": {
@@ -849,15 +1120,12 @@
                                 "text": "get detections"
                             },
                             ".background": {
-                                "height": 88
+                                "stroke": "#E6984E"
                             },
                             ".border": {
                                 "height": 88,
                                 "opacity": 1,
                                 "stroke": "#E6984E"
-                            },
-                            ".color-band": {
-                                "fill": "#654796"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -870,9 +1138,14 @@
                                 }
                             },
                             ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
@@ -884,19 +1157,27 @@
                                     "type": "out"
                                 }
                             },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 1
                             },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#E6984E"
@@ -905,7 +1186,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def get_detections_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_detections_1() called')\n\n    # collect data for 'get_detections_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.dvc', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_detections_1' call\n    for container_item in container_data:\n        parameters.append({\n            'src_ip': container_item[0],\n            'state': \"active\",\n            'dettypes': \"Suspicious Remote Execution\",\n            'dest_port': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[1]},\n        })\n\n    phantom.act(\"get detections\", parameters=parameters, assets=['vae-demo'], callback=format_1, name=\"get_detections_1\")    \n    \n    return",
+                        "block_code": "def get_detections_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_detections_1() called')\n\n    # collect data for 'get_detections_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.dvc', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_detections_1' call\n    for container_item in container_data:\n        parameters.append({\n            'src_ip': container_item[0],\n            'state': \"active\",\n            'dettypes': \"Suspicious Remote Execution\",\n            'dest_port': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[1]},\n        })\n\n    phantom.act(\"get detections\", parameters=parameters, assets=['vae-demo'], callback=format_email, name=\"get_detections_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -930,9 +1211,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 120,
-                        "line_start": 97,
-                        "message": "",
+                        "line_end": 64,
+                        "line_start": 41,
+                        "message": "Configuring now",
                         "name": "get detections",
                         "notes": "Query for matching detections to retrieve the type.",
                         "number": 1,
@@ -1009,17 +1290,20 @@
                         "title": "Investigate",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 71
+                        "z": 77
                     },
                     {
                         "active": false,
                         "angle": 0,
                         "attrs": {
                             ".background": {
-                                "transform": "rotate(45 30 70)"
+                                "transform": "rotate(0 0 0)"
                             },
                             ".border": {
                                 "transform": "rotate(45 30 70)"
+                            },
+                            ".format": {
+                                "text": "format email"
                             },
                             ".inPorts>.port-0>.port-body": {
                                 "port": {
@@ -1027,8 +1311,32 @@
                                     "type": "in"
                                 }
                             },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
                             ".number": {
                                 "text": 1
+                            },
+                            ".outPorts>.port": {
+                                "ref-x": 0,
+                                "ref-y": 0
                             },
                             ".outPorts>.port-0": {
                                 "port": {
@@ -1044,18 +1352,34 @@
                                     "type": "out"
                                 }
                             },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
                             "g.error": {
                                 "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/icon_triangle_warn.svg"
                             },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
-                        "block_code": "def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_1() called')\n    \n    template = \"\"\"This is a notification that the following host has exceeded the threshold and needs further investigation:\n\nHostname:\n{0} \n\nIP:\n{1} \n\nDetections:\n{2}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.dvchost\",\n        \"artifact:*.cef.dvc\",\n        \"get_detections_1:action_result.data.*.*.type\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_1\")\n\n    send_email_1(container=container)\n\n    return",
+                        "block_code": "def format_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_email() called')\n    \n    template = \"\"\"This is a notification that the following host has exceeded the threshold and needs further investigation:\n\nHostname:\n{0} \n\nIP:\n{1} \n\nDetections:\n{2}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.dvchost\",\n        \"artifact:*.cef.dvc\",\n        \"get_detections_1:action_result.data.*.*.type\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_email\")\n\n    send_email_1(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1065,8 +1389,9 @@
                         "custom_callback": "",
                         "custom_code": "",
                         "custom_join": "",
-                        "custom_name": "",
+                        "custom_name": "format email",
                         "description": "Build the email body for the notification.",
+                        "format": "format",
                         "has_custom": false,
                         "has_custom_block": false,
                         "has_custom_callback": false,
@@ -1078,8 +1403,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 68,
-                        "line_start": 41,
+                        "line_end": 94,
+                        "line_start": 67,
+                        "message": "Configuring now",
                         "name": "format",
                         "notes": "Build the email body for the notification.",
                         "number": 1,
@@ -1160,7 +1486,7 @@
                             "y": 80
                         },
                         "previous_function": "",
-                        "previous_name": "format_1",
+                        "previous_name": "format_email",
                         "show_number": true,
                         "size": {
                             "height": 82,
@@ -1169,260 +1495,19 @@
                         "state": "format",
                         "status": "",
                         "template": "This is a notification that the following host has exceeded the threshold and needs further investigation:\n\nHostname:\n{0} \n\nIP:\n{1} \n\nDetections:\n{2}",
+                        "title": "format",
                         "type": "coa.Format",
                         "warn": false,
-                        "z": 73
-                    },
-                    {
-                        "action": "send email",
-                        "action_type": "generic",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "attachments": "",
-                            "body": "format_1:formatted_data",
-                            "from": "phantom@example.com",
-                            "subject": "Notification from Vectra via Phantom",
-                            "to": "soc_team@example.com"
-                        },
-                        "angle": 0,
-                        "approver": "",
-                        "assets": [
-                            {
-                                "app_name": "SMTP",
-                                "app_version": "1.2.29",
-                                "fields": {
-                                    "attachments": "",
-                                    "body": "format_1:formatted_data",
-                                    "from": "phantom@example.com",
-                                    "subject": "Notification from Vectra via Phantom",
-                                    "to": "soc_team@example.com"
-                                },
-                                "name": "smtp",
-                                "output": [
-                                    {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.body",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "email"
-                                        ],
-                                        "data_path": "action_result.parameter.to",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "email"
-                                        ],
-                                        "data_path": "action_result.parameter.from",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "vault id"
-                                        ],
-                                        "data_path": "action_result.parameter.attachments",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.subject",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "product_name": "SMTP",
-                                "product_vendor": "Generic"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "send email"
-                            },
-                            ".background": {
-                                "height": 88
-                            },
-                            ".color-band": {
-                                "fill": "#5094D4"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "ref-x": 16,
-                                "ref-y": 70,
-                                "text": ""
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".status": {
-                                "fill": "#FFFFFF",
-                                "ref-y": 68
-                            },
-                            ".title": {
-                                "text": "Generic"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "fill": "#FFFFFF"
-                            }
-                        },
-                        "block_code": "def send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_email_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_email_1' call\n    formatted_data_1 = phantom.get_format_data(name='format_1')\n\n    parameters = []\n    \n    # build parameters list for 'send_email_1' call\n    parameters.append({\n        'body': formatted_data_1,\n        'to': \"soc_team@example.com\",\n        'from': \"phantom@example.com\",\n        'attachments': \"\",\n        'subject': \"Notification from Vectra via Phantom\",\n    })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['smtp'], name=\"send_email_1\")    \n    \n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "color": "#5094D4",
-                        "connected_to_start": true,
-                        "connection_name": "get detections",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": 0,
-                        "description": "Send the email.",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "39bb5fc4-bb2e-4ed1-b23a-43500bb071bf",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 94,
-                        "line_start": 71,
-                        "message": "",
-                        "name": "send email",
-                        "notes": "Send the email.",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 760,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "send_email_1",
-                        "required_params": {
-                            "body": true,
-                            "to": true
-                        },
-                        "reviewer": "",
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "asset",
-                        "status": "",
-                        "title": "Generic",
-                        "type": "coa.Action",
-                        "warn": false,
-                        "z": 74
+                        "z": 78
                     }
                 ]
             },
             "notes": "This playbook uses the following Apps:\n - Vectra Active Enforcement (get detections) [asset name = vae-demo] - retrieve information about the detection\n - SMTP (send email) [asset name = smtp] - send an email\n\nDeployment notes:\n - The \"from\" and \"to\" addresses for the SMTP email should be modified for your environment\n - This Playbook processes containers created by Vectra using the following fields:\n    artifact:*.cef.act - the action, such as \"block\"\n    artifact:*.cef.dvchost - the hostname of the detected device\n    artifact:*.cef.dvc - the IP address of the detected device"
         },
-        "schema": 2,
-        "version": "3.0.284"
+        "schema": 3,
+        "version": "3.5.149"
     },
-    "create_time": "2018-01-24T00:35:34.466847+00:00",
+    "create_time": "2018-02-16T00:44:45.257077+00:00",
     "draft_mode": false,
     "labels": [
         "events"

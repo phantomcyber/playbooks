@@ -36,62 +36,6 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
     return
 
 """
-Build the email body for the notification.
-"""
-def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_1() called')
-    
-    template = """This is a notification that the following host has exceeded the threshold and needs further investigation:
-
-Hostname:
-{0} 
-
-IP:
-{1} 
-
-Detections:
-{2}"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "artifact:*.cef.dvchost",
-        "artifact:*.cef.dvc",
-        "get_detections_1:action_result.data.*.*.type",
-    ]
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_1")
-
-    send_email_1(container=container)
-
-    return
-
-"""
-Send the email.
-"""
-def send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('send_email_1() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'send_email_1' call
-    formatted_data_1 = phantom.get_format_data(name='format_1')
-
-    parameters = []
-    
-    # build parameters list for 'send_email_1' call
-    parameters.append({
-        'body': formatted_data_1,
-        'to': "soc_team@example.com",
-        'from': "phantom@example.com",
-        'attachments': "",
-        'subject': "Notification from Vectra via Phantom",
-    })
-
-    phantom.act("send email", parameters=parameters, assets=['smtp'], name="send_email_1")    
-    
-    return
-
-"""
 Query for matching detections to retrieve the type.
 """
 def get_detections_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -113,8 +57,64 @@ def get_detections_1(action=None, success=None, container=None, results=None, ha
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act("get detections", parameters=parameters, assets=['vae-demo'], callback=format_1, name="get_detections_1")    
+    phantom.act("get detections", parameters=parameters, assets=['vae-demo'], callback=format_email, name="get_detections_1")
+
+    return
+
+"""
+Build the email body for the notification.
+"""
+def format_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_email() called')
     
+    template = """This is a notification that the following host has exceeded the threshold and needs further investigation:
+
+Hostname:
+{0} 
+
+IP:
+{1} 
+
+Detections:
+{2}"""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "artifact:*.cef.dvchost",
+        "artifact:*.cef.dvc",
+        "get_detections_1:action_result.data.*.*.type",
+    ]
+
+    phantom.format(container=container, template=template, parameters=parameters, name="format_email")
+
+    send_email_1(container=container)
+
+    return
+
+"""
+Send the email.
+"""
+def send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('send_email_1() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'send_email_1' call
+    formatted_data_1 = phantom.get_format_data(name='format_email')
+
+    parameters = []
+    
+    # build parameters list for 'send_email_1' call
+    parameters.append({
+        'body': formatted_data_1,
+        'to': "soc_team@example.com",
+        'from': "phantom@example.com",
+        'attachments': "",
+        'subject': "Notification from Vectra via Phantom",
+    })
+
+    phantom.act("send email", parameters=parameters, assets=['smtp'], name="send_email_1")
+
     return
 
 def on_finish(container, summary):
