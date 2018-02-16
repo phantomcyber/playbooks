@@ -11,14 +11,14 @@ from datetime import datetime, timedelta
 def on_start(container):
     phantom.debug('on_start() called')
     
-    # call 'filter_1' block
-    filter_1(container=container)
+    # call 'filter_3' block
+    filter_3(container=container)
 
     # call 'filter_2' block
     filter_2(container=container)
 
-    # call 'filter_3' block
-    filter_3(container=container)
+    # call 'filter_1' block
+    filter_1(container=container)
 
     # call 'list_vms_1' block
     list_vms_1(container=container)
@@ -98,15 +98,16 @@ def block_hash(action=None, success=None, container=None, results=None, handle=N
     
     # build parameters list for 'block_hash' call
     for results_item_1 in results_data_1:
-        parameters.append({
-            'comment': "",
-            'hash': results_item_1[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': results_item_1[1]},
-        })
+        if results_item_1[0]:
+            parameters.append({
+                'comment': "",
+                'hash': results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[1]},
+            })
 
-    phantom.act("block hash", parameters=parameters, assets=['carbonblack'], name="block_hash")    
-    
+    phantom.act("block hash", parameters=parameters, assets=['carbonblack'], name="block_hash")
+
     return
 
 """
@@ -136,13 +137,7 @@ Set the severity of this event to Low.
 def set_severity_low(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('set_severity_low() called')
 
-    # set container properties for: severity
-    update_data = {
-        "severity" : "low",
-    }
-
-    phantom.update(container, update_data)
-
+    phantom.set_severity(container, "low")
     set_status_resolved_2(container=container)
 
     return
@@ -153,12 +148,7 @@ Resolve this event. The enrichment and the history of any blocking actions taken
 def set_status_resolved(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('set_status_resolved() called')
 
-    # set container properties for: status
-    update_data = {
-        "status" : "closed",
-    }
-
-    phantom.update(container, update_data)
+    phantom.set_status(container, "closed")
 
     return
 
@@ -168,12 +158,7 @@ Resolve this event. The enrichment and the history of any blocking actions taken
 def set_status_resolved_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('set_status_resolved_2() called')
 
-    # set container properties for: status
-    update_data = {
-        "status" : "closed",
-    }
-
-    phantom.update(container, update_data)
+    phantom.set_status(container, "closed")
 
     return
 
@@ -190,14 +175,15 @@ def file_reputation(action=None, success=None, container=None, results=None, han
     
     # build parameters list for 'file_reputation' call
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'hash': filtered_artifacts_item_1[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'hash': filtered_artifacts_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
 
-    phantom.act("file reputation", parameters=parameters, assets=['virustotal','threatstream'], callback=file_reputation_callback, name="file_reputation")    
-    
+    phantom.act("file reputation", parameters=parameters, assets=['virustotal','threatstream'], callback=file_reputation_callback, name="file_reputation")
+
     return
 
 def file_reputation_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -229,8 +215,8 @@ def NSX_block_IP(action=None, success=None, container=None, results=None, handle
             'context': {'artifact_id': results_item_1[1]},
         })
 
-    phantom.act("block ip", parameters=parameters, assets=['vmwarensx'], name="NSX_block_IP")    
-    
+    phantom.act("block ip", parameters=parameters, assets=['vmwarensx'], name="NSX_block_IP")
+
     return
 
 """
@@ -248,27 +234,16 @@ def snapshot_vm_1(action=None, success=None, container=None, results=None, handl
     
     # build parameters list for 'snapshot_vm_1' call
     for filtered_results_item_1 in filtered_results_data_1:
-        parameters.append({
-            'download': "",
-            'vmx_path': filtered_results_item_1[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_results_item_1[1]},
-        })
+        if filtered_results_item_1[0]:
+            parameters.append({
+                'download': "",
+                'vmx_path': filtered_results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_results_item_1[1]},
+            })
 
-    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], name="snapshot_vm_1")    
-    
-    return
+    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], name="snapshot_vm_1")
 
-"""
-List all VMWare virtual machines to check if any snap shots should be taken.
-"""
-def list_vms_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('list_vms_1() called')
-
-    parameters = []
-
-    phantom.act("list vms", parameters=parameters, assets=['vmwarevsphere'], callback=filter_4, name="list_vms_1")
-    
     return
 
 """
@@ -277,13 +252,7 @@ Set the severity of this event to High.
 def set_severity_high(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('set_severity_high() called')
 
-    # set container properties for: severity
-    update_data = {
-        "severity" : "high",
-    }
-
-    phantom.update(container, update_data)
-
+    phantom.set_severity(container, "high")
     set_status_resolved(container=container)
 
     return
@@ -301,15 +270,16 @@ def hunt_file_md5(action=None, success=None, container=None, results=None, handl
     
     # build parameters list for 'hunt_file_md5' call
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'max_threat_count': "",
-            'hash': filtered_artifacts_item_1[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'max_threat_count': "",
+                'hash': filtered_artifacts_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
 
-    phantom.act("hunt file", parameters=parameters, assets=['phishme'], name="hunt_file_md5")    
-    
+    phantom.act("hunt file", parameters=parameters, assets=['phishme'], name="hunt_file_md5")
+
     return
 
 """
@@ -325,49 +295,98 @@ def hunt_ip_1(action=None, success=None, container=None, results=None, handle=No
     
     # build parameters list for 'hunt_ip_1' call
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'ip': filtered_artifacts_item_1[0],
-            'max_threat_count': "",
-            'ph': "",
-            'start_time': "",
-            'end_time': "",
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
-
-    phantom.act("hunt ip", parameters=parameters, assets=['phishme','protectwise'], name="hunt_ip_1")    
-    
-    return
-
-"""
-Query reputation services to determine whether the given IP address is known-good, known-bad, or unknown.
-"""
-def ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('ip_reputation() called')
-
-    # collect data for 'ip_reputation' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'ip_reputation' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
         if filtered_artifacts_item_1[0]:
             parameters.append({
                 'ip': filtered_artifacts_item_1[0],
+                'max_threat_count': "",
+                'ph': "",
+                'start_time': "",
+                'end_time': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("ip reputation", parameters=parameters, assets=['virustotal','threatstream'], callback=ip_reputation_callback, name="ip_reputation")    
-    
+    phantom.act("hunt ip", parameters=parameters, assets=['phishme','protectwise'], name="hunt_ip_1")
+
     return
 
-def ip_reputation_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('ip_reputation_callback() called')
+"""
+List all VMWare virtual machines to check if any snap shots should be taken.
+"""
+def list_vms_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('list_vms_1() called')
+
+    parameters = []
+
+    phantom.act("list vms", parameters=parameters, assets=['vmwarevsphere'], callback=filter_4, name="list_vms_1")
+
+    return
+
+"""
+Only proceed with source addresses of virtual machines.
+"""
+def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_4() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["list_vms_1:action_result.data.*.ip", "==", "artifact:*.cef.sourceAddress"],
+        ],
+        name="filter_4:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        snapshot_vm_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    return
+
+"""
+Query across all the data sources integrated into Protectwise for observations of the given SHA-256 file hash.
+"""
+def hunt_file_sha256(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('hunt_file_sha256() called')
+
+    # collect data for 'hunt_file_sha256' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_3:condition_1:artifact:*.cef.fileHashSha256', 'filtered-data:filter_3:condition_1:artifact:*.id'])
+
+    parameters = []
     
-    decision_2(action=action, success=success, container=container, results=results, handle=handle)
-    join_decision_3(action=action, success=success, container=container, results=results, handle=handle)
+    # build parameters list for 'hunt_file_sha256' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'start_time': "",
+                'hash': filtered_artifacts_item_1[0],
+                'ph': "",
+                'end_time': "",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
+
+    phantom.act("hunt file", parameters=parameters, assets=['protectwise'], name="hunt_file_sha256")
+
+    return
+
+"""
+Filter the artifacts with SHA-256 file hashes.
+"""
+def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('filter_3() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        conditions=[
+            ["artifact:*.cef.fileHashSha256", "!=", ""],
+        ],
+        name="filter_3:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        hunt_file_sha256(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -414,70 +433,34 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
     return
 
 """
-Filter the artifacts with SHA-256 file hashes.
+Query reputation services to determine whether the given IP address is known-good, known-bad, or unknown.
 """
-def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_3() called')
+def ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('ip_reputation() called')
 
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        conditions=[
-            ["artifact:*.cef.fileHashSha256", "!=", ""],
-        ],
-        name="filter_3:condition_1")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        hunt_file_sha256(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
-"""
-Query across all the data sources integrated into Protectwise for observations of the given SHA-256 file hash.
-"""
-def hunt_file_sha256(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('hunt_file_sha256() called')
-
-    # collect data for 'hunt_file_sha256' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_3:condition_1:artifact:*.cef.fileHashSha256', 'filtered-data:filter_3:condition_1:artifact:*.id'])
+    # collect data for 'ip_reputation' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])
 
     parameters = []
     
-    # build parameters list for 'hunt_file_sha256' call
+    # build parameters list for 'ip_reputation' call
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
         if filtered_artifacts_item_1[0]:
             parameters.append({
-                'start_time': "",
-                'hash': filtered_artifacts_item_1[0],
-                'ph': "",
-                'end_time': "",
+                'ip': filtered_artifacts_item_1[0],
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("hunt file", parameters=parameters, assets=['protectwise'], name="hunt_file_sha256")    
-    
+    phantom.act("ip reputation", parameters=parameters, assets=['virustotal','threatstream'], callback=ip_reputation_callback, name="ip_reputation")
+
     return
 
-"""
-Only proceed with source addresses of virtual machines.
-"""
-def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_4() called')
-
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["list_vms_1:action_result.data.*.ip", "==", "artifact:*.cef.sourceAddress"],
-        ],
-        name="filter_4:condition_1")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        snapshot_vm_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+def ip_reputation_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('ip_reputation_callback() called')
+    
+    decision_2(action=action, success=success, container=container, results=results, handle=handle)
+    join_decision_3(action=action, success=success, container=container, results=results, handle=handle)
 
     return
 
