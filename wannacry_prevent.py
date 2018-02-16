@@ -51,8 +51,8 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
-def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_1() called')
+def format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_ticket() called')
     
     template = """The following endpoints on the network are running windows and will require an immediate update to receive a patch protecting against the wannacry outbreak: 
 {0}"""
@@ -62,7 +62,7 @@ def format_1(action=None, success=None, container=None, results=None, handle=Non
         "filtered-data:filter_4:condition_1:hotfix_query:action_result.parameter.ip_hostname",
     ]
 
-    phantom.format(container=container, template=template, parameters=parameters, name="format_1")
+    phantom.format(container=container, template=template, parameters=parameters, name="format_ticket")
 
     create_ticket_1(container=container)
 
@@ -74,7 +74,7 @@ def create_ticket_1(action=None, success=None, container=None, results=None, han
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'create_ticket_1' call
-    formatted_data_1 = phantom.get_format_data(name='format_1')
+    formatted_data_1 = phantom.get_format_data(name='format_ticket')
 
     parameters = []
     
@@ -87,24 +87,24 @@ def create_ticket_1(action=None, success=None, container=None, results=None, han
         'fields': "",
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=execute_win_update, name="create_ticket_1")    
-    
+    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=execute_win_update, name="create_ticket_1")
+
     return
 
-def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_2() called')
+def format_comments(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_comments() called')
     
-    template = """The following systems did not successfully update from the required hotfix: 
-{0}"""
+    template = """{{\"work_notes\": \"The following systems did not successfully update from the required hotfix:
+{0}\"}}"""
 
     # parameter list for template variable replacement
     parameters = [
         "filtered-data:filter_5:condition_1:hotfix_query:action_result.parameter.ip_hostname",
     ]
 
-    phantom.format(container=container, template=template, parameters=parameters, name="format_2")
+    phantom.format(container=container, template=template, parameters=parameters, name="format_comments")
 
-    update_ticket_1(container=container)
+    update_ticket_2(container=container)
 
     return
 
@@ -127,7 +127,7 @@ def filter_4(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        format_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        format_ticket(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -151,8 +151,8 @@ def hotfix_query(action=None, success=None, container=None, results=None, handle
                 'context': {'artifact_id': filtered_results_item_1[1]},
             })
 
-    phantom.act("run query", parameters=parameters, assets=['domainctrl1'], callback=filter_4, name="hotfix_query")    
-    
+    phantom.act("run query", parameters=parameters, assets=['domainctrl1'], callback=filter_4, name="hotfix_query")
+
     return
 
 def execute_win_update(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -177,8 +177,8 @@ def execute_win_update(action=None, success=None, container=None, results=None, 
                 'context': {'artifact_id': filtered_results_item_1[1]},
             })
 
-    phantom.act("execute program", parameters=parameters, assets=['domainctrl1'], callback=validate_hotfix, name="execute_win_update", parent_action=action)    
-    
+    phantom.act("execute program", parameters=parameters, assets=['domainctrl1'], callback=validate_hotfix, name="execute_win_update", parent_action=action)
+
     return
 
 def filter_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -200,7 +200,7 @@ def filter_5(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        format_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        format_comments(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -227,7 +227,7 @@ def list_endpoints_1(action=None, success=None, container=None, results=None, ha
     parameters = []
 
     phantom.act("list endpoints", parameters=parameters, assets=['carbonblack'], callback=filter_1, name="list_endpoints_1")
-    
+
     return
 
 def validate_hotfix(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -250,36 +250,38 @@ def validate_hotfix(action=None, success=None, container=None, results=None, han
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("run query", parameters=parameters, assets=['domainctrl1'], callback=filter_5, name="validate_hotfix", parent_action=action)    
-    
+    phantom.act("run query", parameters=parameters, assets=['domainctrl1'], callback=filter_5, name="validate_hotfix", parent_action=action)
+
     return
 
-def update_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('update_ticket_1() called')
+"""
+Update the ticket with the list of endpoints that were not patched and still require remediation.
+"""
+def update_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('update_ticket_2() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
-    # collect data for 'update_ticket_1' call
+    # collect data for 'update_ticket_2' call
     results_data_1 = phantom.collect2(container=container, datapath=['create_ticket_1:action_result.summary.created_ticket_id', 'create_ticket_1:action_result.parameter.context.artifact_id'], action_results=results)
-    formatted_data_1 = phantom.get_format_data(name='format_2')
+    formatted_data_1 = phantom.get_format_data(name='format_comments')
 
     parameters = []
     
-    # build parameters list for 'update_ticket_1' call
+    # build parameters list for 'update_ticket_2' call
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
                 'id': results_item_1[0],
-                'table': "",
-                'fields': "",
+                'table': "incident",
+                'fields': formatted_data_1,
                 'vault_id': "",
-                'comments': formatted_data_1,
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], name="update_ticket_1")    
-    
+    phantom.act("update ticket", parameters=parameters, assets=['servicenow'], name="update_ticket_2")
+
     return
 
 def on_finish(container, summary):
