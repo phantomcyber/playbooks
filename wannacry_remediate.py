@@ -139,8 +139,8 @@ def deactivate_partition_1(action=None, success=None, container=None, results=No
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("deactivate partition", parameters=parameters, assets=['domainctrl1'], callback=reboot_system_1, name="deactivate_partition_1")    
-    
+    phantom.act("deactivate partition", parameters=parameters, assets=['domainctrl1'], callback=reboot_system_1, name="deactivate_partition_1")
+
     return
 
 def block_hash_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -163,8 +163,8 @@ def block_hash_3(action=None, success=None, container=None, results=None, handle
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("block hash", parameters=parameters, assets=['carbonblack'], callback=filter_9, name="block_hash_3")    
-    
+    phantom.act("block hash", parameters=parameters, assets=['carbonblack'], callback=filter_9, name="block_hash_3")
+
     return
 
 def filter_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -272,8 +272,8 @@ def list_processes_2(action=None, success=None, container=None, results=None, ha
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act("list processes", parameters=parameters, assets=['carbonblack'], callback=filter_4, name="list_processes_2")    
-    
+    phantom.act("list processes", parameters=parameters, assets=['carbonblack'], callback=filter_4, name="list_processes_2")
+
     return
 
 def reboot_system_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -298,8 +298,8 @@ def reboot_system_1(action=None, success=None, container=None, results=None, han
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("reboot system", parameters=parameters, assets=['domainctrl1'], name="reboot_system_1", parent_action=action)    
-    
+    phantom.act("reboot system", parameters=parameters, assets=['domainctrl1'], name="reboot_system_1", parent_action=action)
+
     return
 
 def filter_7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -343,8 +343,8 @@ def terminate_malicious_process(action=None, success=None, container=None, resul
                     'context': {'artifact_id': filtered_results_item_1[1]},
                 })
 
-    phantom.act("terminate process", parameters=parameters, assets=['carbonblack'], callback=filter_7, name="terminate_malicious_process")    
-    
+    phantom.act("terminate process", parameters=parameters, assets=['carbonblack'], callback=filter_7, name="terminate_malicious_process")
+
     return
 
 def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -388,8 +388,8 @@ def terminate_process_4(action=None, success=None, container=None, results=None,
                     'context': {'artifact_id': filtered_results_item_1[1]},
                 })
 
-    phantom.act("terminate process", parameters=parameters, assets=['carbonblack'], callback=filter_5, name="terminate_process_4")    
-    
+    phantom.act("terminate process", parameters=parameters, assets=['carbonblack'], callback=filter_5, name="terminate_process_4")
+
     return
 
 def revert_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -412,8 +412,8 @@ def revert_vm_1(action=None, success=None, container=None, results=None, handle=
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("revert vm", parameters=parameters, assets=['vmwarevsphere'], name="revert_vm_1")    
-    
+    phantom.act("revert vm", parameters=parameters, assets=['vmwarevsphere'], name="revert_vm_1")
+
     return
 
 def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -454,8 +454,8 @@ def get_vm_info(action=None, success=None, container=None, results=None, handle=
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("get system info", parameters=parameters, assets=['vmwarevsphere'], callback=decision_5, name="get_vm_info")    
-    
+    phantom.act("get system info", parameters=parameters, assets=['vmwarevsphere'], callback=decision_5, name="get_vm_info")
+
     return
 
 def get_system_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -477,8 +477,8 @@ def get_system_info_1(action=None, success=None, container=None, results=None, h
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act("get system info", parameters=parameters, assets=['carbonblack'], callback=prompt_3, name="get_system_info_1")    
-    
+    phantom.act("get system info", parameters=parameters, assets=['carbonblack'], callback=prompt_3, name="get_system_info_1")
+
     return
 
 def decision_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -604,8 +604,8 @@ def block_hash_4(action=None, success=None, container=None, results=None, handle
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("block hash", parameters=parameters, assets=['carbonblack'], callback=filter_8, name="block_hash_4")    
-    
+    phantom.act("block hash", parameters=parameters, assets=['carbonblack'], callback=filter_8, name="block_hash_4")
+
     return
 
 def block_ip_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -634,8 +634,8 @@ def block_ip_4(action=None, success=None, container=None, results=None, handle=N
                     'context': {'artifact_id': inputs_item_1[1]},
                 })
 
-    phantom.act("block ip", parameters=parameters, assets=['domainctrl1'], name="block_ip_4")    
-    
+    phantom.act("block ip", parameters=parameters, assets=['domainctrl1'], name="block_ip_4")
+
     return
 
 def block_ip_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -662,8 +662,8 @@ def block_ip_5(action=None, success=None, container=None, results=None, handle=N
                 'context': {'artifact_id': inputs_item_1[2]},
             })
 
-    phantom.act("block ip", parameters=parameters, assets=['domainctrl1'], name="block_ip_5")    
-    
+    phantom.act("block ip", parameters=parameters, assets=['domainctrl1'], name="block_ip_5")
+
     return
 
 def filter_8(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -721,8 +721,8 @@ def list_processes_3(action=None, success=None, container=None, results=None, ha
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act("list processes", parameters=parameters, assets=['carbonblack'], callback=filter_6, name="list_processes_3")    
-    
+    phantom.act("list processes", parameters=parameters, assets=['carbonblack'], callback=filter_6, name="list_processes_3")
+
     return
 
 def decision_8(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
