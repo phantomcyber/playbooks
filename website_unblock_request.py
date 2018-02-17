@@ -26,66 +26,70 @@ def on_start(container):
 
     return
 
-def update_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('update_ticket_1() called')
+def update_ticket_denied(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('update_ticket_denied() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     name_value = container.get('name', None)
 
-    # collect data for 'update_ticket_1' call
+    # collect data for 'update_ticket_denied' call
 
     parameters = []
     
-    # build parameters list for 'update_ticket_1' call
+    # build parameters list for 'update_ticket_denied' call
     parameters.append({
         'update_fields': "{\"update\": {\"comment\": [{\"add\": {\"body\": \"Request Denied\"}}]}}",
         'vault_id': "",
         'id': name_value,
     })
 
-    phantom.act("update ticket", parameters=parameters, assets=['jira'], name="update_ticket_1")    
-    
+    phantom.act("update ticket", parameters=parameters, assets=['jira'], name="update_ticket_denied")
+
     return
 
-def join_update_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('join_update_ticket_1() called')
+def join_update_ticket_denied(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('join_update_ticket_denied() called')
     
     # if the joined function has already been called, do nothing
-    if phantom.get_run_data(key='join_update_ticket_1_called'):
+    if phantom.get_run_data(key='join_update_ticket_denied_called'):
         return
 
-    # no callbacks to check, call connected block "update_ticket_1"
-    phantom.save_run_data(key='join_update_ticket_1_called', value='update_ticket_1', auto=True)
-
-    update_ticket_1(container=container, handle=handle)
+    # check if all connected incoming actions are done i.e. have succeeded or failed
+    if phantom.actions_done([ 'send_deny_email_2', 'send_deny_email_1' ]):
+        
+        # save the state that the joined function has now been called
+        phantom.save_run_data(key='join_update_ticket_denied_called', value='update_ticket_denied')
+        
+        # call connected block "update_ticket_denied"
+        update_ticket_denied(container=container, handle=handle)
     
     return
 
-def update_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('update_ticket_2() called')
+def update_ticket_approved(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('update_ticket_approved() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     name_value = container.get('name', None)
 
-    # collect data for 'update_ticket_2' call
+    # collect data for 'update_ticket_approved' call
 
     parameters = []
     
-    # build parameters list for 'update_ticket_2' call
+    # build parameters list for 'update_ticket_approved' call
     parameters.append({
         'update_fields': "{\"update\": {\"comment\": [{\"add\": {\"body\": \"Request Approved\"}}]}}",
         'vault_id': "",
         'id': name_value,
     })
 
-    phantom.act("update ticket", parameters=parameters, assets=['jira'], name="update_ticket_2", parent_action=action)    
-    
+    phantom.act("update ticket", parameters=parameters, assets=['jira'], name="update_ticket_approved", parent_action=action)
+
     return
 
-def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_1() called')
+def format_deny_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_deny_email() called')
     
     template = """Your request to unblock a website has been denied.
 
@@ -100,7 +104,7 @@ has been determined to be malicious by {1} different 3rd party reputation servic
         "url_reputation_1:action_result.summary.positives",
     ]
 
-    phantom.format(container=container, template=template, parameters=parameters, name="format_1")
+    phantom.format(container=container, template=template, parameters=parameters, name="format_deny_email")
 
     decision_1(container=container)
 
@@ -150,14 +154,15 @@ def url_reputation_1(action=None, success=None, container=None, results=None, ha
     
     # build parameters list for 'url_reputation_1' call
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'url': filtered_artifacts_item_1[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'url': filtered_artifacts_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
 
-    phantom.act("url reputation", parameters=parameters, assets=['virustotal'], callback=format_1, name="url_reputation_1")    
-    
+    phantom.act("url reputation", parameters=parameters, assets=['virustotal'], callback=format_deny_email, name="url_reputation_1")
+
     return
 
 def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -177,7 +182,7 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
         return
 
     # call connected blocks for 'else' condition 2
-    join_send_email_1(action=action, success=success, container=container, results=results, handle=handle)
+    join_send_deny_email_2(action=action, success=success, container=container, results=results, handle=handle)
 
     return
 
@@ -199,8 +204,161 @@ def BlueCoat_WebPulse(action=None, success=None, container=None, results=None, h
             'context': {'artifact_id': filtered_artifacts_item_1[1]},
         })
 
-    phantom.act("url reputation", parameters=parameters, assets=['blue_coat'], callback=decision_3, name="BlueCoat_WebPulse")    
+    phantom.act("url reputation", parameters=parameters, assets=['blue_coat'], callback=decision_3, name="BlueCoat_WebPulse")
+
+    return
+
+def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('decision_2() called')
+
+    # check for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["prompt_1:action_result.summary.response", "==", "Yes"],
+        ])
+
+    # call connected blocks if condition 1 matched
+    if matched_artifacts_1 or matched_results_1:
+        allow_url_1(action=action, success=success, container=container, results=results, handle=handle)
+        return
+
+    # check for 'elif' condition 2
+    matched_artifacts_2, matched_results_2 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["prompt_1:action_result.summary.response", "==", "No"],
+        ])
+
+    # call connected blocks if condition 2 matched
+    if matched_artifacts_2 or matched_results_2:
+        send_deny_email_1(action=action, success=success, container=container, results=results, handle=handle)
+        return
+
+    return
+
+def send_deny_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('send_deny_email_1() called')
     
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'send_deny_email_1' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.fromEmail', 'filtered-data:filter_2:condition_1:artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'send_deny_email_1' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'body': "Your request has been denied by an approver. ",
+                'to': filtered_artifacts_item_1[0],
+                'from': "phantom-notifications@company.com",
+                'attachments': "",
+                'subject': "Request Denied",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
+
+    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=join_update_ticket_denied, name="send_deny_email_1")
+
+    return
+
+def send_approve_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('send_approve_email() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'send_approve_email' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.fromEmail', 'filtered-data:filter_2:condition_1:artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'send_approve_email' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'body': "Your request to unblock a website has been approved. ",
+                'to': filtered_artifacts_item_1[0],
+                'from': "phantom-notifications@company.com",
+                'attachments': "",
+                'subject': "Request Approved",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
+
+    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=update_ticket_approved, name="send_approve_email", parent_action=action)
+
+    return
+
+def send_deny_email_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('send_deny_email_2() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'send_deny_email_2' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.fromEmail', 'filtered-data:filter_2:condition_1:artifact:*.id'])
+    formatted_data_1 = phantom.get_format_data(name='format_deny_email')
+
+    parameters = []
+    
+    # build parameters list for 'send_deny_email_2' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'body': formatted_data_1,
+                'to': filtered_artifacts_item_1[0],
+                'from': "phantom-notifications@company.com",
+                'attachments': "",
+                'subject': "Request Denied",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
+
+    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=join_update_ticket_denied, name="send_deny_email_2")
+
+    return
+
+def join_send_deny_email_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('join_send_deny_email_2() called')
+    
+    # if the joined function has already been called, do nothing
+    if phantom.get_run_data(key='join_send_deny_email_2_called'):
+        return
+
+    # check if all connected incoming actions are done i.e. have succeeded or failed
+    if phantom.actions_done([ 'url_reputation_1' ]):
+        
+        # save the state that the joined function has now been called
+        phantom.save_run_data(key='join_send_deny_email_2_called', value='send_deny_email_2')
+        
+        # call connected block "send_deny_email_2"
+        send_deny_email_2(container=container, handle=handle)
+    
+    return
+
+def allow_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('allow_url_1() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'allow_url_1' call
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_3:condition_1:artifact:*.cef.requestURL', 'filtered-data:filter_3:condition_1:artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'allow_url_1' call
+    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
+        parameters.append({
+            'url': filtered_artifacts_item_1[0],
+            # context (artifact id) is added to associate results with the artifact
+            'context': {'artifact_id': filtered_artifacts_item_1[1]},
+        })
+
+    phantom.act("allow url", parameters=parameters, assets=['blue_coat'], callback=send_approve_email, name="allow_url_1")
+
     return
 
 def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -216,7 +374,7 @@ def decision_3(action=None, success=None, container=None, results=None, handle=N
 
     # call connected blocks if condition 1 matched
     if matched_artifacts_1 or matched_results_1:
-        join_send_email_1(action=action, success=success, container=container, results=results, handle=handle)
+        join_send_deny_email_2(action=action, success=success, container=container, results=results, handle=handle)
         return
 
     # check for 'elif' condition 2
@@ -229,7 +387,7 @@ def decision_3(action=None, success=None, container=None, results=None, handle=N
 
     # call connected blocks if condition 2 matched
     if matched_artifacts_2 or matched_results_2:
-        join_send_email_1(action=action, success=success, container=container, results=results, handle=handle)
+        join_send_deny_email_2(action=action, success=success, container=container, results=results, handle=handle)
         return
 
     # call connected blocks for 'else' condition 3
@@ -265,156 +423,6 @@ Reputation services have not indicated that this site is malicious.  Additional 
 
     return
 
-def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('decision_2() called')
-
-    # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["prompt_1:action_result.summary.response", "==", "Yes"],
-        ])
-
-    # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        allow_url_1(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    # check for 'elif' condition 2
-    matched_artifacts_2, matched_results_2 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["prompt_1:action_result.summary.response", "==", "No"],
-        ])
-
-    # call connected blocks if condition 2 matched
-    if matched_artifacts_2 or matched_results_2:
-        send_email_2(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    return
-
-def send_email_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('send_email_2() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'send_email_2' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.fromEmail', 'filtered-data:filter_2:condition_1:artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'send_email_2' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'body': "Your request has been denied by an approver. ",
-            'to': filtered_artifacts_item_1[0],
-            'from': "phantom-notifications@company.com",
-            'attachments': "",
-            'subject': "Request Denied",
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
-
-    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=join_update_ticket_1, name="send_email_2")    
-    
-    return
-
-def send_email_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('send_email_3() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'send_email_3' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.fromEmail', 'filtered-data:filter_2:condition_1:artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'send_email_3' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'body': "Your request to unblock a website has been approved. ",
-            'to': filtered_artifacts_item_1[0],
-            'from': "phantom-notifications@company.com",
-            'attachments': "",
-            'subject': "Request Approved",
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
-
-    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=update_ticket_2, name="send_email_3", parent_action=action)    
-    
-    return
-
-def send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('send_email_1() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'send_email_1' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.fromEmail', 'filtered-data:filter_2:condition_1:artifact:*.id'])
-    formatted_data_1 = phantom.get_format_data(name='format_1')
-
-    parameters = []
-    
-    # build parameters list for 'send_email_1' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'body': formatted_data_1,
-            'to': filtered_artifacts_item_1[0],
-            'from': "phantom-notifications@company.com",
-            'attachments': "",
-            'subject': "Request Denied",
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
-
-    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=join_update_ticket_1, name="send_email_1")    
-    
-    return
-
-def join_send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('join_send_email_1() called')
-    
-    # if the joined function has already been called, do nothing
-    if phantom.get_run_data(key='join_send_email_1_called'):
-        return
-
-    # check if all connected incoming actions are done i.e. have succeeded or failed
-    if phantom.actions_done([ 'url_reputation_1' ]):
-        
-        # save the state that the joined function has now been called
-        phantom.save_run_data(key='join_send_email_1_called', value='send_email_1')
-        
-        # call connected block "send_email_1"
-        send_email_1(container=container, handle=handle)
-    
-    return
-
-def allow_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('allow_url_1() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'allow_url_1' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_3:condition_1:artifact:*.cef.requestURL', 'filtered-data:filter_3:condition_1:artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'allow_url_1' call
-    for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'url': filtered_artifacts_item_1[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
-
-    phantom.act("allow url", parameters=parameters, assets=['blue_coat'], callback=send_email_3, name="allow_url_1")    
-    
-    return
-
 def get_screenshot_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('get_screenshot_1() called')
     
@@ -427,15 +435,16 @@ def get_screenshot_1(action=None, success=None, container=None, results=None, ha
     
     # build parameters list for 'get_screenshot_1' call
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'url': filtered_artifacts_item_1[0],
-            'size': "",
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'url': filtered_artifacts_item_1[0],
+                'size': "",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
 
-    phantom.act("get screenshot", parameters=parameters, assets=['screenshot machine'], callback=detonate_url_1, name="get_screenshot_1")    
-    
+    phantom.act("get screenshot", parameters=parameters, assets=['screenshot machine'], callback=detonate_url_1, name="get_screenshot_1")
+
     return
 
 def detonate_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -458,8 +467,8 @@ def detonate_url_1(action=None, success=None, container=None, results=None, hand
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("detonate url", parameters=parameters, assets=['urlscan_io'], callback=prompt_1, name="detonate_url_1", parent_action=action)    
-    
+    phantom.act("detonate url", parameters=parameters, assets=['urlscan_io'], callback=prompt_1, name="detonate_url_1", parent_action=action)
+
     return
 
 def on_finish(container, summary):
