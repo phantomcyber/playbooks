@@ -1,5 +1,5 @@
-# Phantom Cyber Orchestration Playbooks - Repo for Phantom version 3.0
+# Phantom Community Playbooks for Phantom version 3.5
 
-This is the 3.0 release repo for Phantom Community Playbooks.
+This is the 3.5 branch of the Phantom Community Playbooks repository.
 
-As of Phantom version 1.2.265, the community repo is automatically updated to the branch appropriate to the running Phantom version. You can update your content by periodically performing a sync in the Automation playbooks page.
+The Phantom platform automatically links to the branch of this repository that matches the running Phantom version. By default this repository is named **community**, which can be selected as the **Repo** filter to only display these Playbooks. You can update your content with the **Update from source control** button.
