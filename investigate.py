@@ -532,6 +532,8 @@ def is_user_bad(results):
 
 def on_start(container):
     
+    set_status_open(container=container)
+    
     container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress',            #0
                                                                      'artifact:*.cef.destinationAddress',       #1
                                                                      'artifact:*.cef.requestURL',               #2
@@ -541,14 +543,14 @@ def on_start(container):
                                                                      'artifact:*.cef.fileHash',                 #6
                                                                      'artifact:*.id'])                          #7
 
-    # call 'hunt_ip_1' block
-    hunt_ip_1(container=container, handle=container_data)
-    
     # call 'geolocate_ip_1' block
     geolocate_ip_1(container=container, handle=container_data)
     
+    # call 'hunt_ip_1' block
+    hunt_ip_1(container=container, handle=container_data)
+    
     # call 'lookup_ip_1' block
-    lookup_ip_1(container=container, handle=container_data)
+    #lookup_ip_1(container=container, handle=container_data)
 
     # call 'ip_reputation_1' block
     ip_reputation_1(container=container, handle=container_data)
@@ -584,9 +586,7 @@ def on_start(container):
     whois_domain_1(container=container, handle=container_data)
     
     # call 'hunt_file_1' block
-    hunt_file_1(container=container, handle=container_data)
-    
-    playbook_community_pin_to_hud_sample_1(container=container)
+    #hunt_file_1(container=container, handle=container_data)
     
     return
 
@@ -684,33 +684,6 @@ def detonate_url_1(action=None, success=None, container=None, results=None, hand
     
     return
 
-def lookup_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets=get_filtered_assets(action="lookup ip", products=["Censys"])
-    if not assets:
-        return
-    
-    container_data = handle # in collected data, 0th item is source address and 1st item is destination address
-
-    parameters = []
-    
-    # build parameters list for 'lookup_ip_1' call
-    param_values=[]
-    for container_item in container_data:
-        if container_item[0]:
-            if container_item[0] not in param_values:
-                param_values.append(container_item[0])
-                parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
-        if container_item[1]:
-            if container_item[1] not in param_values:
-                param_values.append(container_item[1])
-                parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("lookup ip", parameters=parameters, name="lookup_ip_1", assets=assets)    
-    
-    return
-
 def geolocate_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     assets = get_filtered_assets(action="geolocate ip", products=["GeoIP2"])
@@ -737,34 +710,6 @@ def geolocate_ip_1(action=None, success=None, container=None, results=None, hand
     if parameters:
         phantom.act("geolocate ip", parameters=parameters, name="geolocate_ip_1", assets=assets)    
     
-    return
-
-def whois_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets = get_filtered_assets(action="whois ip", products=["Whois RDAP"])
-    
-    if not asset_configured("whois ip"):
-        return
-    
-    container_data = handle # in collected data, 0th item is source address and 1st item is destination address
-
-    parameters = []
-    
-    # build parameters list for 'whois_ip_1' call
-    param_values=[]
-    for container_item in container_data:
-        if container_item[0]:
-            if container_item[0] not in param_values:
-                param_values.append(container_item[0])
-                parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
-        if container_item[1]:
-            if container_item[1] not in param_values:
-                param_values.append(container_item[1])
-                parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("whois ip", parameters=parameters, name="whois_ip_1", assets=assets)    
-        
     return
 
 def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -907,34 +852,6 @@ def hunt_domain_1(action=None, success=None, container=None, results=None, handl
         
     return
 
-def hunt_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets = get_filtered_assets(action="hunt ip", products= ["Phishme Intelligence", "FireAMP"])
-    
-    if not assets:
-        return
-    
-    container_data = handle # in collected data, 0th item is source address and 1st item is destination address
-
-    parameters = []
-    
-    # build parameters list for 'hunt_ip_1' call
-    param_values=[]
-    for container_item in container_data:
-        if container_item[0]:
-            if container_item[0] not in param_values:
-                param_values.append(container_item[0])
-                parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
-        if container_item[1]:
-            if container_item[1] not in param_values:
-                param_values.append(container_item[1])
-                parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("hunt ip", parameters=parameters, name="hunt_ip_1", assets=assets)    
-    
-    return
-
 def reverse_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
 
     assets=get_filtered_assets(action="reverse domain", products=["DomainTools"])
@@ -989,30 +906,6 @@ def reverse_ip_1(action=None, success=None, container=None, results=None, handle
     if parameters:
         phantom.act("reverse ip", parameters=parameters, name="reverse_ip_1", assets=assets)    
     
-    return
-
-def hunt_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets= get_filtered_assets(action="hunt file", products=["Carbon Black Protection"])
-    
-    if not assets:
-        return
-    
-    container_data = handle # 6th item is file hash
-
-    parameters = []
-    
-    # build parameters list for 'hunt_file_1' call
-    param_values=[]
-    for container_item in container_data:
-        if container_item[6]:
-            if container_item[6] not in param_values:
-                param_values.append(container_item[6])
-                parameters.append({'hash': container_item[6],'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("hunt file", parameters=parameters, name="hunt_file_1", assets=assets)    
-
     return
 
 def hunt_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -1093,11 +986,90 @@ def file_reputation_1(action=None, success=None, container=None, results=None, h
 
     return
 
-def playbook_community_pin_to_hud_sample_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('playbook_community_pin_to_hud_sample_1() called')
+def whois_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets = get_filtered_assets(action="whois ip", products=["Whois RDAP"])
     
-    # call playbook "community/pin_to_hud_sample", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("community/pin_to_hud_sample", container)
+    if not asset_configured("whois ip"):
+        return
+    
+    container_data = handle # in collected data, 0th item is source address and 1st item is destination address
+
+    parameters = []
+    
+    # build parameters list for 'whois_ip_1' call
+    param_values=[]
+    for container_item in container_data:
+        if container_item[0]:
+            if container_item[0] not in param_values:
+                param_values.append(container_item[0])
+                parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
+        if container_item[1]:
+            if container_item[1] not in param_values:
+                param_values.append(container_item[1])
+                parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("whois ip", parameters=parameters, name="whois_ip_1", assets=assets)    
+        
+    return
+
+def set_status_open(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('set_status_open() called')
+
+    phantom.set_status(container, "open")
+
+    return
+
+def hunt_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets = get_filtered_assets(action="hunt ip", products= ["FireAMP"])
+    
+    if not assets:
+        return
+    
+    container_data = handle # in collected data, 0th item is source address and 1st item is destination address
+
+    parameters = []
+    
+    # build parameters list for 'hunt_ip_1' call
+    param_values=[]
+    for container_item in container_data:
+        if container_item[0]:
+            if container_item[0] not in param_values:
+                param_values.append(container_item[0])
+                parameters.append({'ip': container_item[0],'context': {'artifact_id': container_item[7]}})
+        if container_item[1]:
+            if container_item[1] not in param_values:
+                param_values.append(container_item[1])
+                parameters.append({'ip': container_item[1],'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("hunt ip", parameters=parameters, name="hunt_ip_1", assets=assets)    
+    
+    return
+
+def hunt_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+
+    assets= get_filtered_assets(action="hunt file", products=["Carbon Black Protection"])
+    
+    if not assets:
+        return
+    
+    container_data = handle # 6th item is file hash
+
+    parameters = []
+    
+    # build parameters list for 'hunt_file_1' call
+    param_values=[]
+    for container_item in container_data:
+        if container_item[6]:
+            if container_item[6] not in param_values:
+                param_values.append(container_item[6])
+                parameters.append({'hash': container_item[6],'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("hunt file", parameters=parameters, name="hunt_file_1", assets=assets)    
 
     return
 
