@@ -8,7 +8,7 @@
             "clean": true,
             "code_block": "",
             "description": "This playbook processes an ExtraHop detection of an internal database being accessed externally.  The playbook will block the corresponding client source IP Address on a Palo Alto Networks Firewall as well as retrieve the following information on both the client and server:\n  - ExtraHop device objects\n  - List of peer devices communicated with in the last 30 minutes\n  - List of client and server protocols spoken in the last 30 minutes",
-            "hash": "b83564c437d7f488e2196b1be81dba6ecd35b96c",
+            "hash": "ff5ec59ae97740390f399f9c028427b7ed82b152",
             "joint": {
                 "cells": [
                     {
@@ -873,8 +873,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 96,
-                        "line_start": 77,
+                        "line_end": 42,
+                        "line_start": 23,
                         "name": "decision",
                         "notes": "Continue running this playbook only if the artifact label is \"publicly_exposed_db\"",
                         "number": 1,
@@ -1335,7 +1335,7 @@
                         },
                         "block_code": "def get_db_device_info(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_db_device_info() called')\n\n    # collect data for 'get_db_device_info' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_db_device_info' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"get device info\", parameters=parameters, assets=['extrahop'], callback=get_db_device_info_callback, name=\"get_db_device_info\")\n\n    return",
                         "callback_code": "def get_db_device_info_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_db_device_info_callback() called')\n    \n    get_db_peers(action=action, success=success, container=container, results=results, handle=handle)\n    get_db_protocols(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
-                        "callback_start": 208,
+                        "callback_start": 66,
                         "callsback": true,
                         "color": "",
                         "connected_to_start": true,
@@ -1358,8 +1358,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 216,
-                        "line_start": 187,
+                        "line_end": 74,
+                        "line_start": 45,
                         "message": "Configuring now",
                         "name": "get device info",
                         "notes": "Get more details about the internal database server given its IP address. Details include MAC address, dhcp name, first discovered time, device type, and more",
@@ -1438,7 +1438,7 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 106
                     },
                     {
@@ -1811,7 +1811,7 @@
                         },
                         "block_code": "def get_client_device_info(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_client_device_info() called')\n\n    # collect data for 'get_client_device_info' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_client_device_info' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"get device info\", parameters=parameters, assets=['extrahop'], callback=get_client_device_info_callback, name=\"get_client_device_info\")\n\n    return",
                         "callback_code": "def get_client_device_info_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_client_device_info_callback() called')\n    \n    get_client_peers(action=action, success=success, container=container, results=results, handle=handle)\n    get_client_protocols(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
-                        "callback_start": 240,
+                        "callback_start": 98,
                         "callsback": true,
                         "color": "",
                         "connected_to_start": true,
@@ -1834,8 +1834,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 248,
-                        "line_start": 219,
+                        "line_end": 106,
+                        "line_start": 77,
                         "message": "Configuring now",
                         "name": "get device info",
                         "notes": "Get more details about the external client given its IP address. Details include MAC address, dhcp name, first discovered time, device type, and more",
@@ -1914,7 +1914,7 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 113
                     },
                     {
@@ -2358,7 +2358,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
-                        "block_code": "def get_db_peers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_db_peers() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_db_peers' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_db_device_info:action_result.data.*.ipaddr4', 'get_db_device_info:action_result.data.*.id', 'get_db_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_db_peers' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'peer_role': \"any\",\n                'protocol': \"any\",\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get peers\", parameters=parameters, assets=['extrahop'], name=\"get_db_peers\", parent_action=action)\n\n    return",
+                        "block_code": "def get_db_peers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_db_peers() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_db_peers' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_db_device_info:action_result.data.*.ipaddr4', 'get_db_device_info:action_result.data.*.id', 'get_db_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_db_peers' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'protocol': \"any\",\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'peer_role': \"any\",\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get peers\", parameters=parameters, assets=['extrahop'], name=\"get_db_peers\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2383,8 +2383,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 126,
-                        "line_start": 99,
+                        "line_end": 136,
+                        "line_start": 109,
                         "message": "Configuring now",
                         "name": "get peers",
                         "notes": "Retrieves a list of all of the peers that a device communicated with in the last 30 minutes",
@@ -2464,7 +2464,7 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 120
                     },
                     {
@@ -2701,8 +2701,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 154,
-                        "line_start": 129,
+                        "line_end": 164,
+                        "line_start": 139,
                         "message": "Configuring now",
                         "name": "get protocols",
                         "notes": "Retrieves a list of all of the protocols that a device communicated over the last 30 minutes",
@@ -2782,7 +2782,7 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 121
                     },
                     {
@@ -3226,7 +3226,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
-                        "block_code": "def get_client_peers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_client_peers() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_client_peers' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_client_device_info:action_result.data.*.ipaddr4', 'get_client_device_info:action_result.data.*.id', 'get_client_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_client_peers' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'peer_role': \"any\",\n                'protocol': \"any\",\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get peers\", parameters=parameters, assets=['extrahop'], name=\"get_client_peers\", parent_action=action)\n\n    return",
+                        "block_code": "def get_client_peers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_client_peers() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_client_peers' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_client_device_info:action_result.data.*.ipaddr4', 'get_client_device_info:action_result.data.*.id', 'get_client_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_client_peers' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'protocol': \"any\",\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'peer_role': \"any\",\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get peers\", parameters=parameters, assets=['extrahop'], name=\"get_client_peers\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3251,8 +3251,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 184,
-                        "line_start": 157,
+                        "line_end": 194,
+                        "line_start": 167,
                         "message": "Configuring now",
                         "name": "get peers",
                         "notes": "Retrieves a list of all of the peers that a device communicated with in the last 30 minutes",
@@ -3332,7 +3332,7 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 122
                     },
                     {
@@ -3569,8 +3569,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 48,
-                        "line_start": 23,
+                        "line_end": 222,
+                        "line_start": 197,
                         "message": "Configuring now",
                         "name": "get protocols",
                         "notes": "Retrieves a list of all of the protocols that a device communicated over the last 30 minutes",
@@ -3650,7 +3650,7 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 123
                     },
                     {
@@ -3926,8 +3926,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 74,
-                        "line_start": 51,
+                        "line_end": 248,
+                        "line_start": 225,
                         "message": "Configuring now",
                         "name": "block ip",
                         "notes": "Block the source IP that is externally accessing an internal database on the Palo Alto Networks Firewall",
@@ -4006,7 +4006,7 @@
                         "status": "",
                         "title": "Contain",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 127
                     }
                 ]
@@ -4016,9 +4016,9 @@
         "schema": 3,
         "version": "3.5.206"
     },
-    "create_time": "2018-05-22T17:24:31.822568+00:00",
+    "create_time": "2018-05-22T18:38:30.471164+00:00",
     "draft_mode": false,
     "labels": [
-        "events"
+        "extrahop_events"
     ]
 }
