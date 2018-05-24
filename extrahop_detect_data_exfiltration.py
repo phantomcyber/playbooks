@@ -45,8 +45,8 @@ def get_protocols_1(action=None, success=None, container=None, results=None, han
 """
 Filter out private peers as defined by RFC 1918
 """
-def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_1() called')
+def internal_ip_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('internal_ip_filter() called')
 
     # collect filtered artifact ids for 'if' condition 1
     matched_artifacts_1, matched_results_1 = phantom.condition(
@@ -58,7 +58,7 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
             ["get_peers_1:action_result.data.*.ipaddr4", "not in", "192.168.0.0/16"],
         ],
         logical_operator='and',
-        name="filter_1:condition_1")
+        name="internal_ip_filter:condition_1")
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
@@ -119,58 +119,6 @@ def get_device_info_1_callback(action=None, success=None, container=None, result
     return
 
 """
-(Requires Configuration) Only tag the device if the Threat Score and Confidence come back above certain thresholds
-"""
-def Threat_Score_Thresholds(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('Threat_Score_Thresholds() called')
-
-    # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["ip_reputation_1:action_result.data.*.threatscore", ">", "1"],
-            ["ip_reputation_1:action_result.data.*.confidence", ">", "1"],
-        ],
-        logical_operator='and')
-
-    # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        tag_device_1(action=action, success=success, container=container, results=results, handle=handle)
-        task_1(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    return
-
-"""
-Tag the device in ExtraHop with the "bad_ip_reputation" tag
-"""
-def tag_device_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('tag_device_1() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'tag_device_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'tag_device_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'ip': container_item[0],
-                'tag': "bad_ip_reputation",
-                'eh_api_id': "",
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("tag device", parameters=parameters, assets=['extrahop'], name="tag_device_1")
-
-    return
-
-"""
 Look up the IP reputation of all external peers acting as a client in the last 30 minutes for the device that triggered the anomaly
 """
 def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -179,7 +127,7 @@ def ip_reputation_1(action=None, success=None, container=None, results=None, han
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'ip_reputation_1' call
-    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:filter_1:condition_1:get_peers_1:action_result.data.*.ipaddr4", "filtered-data:filter_1:condition_1:get_peers_1:action_result.parameter.context.artifact_id"])
+    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:internal_ip_filter:condition_1:get_peers_1:action_result.data.*.ipaddr4", "filtered-data:internal_ip_filter:condition_1:get_peers_1:action_result.parameter.context.artifact_id"])
 
     parameters = []
     
@@ -192,7 +140,49 @@ def ip_reputation_1(action=None, success=None, container=None, results=None, han
                 'context': {'artifact_id': filtered_results_item_1[1]},
             })
 
-    phantom.act("ip reputation", parameters=parameters, assets=['threatstream'], callback=Threat_Score_Thresholds, name="ip_reputation_1")
+    phantom.act("ip reputation", parameters=parameters, assets=['threatstream'], callback=threat_score_thresholds, name="ip_reputation_1")
+
+    return
+
+"""
+Assign a manual task to do further investigation into the Data Exfiltration anomaly.
+"""
+def task_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('task_1() called')
+    
+    # set user and message variables for phantom.task call
+    user = "admin"
+    message = "ExtraHop Addy has detected a data exfiltration anomaly on your network and Phantom has confirmed via Anomali ThreatStream that the source address has connected with one or more known-bad external IP addresses in the last 30 minutes."
+
+    phantom.task(user=user, message=message, respond_in_mins=30, name="task_1")
+
+    return
+
+"""
+Tag the device in ExtraHop with the "bad_ip_reputation" tag
+"""
+def tag_device_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('tag_device_1() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'tag_device_1' call
+    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:linking_filter:condition_1:get_peers_1:action_result.data.*.ipaddr4", "filtered-data:linking_filter:condition_1:get_peers_1:action_result.data.*.id", "filtered-data:linking_filter:condition_1:get_peers_1:action_result.parameter.context.artifact_id"])
+
+    parameters = []
+    
+    # build parameters list for 'tag_device_1' call
+    for filtered_results_item_1 in filtered_results_data_1:
+        if filtered_results_item_1[0]:
+            parameters.append({
+                'ip': filtered_results_item_1[0],
+                'tag': "bad_ip_reputation",
+                'eh_api_id': filtered_results_item_1[1],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_results_item_1[2]},
+            })
+
+    phantom.act("tag device", parameters=parameters, assets=['extrahop'], name="tag_device_1")
 
     return
 
@@ -222,21 +212,52 @@ def get_peers_1(action=None, success=None, container=None, results=None, handle=
                 'context': {'artifact_id': results_item_1[2]},
             })
 
-    phantom.act("get peers", parameters=parameters, assets=['extrahop'], callback=filter_1, name="get_peers_1", parent_action=action)
+    phantom.act("get peers", parameters=parameters, assets=['extrahop'], callback=internal_ip_filter, name="get_peers_1", parent_action=action)
 
     return
 
 """
-Assign a manual task to do further investigation into the Data Exfiltration anomaly.
+(Requires Configuration) Only tag the device if the Threat Score and Confidence come back above certain thresholds
 """
-def task_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('task_1() called')
-    
-    # set user and message variables for phantom.task call
-    user = "admin"
-    message = "ExtraHop Addy has detected a data exfiltration anomaly on your network and Phantom has confirmed via Anomali ThreatStream that the source address has connected with one or more known-bad external IP addresses in the last 30 minutes."
+def threat_score_thresholds(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('threat_score_thresholds() called')
 
-    phantom.task(user=user, message=message, respond_in_mins=30, name="task_1")
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["ip_reputation_1:action_result.data.*.threatscore", ">", "1"],
+            ["ip_reputation_1:action_result.data.*.confidence", ">", "1"],
+        ],
+        logical_operator='and',
+        name="threat_score_thresholds:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        linking_filter(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    return
+
+"""
+Link the filtered "ip reputation" results back to the "get peer" results so we can use the ip address and ExtraHop id in "tag device"
+"""
+def linking_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('linking_filter() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["filtered-data:threat_score_thresholds:condition_1:ip_reputation_1:action_result.parameter.ip", "==", "get_peers_1:action_result.data.*.ipaddr4"],
+        ],
+        name="linking_filter:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        tag_device_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        task_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
