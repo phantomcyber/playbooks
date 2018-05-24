@@ -8,7 +8,7 @@
             "clean": true,
             "code_block": "",
             "description": "This playbook processes an ExtraHop Addy anomaly indicating potential data exfiltration on the network.  It first retrieves all of the peers acting as a client in the last 30 minutes for the device that triggered the anomaly.  Then it filters out private IP Addresses as defined in RFC1918.  Next it looks up IP reputation scores for each of the non-private IP Addresses that have communicated with the device that triggered the anomaly in the last 30 minutes. If a known-bad IP is found then that device will be tagged with \"bad_ip_reputation\" in ExtraHop and a Phantom task will be created to track further manual investigation of this event.",
-            "hash": "bc0a3b963d25535a8aa28b6d8ba7b1c698bdbf0c",
+            "hash": "b39a8104b8afad2a676b4f0928dda8c36a6d8db6",
             "joint": {
                 "cells": [
                     {
@@ -2061,320 +2061,6 @@
                         "z": 189
                     },
                     {
-                        "action": "tag device",
-                        "action_type": "investigate",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "api_id": "filtered-data:filter_1:condition_1:get_peers_1:action_result.data.*.id",
-                            "eh_api_id": "",
-                            "ip": "artifact:*.cef.sourceAddress",
-                            "tag": "bad_ip_reputation"
-                        },
-                        "angle": 0,
-                        "app": "ExtraHop",
-                        "approver": "",
-                        "assets": [
-                            {
-                                "action": "tag device",
-                                "active": true,
-                                "app_name": "ExtraHop",
-                                "app_version": "1.0.4",
-                                "asset_name": "extrahop",
-                                "config_type": "asset",
-                                "count": 0,
-                                "fields": {
-                                    "eh_api_id": "",
-                                    "ip": "artifact:*.cef.sourceAddress",
-                                    "tag": "bad_ip_reputation"
-                                },
-                                "has_app": true,
-                                "id": 218,
-                                "loaded": false,
-                                "missing": false,
-                                "name": "extrahop",
-                                "output": [
-                                    {
-                                        "column_name": "status",
-                                        "column_order": 0,
-                                        "data_path": "action_result.status",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "success"
-                                        ]
-                                    },
-                                    {
-                                        "column_name": "ip",
-                                        "column_order": 1,
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.parameter.ip",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "208.14.6.61"
-                                        ]
-                                    },
-                                    {
-                                        "column_name": "tag",
-                                        "column_order": 2,
-                                        "data_path": "action_result.parameter.tag",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "suspicious_endpoint"
-                                        ]
-                                    },
-                                    {
-                                        "column_name": "tag id",
-                                        "column_order": 3,
-                                        "data_path": "action_result.data.*.tag_id",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            4
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "action_result.summary",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.eh_api_id",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "Extrahop device id: 1458, Tag: suspicious_endpoint"
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric",
-                                        "example_values": [
-                                            1
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric",
-                                        "example_values": [
-                                            1
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.extrahop_device_id",
-                                        "data_type": "numeric",
-                                        "example_values": [
-                                            1458
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.tag",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "suspicious_endpoint"
-                                        ]
-                                    }
-                                ],
-                                "parameters": {
-                                    "eh_api_id": {
-                                        "data_type": "string",
-                                        "default": null,
-                                        "description": "ExtraHop Device API ID",
-                                        "key": "eh_api_id",
-                                        "order": 2,
-                                        "primary": false,
-                                        "required": false
-                                    },
-                                    "ip": {
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_type": "string",
-                                        "default": null,
-                                        "description": "IP Address",
-                                        "key": "ip",
-                                        "order": 0,
-                                        "primary": true,
-                                        "required": true
-                                    },
-                                    "tag": {
-                                        "data_type": "string",
-                                        "default": "suspicious",
-                                        "description": "Tag Name",
-                                        "key": "tag",
-                                        "order": 1,
-                                        "primary": false,
-                                        "required": true
-                                    }
-                                },
-                                "product_name": "ExtraHop",
-                                "product_vendor": "ExtraHop Networks",
-                                "targets": "170",
-                                "type": ""
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "tag device"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "opacity": 0,
-                                "text": "Configuring now"
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "text": "Investigate"
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
-                            },
-                            "g.notes": {
-                                "display": "block"
-                            },
-                            "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
-                            }
-                        },
-                        "block_code": "def tag_device_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('tag_device_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'tag_device_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'tag_device_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                'tag': \"bad_ip_reputation\",\n                'eh_api_id': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"tag device\", parameters=parameters, assets=['extrahop'], name=\"tag_device_1\")\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 171,
-                        "callsback": true,
-                        "color": "",
-                        "connected_to_start": true,
-                        "connection_name": "ip reputation",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": "0",
-                        "description": "Tag the device in ExtraHop with the \"bad_ip_reputation\" tag",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "934d2314-9f83-421d-afd6-bd2ad7bdcfa8",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 172,
-                        "line_end": 173,
-                        "line_start": 148,
-                        "message": "Configuring now",
-                        "name": "tag device",
-                        "notes": "Tag the device in ExtraHop with the \"bad_ip_reputation\" tag",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1380,
-                            "y": 220
-                        },
-                        "previous_function": "",
-                        "previous_name": "tag_device_1",
-                        "required_params": {
-                            "ip": true,
-                            "tag": true
-                        },
-                        "reviewer": "",
-                        "show_number": false,
-                        "size": {
-                            "height": 100,
-                            "width": 180
-                        },
-                        "state": "app_action_assets",
-                        "status": "",
-                        "title": "Investigate",
-                        "type": "coa.Action",
-                        "warn": false,
-                        "z": 190
-                    },
-                    {
                         "action": "ip reputation",
                         "action_type": "investigate",
                         "active": false,
@@ -2775,6 +2461,469 @@
                         "z": 191
                     },
                     {
+                        "active": false,
+                        "angle": 0,
+                        "approver": "admin",
+                        "attrs": {
+                            ".background": {
+                                "stroke": "#637282"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def task_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('task_1() called')\n    \n    # set user and message variables for phantom.task call\n    user = \"admin\"\n    message = \"ExtraHop Addy has detected a data exfiltration anomaly on your network and Phantom has confirmed via Anomali ThreatStream that the source address has connected with one or more known-bad external IP addresses in the last 30 minutes.\"\n\n    phantom.task(user=user, message=message, respond_in_mins=30, name=\"task_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "connected_to_start": true,
+                        "connection_name": "ip reputation",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "Assign a manual task to do further investigation into the Data Exfiltration anomaly.",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "7aeaf738-6ee6-4fed-9b98-678ff3472750",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 243,
+                        "line_start": 232,
+                        "message": "ExtraHop Addy has detected a data exfiltration anomaly on your network and Phantom has confirmed via Anomali ThreatStream that the source address has connected with one or more known-bad external IP addresses in the last 30 minutes.",
+                        "name": "task",
+                        "notes": "Assign a manual task to do further investigation into the Data Exfiltration anomaly.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1400,
+                            "y": 360
+                        },
+                        "previous_function": "",
+                        "previous_name": "task_1",
+                        "respond_in": "30",
+                        "show_number": false,
+                        "size": {
+                            "height": 80,
+                            "width": 80
+                        },
+                        "state": "task",
+                        "status": "",
+                        "type": "coa.Task",
+                        "warn": false,
+                        "z": 193
+                    },
+                    {
+                        "action": "tag device",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "api_id": "filtered-data:filter_1:condition_1:get_peers_1:action_result.data.*.id",
+                            "eh_api_id": "",
+                            "ip": "artifact:*.cef.sourceAddress",
+                            "tag": "bad_ip_reputation"
+                        },
+                        "angle": 0,
+                        "app": "ExtraHop",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "tag device",
+                                "active": true,
+                                "app_name": "ExtraHop",
+                                "app_version": "1.0.4",
+                                "asset_name": "extrahop",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "eh_api_id": "",
+                                    "ip": "artifact:*.cef.sourceAddress",
+                                    "tag": "bad_ip_reputation"
+                                },
+                                "has_app": true,
+                                "id": 218,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "extrahop",
+                                "output": [
+                                    {
+                                        "column_name": "status",
+                                        "column_order": 0,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "ip",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "tag",
+                                        "column_order": 2,
+                                        "data_path": "action_result.parameter.tag",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "suspicious_endpoint"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "tag id",
+                                        "column_order": 3,
+                                        "data_path": "action_result.data.*.tag_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            4
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.eh_api_id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Extrahop device id: 1458, Tag: suspicious_endpoint"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.extrahop_device_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1458
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.tag",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "suspicious_endpoint"
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "eh_api_id": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "ExtraHop Device API ID",
+                                        "key": "eh_api_id",
+                                        "order": 2,
+                                        "primary": false,
+                                        "required": false
+                                    },
+                                    "ip": {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP Address",
+                                        "key": "ip",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true
+                                    },
+                                    "tag": {
+                                        "data_type": "string",
+                                        "default": "suspicious",
+                                        "description": "Tag Name",
+                                        "key": "tag",
+                                        "order": 1,
+                                        "primary": false,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "ExtraHop",
+                                "product_vendor": "ExtraHop Networks",
+                                "targets": "170",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "tag device"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def tag_device_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('tag_device_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'tag_device_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'tag_device_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                'tag': \"bad_ip_reputation\",\n                'eh_api_id': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"tag device\", parameters=parameters, assets=['extrahop'], name=\"tag_device_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 171,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "ip reputation",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": "0",
+                        "description": "Tag the device in ExtraHop with the \"bad_ip_reputation\" tag",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "934d2314-9f83-421d-afd6-bd2ad7bdcfa8",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 172,
+                        "line_end": 173,
+                        "line_start": 148,
+                        "message": "Configuring now",
+                        "name": "tag device",
+                        "notes": "Tag the device in ExtraHop with the \"bad_ip_reputation\" tag",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1380,
+                            "y": 220
+                        },
+                        "previous_function": "",
+                        "previous_name": "tag_device_1",
+                        "required_params": {
+                            "ip": true,
+                            "tag": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 195
+                    },
+                    {
                         "action": "get peers",
                         "action_type": "investigate",
                         "active": false,
@@ -2783,7 +2932,7 @@
                             "eh_api_id": "get_device_info_1:action_result.data.*.id",
                             "ip": "get_device_info_1:action_result.data.*.ipaddr4",
                             "minutes": 30,
-                            "peer_role": "any",
+                            "peer_role": "client",
                             "protocol": "any"
                         },
                         "angle": 0,
@@ -2802,7 +2951,7 @@
                                     "eh_api_id": "get_device_info_1:action_result.data.*.id",
                                     "ip": "get_device_info_1:action_result.data.*.ipaddr4",
                                     "minutes": 30,
-                                    "peer_role": "any",
+                                    "peer_role": "client",
                                     "protocol": "any"
                                 },
                                 "has_app": true,
@@ -3215,7 +3364,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
                             }
                         },
-                        "block_code": "def get_peers_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_peers_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_peers_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_device_info_1:action_result.data.*.ipaddr4', 'get_device_info_1:action_result.data.*.id', 'get_device_info_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_peers_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'protocol': \"any\",\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'peer_role': \"any\",\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get peers\", parameters=parameters, assets=['extrahop'], callback=filter_1, name=\"get_peers_1\", parent_action=action)\n\n    return",
+                        "block_code": "def get_peers_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_peers_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_peers_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_device_info_1:action_result.data.*.ipaddr4', 'get_device_info_1:action_result.data.*.id', 'get_device_info_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_peers_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'protocol': \"any\",\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'peer_role': \"client\",\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get peers\", parameters=parameters, assets=['extrahop'], callback=filter_1, name=\"get_peers_1\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3321,157 +3470,8 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": false,
-                        "z": 192
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "approver": "admin",
-                        "attrs": {
-                            ".background": {
-                                "stroke": "#637282"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".number": {
-                                "text": 1
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
-                            },
-                            "g.notes": {
-                                "display": "block"
-                            },
-                            "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
-                            }
-                        },
-                        "block_code": "def task_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('task_1() called')\n    \n    # set user and message variables for phantom.task call\n    user = \"admin\"\n    message = \"ExtraHop Addy has detected a data exfiltration anomaly on your network and Phantom has confirmed via Anomali ThreatStream that the source address has connected with one or more known-bad external IP addresses in the last 30 minutes.\"\n\n    phantom.task(user=user, message=message, respond_in_mins=30, name=\"task_1\")\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "connected_to_start": true,
-                        "connection_name": "ip reputation",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "Assign a manual task to do further investigation into the Data Exfiltration anomaly.",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "7aeaf738-6ee6-4fed-9b98-678ff3472750",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 243,
-                        "line_start": 232,
-                        "message": "ExtraHop Addy has detected a data exfiltration anomaly on your network and Phantom has confirmed via Anomali ThreatStream that the source address has connected with one or more known-bad external IP addresses in the last 30 minutes.",
-                        "name": "task",
-                        "notes": "Assign a manual task to do further investigation into the Data Exfiltration anomaly.",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 1400,
-                            "y": 360
-                        },
-                        "previous_function": "",
-                        "previous_name": "task_1",
-                        "respond_in": "30",
-                        "show_number": false,
-                        "size": {
-                            "height": 80,
-                            "width": 80
-                        },
-                        "state": "task",
-                        "status": "",
-                        "type": "coa.Task",
-                        "warn": false,
-                        "z": 193
+                        "warn": "",
+                        "z": 196
                     }
                 ]
             },
@@ -3480,7 +3480,7 @@
         "schema": 3,
         "version": "3.5.206"
     },
-    "create_time": "2018-05-22T18:38:05.989367+00:00",
+    "create_time": "2018-05-24T22:01:19.211122+00:00",
     "draft_mode": false,
     "labels": [
         "extrahop_events"

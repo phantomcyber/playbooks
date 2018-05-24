@@ -216,7 +216,7 @@ def get_peers_1(action=None, success=None, container=None, results=None, handle=
                 'protocol': "any",
                 'ip': results_item_1[0],
                 'minutes': 30,
-                'peer_role': "any",
+                'peer_role': "client",
                 'eh_api_id': results_item_1[1],
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[2]},
