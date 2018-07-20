@@ -30,151 +30,6 @@ def on_start(container):
     return
 
 """
-Use the built-in Maxmind database to find the geographic location of the IP address
-"""
-def geolocate_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('geolocate_ip_1() called')
-
-    # collect data for 'geolocate_ip_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'geolocate_ip_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'ip': container_item[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("geolocate ip", parameters=parameters, assets=['maxmind'], callback=join_decision_1, name="geolocate_ip_1")
-
-    return
-
-"""
-Use the whois information service to gather basic registration information about the IP address
-"""
-def whois_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('whois_ip_1() called')
-
-    # collect data for 'whois_ip_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'whois_ip_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'ip': container_item[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("whois ip", parameters=parameters, assets=['whois'], callback=join_decision_1, name="whois_ip_1")
-
-    return
-
-"""
-Query the PhishTank database for reports of verified phishing campaigns using the URL
-"""
-def url_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('url_reputation_1() called')
-
-    # collect data for 'url_reputation_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.requestURL', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'url_reputation_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'url': container_item[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("url reputation", parameters=parameters, assets=['phishtank'], callback=filter_1, name="url_reputation_1")
-
-    return
-
-"""
-Query the reputation of the file hash in the Cymon.io open source intelligence database
-"""
-def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('file_reputation_1() called')
-
-    # collect data for 'file_reputation_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'file_reputation_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'hash': container_item[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("file reputation", parameters=parameters, assets=['cymon'], callback=filter_2, name="file_reputation_1")
-
-    return
-
-"""
-Query the reputation of the IP address in the Cymon.io open source intelligence database
-"""
-def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('ip_reputation_1() called')
-
-    # collect data for 'ip_reputation_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'ip_reputation_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'ip': container_item[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("ip reputation", parameters=parameters, assets=['cymon'], callback=join_decision_1, name="ip_reputation_1")
-
-    return
-
-"""
-Raise the event severity based on the bad reputation of the URL
-"""
-def url_rep_raise_severity(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('url_rep_raise_severity() called')
-
-    phantom.set_severity(container, "high")
-
-    return
-
-"""
-Pin the verified phishing URL's to the Phantom Heads-Up Display in Mission Control to increase their visibility
-"""
-def phishtank_pin_to_hud(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('phishtank_pin_to_hud() called')
-
-    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:filter_1:condition_1:url_reputation_1:action_result.parameter.url"])
-
-    filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]
-
-    phantom.pin(container=container, message="PhishTank-verified phishing url", data=filtered_results_item_1_0, pin_type="card_large", pin_style="red")
-    join_decision_1(container=container)
-
-    return
-
-"""
 Filter down to only URL's that are in the database, valid, and verified
 """
 def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -195,30 +50,6 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
         phishtank_pin_to_hud(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
-"""
-Gather passive DNS lookups of the domain using the Cymon.io open source intelligence database
-"""
-def lookup_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('lookup_domain_1() called')
-
-    # collect data for 'lookup_domain_1' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationDnsDomain', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'lookup_domain_1' call
-    for container_item in container_data:
-        if container_item[0]:
-            parameters.append({
-                'domain': container_item[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': container_item[1]},
-            })
-
-    phantom.act("lookup domain", parameters=parameters, assets=['cymon'], callback=join_decision_1, name="lookup_domain_1")
 
     return
 
@@ -244,18 +75,63 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
     return
 
 """
+Pin the verified phishing URL's to the Phantom Heads-Up Display in Mission Control to increase their visibility
+"""
+def phishtank_pin_to_hud(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('phishtank_pin_to_hud() called')
+
+    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:filter_1:condition_1:url_reputation_1:action_result.parameter.url"])
+
+    filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]
+
+    phantom.pin(container=container, message="PhishTank-verified phishing url", data=filtered_results_item_1_0, pin_type="card_large", pin_style="red")
+    join_decision_1(container=container)
+
+    return
+
+"""
 Pin the malware file hashes to the Phantom Heads-Up Display in Mission Control to increase their visibility
 """
 def cymon_pin_to_hud(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('cymon_pin_to_hud() called')
 
-    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:filter_2:condition_1:file_reputation_1:action_result.parameter.hash", "filtered-data:filter_2:condition_1:file_reputation_1:action_result.data.*.results.*.title"])
+    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:filter_2:condition_1:file_reputation_1:action_result.data.*.results.*.title", "filtered-data:filter_2:condition_1:file_reputation_1:action_result.parameter.hash"])
 
     filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]
     filtered_results_item_1_1 = [item[1] for item in filtered_results_data_1]
 
-    phantom.pin(container=container, message=filtered_results_item_1_1, data=filtered_results_item_1_0, pin_type="card_large", pin_style="red")
+    phantom.pin(container=container, message=filtered_results_item_1_0, data=filtered_results_item_1_1, pin_type="card_large", pin_style="red")
     join_decision_1(container=container)
+
+    return
+
+"""
+Raise the event severity based on the bad reputation of the IP address
+"""
+def ip_rep_raise_severity(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('ip_rep_raise_severity() called')
+
+    phantom.set_severity(container, "high")
+
+    return
+
+"""
+Raise the event severity based on the bad reputation of the URL
+"""
+def url_rep_raise_severity(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('url_rep_raise_severity() called')
+
+    phantom.set_severity(container, "high")
+
+    return
+
+"""
+Raise the event severity based on the bad reputation of the file hash
+"""
+def file_rep_raise_severity(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('file_rep_raise_severity() called')
+
+    phantom.set_severity(container, "high")
 
     return
 
@@ -323,22 +199,146 @@ def join_decision_1(action=None, success=None, container=None, results=None, han
     return
 
 """
-Raise the event severity based on the bad reputation of the file hash
+Gather passive DNS lookups of the domain using the Cymon.io open source intelligence database
 """
-def file_rep_raise_severity(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('file_rep_raise_severity() called')
+def lookup_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('lookup_domain_1() called')
 
-    phantom.set_severity(container, "high")
+    # collect data for 'lookup_domain_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationDnsDomain', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'lookup_domain_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'domain': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("lookup domain", parameters=parameters, assets=['cymon'], callback=join_decision_1, name="lookup_domain_1")
 
     return
 
 """
-Raise the event severity based on the bad reputation of the IP address
+Use the whois information service to gather basic registration information about the IP address
 """
-def ip_rep_raise_severity(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('ip_rep_raise_severity() called')
+def whois_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('whois_ip_1() called')
 
-    phantom.set_severity(container, "high")
+    # collect data for 'whois_ip_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'whois_ip_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'ip': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("whois ip", parameters=parameters, assets=['whois'], callback=join_decision_1, name="whois_ip_1")
+
+    return
+
+"""
+Use the built-in Maxmind database to find the geographic location of the IP address
+"""
+def geolocate_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('geolocate_ip_1() called')
+
+    # collect data for 'geolocate_ip_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'geolocate_ip_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'ip': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("geolocate ip", parameters=parameters, assets=['maxmind'], callback=join_decision_1, name="geolocate_ip_1")
+
+    return
+
+"""
+Query the reputation of the IP address in the Cymon.io open source intelligence database
+"""
+def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('ip_reputation_1() called')
+
+    # collect data for 'ip_reputation_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'ip_reputation_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'ip': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("ip reputation", parameters=parameters, assets=['cymon'], callback=join_decision_1, name="ip_reputation_1")
+
+    return
+
+"""
+Query the reputation of the file hash in the Cymon.io open source intelligence database
+"""
+def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('file_reputation_1() called')
+
+    # collect data for 'file_reputation_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.fileHash', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'file_reputation_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'hash': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("file reputation", parameters=parameters, assets=['cymon'], callback=filter_2, name="file_reputation_1")
+
+    return
+
+"""
+Query the PhishTank database for reports of verified phishing campaigns using the URL
+"""
+def url_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('url_reputation_1() called')
+
+    # collect data for 'url_reputation_1' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.requestURL', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'url_reputation_1' call
+    for container_item in container_data:
+        if container_item[0]:
+            parameters.append({
+                'url': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
+
+    phantom.act("url reputation", parameters=parameters, assets=['phishtank'], callback=filter_1, name="url_reputation_1")
 
     return
 
