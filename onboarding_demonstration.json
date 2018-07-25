@@ -8,7 +8,7 @@
             "clean": true,
             "code_block": "",
             "description": "Conduct enrichment on any URL's, IP addresses, and/or domain names in the event. Use the results to add context by updating the heads-up display and changing the severity of the event. This Playbook can be updated as needed to provide further enrichment, automate collaboration by sending emails, chat messages, or service tickets, or even to respond automatically to the event with a containment or correction action.",
-            "hash": "d0dc2d833dfc5869409e8517375eb78a65ff183c",
+            "hash": "546824fbfa9d7837de0363d80e09f09cb9298ff5",
             "joint": {
                 "cells": [
                     {
@@ -20,6 +20,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -32,6 +39,7 @@
                             },
                             ".title": {
                                 "ref-x": 33,
+                                "ref-y": 8,
                                 "text": "START"
                             },
                             "g.delete": {
@@ -74,6 +82,7 @@
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 1,
                         "outPorts": [
                             "out"
                         ],
@@ -153,6 +162,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -207,6 +223,7 @@
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 10,
                         "outPorts": [],
                         "ports": {
                             "groups": {
@@ -485,6 +502,13 @@
                             ".api": {
                                 "text": "phishtank pin to hud"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -497,6 +521,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -524,8 +550,13 @@
                             "g.notes": {
                                 "display": "block"
                             },
+                            "g.notes code": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_code_dark_off.svg"
+                            },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
                         "block_code": "def phishtank_pin_to_hud(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('phishtank_pin_to_hud() called')\n\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:phishtank_filter:condition_1:url_reputation_1:action_result.parameter.url\"])\n\n    filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]\n\n    phantom.pin(container=container, message=\"PhishTank-verified phishing url\", data=filtered_results_item_1_0, pin_type=\"card_large\", pin_style=\"red\")\n\n    return",
@@ -561,12 +592,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 68,
-                        "line_start": 57,
+                        "line_end": 43,
+                        "line_start": 32,
                         "message": "Configuring now",
                         "name": "pin",
                         "notes": "Pin the verified phishing URL's to the Phantom Heads-Up Display in Mission Control to increase their visibility",
                         "number": 1,
+                        "order": 2,
                         "outPorts": [
                             "out"
                         ],
@@ -1007,292 +1039,12 @@
                         "z": 193
                     },
                     {
-                        "action": "url reputation",
-                        "action_type": "investigate",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "url": "artifact:*.cef.requestURL"
-                        },
-                        "angle": 0,
-                        "app": "",
-                        "approver": "",
-                        "assets": [
-                            {
-                                "action": "url reputation",
-                                "active": true,
-                                "app_name": "PhishTank",
-                                "app_version": "1.0.15",
-                                "asset_name": "phishtank",
-                                "config_type": "asset",
-                                "count": 0,
-                                "fields": {
-                                    "url": "artifact:*.cef.requestURL"
-                                },
-                                "has_app": true,
-                                "id": 108,
-                                "loaded": false,
-                                "missing": false,
-                                "name": "phishtank",
-                                "output": [
-                                    {
-                                        "column_name": "URL",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "url"
-                                        ],
-                                        "data_path": "action_result.data.*.url",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "VALID",
-                                        "column_order": 1,
-                                        "data_path": "action_result.data.*.valid",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "column_name": "phish_id",
-                                        "column_order": 2,
-                                        "data_path": "action_result.data.*.phish_id",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Verified at",
-                                        "column_order": 4,
-                                        "data_path": "action_result.data.*.verified",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "column_name": "In Database",
-                                        "column_order": 3,
-                                        "data_path": "action_result.data.*.in_database",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.verified_at",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Detail URL",
-                                        "column_order": 5,
-                                        "data_path": "action_result.data.*.phish_detail_page",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.Valid",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.Verified",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.In Database",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "contains": [
-                                            "url"
-                                        ],
-                                        "data_path": "action_result.parameter.url",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "parameters": {
-                                    "url": {
-                                        "contains": [
-                                            "url"
-                                        ],
-                                        "data_type": "string",
-                                        "default": null,
-                                        "description": "URL to query for Phishing information",
-                                        "key": "url",
-                                        "primary": true,
-                                        "required": true
-                                    }
-                                },
-                                "product_name": "PhishTank",
-                                "product_vendor": "OpenDNS",
-                                "targets": "123",
-                                "type": ""
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "url reputation"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "opacity": 0,
-                                "text": "Configuring now"
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "text": "Investigate"
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
-                            },
-                            "g.notes": {
-                                "display": "block"
-                            },
-                            "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
-                            }
-                        },
-                        "block_code": "def url_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('url_reputation_1() called')\n\n    # collect data for 'url_reputation_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.requestURL', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'url_reputation_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'url': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"url reputation\", parameters=parameters, assets=['phishtank'], callback=phishtank_filter, name=\"url_reputation_1\")\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "color": "",
-                        "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": 0,
-                        "description": "Query the PhishTank database for reports of verified phishing campaigns using the URL",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "5146ce0c-dc30-404b-8f25-b9952989347e",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 140,
-                        "line_start": 119,
-                        "message": "Configuring now",
-                        "name": "url reputation",
-                        "notes": "Query the PhishTank database for reports of verified phishing campaigns using the URL",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 240,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "url_reputation_1",
-                        "required_params": {
-                            "url": true
-                        },
-                        "reviewer": "",
-                        "show_number": false,
-                        "size": {
-                            "height": 100,
-                            "width": 180
-                        },
-                        "state": "action_assets",
-                        "status": "",
-                        "title": "Investigate",
-                        "type": "coa.Action",
-                        "warn": false,
-                        "z": 197
-                    },
-                    {
                         "active": false,
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".inPorts>.port-0>.port-body": {
@@ -1328,7 +1080,8 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
                         "block_code": "def phishtank_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('phishtank_filter() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"url_reputation_1:action_result.summary.In Database\", \"==\", True],\n            [\"url_reputation_1:action_result.summary.Valid\", \"==\", True],\n            [\"url_reputation_1:action_result.summary.Verified\", \"==\", True],\n        ],\n        logical_operator='and',\n        name=\"phishtank_filter:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        phishtank_pin_to_hud(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        raise_event_severity(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
@@ -1354,11 +1107,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 54,
-                        "line_start": 32,
+                        "line_end": 92,
+                        "line_start": 70,
                         "name": "filter",
                         "notes": "Filter down to only URL's that are in the database, valid, and verified",
                         "number": 1,
+                        "order": 4,
                         "outPorts": [
                             "out-1"
                         ],
@@ -1466,6 +1220,13 @@
                             ".api": {
                                 "text": "raise event severity"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -1478,6 +1239,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -1502,8 +1265,13 @@
                             "g.notes": {
                                 "display": "block"
                             },
+                            "g.notes code": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_code_dark_off.svg"
+                            },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
                         "block_code": "def raise_event_severity(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('raise_event_severity() called')\n\n    phantom.set_severity(container, \"high\")\n\n    return",
@@ -1536,12 +1304,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 150,
-                        "line_start": 143,
+                        "line_end": 102,
+                        "line_start": 95,
                         "message": "Configuring now",
                         "name": "set severity",
                         "notes": "Raise the Severity of this event in Phantom because the URL(s) were labelled as malicious  according to PhishTank",
                         "number": 6,
+                        "order": 5,
                         "outPorts": [
                             "out"
                         ],
@@ -1616,558 +1385,6 @@
                         "z": 206
                     },
                     {
-                        "action": "lookup domain",
-                        "action_type": "investigate",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "domain": "artifact:*.cef.destinationDnsDomain",
-                            "type": ""
-                        },
-                        "angle": 0,
-                        "app": "",
-                        "approver": "",
-                        "assets": [
-                            {
-                                "action": "lookup domain",
-                                "active": true,
-                                "app_name": "DNS",
-                                "app_version": "1.3.28",
-                                "asset_name": "dns",
-                                "config_type": "asset",
-                                "count": 0,
-                                "fields": {
-                                    "domain": "artifact:*.cef.destinationDnsDomain",
-                                    "type": ""
-                                },
-                                "has_app": true,
-                                "id": 132,
-                                "loaded": false,
-                                "missing": false,
-                                "name": "dns",
-                                "output": [
-                                    {
-                                        "data_path": "action_result.data",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_order": 0,
-                                        "data_path": "action_result.summary.total_ips",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "IP Address",
-                                        "column_order": 1,
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.summary.ip",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Hostname",
-                                        "column_order": 2,
-                                        "contains": [
-                                            "host name",
-                                            "domain"
-                                        ],
-                                        "data_path": "action_result.summary.hostname",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_order": 3,
-                                        "data_path": "action_result.summary.canonical_name",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "host name",
-                                            "domain"
-                                        ],
-                                        "data_path": "action_result.parameter.domain",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.type",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.data.*.ip_objects.*.ip",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.ips",
-                                        "data_type": "string"
-                                    }
-                                ],
-                                "parameters": {
-                                    "domain": {
-                                        "contains": [
-                                            "host name",
-                                            "domain"
-                                        ],
-                                        "data_type": "string",
-                                        "default": null,
-                                        "description": "Record to resolve",
-                                        "key": "domain",
-                                        "primary": true,
-                                        "required": true
-                                    },
-                                    "type": {
-                                        "data_type": "string",
-                                        "default": null,
-                                        "description": "DNS Record Type",
-                                        "key": "type",
-                                        "required": false,
-                                        "value_list": [
-                                            "A",
-                                            "AAAA",
-                                            "CNAME",
-                                            "HINFO",
-                                            "ISDN",
-                                            "MX",
-                                            "NS",
-                                            "SOA",
-                                            "TXT"
-                                        ]
-                                    }
-                                },
-                                "product_name": "DNS",
-                                "product_vendor": "Generic",
-                                "targets": "84",
-                                "type": ""
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "lookup domain"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "opacity": 0,
-                                "text": "Configuring now"
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "text": "Investigate"
-                            },
-                            "g.delete": {
-                                "display": "block"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
-                            },
-                            "g.notes": {
-                                "display": "block"
-                            },
-                            "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
-                            }
-                        },
-                        "block_code": "def lookup_domain_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('lookup_domain_2() called')\n\n    # collect data for 'lookup_domain_2' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationDnsDomain', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'lookup_domain_2' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'domain': container_item[0],\n                'type': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"lookup domain\", parameters=parameters, assets=['dns'], name=\"lookup_domain_2\")\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "color": "",
-                        "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": 0,
-                        "description": "Use DNS to resolve the domain name to an IP address",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "2cad3fe2-5bec-491e-90c9-d3d300060390",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 199,
-                        "line_start": 177,
-                        "message": "Configuring now",
-                        "name": "lookup domain",
-                        "notes": "Use DNS to resolve the domain name to an IP address",
-                        "number": 2,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 240,
-                            "y": 360
-                        },
-                        "previous_function": "",
-                        "previous_name": "lookup_domain_2",
-                        "required_params": {
-                            "domain": true
-                        },
-                        "reviewer": "",
-                        "show_number": false,
-                        "size": {
-                            "height": 100,
-                            "width": 180
-                        },
-                        "state": "action_assets",
-                        "status": "",
-                        "title": "Investigate",
-                        "type": "coa.Action",
-                        "warn": "",
-                        "z": 207
-                    },
-                    {
-                        "action": "lookup ip",
-                        "action_type": "investigate",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "ip": "artifact:*.cef.destinationAddress"
-                        },
-                        "angle": 0,
-                        "app": "",
-                        "approver": "",
-                        "assets": [
-                            {
-                                "action": "lookup ip",
-                                "active": true,
-                                "app_name": "DNS",
-                                "app_version": "1.3.28",
-                                "asset_name": "dns",
-                                "config_type": "asset",
-                                "count": 0,
-                                "fields": {
-                                    "ip": "artifact:*.cef.destinationAddress"
-                                },
-                                "has_app": true,
-                                "id": 132,
-                                "loaded": false,
-                                "missing": false,
-                                "name": "dns",
-                                "output": [
-                                    {
-                                        "data_path": "action_result.data",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_order": 2,
-                                        "data_path": "action_result.summary.canonical_name",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "IP Address",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.summary.ip",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Hostname",
-                                        "column_order": 1,
-                                        "contains": [
-                                            "host name",
-                                            "domain"
-                                        ],
-                                        "data_path": "action_result.summary.hostname",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_path": "action_result.parameter.ip",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "parameters": {
-                                    "ip": {
-                                        "contains": [
-                                            "ip"
-                                        ],
-                                        "data_type": "string",
-                                        "default": null,
-                                        "description": "IP to resolve",
-                                        "key": "ip",
-                                        "primary": true,
-                                        "required": true
-                                    }
-                                },
-                                "product_name": "DNS",
-                                "product_vendor": "Generic",
-                                "targets": "84",
-                                "type": ""
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "lookup ip"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "opacity": 0,
-                                "text": "Configuring now"
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "text": "Investigate"
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
-                            },
-                            "g.notes": {
-                                "display": "block"
-                            },
-                            "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
-                            }
-                        },
-                        "block_code": "def lookup_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('lookup_ip_1() called')\n\n    # collect data for 'lookup_ip_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'lookup_ip_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"lookup ip\", parameters=parameters, assets=['dns'], name=\"lookup_ip_1\")\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "color": "",
-                        "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "delay": 0,
-                        "description": "Use a reverse DNS query to resolve the IP address to a domain name",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "aca7d6f6-7f75-4780-8d6b-276d07dcdeff",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 174,
-                        "line_start": 153,
-                        "message": "Configuring now",
-                        "name": "lookup ip",
-                        "notes": "Use a reverse DNS query to resolve the IP address to a domain name",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 240,
-                            "y": 500
-                        },
-                        "previous_function": "",
-                        "previous_name": "lookup_ip_1",
-                        "required_params": {
-                            "ip": true
-                        },
-                        "reviewer": "",
-                        "show_number": false,
-                        "size": {
-                            "height": 100,
-                            "width": 180
-                        },
-                        "state": "action_assets",
-                        "status": "",
-                        "title": "Investigate",
-                        "type": "coa.Action",
-                        "warn": "",
-                        "z": 208
-                    },
-                    {
                         "action": "geolocate ip",
                         "action_type": "investigate",
                         "active": false,
@@ -2184,6 +1401,7 @@
                                 "active": true,
                                 "app_name": "MaxMind",
                                 "app_version": "1.2.22",
+                                "appid": "",
                                 "asset_name": "maxmind",
                                 "config_type": "asset",
                                 "count": 0,
@@ -2304,6 +1522,13 @@
                             ".action": {
                                 "text": "geolocate ip"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -2316,6 +1541,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -2331,6 +1558,9 @@
                             ".title": {
                                 "text": "Investigate"
                             },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -2344,7 +1574,8 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
                         "block_code": "def geolocate_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('geolocate_ip_1() called')\n\n    # collect data for 'geolocate_ip_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'geolocate_ip_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"geolocate ip\", parameters=parameters, assets=['maxmind'], name=\"geolocate_ip_1\")\n\n    return",
@@ -2372,12 +1603,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 116,
-                        "line_start": 95,
+                        "line_end": 175,
+                        "line_start": 154,
                         "message": "Configuring now",
                         "name": "geolocate ip",
                         "notes": "Use the built-in Maxmind database to find the geographic location of the IP address",
                         "number": 1,
+                        "order": 8,
                         "outPorts": [
                             "out"
                         ],
@@ -2453,7 +1685,7 @@
                         "title": "Investigate",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 209
+                        "z": 214
                     },
                     {
                         "action": "whois ip",
@@ -2472,6 +1704,7 @@
                                 "active": true,
                                 "app_name": "WHOIS",
                                 "app_version": "1.2.31",
+                                "appid": "",
                                 "asset_name": "whois",
                                 "config_type": "asset",
                                 "count": 0,
@@ -2700,6 +1933,13 @@
                             ".action": {
                                 "text": "whois ip"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -2712,6 +1952,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -2727,6 +1969,9 @@
                             ".title": {
                                 "text": "Investigate"
                             },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -2740,7 +1985,8 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
                         "block_code": "def whois_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('whois_ip_1() called')\n\n    # collect data for 'whois_ip_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'whois_ip_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"whois ip\", parameters=parameters, assets=['whois'], name=\"whois_ip_1\")\n\n    return",
@@ -2768,12 +2014,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 92,
-                        "line_start": 71,
+                        "line_end": 199,
+                        "line_start": 178,
                         "message": "Configuring now",
                         "name": "whois ip",
                         "notes": "Use the whois information service to gather basic registration information about the IP address",
                         "number": 1,
+                        "order": 9,
                         "outPorts": [
                             "out"
                         ],
@@ -2849,16 +2096,895 @@
                         "title": "Investigate",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 210
+                        "z": 215
+                    },
+                    {
+                        "action": "url reputation",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "url": "artifact:*.cef.requestURL"
+                        },
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "url reputation",
+                                "active": true,
+                                "app_name": "PhishTank",
+                                "app_version": "1.0.15",
+                                "appid": "",
+                                "asset_name": "phishtank",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "url": "artifact:*.cef.requestURL"
+                                },
+                                "has_app": true,
+                                "id": 108,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "phishtank",
+                                "output": [
+                                    {
+                                        "column_name": "URL",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.url",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "VALID",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*.valid",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "column_name": "phish_id",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.phish_id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Verified at",
+                                        "column_order": 4,
+                                        "data_path": "action_result.data.*.verified",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "column_name": "In Database",
+                                        "column_order": 3,
+                                        "data_path": "action_result.data.*.in_database",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.verified_at",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Detail URL",
+                                        "column_order": 5,
+                                        "data_path": "action_result.data.*.phish_detail_page",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.Valid",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.Verified",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.In Database",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.parameter.url",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "parameters": {
+                                    "url": {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "URL to query for Phishing information",
+                                        "key": "url",
+                                        "primary": true,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "PhishTank",
+                                "product_vendor": "OpenDNS",
+                                "targets": "123",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "url reputation"
+                            },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "def url_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('url_reputation_1() called')\n\n    # collect data for 'url_reputation_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.requestURL', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'url_reputation_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'url': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"url reputation\", parameters=parameters, assets=['phishtank'], callback=phishtank_filter, name=\"url_reputation_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Query the PhishTank database for reports of verified phishing campaigns using the URL",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "5146ce0c-dc30-404b-8f25-b9952989347e",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 67,
+                        "line_start": 46,
+                        "message": "Configuring now",
+                        "name": "url reputation",
+                        "notes": "Query the PhishTank database for reports of verified phishing campaigns using the URL",
+                        "number": 1,
+                        "order": 3,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 240,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "url_reputation_1",
+                        "required_params": {
+                            "url": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 217
+                    },
+                    {
+                        "action": "lookup domain",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "domain": "artifact:*.cef.destinationDnsDomain",
+                            "type": ""
+                        },
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "lookup domain",
+                                "active": true,
+                                "app_name": "DNS",
+                                "app_version": "1.3.28",
+                                "appid": "876ab991-313e-48e7-bccd-e8c9650c239c",
+                                "asset_name": "google_dns",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "domain": "artifact:*.cef.destinationDnsDomain",
+                                    "type": ""
+                                },
+                                "has_app": true,
+                                "id": 145,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "google_dns",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.data",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_order": 0,
+                                        "data_path": "action_result.summary.total_ips",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "IP Address",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.summary.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Hostname",
+                                        "column_order": 2,
+                                        "contains": [
+                                            "host name",
+                                            "domain"
+                                        ],
+                                        "data_path": "action_result.summary.hostname",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_order": 3,
+                                        "data_path": "action_result.summary.canonical_name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "host name",
+                                            "domain"
+                                        ],
+                                        "data_path": "action_result.parameter.domain",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.type",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ip_objects.*.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.ips",
+                                        "data_type": "string"
+                                    }
+                                ],
+                                "parameters": {
+                                    "domain": {
+                                        "contains": [
+                                            "host name",
+                                            "domain"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Record to resolve",
+                                        "key": "domain",
+                                        "primary": true,
+                                        "required": true
+                                    },
+                                    "type": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "DNS Record Type",
+                                        "key": "type",
+                                        "required": false,
+                                        "value_list": [
+                                            "A",
+                                            "AAAA",
+                                            "CNAME",
+                                            "HINFO",
+                                            "ISDN",
+                                            "MX",
+                                            "NS",
+                                            "SOA",
+                                            "TXT"
+                                        ]
+                                    }
+                                },
+                                "product_name": "DNS",
+                                "product_vendor": "Generic",
+                                "targets": "6",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "lookup domain"
+                            },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "def lookup_domain_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('lookup_domain_2() called')\n\n    # collect data for 'lookup_domain_2' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationDnsDomain', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'lookup_domain_2' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'domain': container_item[0],\n                'type': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"lookup domain\", parameters=parameters, assets=['google_dns'], name=\"lookup_domain_2\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Use DNS to resolve the domain name to an IP address",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "2cad3fe2-5bec-491e-90c9-d3d300060390",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 127,
+                        "line_start": 105,
+                        "message": "Configuring now",
+                        "name": "lookup domain",
+                        "notes": "Use DNS to resolve the domain name to an IP address",
+                        "number": 2,
+                        "order": 6,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 240,
+                            "y": 360
+                        },
+                        "previous_function": "",
+                        "previous_name": "lookup_domain_2",
+                        "required_params": {
+                            "domain": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 218
+                    },
+                    {
+                        "action": "lookup ip",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip": "artifact:*.cef.destinationAddress"
+                        },
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "lookup ip",
+                                "active": true,
+                                "app_name": "DNS",
+                                "app_version": "1.3.28",
+                                "appid": "876ab991-313e-48e7-bccd-e8c9650c239c",
+                                "asset_name": "google_dns",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "ip": "artifact:*.cef.destinationAddress"
+                                },
+                                "has_app": true,
+                                "id": 145,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "google_dns",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.data",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_order": 2,
+                                        "data_path": "action_result.summary.canonical_name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "IP Address",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.summary.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Hostname",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "host name",
+                                            "domain"
+                                        ],
+                                        "data_path": "action_result.summary.hostname",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "parameters": {
+                                    "ip": {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP to resolve",
+                                        "key": "ip",
+                                        "primary": true,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "DNS",
+                                "product_vendor": "Generic",
+                                "targets": "6",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "lookup ip"
+                            },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "def lookup_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('lookup_ip_1() called')\n\n    # collect data for 'lookup_ip_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'lookup_ip_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"lookup ip\", parameters=parameters, assets=['google_dns'], name=\"lookup_ip_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Use a reverse DNS query to resolve the IP address to a domain name",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "aca7d6f6-7f75-4780-8d6b-276d07dcdeff",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 151,
+                        "line_start": 130,
+                        "message": "Configuring now",
+                        "name": "lookup ip",
+                        "notes": "Use a reverse DNS query to resolve the IP address to a domain name",
+                        "number": 1,
+                        "order": 7,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 240,
+                            "y": 500
+                        },
+                        "previous_function": "",
+                        "previous_name": "lookup_ip_1",
+                        "required_params": {
+                            "ip": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 219
                     }
                 ]
             },
-            "notes": "This playbook uses the following Apps:\n - PhishTank (url reputation) [asset name = phishtank] - open database for reporting and verifying URL's used in phishing campaigns\n - DNS (lookup domain, lookup ip) [asset name = DNS] - use a public DNS server for regular and reverse DNS queries\n - MaxMind (geolocate ip) [asset name = maxmind] - built-in database for finding geographic coordinates of an IP address\n - whois (whois ip) [asset name = whois] - free service for registration information about IP addresses\n\nDeployment Notes:\n - learn more about Playbook development in the Automation Engineering Manual section of the documentation\n - as you configure more assets in Phantom this Playbook can be enhanced to take more automated actions"
+            "notes": "This playbook uses the following Apps:\n - PhishTank (url reputation) [asset name = phishtank] - open database for reporting and verifying URL's used in phishing campaigns\n - DNS (lookup domain, lookup ip) [asset name = google_dns] - use a public DNS server for regular and reverse DNS queries\n - MaxMind (geolocate ip) [asset name = maxmind] - built-in database for finding geographic coordinates of an IP address\n - whois (whois ip) [asset name = whois] - free service for registration information about IP addresses\n\nDeployment Notes:\n - learn more about Playbook development in the Automation Engineering Manual section of the documentation\n - as you configure more assets in Phantom this Playbook can be enhanced to take more automated actions"
         },
         "schema": 3,
-        "version": "3.5.208"
+        "version": "4.0.695"
     },
-    "create_time": "2018-07-24T23:22:31.849898+00:00",
+    "create_time": "2018-07-25T22:30:18.887325+00:00",
     "draft_mode": false,
     "labels": [
         "*"
