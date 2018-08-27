@@ -1,0 +1,3682 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "misc": { "apps_list": ["ExtraHop", "ThreatStream"] },
+    "coa": {
+        "data": {
+            "clean": true,
+            "code_block": "",
+            "description": "This playbook processes an ExtraHop Addy anomaly indicating potential data exfiltration on the network.  It first retrieves all of the peers acting as a client in the last 30 minutes for the device that triggered the anomaly.  Then it filters out private IP Addresses as defined in RFC1918.  Next it looks up IP reputation scores for each of the non-private IP Addresses that have communicated with the device that triggered the anomaly in the last 30 minutes. If a known-bad IP is found then that device will be tagged with \"bad_ip_reputation\" in ExtraHop and a Phantom task will be created to track further manual investigation of this event.",
+            "hash": "3fdcd8ff6e0cd145f3a1d0c43d7d50e1b7fa11c2",
+            "joint": {
+                "cells": [
+                    {
+                        "0": "S",
+                        "1": "T",
+                        "2": "A",
+                        "3": "R",
+                        "4": "T",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "ref-x": 33,
+                                "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            }
+                        },
+                        "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'decision_1' block\n    decision_1(container=container)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "fe22674f-a6f9-4901-93ef-8671c571a230",
+                        "inPorts": [],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 17,
+                        "line_start": 9,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 100,
+                            "y": 100
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 54,
+                            "width": 80
+                        },
+                        "status": "",
+                        "title": "START",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 1
+                    },
+                    {
+                        "0": "E",
+                        "1": "N",
+                        "2": "D",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".title": {
+                                "text": "END"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            }
+                        },
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "tag device, task, get protocols",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "9c3a477b-2975-4e53-b9ee-e7702630fa05",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 277,
+                        "line_start": 264,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1760,
+                            "y": 380
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 54,
+                            "width": 80
+                        },
+                        "status": "",
+                        "title": "END",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 2
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "fac3be90-468b-4953-8fd9-b1cf41c25baa",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "fe22674f-a6f9-4901-93ef-8671c571a230",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "f58adcd8-8276-4cbe-ad4c-9caa70927689",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 3
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "8cd164ac-9030-4f0f-946b-5243ee6640a5",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "f58adcd8-8276-4cbe-ad4c-9caa70927689",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "97c41199-7322-468f-aecc-ea9cf4150227",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 6
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "ef64b323-ca6b-40a5-b93d-de89473dc6b0",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "97c41199-7322-468f-aecc-ea9cf4150227",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "b3b8b7cb-9e0e-4cd8-84c4-525b6f0fd79a",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 8
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "9c936c6e-fb49-47a8-b51c-f7bdc8b58edc",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "97c41199-7322-468f-aecc-ea9cf4150227",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "cea5a975-ef8c-4f4d-9ec5-e497ea193a86",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 10
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "cb441b4a-d402-4bfb-8230-bdbf6888f753",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "b3b8b7cb-9e0e-4cd8-84c4-525b6f0fd79a",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "69c24bf6-3efb-4309-b1a9-5d0a980e335a",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 62
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "fde00339-9ca2-4d48-97e2-3d8299f72690",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "69c24bf6-3efb-4309-b1a9-5d0a980e335a",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "bd682cbf-9095-4c22-a8d8-d05a850a0a67",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 73
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "a4c52645-b5e7-4028-84f2-a18c2797b2ac",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "934d2314-9f83-421d-afd6-bd2ad7bdcfa8",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "9c3a477b-2975-4e53-b9ee-e7702630fa05",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 77
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "e493c538-e577-451a-96d4-920eda3ba01e",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "7aeaf738-6ee6-4fed-9b98-678ff3472750",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "9c3a477b-2975-4e53-b9ee-e7702630fa05",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 78
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "93945264-3598-453e-bb6b-0b3f3313bba8",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "cea5a975-ef8c-4f4d-9ec5-e497ea193a86",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "9c3a477b-2975-4e53-b9ee-e7702630fa05",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "vertices": [
+                            {
+                                "x": 1720,
+                                "y": 120
+                            }
+                        ],
+                        "z": 83
+                    },
+                    {
+                        "action": "get protocols",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "eh_api_id": "get_device_info_1:action_result.data.*.id",
+                            "ip": "get_device_info_1:action_result.data.*.ipaddr4",
+                            "minutes": 30
+                        },
+                        "angle": 0,
+                        "app": "ExtraHop",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "get protocols",
+                                "active": true,
+                                "app_name": "ExtraHop",
+                                "app_version": "1.0.4",
+                                "asset_name": "extrahop",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "eh_api_id": "get_device_info_1:action_result.data.*.id",
+                                    "ip": "get_device_info_1:action_result.data.*.ipaddr4",
+                                    "minutes": 30
+                                },
+                                "has_app": true,
+                                "id": 218,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "extrahop",
+                                "output": [
+                                    {
+                                        "column_name": "status",
+                                        "column_order": 0,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "client protocols",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*.client_protocols",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "DNS, IPv4, LDAP, NTP, SSL, TCP, UDP"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "server protocols",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.server_protocols",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "DB, IPv4, SSL, TCP"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.minutes",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            30
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.eh_api_id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Server protocol count: 4, Client protocol count: 7"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.server_protocol_count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            4
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.client_protocol_count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            7
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "eh_api_id": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "ExtraHop API id",
+                                        "key": "eh_api_id",
+                                        "order": 2,
+                                        "primary": false,
+                                        "required": false
+                                    },
+                                    "ip": {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP Address of device",
+                                        "key": "ip",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true
+                                    },
+                                    "minutes": {
+                                        "data_type": "numeric",
+                                        "default": 30,
+                                        "description": "Minutes to look back",
+                                        "key": "minutes",
+                                        "order": 1,
+                                        "primary": false,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "ExtraHop",
+                                "product_vendor": "ExtraHop Networks",
+                                "targets": "170",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "get protocols"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def get_protocols_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_protocols_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_protocols_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_device_info_1:action_result.data.*.ipaddr4', 'get_device_info_1:action_result.data.*.id', 'get_device_info_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_protocols_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get protocols\", parameters=parameters, assets=['extrahop'], name=\"get_protocols_1\", parent_action=action)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "get device info",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Look up all of the protocols the device that triggered the anomaly communicated in the last 30 minutes",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "cea5a975-ef8c-4f4d-9ec5-e497ea193a86",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 45,
+                        "line_start": 20,
+                        "message": "Configuring now",
+                        "name": "get protocols",
+                        "notes": "Look up all of the protocols the device that triggered the anomaly communicated in the last 30 minutes",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 620,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "get_protocols_1",
+                        "required_params": {
+                            "ip": true,
+                            "minutes": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 164
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.label\", \"==\", \"data_exfiltration\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        get_device_info_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "Continue running this playbook only if the artifact label is \"data_exfiltration\"",
+                        "hasElse": false,
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "f58adcd8-8276-4cbe-ad4c-9caa70927689",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 89,
+                        "line_start": 72,
+                        "name": "decision",
+                        "notes": "Continue running this playbook only if the artifact label is \"data_exfiltration\"",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "artifact:*.label",
+                                        "value": "data_exfiltration"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 240,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "decision_1",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "decision",
+                        "status": "",
+                        "type": "coa.Decision",
+                        "warn": "",
+                        "z": 173
+                    },
+                    {
+                        "action": "get device info",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip": "artifact:*.cef.sourceAddress"
+                        },
+                        "angle": 0,
+                        "app": "ExtraHop",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "get device info",
+                                "active": true,
+                                "app_name": "ExtraHop",
+                                "app_version": "1.0.4",
+                                "asset_name": "extrahop",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "ip": "artifact:*.cef.sourceAddress"
+                                },
+                                "has_app": true,
+                                "id": 218,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "extrahop",
+                                "output": [
+                                    {
+                                        "column_name": "status",
+                                        "column_order": 0,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "ipv4",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ipaddr4",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "mac",
+                                        "column_order": 2,
+                                        "contains": [
+                                            "mac address"
+                                        ],
+                                        "data_path": "action_result.data.*.macaddr",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0E:6F:28:A4:2B:62"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "host name",
+                                        "column_order": 3,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.dhcp_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "networksec.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "dns name",
+                                        "column_order": 4,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.dns_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "networksec.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "device class",
+                                        "column_order": 5,
+                                        "data_path": "action_result.data.*.device_class",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "node"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "extrahop api id",
+                                        "column_order": 6,
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1458
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "is L3",
+                                        "column_order": 7,
+                                        "data_path": "action_result.data.*.is_l3",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "vendor",
+                                        "column_order": 8,
+                                        "data_path": "action_result.data.*.vendor",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "VMware"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.discover_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1522964970000
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ipaddr6",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "FE80::0202:B3FF:FE1E:8329"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.display_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "networksec.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.custom_type",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.netbios_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.user_mod_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1525212324713
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.cdp_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.vlanid",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.parent_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            491
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.description",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.node_id",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.mod_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1525963038299
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.extrahop_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "fff45b060a0a0000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.custom_name",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.default_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "VMware 208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.analysis_level",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.analysis",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "advanced"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.on_watchlist",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Device count: 1"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.discovery_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "fff45b060a0a0000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.device_count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "ip": {
+                                        "allow_list": true,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP Address",
+                                        "key": "ip",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "ExtraHop",
+                                "product_vendor": "ExtraHop Networks",
+                                "targets": "170",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "get device info"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def get_device_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_device_info_1() called')\n\n    # collect data for 'get_device_info_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_device_info_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"get device info\", parameters=parameters, assets=['extrahop'], callback=get_device_info_1_callback, name=\"get_device_info_1\")\n\n    return",
+                        "callback_code": "def get_device_info_1_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_device_info_1_callback() called')\n    \n    get_peers_1(action=action, success=success, container=container, results=results, handle=handle)\n    get_protocols_1(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
+                        "callback_start": 113,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Get more details about an ExtraHop device given its IP address. Details include MAC address, dhcp name, first discovered time, device type, and more",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "97c41199-7322-468f-aecc-ea9cf4150227",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 121,
+                        "line_start": 92,
+                        "message": "Configuring now",
+                        "name": "get device info",
+                        "notes": "Get more details about an ExtraHop device given its IP address. Details include MAC address, dhcp name, first discovered time, device type, and more",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 380,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "get_device_info_1",
+                        "required_params": {
+                            "ip": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 174
+                    },
+                    {
+                        "action": "get peers",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "eh_api_id": "get_device_info_1:action_result.data.*.id",
+                            "ip": "get_device_info_1:action_result.data.*.ipaddr4",
+                            "minutes": 30,
+                            "peer_role": "client",
+                            "protocol": "any"
+                        },
+                        "angle": 0,
+                        "app": "ExtraHop",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "get peers",
+                                "active": true,
+                                "app_name": "ExtraHop",
+                                "app_version": "1.0.4",
+                                "asset_name": "extrahop",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "eh_api_id": "get_device_info_1:action_result.data.*.id",
+                                    "ip": "get_device_info_1:action_result.data.*.ipaddr4",
+                                    "minutes": 30,
+                                    "peer_role": "client",
+                                    "protocol": "any"
+                                },
+                                "has_app": true,
+                                "id": 218,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "extrahop",
+                                "output": [
+                                    {
+                                        "column_name": "status",
+                                        "column_order": 0,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "ipv4",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ipaddr4",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.12.23"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "mac",
+                                        "column_order": 2,
+                                        "contains": [
+                                            "mac address"
+                                        ],
+                                        "data_path": "action_result.data.*.macaddr",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "A4:52:B7:E6:15:EB"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "host name",
+                                        "column_order": 3,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.dhcp_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "app-perf03.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "dns name",
+                                        "column_order": 4,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.dns_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "app-perf03.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "device class",
+                                        "column_order": 5,
+                                        "data_path": "action_result.data.*.device_class",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "node"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "extrahop api id",
+                                        "column_order": 6,
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            2850
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "is L3",
+                                        "column_order": 7,
+                                        "data_path": "action_result.data.*.is_l3",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "vendor",
+                                        "column_order": 8,
+                                        "data_path": "action_result.data.*.vendor",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "ASUS"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.discover_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1522967820000
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ipaddr6",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "FE80::0202:B3FF:FE1E:8329"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.display_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "app-perf03.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.custom_type",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.netbios_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.user_mod_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1522967940018
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.cdp_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.vlanid",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.parent_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            438
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.description",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.node_id",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.mod_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1525965708165
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.extrahop_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "fff4cc0a140a0000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.custom_name",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.default_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "ASUS 208.14.12.23"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.analysis_level",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.analysis",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "standard"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.on_watchlist",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.minutes",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            30
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.peer_role",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "any"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.protocol",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "any"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.eh_api_id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Peer count: 8"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.discovery_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "fff4cc0a140a0000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.peer_count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            8
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "eh_api_id": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "ExtraHop API id",
+                                        "key": "eh_api_id",
+                                        "order": 4,
+                                        "primary": false,
+                                        "required": false
+                                    },
+                                    "ip": {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP Address of device",
+                                        "key": "ip",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true
+                                    },
+                                    "minutes": {
+                                        "data_type": "numeric",
+                                        "default": 30,
+                                        "description": "Minutes to look back",
+                                        "key": "minutes",
+                                        "order": 1,
+                                        "primary": false,
+                                        "required": true
+                                    },
+                                    "peer_role": {
+                                        "data_type": "string",
+                                        "default": "any",
+                                        "description": "Filter by peer role",
+                                        "key": "peer_role",
+                                        "order": 2,
+                                        "primary": false,
+                                        "required": false,
+                                        "value_list": [
+                                            "any",
+                                            "client",
+                                            "server"
+                                        ]
+                                    },
+                                    "protocol": {
+                                        "data_type": "string",
+                                        "default": "any",
+                                        "description": "Filter by protocol",
+                                        "key": "protocol",
+                                        "order": 3,
+                                        "primary": false,
+                                        "required": false
+                                    }
+                                },
+                                "product_name": "ExtraHop",
+                                "product_vendor": "ExtraHop Networks",
+                                "targets": "170",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "get peers"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def get_peers_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_peers_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_peers_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_device_info_1:action_result.data.*.ipaddr4', 'get_device_info_1:action_result.data.*.id', 'get_device_info_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_peers_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'protocol': \"any\",\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'peer_role': \"client\",\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get peers\", parameters=parameters, assets=['extrahop'], callback=internal_ip_filter, name=\"get_peers_1\", parent_action=action)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "get device info",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Look up all of the peers acting as a client in the last 30 minutes for the device that triggered the anomaly",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "b3b8b7cb-9e0e-4cd8-84c4-525b6f0fd79a",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 219,
+                        "line_start": 192,
+                        "message": "Configuring now",
+                        "name": "get peers",
+                        "notes": "Look up all of the peers acting as a client in the last 30 minutes for the device that triggered the anomaly",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 620,
+                            "y": 220
+                        },
+                        "previous_function": "",
+                        "previous_name": "get_peers_1",
+                        "required_params": {
+                            "ip": true,
+                            "minutes": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 196
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "approver": "admin",
+                        "attrs": {
+                            ".background": {
+                                "stroke": "#637282"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def task_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('task_1() called')\n    \n    # set user and message variables for phantom.task call\n    user = \"admin\"\n    message = \"ExtraHop Addy has detected a data exfiltration anomaly on your network and Phantom has confirmed via Anomali ThreatStream that the source address has connected with one or more known-bad external IP addresses in the last 30 minutes.\"\n\n    phantom.task(user=user, message=message, respond_in_mins=30, name=\"task_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "connected_to_start": true,
+                        "connection_name": "ip reputation",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "Assign a manual task to do further investigation into the Data Exfiltration anomaly.",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "7aeaf738-6ee6-4fed-9b98-678ff3472750",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 161,
+                        "line_start": 150,
+                        "message": "ExtraHop Addy has detected a data exfiltration anomaly on your network and Phantom has confirmed via Anomali ThreatStream that the source address has connected with one or more known-bad external IP addresses in the last 30 minutes.",
+                        "name": "task",
+                        "notes": "Assign a manual task to do further investigation into the Data Exfiltration anomaly.",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1520,
+                            "y": 360
+                        },
+                        "previous_function": "",
+                        "previous_name": "task_1",
+                        "respond_in": "30",
+                        "show_number": false,
+                        "size": {
+                            "height": 80,
+                            "width": 80
+                        },
+                        "state": "task",
+                        "status": "",
+                        "type": "coa.Task",
+                        "warn": false,
+                        "z": 197
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "c0741bea-c7e3-4906-b50c-422de24dfa12",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "bd682cbf-9095-4c22-a8d8-d05a850a0a67",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "5561879e-a21f-40a1-9407-03189ef7120d",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 206
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "44001b44-cf72-45d2-90de-4ad36702f37a",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "5561879e-a21f-40a1-9407-03189ef7120d",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "81dcce94-2611-4c45-9770-bebba4e6be02",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 225
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "c05215a3-2a88-4bc9-acb9-b39d5e9e01ba",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "81dcce94-2611-4c45-9770-bebba4e6be02",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "934d2314-9f83-421d-afd6-bd2ad7bdcfa8",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 229
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def internal_ip_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('internal_ip_filter() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"get_peers_1:action_result.data.*.ipaddr4\", \"not in\", \"10.0.0.0/8\"],\n            [\"get_peers_1:action_result.data.*.ipaddr4\", \"not in\", \"172.16.0.0/12\"],\n            [\"get_peers_1:action_result.data.*.ipaddr4\", \"not in\", \"192.168.0.0/16\"],\n        ],\n        logical_operator='and',\n        name=\"internal_ip_filter:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        ip_reputation_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "get peers",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "internal_ip_filter",
+                        "description": "Filter out private peers as defined by RFC 1918",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "69c24bf6-3efb-4309-b1a9-5d0a980e335a",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 69,
+                        "line_start": 48,
+                        "name": "filter",
+                        "notes": "Filter out private peers as defined by RFC 1918",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "not in",
+                                        "data_type": "",
+                                        "param": "get_peers_1:action_result.data.*.ipaddr4",
+                                        "value": "10.0.0.0/8"
+                                    },
+                                    {
+                                        "comparison": "not in",
+                                        "data_type": "",
+                                        "param": "get_peers_1:action_result.data.*.ipaddr4",
+                                        "value": "172.16.0.0/12"
+                                    },
+                                    {
+                                        "comparison": "not in",
+                                        "data_type": "",
+                                        "param": "get_peers_1:action_result.data.*.ipaddr4",
+                                        "value": "192.168.0.0/16"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 860,
+                            "y": 220
+                        },
+                        "previous_function": "",
+                        "previous_name": "internal_ip_filter",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "filter",
+                        "status": "",
+                        "type": "coa.Filter",
+                        "warn": false,
+                        "z": 239
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "1b7de3b7-8e8c-43c4-a5a0-4874b82c425b",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "81dcce94-2611-4c45-9770-bebba4e6be02",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "7aeaf738-6ee6-4fed-9b98-678ff3472750",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 243
+                    },
+                    {
+                        "action": "tag device",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "api_id": "filtered-data:filter_1:condition_1:get_peers_1:action_result.data.*.id",
+                            "eh_api_id": "filtered-data:linking_filter:condition_1:get_peers_1:action_result.data.*.id",
+                            "ip": "filtered-data:linking_filter:condition_1:get_peers_1:action_result.data.*.ipaddr4",
+                            "tag": "bad_ip_reputation"
+                        },
+                        "angle": 0,
+                        "app": "ExtraHop",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "tag device",
+                                "active": true,
+                                "app_name": "ExtraHop",
+                                "app_version": "1.0.4",
+                                "asset_name": "extrahop",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "eh_api_id": "filtered-data:linking_filter:condition_1:get_peers_1:action_result.data.*.id",
+                                    "ip": "filtered-data:linking_filter:condition_1:get_peers_1:action_result.data.*.ipaddr4",
+                                    "tag": "bad_ip_reputation"
+                                },
+                                "has_app": true,
+                                "id": 218,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "extrahop",
+                                "output": [
+                                    {
+                                        "column_name": "status",
+                                        "column_order": 0,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "ip",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "tag",
+                                        "column_order": 2,
+                                        "data_path": "action_result.parameter.tag",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "suspicious_endpoint"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "tag id",
+                                        "column_order": 3,
+                                        "data_path": "action_result.data.*.tag_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            4
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.eh_api_id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Extrahop device id: 1458, Tag: suspicious_endpoint"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.extrahop_device_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1458
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.tag",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "suspicious_endpoint"
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "eh_api_id": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "ExtraHop Device API ID",
+                                        "key": "eh_api_id",
+                                        "order": 2,
+                                        "primary": false,
+                                        "required": false
+                                    },
+                                    "ip": {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP Address",
+                                        "key": "ip",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true
+                                    },
+                                    "tag": {
+                                        "data_type": "string",
+                                        "default": "suspicious",
+                                        "description": "Tag Name",
+                                        "key": "tag",
+                                        "order": 1,
+                                        "primary": false,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "ExtraHop",
+                                "product_vendor": "ExtraHop Networks",
+                                "targets": "170",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "tag device"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def tag_device_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('tag_device_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'tag_device_1' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:linking_filter:condition_1:get_peers_1:action_result.data.*.ipaddr4\", \"filtered-data:linking_filter:condition_1:get_peers_1:action_result.data.*.id\", \"filtered-data:linking_filter:condition_1:get_peers_1:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'tag_device_1' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'ip': filtered_results_item_1[0],\n                'tag': \"bad_ip_reputation\",\n                'eh_api_id': filtered_results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[2]},\n            })\n\n    phantom.act(\"tag device\", parameters=parameters, assets=['extrahop'], name=\"tag_device_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 171,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "ip reputation",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": "0",
+                        "description": "Tag the device in ExtraHop with the \"bad_ip_reputation\" tag",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "934d2314-9f83-421d-afd6-bd2ad7bdcfa8",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 172,
+                        "line_end": 189,
+                        "line_start": 164,
+                        "message": "Configuring now",
+                        "name": "tag device",
+                        "notes": "Tag the device in ExtraHop with the \"bad_ip_reputation\" tag",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1520,
+                            "y": 220
+                        },
+                        "previous_function": "",
+                        "previous_name": "tag_device_1",
+                        "required_params": {
+                            "ip": true,
+                            "tag": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": "",
+                        "z": 248
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 2
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "block"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def threat_score_thresholds(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('threat_score_thresholds() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"ip_reputation_1:action_result.data.*.threatscore\", \">\", \"1\"],\n            [\"ip_reputation_1:action_result.data.*.confidence\", \">\", \"1\"],\n        ],\n        logical_operator='and',\n        name=\"threat_score_thresholds:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        linking_filter(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "ip reputation",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "threat_score_thresholds",
+                        "description": "(Requires Configuration) Only tag the device if the Threat Score and Confidence come back above certain thresholds",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "5561879e-a21f-40a1-9407-03189ef7120d",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 242,
+                        "line_start": 222,
+                        "name": "filter",
+                        "notes": "(Requires Configuration) Only tag the device if the Threat Score and Confidence come back above certain thresholds",
+                        "number": 2,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": ">",
+                                        "data_type": "",
+                                        "param": "ip_reputation_1:action_result.data.*.threatscore",
+                                        "value": "1"
+                                    },
+                                    {
+                                        "comparison": ">",
+                                        "data_type": "",
+                                        "param": "ip_reputation_1:action_result.data.*.confidence",
+                                        "value": "1"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1240,
+                            "y": 220
+                        },
+                        "previous_function": "",
+                        "previous_name": "threat_score_thresholds",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "filter",
+                        "status": "",
+                        "type": "coa.Filter",
+                        "warn": "",
+                        "z": 250
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 3
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def linking_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('linking_filter() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"filtered-data:threat_score_thresholds:condition_1:ip_reputation_1:action_result.parameter.ip\", \"==\", \"get_peers_1:action_result.data.*.ipaddr4\"],\n        ],\n        name=\"linking_filter:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        tag_device_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        task_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "ip reputation",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "linking_filter",
+                        "description": "Link the filtered \"ip reputation\" results back to the \"get peer\" results so we can use the ip address and ExtraHop id in \"tag device\"",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "81dcce94-2611-4c45-9770-bebba4e6be02",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 264,
+                        "line_start": 245,
+                        "name": "filter",
+                        "notes": "Link the filtered \"ip reputation\" results back to the \"get peer\" results so we can use the ip address and ExtraHop id in \"tag device\"",
+                        "number": 3,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "filtered-data:threat_score_thresholds:condition_1:ip_reputation_1:action_result.parameter.ip",
+                                        "value": "get_peers_1:action_result.data.*.ipaddr4"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1380,
+                            "y": 220
+                        },
+                        "previous_function": "",
+                        "previous_name": "linking_filter",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "filter",
+                        "status": "",
+                        "type": "coa.Filter",
+                        "warn": "",
+                        "z": 252
+                    },
+                    {
+                        "action": "ip reputation",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip": "filtered-data:filter_1:condition_1:get_peers_1:action_result.data.*.ipaddr4"
+                        },
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "ip reputation",
+                                "active": true,
+                                "app_name": "ThreatStream",
+                                "app_version": "1.0.24",
+                                "asset_name": "threatstream",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "ip": "filtered-data:internal_ip_filter:condition_1:get_peers_1:action_result.data.*.ipaddr4"
+                                },
+                                "has_app": true,
+                                "id": 124,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "threatstream",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.asn",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Confidence",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.confidence",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.country",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "First Found",
+                                        "column_order": 5,
+                                        "data_path": "action_result.data.*.created_ts",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.description",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.expiration_ts",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.extended_source",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.feed_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "column_name": "Intel ID",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "threatstream intelligence id"
+                                        ],
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.import_session_id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "IP",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ip",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.is_public",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "column_name": "Indicator",
+                                        "column_order": 4,
+                                        "data_path": "action_result.data.*.itype",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.latitude",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.longitude",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.meta.detail2",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.meta.severity",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.modified_ts",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.org",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "threatstream organization id"
+                                        ],
+                                        "data_path": "action_result.data.*.owner_organization_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.rdns",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.resource_uri",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.retina_confidence",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.source",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.source_reported_confidence",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.status",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tags.*.id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tags.*.name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tags.*.org_id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tags.*.source_user",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.tags.*.source_user_id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.threat_type",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Threatscore",
+                                        "column_order": 3,
+                                        "data_path": "action_result.data.*.threatscore",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.trusted_circle_ids",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.update_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.value",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric"
+                                    }
+                                ],
+                                "parameters": {
+                                    "ip": {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP to investigate",
+                                        "key": "ip",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "ThreatStream",
+                                "product_vendor": "Anomali",
+                                "targets": "169",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "ip reputation"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('ip_reputation_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'ip_reputation_1' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:internal_ip_filter:condition_1:get_peers_1:action_result.data.*.ipaddr4\", \"filtered-data:internal_ip_filter:condition_1:get_peers_1:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'ip_reputation_1' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'ip': filtered_results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"ip reputation\", parameters=parameters, assets=['threatstream'], callback=threat_score_thresholds, name=\"ip_reputation_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 169,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "get peers",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Look up the IP reputation of all external peers acting as a client in the last 30 minutes for the device that triggered the anomaly",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "bd682cbf-9095-4c22-a8d8-d05a850a0a67",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 147,
+                        "line_start": 124,
+                        "message": "Configuring now",
+                        "name": "ip reputation",
+                        "notes": "Look up the IP reputation of all external peers acting as a client in the last 30 minutes for the device that triggered the anomaly",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1000,
+                            "y": 220
+                        },
+                        "previous_function": "",
+                        "previous_name": "ip_reputation_1",
+                        "required_params": {
+                            "ip": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 253
+                    }
+                ]
+            },
+            "notes": "This playbook uses the following Apps:\n - ExtraHop - get device details, get list of peers and protocols, tag device\n - Anomali ThreatStream - get IP reputation\n\nDeployment Notes:\n  - Set the threshold value for the Threat Score and Confidence in Anomali (output of ip reputation). Both values use a default of 1 which needs to be updated to fit your operational requirements \n  - The artifact label needs to be \"data_exfiltration\" for this playbook to run\n  - The Task is assigned to the Phantom user \"admin\", which should be changed to a relevant member of the security team"
+        },
+        "schema": 3,
+        "version": "3.5.206"
+    },
+    "create_time": "2018-05-24T23:42:15.701394+00:00",
+    "draft_mode": false,
+    "labels": [
+        "extrahop_events"
+    ]
+}

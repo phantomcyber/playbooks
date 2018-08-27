@@ -1,0 +1,3701 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "misc": { "apps_list": ["ExtraHop", "Nessus"] },
+    "coa": {
+        "data": {
+            "clean": true,
+            "code_block": "",
+            "description": "This playbook gets initiated by a Timer asset (setup for the Timer asset is in the Notes section below) every 30 minutes to query ExtraHop for any new DNS servers that have been seen on your network in the last 30 minutes.  If one or more new DNS servers are discovered then the playbook will automatically initiate a Nessus endpoint scan on the IP of the new DNS server.  In addition the playbook will retrieve the following information about the new dns server:\n  - ExtraHop device object\n  - List of peer devices communicated with in the last 30 minutes\n  - List of client and server protocols spoken in the last 30 minutes",
+            "hash": "3990c7c7b4990aecc763e80b898ccb40818f7e12",
+            "joint": {
+                "cells": [
+                    {
+                        "0": "E",
+                        "1": "N",
+                        "2": "D",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".title": {
+                                "text": "END"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            }
+                        },
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "scan endpoint, get peers, get protocols",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "69d055a5-53f3-4df2-b9ab-2ec73ebe7079",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 232,
+                        "line_start": 219,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1220,
+                            "y": 340
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 54,
+                            "width": 80
+                        },
+                        "status": "",
+                        "title": "END",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 2
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "d975b97b-f817-411b-ac14-766ff6555db5",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "d2ffc1ed-6592-4dca-a37d-9c06147db5eb",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "69d055a5-53f3-4df2-b9ab-2ec73ebe7079",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 10
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "b73a639c-2ad6-412a-a0a9-45315399c919",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "7b2f61dd-8779-4af4-b27f-0d03660764f8",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "996cf2e8-47e9-4b30-b3f5-e93c52927faa",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 14
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "af161412-0d54-465a-9a82-b08d1e1e9d62",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "996cf2e8-47e9-4b30-b3f5-e93c52927faa",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "d2ffc1ed-6592-4dca-a37d-9c06147db5eb",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 16
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "eb2e67a4-aaf1-4687-8bd7-7207e3edd363",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "1c799a35-cd3c-4dc4-81fd-346b6eec3dc5",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "b0cbddb7-3892-4345-966b-eac1646a140a",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 32
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "73125733-d874-4652-a2d3-96a2f27eb5e1",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "1c799a35-cd3c-4dc4-81fd-346b6eec3dc5",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "01a4cdb3-4d37-4523-a8ac-8faeab9938f4",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 34
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "2ba3ecd5-e31c-4de0-8dce-40c75a399f24",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "b0cbddb7-3892-4345-966b-eac1646a140a",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "69d055a5-53f3-4df2-b9ab-2ec73ebe7079",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "vertices": [
+                            {
+                                "x": 1180,
+                                "y": 80
+                            }
+                        ],
+                        "z": 36
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "928448f9-56fd-4ce9-84ed-6bc119ea5815",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "01a4cdb3-4d37-4523-a8ac-8faeab9938f4",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "69d055a5-53f3-4df2-b9ab-2ec73ebe7079",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "vertices": [
+                            {
+                                "x": 1180,
+                                "y": 220
+                            }
+                        ],
+                        "z": 37
+                    },
+                    {
+                        "0": "S",
+                        "1": "T",
+                        "2": "A",
+                        "3": "R",
+                        "4": "T",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "ref-x": 33,
+                                "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            }
+                        },
+                        "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'get_devices_1' block\n    get_devices_1(container=container)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "12588132-e98e-43fd-9bf3-181dc9fb6107",
+                        "inPorts": [],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 20,
+                        "line_start": 12,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 80,
+                            "y": 60
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 54,
+                            "width": 80
+                        },
+                        "status": "",
+                        "title": "START",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 50
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "9d19da73-c589-4fbf-b153-7a6c2cf62c33",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "f86f39f7-20e6-443d-890f-e0c9ffe76cae",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "65ed3b95-1172-41cd-b69f-fa29ac7b6bb2",
+                            "port": "in",
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 53
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "5d2ee1be-7a18-4219-b66c-f5407c04a104",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "65ed3b95-1172-41cd-b69f-fa29ac7b6bb2",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "1c799a35-cd3c-4dc4-81fd-346b6eec3dc5",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 54
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "9577d4df-a216-4e39-81a3-764fb25b02f0",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "65ed3b95-1172-41cd-b69f-fa29ac7b6bb2",
+                            "port": "out-1",
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "7b2f61dd-8779-4af4-b27f-0d03660764f8",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 55
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "6a098b8d-af58-41bc-b53c-99a07f6b1230",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "12588132-e98e-43fd-9bf3-181dc9fb6107",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "f86f39f7-20e6-443d-890f-e0c9ffe76cae",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 65
+                    },
+                    {
+                        "action": "get devices",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "activity_type": "dns_server",
+                            "minutes": 30
+                        },
+                        "angle": 0,
+                        "app": "ExtraHop",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "get devices",
+                                "active": true,
+                                "app_name": "ExtraHop",
+                                "app_version": "1.0.4",
+                                "asset_name": "extrahop",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "activity_type": "dns_server",
+                                    "minutes": 30
+                                },
+                                "has_app": true,
+                                "id": 218,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "extrahop",
+                                "output": [
+                                    {
+                                        "column_name": "status",
+                                        "column_order": 0,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "ipv4",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ipaddr4",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.4.92"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "mac",
+                                        "column_order": 2,
+                                        "contains": [
+                                            "mac address"
+                                        ],
+                                        "data_path": "action_result.data.*.macaddr",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "5B:6A:32:00:32:FE"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "host name",
+                                        "column_order": 3,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.dhcp_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "log-ingest43"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "dns name",
+                                        "column_order": 4,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.dns_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "log-ingest43.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "discover time",
+                                        "column_order": 5,
+                                        "data_path": "action_result.data.*.discover_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1523484750000
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "device class",
+                                        "column_order": 6,
+                                        "data_path": "action_result.data.*.device_class",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "node"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "extrahop api id",
+                                        "column_order": 7,
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            3785
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "is L3",
+                                        "column_order": 8,
+                                        "data_path": "action_result.data.*.is_l3",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "vendor",
+                                        "column_order": 9,
+                                        "data_path": "action_result.data.*.vendor",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ipaddr6",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "FE80::0202:B3FF:FE1E:8329"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.display_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "log-ingest43"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.custom_type",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.netbios_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.user_mod_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1523484816110
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.cdp_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.vlanid",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.parent_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            3784
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.description",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.node_id",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.mod_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1525975638514
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.extrahop_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "fff41af90a0a0000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.custom_name",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.default_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Device 208.14.4.92"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.analysis_level",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.analysis",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "standard"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.on_watchlist",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.activity_type",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "dns_server"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.minutes",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            30,
+                                            1440
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "New devices count: 0",
+                                            "New devices count: 47"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.new_devices_count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0,
+                                            47
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.discovery_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "fff41af90a0a0000"
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "activity_type": {
+                                        "data_type": "string",
+                                        "default": "dns_server",
+                                        "description": "Activity type",
+                                        "key": "activity_type",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true,
+                                        "value_list": [
+                                            "aaa_client",
+                                            "aaa_server",
+                                            "ajp_client",
+                                            "ajp_server",
+                                            "amf_client",
+                                            "amf_server",
+                                            "app",
+                                            "cifs_client",
+                                            "cifs_server",
+                                            "db_client",
+                                            "db_server",
+                                            "dhcp_client",
+                                            "dhcp_server",
+                                            "dns_client",
+                                            "dns_server",
+                                            "ftp_client",
+                                            "ftp_server",
+                                            "gateway",
+                                            "http_client",
+                                            "http_server",
+                                            "ibmmq_client",
+                                            "ica_client",
+                                            "ica_server",
+                                            "kerberos_client",
+                                            "kerberos_server",
+                                            "ldap_client",
+                                            "ldap_server",
+                                            "memcache_client",
+                                            "memcache_server",
+                                            "mongo_client",
+                                            "mongo_server",
+                                            "net",
+                                            "nfs_client",
+                                            "nfs_server",
+                                            "node",
+                                            "pop3_client",
+                                            "pop3_server",
+                                            "rdp_client",
+                                            "rdp_server",
+                                            "remote",
+                                            "rpc_client",
+                                            "rpc_server",
+                                            "rtcp",
+                                            "rtp",
+                                            "sip_client",
+                                            "sip_server",
+                                            "smtp_client",
+                                            "smtp_server",
+                                            "ssh_client",
+                                            "ssh_server",
+                                            "ssl_client",
+                                            "ssl_server",
+                                            "tcp",
+                                            "telnet_client",
+                                            "telnet_server",
+                                            "udp",
+                                            "websocket_client",
+                                            "websocket_server"
+                                        ]
+                                    },
+                                    "minutes": {
+                                        "data_type": "numeric",
+                                        "default": 30,
+                                        "description": "Minutes of look back",
+                                        "key": "minutes",
+                                        "order": 1,
+                                        "primary": false,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "ExtraHop",
+                                "product_vendor": "ExtraHop Networks",
+                                "targets": "170",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "get devices"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def get_devices_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_devices_1() called')\n\n    # collect data for 'get_devices_1' call\n\n    parameters = []\n    \n    # build parameters list for 'get_devices_1' call\n    parameters.append({\n        'minutes': 30,\n        'activity_type': \"dns_server\",\n    })\n\n    phantom.act(\"get devices\", parameters=parameters, assets=['extrahop'], callback=decision_1, name=\"get_devices_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 108,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Query ExtraHop for any new DNS servers that have been seen on your network in the last 30 minutes",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "f86f39f7-20e6-443d-890f-e0c9ffe76cae",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 40,
+                        "line_start": 23,
+                        "message": "Configuring now",
+                        "name": "get devices",
+                        "notes": "Query ExtraHop for any new DNS servers that have been seen on your network in the last 30 minutes",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 220,
+                            "y": 40
+                        },
+                        "previous_function": "",
+                        "previous_name": "get_devices_1",
+                        "required_params": {
+                            "activity_type": true,
+                            "minutes": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 117
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"get_devices_1:action_result.data.*.ipaddr4\", \"!=\", \"\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        get_device_info_1(action=action, success=success, container=container, results=results, handle=handle)\n        list_nessus_policies(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "get devices",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "Only initiate a scan on returned devices that have an IP Address",
+                        "hasElse": false,
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "65ed3b95-1172-41cd-b69f-fa29ac7b6bb2",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 62,
+                        "line_start": 43,
+                        "name": "decision",
+                        "notes": "Only initiate a scan on returned devices that have an IP Address",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "!=",
+                                        "data_type": "",
+                                        "param": "get_devices_1:action_result.data.*.ipaddr4",
+                                        "value": ""
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 460,
+                            "y": 40
+                        },
+                        "previous_function": "",
+                        "previous_name": "decision_1",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "decision",
+                        "status": "",
+                        "type": "coa.Decision",
+                        "warn": "",
+                        "z": 118
+                    },
+                    {
+                        "action": "get device info",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip": "get_devices_1:action_result.data.*.ipaddr4"
+                        },
+                        "angle": 0,
+                        "app": "ExtraHop",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "get device info",
+                                "active": true,
+                                "app_name": "ExtraHop",
+                                "app_version": "1.0.4",
+                                "asset_name": "extrahop",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "ip": "get_devices_1:action_result.data.*.ipaddr4"
+                                },
+                                "has_app": true,
+                                "id": 218,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "extrahop",
+                                "output": [
+                                    {
+                                        "column_name": "status",
+                                        "column_order": 0,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "ipv4",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ipaddr4",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "mac",
+                                        "column_order": 2,
+                                        "contains": [
+                                            "mac address"
+                                        ],
+                                        "data_path": "action_result.data.*.macaddr",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0E:6F:28:A4:2B:62"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "host name",
+                                        "column_order": 3,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.dhcp_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "networksec.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "dns name",
+                                        "column_order": 4,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.dns_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "networksec.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "device class",
+                                        "column_order": 5,
+                                        "data_path": "action_result.data.*.device_class",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "node"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "extrahop api id",
+                                        "column_order": 6,
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1458
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "is L3",
+                                        "column_order": 7,
+                                        "data_path": "action_result.data.*.is_l3",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "vendor",
+                                        "column_order": 8,
+                                        "data_path": "action_result.data.*.vendor",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "VMware"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.discover_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1522964970000
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ipaddr6",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "FE80::0202:B3FF:FE1E:8329"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.display_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "networksec.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.custom_type",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.netbios_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.user_mod_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1525212324713
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.cdp_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.vlanid",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.parent_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            491
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.description",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.node_id",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.mod_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1525963038299
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.extrahop_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "fff45b060a0a0000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.custom_name",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.default_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "VMware 208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.analysis_level",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.analysis",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "advanced"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.on_watchlist",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Device count: 1"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.discovery_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "fff45b060a0a0000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.device_count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "ip": {
+                                        "allow_list": true,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP Address",
+                                        "key": "ip",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "ExtraHop",
+                                "product_vendor": "ExtraHop Networks",
+                                "targets": "170",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "get device info"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def get_device_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_device_info_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_device_info_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_devices_1:action_result.data.*.ipaddr4', 'get_devices_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_device_info_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"get device info\", parameters=parameters, assets=['extrahop'], callback=get_device_info_1_callback, name=\"get_device_info_1\")\n\n    return",
+                        "callback_code": "def get_device_info_1_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_device_info_1_callback() called')\n    \n    get_peers_1(action=action, success=success, container=container, results=results, handle=handle)\n    get_protocols_1(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
+                        "callback_start": 88,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "get devices",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Get more details about an ExtraHop device given its IP address. Details include MAC address, dhcp name, first discovered time, device type, and more",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "1c799a35-cd3c-4dc4-81fd-346b6eec3dc5",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 96,
+                        "line_start": 65,
+                        "message": "Configuring now",
+                        "name": "get device info",
+                        "notes": "Get more details about an ExtraHop device given its IP address. Details include MAC address, dhcp name, first discovered time, device type, and more",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 600,
+                            "y": 40
+                        },
+                        "previous_function": "",
+                        "previous_name": "get_device_info_1",
+                        "required_params": {
+                            "ip": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 120
+                    },
+                    {
+                        "action": "get protocols",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "eh_api_id": "get_device_info_1:action_result.data.*.id",
+                            "ip": "get_device_info_1:action_result.data.*.ipaddr4",
+                            "minutes": 30
+                        },
+                        "angle": 0,
+                        "app": "ExtraHop",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "get protocols",
+                                "active": true,
+                                "app_name": "ExtraHop",
+                                "app_version": "1.0.4",
+                                "asset_name": "extrahop",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "eh_api_id": "get_device_info_1:action_result.data.*.id",
+                                    "ip": "get_device_info_1:action_result.data.*.ipaddr4",
+                                    "minutes": 30
+                                },
+                                "has_app": true,
+                                "id": 218,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "extrahop",
+                                "output": [
+                                    {
+                                        "column_name": "status",
+                                        "column_order": 0,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "client protocols",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*.client_protocols",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "DNS, IPv4, LDAP, NTP, SSL, TCP, UDP"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "server protocols",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.server_protocols",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "DB, IPv4, SSL, TCP"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.minutes",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            30
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.eh_api_id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Server protocol count: 4, Client protocol count: 7"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.server_protocol_count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            4
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.client_protocol_count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            7
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "eh_api_id": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "ExtraHop API id",
+                                        "key": "eh_api_id",
+                                        "order": 2,
+                                        "primary": false,
+                                        "required": false
+                                    },
+                                    "ip": {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP Address of device",
+                                        "key": "ip",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true
+                                    },
+                                    "minutes": {
+                                        "data_type": "numeric",
+                                        "default": 30,
+                                        "description": "Minutes to look back",
+                                        "key": "minutes",
+                                        "order": 1,
+                                        "primary": false,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "ExtraHop",
+                                "product_vendor": "ExtraHop Networks",
+                                "targets": "170",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "get protocols"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def get_protocols_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_protocols_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_protocols_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_device_info_1:action_result.data.*.ipaddr4', 'get_device_info_1:action_result.data.*.id', 'get_device_info_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_protocols_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get protocols\", parameters=parameters, assets=['extrahop'], name=\"get_protocols_1\", parent_action=action)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "get device info",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Retrieves a list of all of the protocols that a device communicated over the last 30 minutes",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "01a4cdb3-4d37-4523-a8ac-8faeab9938f4",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 124,
+                        "line_start": 99,
+                        "message": "Configuring now",
+                        "name": "get protocols",
+                        "notes": "Retrieves a list of all of the protocols that a device communicated over the last 30 minutes",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 840,
+                            "y": 180
+                        },
+                        "previous_function": "",
+                        "previous_name": "get_protocols_1",
+                        "required_params": {
+                            "ip": true,
+                            "minutes": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 123
+                    },
+                    {
+                        "action": "get peers",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "eh_api_id": "get_device_info_1:action_result.data.*.id",
+                            "ip": "get_device_info_1:action_result.data.*.ipaddr4",
+                            "minutes": 30,
+                            "peer_role": "any",
+                            "protocol": "any"
+                        },
+                        "angle": 0,
+                        "app": "ExtraHop",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "get peers",
+                                "active": true,
+                                "app_name": "ExtraHop",
+                                "app_version": "1.0.4",
+                                "asset_name": "extrahop",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "eh_api_id": "get_device_info_1:action_result.data.*.id",
+                                    "ip": "get_device_info_1:action_result.data.*.ipaddr4",
+                                    "minutes": 30,
+                                    "peer_role": "any",
+                                    "protocol": "any"
+                                },
+                                "has_app": true,
+                                "id": 218,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "extrahop",
+                                "output": [
+                                    {
+                                        "column_name": "status",
+                                        "column_order": 0,
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "ipv4",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ipaddr4",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.12.23"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "mac",
+                                        "column_order": 2,
+                                        "contains": [
+                                            "mac address"
+                                        ],
+                                        "data_path": "action_result.data.*.macaddr",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "A4:52:B7:E6:15:EB"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "host name",
+                                        "column_order": 3,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.dhcp_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "app-perf03.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "dns name",
+                                        "column_order": 4,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.dns_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "app-perf03.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "device class",
+                                        "column_order": 5,
+                                        "data_path": "action_result.data.*.device_class",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "node"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "extrahop api id",
+                                        "column_order": 6,
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            2850
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "is L3",
+                                        "column_order": 7,
+                                        "data_path": "action_result.data.*.is_l3",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "vendor",
+                                        "column_order": 8,
+                                        "data_path": "action_result.data.*.vendor",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "ASUS"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.discover_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1522967820000
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.data.*.ipaddr6",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "FE80::0202:B3FF:FE1E:8329"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.display_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "app-perf03.example.com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.custom_type",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.netbios_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.user_mod_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1522967940018
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.cdp_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.vlanid",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.parent_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            438
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.description",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.node_id",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.mod_time",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1525965708165
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.extrahop_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "fff4cc0a140a0000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.custom_name",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.default_name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "ASUS 208.14.12.23"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.analysis_level",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.analysis",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "standard"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.on_watchlist",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_path": "action_result.parameter.ip",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "208.14.6.61"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.minutes",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            30
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.peer_role",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "any"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.protocol",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "any"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.eh_api_id",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Peer count: 8"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.discovery_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "fff4cc0a140a0000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.peer_count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            8
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "eh_api_id": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "ExtraHop API id",
+                                        "key": "eh_api_id",
+                                        "order": 4,
+                                        "primary": false,
+                                        "required": false
+                                    },
+                                    "ip": {
+                                        "contains": [
+                                            "ip"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP Address of device",
+                                        "key": "ip",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true
+                                    },
+                                    "minutes": {
+                                        "data_type": "numeric",
+                                        "default": 30,
+                                        "description": "Minutes to look back",
+                                        "key": "minutes",
+                                        "order": 1,
+                                        "primary": false,
+                                        "required": true
+                                    },
+                                    "peer_role": {
+                                        "data_type": "string",
+                                        "default": "any",
+                                        "description": "Filter by peer role",
+                                        "key": "peer_role",
+                                        "order": 2,
+                                        "primary": false,
+                                        "required": false,
+                                        "value_list": [
+                                            "any",
+                                            "client",
+                                            "server"
+                                        ]
+                                    },
+                                    "protocol": {
+                                        "data_type": "string",
+                                        "default": "any",
+                                        "description": "Filter by protocol",
+                                        "key": "protocol",
+                                        "order": 3,
+                                        "primary": false,
+                                        "required": false
+                                    }
+                                },
+                                "product_name": "ExtraHop",
+                                "product_vendor": "ExtraHop Networks",
+                                "targets": "170",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "get peers"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def get_peers_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_peers_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_peers_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_device_info_1:action_result.data.*.ipaddr4', 'get_device_info_1:action_result.data.*.id', 'get_device_info_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_peers_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'protocol': \"any\",\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'peer_role': \"any\",\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get peers\", parameters=parameters, assets=['extrahop'], name=\"get_peers_1\", parent_action=action)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "get device info",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Retrieves a list of all of the peers that a device communicated with in the last 30 minutes",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "b0cbddb7-3892-4345-966b-eac1646a140a",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 154,
+                        "line_start": 127,
+                        "message": "Configuring now",
+                        "name": "get peers",
+                        "notes": "Retrieves a list of all of the peers that a device communicated with in the last 30 minutes",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 840,
+                            "y": 40
+                        },
+                        "previous_function": "",
+                        "previous_name": "get_peers_1",
+                        "required_params": {
+                            "ip": true,
+                            "minutes": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 124
+                    },
+                    {
+                        "action": "scan endpoint",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "policy_id": "filtered-data:Nessus_Policy_Name:condition_1:list_policies_1:action_result.data.*.id",
+                            "target_to_scan": "get_devices_1:action_result.data.*.ipaddr4"
+                        },
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "scan endpoint",
+                                "active": true,
+                                "app_name": "Nessus",
+                                "app_version": "1.0.9",
+                                "asset_name": "nessus",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "policy_id": "filtered-data:Nessus_Policy_Name:condition_1:list_nessus_policies:action_result.data.*.id",
+                                    "target_to_scan": "get_devices_1:action_result.data.*.ipaddr4"
+                                },
+                                "has_app": true,
+                                "id": 206,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "nessus",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "nessus policy id"
+                                        ],
+                                        "data_path": "action_result.parameter.policy_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "4"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip",
+                                            "hostname"
+                                        ],
+                                        "data_path": "action_result.parameter.target_to_scan",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "172.16.54.130"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Critical Vulns",
+                                        "column_order": 5,
+                                        "data_path": "action_result.data.*.critical",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "High Vulns",
+                                        "column_order": 4,
+                                        "data_path": "action_result.data.*.high",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            4
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.host_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            2
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.host_index",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Host Scanned",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "ip",
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.hostname",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "172.16.54.130"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.info",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            71
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Low Vulns",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.low",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            2
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Medium Vulns",
+                                        "column_order": 3,
+                                        "data_path": "action_result.data.*.medium",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            7
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.numchecksconsidered",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            4139
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.progress",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "4139-4139/91296-91296"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.scanprogresscurrent",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            4139
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.scanprogresstotal",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            4139
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Host Score",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*.score",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            14791
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.severity",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            85
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.severitycount.item.*.count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            71
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.severitycount.item.*.severitylevel",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.totalchecksconsidered",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            4139
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.total_vulns",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            14
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Total vulns: 14"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "policy_id": {
+                                        "contains": [
+                                            "nessus policy id"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "ID of the scan policy to use",
+                                        "key": "policy_id",
+                                        "primary": true,
+                                        "required": true
+                                    },
+                                    "target_to_scan": {
+                                        "contains": [
+                                            "ip",
+                                            "hostname"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP of host to scan",
+                                        "key": "target_to_scan",
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "Nessus",
+                                "product_vendor": "Tenable",
+                                "targets": "17",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "scan endpoint"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def scan_endpoint_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('scan_endpoint_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'scan_endpoint_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_devices_1:action_result.data.*.ipaddr4', 'get_devices_1:action_result.parameter.context.artifact_id'], action_results=results)\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:Nessus_Policy_Name:condition_1:list_nessus_policies:action_result.data.*.id\", \"filtered-data:Nessus_Policy_Name:condition_1:list_nessus_policies:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'scan_endpoint_1' call\n    for results_item_1 in results_data_1:\n        for filtered_results_item_1 in filtered_results_data_1:\n            if results_item_1[0] and filtered_results_item_1[0]:\n                parameters.append({\n                    'target_to_scan': results_item_1[0],\n                    'policy_id': filtered_results_item_1[0],\n                    # context (artifact id) is added to associate results with the artifact\n                    'context': {'artifact_id': results_item_1[1]},\n                })\n\n    phantom.act(\"scan endpoint\", parameters=parameters, assets=['nessus'], name=\"scan_endpoint_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "list nessus policies",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Initiate a Nessus scan on the new dns server",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "d2ffc1ed-6592-4dca-a37d-9c06147db5eb",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 183,
+                        "line_start": 157,
+                        "message": "Configuring now",
+                        "name": "scan endpoint",
+                        "notes": "Initiate a Nessus scan on the new dns server",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 980,
+                            "y": 320
+                        },
+                        "previous_function": "",
+                        "previous_name": "scan_endpoint_1",
+                        "required_params": {
+                            "policy_id": true,
+                            "target_to_scan": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 125
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def Nessus_Policy_Name(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('Nessus_Policy_Name() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"list_nessus_policies:action_result.data.*.name\", \"==\", \"\"],\n        ],\n        name=\"Nessus_Policy_Name:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        scan_endpoint_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "list nessus policies",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "Nessus Policy Name",
+                        "description": "(Requires Configuration) Filter your Nessus policies by Name and determine the corresponding Nessus policy id.\nFill this value in with the Name of the desired Nessus policy to scan the new dns server with.",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "996cf2e8-47e9-4b30-b3f5-e93c52927faa",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 205,
+                        "line_start": 187,
+                        "name": "filter",
+                        "notes": "(Requires Configuration) Filter your Nessus policies by Name and determine the corresponding Nessus policy id.\nFill this value in with the Name of the desired Nessus policy to scan the new dns server with.",
+                        "number": 1,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "list_nessus_policies:action_result.data.*.name",
+                                        "value": ""
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 840,
+                            "y": 320
+                        },
+                        "previous_function": "",
+                        "previous_name": "Nessus_Policy_Name",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "filter",
+                        "status": "",
+                        "type": "coa.Filter",
+                        "warn": false,
+                        "z": 126
+                    },
+                    {
+                        "action": "list policies",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {},
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "list policies",
+                                "active": true,
+                                "app_name": "Nessus",
+                                "app_version": "1.0.9",
+                                "asset_name": "nessus",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {},
+                                "has_app": true,
+                                "id": 206,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "nessus",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Creation Date",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.creation_date",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1500907246
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.description",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "ID",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "nessus policy id"
+                                        ],
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            4
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Last Modified",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.last_modification_date",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1500907264
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Name",
+                                        "column_order": 0,
+                                        "data_path": "action_result.data.*.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Policy for basic network test - Herman"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.no_target",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "false"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.owner",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "admin"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.owner_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            2
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.shared",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.template_uuid",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "731a8e52-3ea6-a291-ec0a-d2ff0619c19d7bd788d6be818b65"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.user_permissions",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            128
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.visibility",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "shared"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.policy_count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Policy count: 1"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {},
+                                "product_name": "Nessus",
+                                "product_vendor": "Tenable",
+                                "targets": "17",
+                                "type": ""
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "list nessus policies"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                            }
+                        },
+                        "block_code": "def list_nessus_policies(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_nessus_policies() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n\n    parameters = []\n\n    phantom.act(\"list policies\", parameters=parameters, assets=['nessus'], callback=Nessus_Policy_Name, name=\"list_nessus_policies\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "get devices",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "list nessus policies",
+                        "delay": "0",
+                        "description": "List the available Nessus scan policies",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "7b2f61dd-8779-4af4-b27f-0d03660764f8",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 219,
+                        "line_start": 208,
+                        "message": "Configuring now",
+                        "name": "list policies",
+                        "notes": "List the available Nessus scan policies",
+                        "number": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 600,
+                            "y": 320
+                        },
+                        "previous_function": "",
+                        "previous_name": "list_nessus_policies",
+                        "required_params": {},
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 127
+                    }
+                ]
+            },
+            "notes": "This playbook uses the following Apps:\n - ExtraHop - Discover new DNS servers\n - Nessus - List Nessus policy ids and initiate an endpoint scan\n - Timer - Configure a timer asset as directed in the deployment notes below to run this playbook on a 30 min \"cronjob\"\n\nDeployment Notes:\n - Add the name of the desired Nessus scan policy to the Filter action configuration in this playbook\n - Configure a Timer asset with the following configuration:\n   - Asset Info\n     - Asset Name = extrahop_discover_new_dns_server\n     - Asset Description = Creates an Event that runs the extrahop_discover_new_dns_servers playbook every 30 minutes\n   - Asset Settings\n     - Name of created event = Auto discover new DNS servers\n   - Ingest Settings\n     - Label to apply to objects from this source:\n       - Choose extrahop_discovery\n         - If not in the list, select NEW ENTRY and type extrahop_discovery\n     - Polling Interval:\n       - Scheduled\n       - Every 30 minutes"
+        },
+        "schema": 3,
+        "version": "3.5.206"
+    },
+    "create_time": "2018-05-22T18:12:04.783396+00:00",
+    "draft_mode": false,
+    "labels": [
+        "extrahop_discovery"
+    ]
+}
