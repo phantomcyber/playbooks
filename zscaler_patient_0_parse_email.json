@@ -1,0 +1,565 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "misc": { "apps_list": [] },
+    "coa": {
+        "data": {
+            "clean": true,
+            "code_block": "import json\nimport base64\nfrom datetime import datetime, timedelta\nimport re\nimport uuid",
+            "description": "This utility playbook parses Patient 0 alert emails from zScaler to create another Phantom container and artifact for use in further automation.",
+            "hash": "abd7ae7c0ba2049e9ed1316410aa45e66bc79b06",
+            "joint": {
+                "cells": [
+                    {
+                        "0": "E",
+                        "1": "N",
+                        "2": "D",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".title": {
+                                "text": "END"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            }
+                        },
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "3df31570-6c52-472a-a019-452ef9cc837a",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 118,
+                        "line_start": 105,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "order": 3,
+                        "outPorts": [],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 480,
+                            "y": 100
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 54,
+                            "width": 80
+                        },
+                        "status": "",
+                        "title": "END",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 2
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "5aa1c95e-248f-4345-b355-9344c6a094a5",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "98ad8bc3-f49f-4a2a-a221-f1aaf6e2763c",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "483366f1-5a65-41d6-842e-83050b79a318",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 4
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#6C7A89",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#6a6c8a",
+                                "stroke": "#6a6c8a"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "89b52fad-4632-4f1d-b7c5-d980cd8d47fa",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "483366f1-5a65-41d6-842e-83050b79a318",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "3df31570-6c52-472a-a019-452ef9cc837a",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 8
+                    },
+                    {
+                        "0": "S",
+                        "1": "T",
+                        "2": "A",
+                        "3": "R",
+                        "4": "T",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "ref-x": 33,
+                                "ref-y": 8,
+                                "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            }
+                        },
+                        "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'parse_email_to_artifact' block\n    parse_email_to_artifact(container=container)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "98ad8bc3-f49f-4a2a-a221-f1aaf6e2763c",
+                        "inPorts": [],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 29,
+                        "line_start": 21,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "order": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 100,
+                            "y": 100
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 54,
+                            "width": 80
+                        },
+                        "status": "",
+                        "title": "START",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 13
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "api": "add comment",
+                        "attrs": {
+                            ".api": {
+                                "text": "parse email to artifact"
+                            },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "API"
+                            },
+                            "g.code image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_code_dark_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "# read-only block view not available",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "color": "",
+                        "configured": [
+                            {
+                                "addCommentComment": "container:artifact_count",
+                                "key": "add-comment"
+                            }
+                        ],
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "def parse_email_to_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('parse_email_to_artifact() called')\n\n    FIELD_TRANSLATOR = {\n        'Cloud and Organization': 'environment',\n        'File MD5 hash': 'fileHashMd5',\n        'Threat Category': 'threatCategory',\n        'Threat Name': 'threatName',\n        'Transactions involving this content': 'eventLink'\n    }\n    \n    # the full content of the email  is outside any artifact in the container['data'] field\n    raw_data = phantom.get_raw_data(container)\n    \n    # build regular expressions to parse the Zscaler-specific email format\n    allowed_re = re.compile(r\"(?<=allowed )[0-9]+\")\n    quarantined_re = re.compile(r\"(?<=quarantined )[0-9]+\")\n    blocked_re = re.compile(r\"(?<=blocked )[0-9]+\")\n    \n    cef={}\n    raw={}\n    \n    # the content may or may not be base64 encoded so handle both\n    base64index = raw_data.find('base64\\\\r\\\\n\\\\r\\\\n')\n    phantom.debug(base64index)\n    if base64index != -1:\n        raw_data = raw_data[base64index+14:]\n        raw_data = raw_data[:raw_data.find('\\\\r\\\\n\\\\r\\\\n')].replace('\\\\r\\\\n','\\r\\n')\n    \n        raw_data = base64.b64decode(raw_data)\n    \n        for line in raw_data.split('\\n'):\n            kv_pair = line.split(\":\")\n            phantom.debug(str(kv_pair))\n            if len(kv_pair) > 1:\n                kv_pair[1] = ':'.join(kv_pair[1:])\n                if kv_pair[0].strip() != 'First downloaded':\n                    cef[FIELD_TRANSLATOR[kv_pair[0].strip()]] = kv_pair[1].strip()\n                else:\n                    kv_pair[1] = kv_pair[1].strip()\n                    cef['startTime'] = kv_pair[1][:kv_pair[1].find('.')]\n                    cef['timesAllowed'] = allowed_re.findall(kv_pair[1])[0]\n                    cef['timesQuarantined'] = quarantined_re.findall(kv_pair[1])[0]\n                    cef['timesBlocked'] = blocked_re.findall(kv_pair[1])[0]\n\n    # if there is no base64, try to parse as plain text using regexes\n    else:\n        for field_label in FIELD_TRANSLATOR.keys():\n            field_re = re.compile(r\"{}:[ \\\\r\\\\n]+(.*?)\\\\r\\\\n\".format(field_label))\n            re_result = field_re.findall(raw_data)\n            if re_result:\n                field_value = re_result[0]\n                cef[FIELD_TRANSLATOR[field_label]] = field_value\n\n            re_result = re.findall(r\"First downloaded: (.*?)\\.\", raw_data)\n            if re_result and len(re_result[0]) < 200:\n                cef['startTime'] = re_result[0]\n            re_result = allowed_re.findall(raw_data)\n            if re_result:\n                cef['timesAllowed'] = re_result[0]\n            re_result = quarantined_re.findall(raw_data)\n            if re_result:\n                cef['timesQuarantined'] = re_result[0]\n            re_result = blocked_re.findall(raw_data)\n            if re_result:\n                cef['timesBlocked'] = re_result[0]\n\n    success, message, container_id = phantom.create_container(name=container['name'], label='events')\n    \n    phantom.add_artifact(container=container_id, raw_data=raw, cef_data=cef, label='event', name='zScaler Alert Artifact', severity = 'medium', identifier=str(uuid.uuid4()), artifact_type='network')\n\n    return",
+                        "custom_join": "",
+                        "custom_name": "parse email to artifact",
+                        "description": "Uses custom python to parse out the relevant fields from the Patient 0 alert email sent by zScaler. Creates a new container with the same name as the email subject and populates it with one zScaler Alert Artifact containing the parsed fields.",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "483366f1-5a65-41d6-842e-83050b79a318",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 105,
+                        "line_start": 32,
+                        "message": "Configuring now",
+                        "name": "add comment",
+                        "notes": "Uses custom python to parse out the relevant fields from the Patient 0 alert email sent by zScaler. Creates a new container with the same name as the email subject and populates it with one zScaler Alert Artifact containing the parsed fields.",
+                        "number": 1,
+                        "order": 2,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 240,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "parse_email_to_artifact",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "api",
+                        "status": "",
+                        "title": "API",
+                        "type": "coa.API",
+                        "warn": false,
+                        "z": 48
+                    }
+                ]
+            },
+            "notes": "The playbook does not use the visual editor or any Apps because all functionality is in one Python function called \"parse_email_to_artifact\". This function reads relevant fields from the zScaler alert email created by configuring Patient 0 as described here: https://help.zscaler.com/zia/configuring-patient-0-alert \n\nThe output is a new container that is created and populated with a single artifact containing the parsed fields.\n\nDeployment notes:\n -  configure an imap, Exchange, or other email ingestion App to receive emails sent by zScaler\n - ensure the label of the incoming emails matches the \"Operates on\" label for this playbook (set to \"events\" by default)\n - configure any follow-on playbooks to use the created container, such as the community playbook called \"zscaler_malicious_file_response\""
+        },
+        "schema": 3,
+        "version": "4.1.94"
+    },
+    "create_time": "2018-10-18T23:19:45.235067+00:00",
+    "draft_mode": false,
+    "labels": [
+        "events"
+    ]
+}
