@@ -6,9 +6,9 @@
     "coa": {
         "data": {
             "clean": true,
-            "code_block": "def add_endpoint_to_patched_list(container=container):\n        # collect data for 'add_to_remediated_list_1' call\n    infected_endpoints = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n    \n    phantom_url = phantom.get_base_url()\n    container_url = \"{}/mission/{}\".format(phantom_url, container['id'])\n    \n    for infected_endpoint in infected_endpoints:\n        if infected_endpoint[0]:\n            phantom.datastore_add('wannacry_patched_endpoints', [ infected_endpoint[0], 'yes',  container_url ] )\n            \n    return",
+            "code_block": "def add_endpoint_to_patched_list(container):\n        # collect data for 'add_to_remediated_list_1' call\n    infected_endpoints = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n    \n    phantom_url = phantom.get_base_url()\n    container_url = \"{}/mission/{}\".format(phantom_url, container['id'])\n    \n    for infected_endpoint in infected_endpoints:\n        if infected_endpoint[0]:\n            phantom.datastore_add('wannacry_patched_endpoints', [ infected_endpoint[0], 'yes',  container_url ] )\n            \n    return",
             "description": "Execute proactive patching against Windows endpoints associated with a WannaCry event.  Endpoints that require patching are forced to update and are added to the custom list wannacry_patched_endpoints custom list.",
-            "hash": "a9302faeaeff05205b2b44eb0ec1469310de8423",
+            "hash": "e0de6c7d24cf8452e6426f4b86679307e959cd8b",
             "joint": {
                 "cells": [
                     {
@@ -273,6 +273,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -285,6 +292,7 @@
                             },
                             ".title": {
                                 "ref-x": 33,
+                                "ref-y": 8,
                                 "text": "START"
                             },
                             "g.delete": {
@@ -327,6 +335,7 @@
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 1,
                         "outPorts": [
                             "out"
                         ],
@@ -607,6 +616,8 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
@@ -646,7 +657,8 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
                         "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"Windows\", \"in\", \"list_endpoints_1:action_result.data.*.os_environment_display_string\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        hotfix_query(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
@@ -677,6 +689,7 @@
                         "name": "filter",
                         "notes": "Filter on endpoints running Windows",
                         "number": 1,
+                        "order": 2,
                         "outPorts": [
                             "out-1"
                         ],
@@ -785,6 +798,7 @@
                                 "active": true,
                                 "app_name": "",
                                 "app_version": "",
+                                "appid": "",
                                 "config_type": "asset",
                                 "fields": {
                                     "description": "format_ticket:formatted_data",
@@ -793,6 +807,7 @@
                                     "table": "",
                                     "vault_id": ""
                                 },
+                                "has_app": true,
                                 "id": "-",
                                 "loaded": false,
                                 "missing": false,
@@ -1294,8 +1309,15 @@
                             ".action": {
                                 "text": "create ticket"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
                             ".border": {
                                 "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1330,6 +1352,12 @@
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -1344,7 +1372,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1378,12 +1410,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 94,
-                        "line_start": 71,
+                        "line_end": 77,
+                        "line_start": 54,
                         "message": "Configuring now",
                         "name": "create ticket",
                         "notes": "Create a ticket documenting the need to update the Windows systems.",
                         "number": 1,
+                        "order": 3,
                         "outPorts": [
                             "out"
                         ],
@@ -1464,6 +1497,8 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
@@ -1503,7 +1538,8 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
                         "block_code": "def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_4() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"KB4012598\", \"not in\", \"hotfix_query:action_result.data.*.*.HotFixID\"],\n            [\"KB4012212\", \"not in\", \"hotfix_query:action_result.data.*.*.HotFixID\"],\n            [\"KB4012215\", \"not in\", \"hotfix_query:action_result.data.*.*.HotFixID\"],\n            [\"KB4012213\", \"not in\", \"hotfix_query:action_result.data.*.*.HotFixID\"],\n            [\"KB4012216\", \"not in\", \"hotfix_query:action_result.data.*.*.HotFixID\"],\n        ],\n        logical_operator='and',\n        name=\"filter_4:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        format_ticket(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
@@ -1529,11 +1565,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 134,
-                        "line_start": 111,
+                        "line_end": 100,
+                        "line_start": 77,
                         "name": "filter",
                         "notes": "Filter on endpoints that do not have KB3213986 hotfix applied.",
                         "number": 4,
+                        "order": 4,
                         "outPorts": [
                             "out-1"
                         ],
@@ -1663,11 +1700,14 @@
                                 "active": true,
                                 "app_name": "",
                                 "app_version": "",
+                                "appid": "",
                                 "config_type": "asset",
                                 "fields": {
                                     "ip_hostname": "filtered-data:filter_1:condition_1:list_endpoints_1:action_result.data.*.ips",
+                                    "namespace": "",
                                     "query": "select * from win32_quickfixengineering"
                                 },
+                                "has_app": true,
                                 "id": "-",
                                 "loaded": false,
                                 "missing": false,
@@ -1675,205 +1715,498 @@
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
                                     },
                                     {
+                                        "column_name": "System",
+                                        "column_order": "3",
                                         "contains": [
                                             "ip",
                                             "host name"
                                         ],
                                         "data_path": "action_result.parameter.ip_hostname",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10.1.17.42"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.namespace",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "root/MicrosoftDNS"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.query",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Select * From Win32_Process",
+                                            "select * from Win32_Account where SIDType = 1",
+                                            "select * from CIM_Component"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.AccountType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "512"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.CSCreationClassName",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Win32_ComputerSystem"
+                                        ]
                                     },
                                     {
+                                        "column_name": "CSName",
+                                        "column_order": "4",
                                         "data_path": "action_result.data.*.*.CSName",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "DC1"
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "file name"
+                                        ],
                                         "data_path": "action_result.data.*.*.Caption",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "System Idle Process",
+                                            "CORP\\Administrator"
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "file name",
+                                            "file path"
+                                        ],
                                         "data_path": "action_result.data.*.*.CommandLine",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": []
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.CreationClassName",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Win32_Process"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Creation Date",
+                                        "column_order": "5",
                                         "data_path": "action_result.data.*.*.CreationDate",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "20180913031853.895628-420"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Description",
+                                        "column_order": "6",
+                                        "contains": [
+                                            "file name"
+                                        ],
                                         "data_path": "action_result.data.*.*.Description",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "System Idle Process",
+                                            "Built-in account for administering the computer/domain"
+                                        ]
                                     },
                                     {
+                                        "data_path": "action_result.data.*.*.Disabled",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "domain"
+                                        ],
+                                        "data_path": "action_result.data.*.*.Domain",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "CORP"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Executable Path",
+                                        "column_order": "7",
+                                        "contains": [
+                                            "file path",
+                                            "file name"
+                                        ],
                                         "data_path": "action_result.data.*.*.ExecutablePath",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": []
                                     },
                                     {
+                                        "column_name": "Execution State",
+                                        "column_order": "8",
                                         "data_path": "action_result.data.*.*.ExecutionState",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.FullName",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "The Administrator"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.GroupComponent",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "MicrosoftDNS_Domain.DnsServerName=\"DC1.corp.contoso.com\",ContainerName=\"..RootHints\",Name=\"com.\""
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.Handle",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.HandleCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.InstallDate",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": []
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.KernelModeTime",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "22064786432032"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.LocalAccount",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.Lockout",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.MaximumWorkingSetSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.MinimumWorkingSetSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Name",
+                                        "column_order": "2",
+                                        "contains": [
+                                            "file name"
+                                        ],
                                         "data_path": "action_result.data.*.*.Name",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "System Idle Process",
+                                            "Administrator"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.OSCreationClassName",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Win32_OperatingSystem"
+                                        ]
                                     },
                                     {
+                                        "column_name": "OS Name",
+                                        "column_order": "9",
                                         "data_path": "action_result.data.*.*.OSName",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Microsoft Windows Server 2008 R2 Enterprise |C:\\Windows|\\Device\\Harddisk0\\Partition2"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.OtherOperationCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.OtherTransferCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PageFaults",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "1"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PageFileUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Parent Process Id",
+                                        "column_order": "10",
                                         "contains": [
                                             "pid"
                                         ],
                                         "data_path": "action_result.data.*.*.ParentProcessId",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.PartComponent",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "MicrosoftDNS_Domain.DnsServerName=\"DC1.corp.contoso.com\",ContainerName=\"..RootHints\",Name=\"microsoft.com.\""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.PasswordChangeable",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.PasswordExpires",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.PasswordRequired",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PeakPageFileUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PeakVirtualSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PeakWorkingSetSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "24"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.Priority",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PrivatePageCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Process Id",
+                                        "column_order": "0",
                                         "contains": [
                                             "pid"
                                         ],
                                         "data_path": "action_result.data.*.*.ProcessId",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.QuotaNonPagedPoolUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.QuotaPagedPoolUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.QuotaPeakNonPagedPoolUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.QuotaPeakPagedPoolUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.ReadOperationCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.ReadTransferCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "data_path": "action_result.data.*.*.SID",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "S-1-5-21-3790544232-372029393-2474287633-500"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.SIDType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "1"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Session Id",
+                                        "column_order": "1",
                                         "data_path": "action_result.data.*.*.SessionId",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Status",
+                                        "column_order": "11",
                                         "data_path": "action_result.data.*.*.Status",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "OK"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Termination Date",
+                                        "column_order": "12",
                                         "data_path": "action_result.data.*.*.TerminationDate",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": []
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.ThreadCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.UserModeTime",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.VirtualSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Windows Version",
+                                        "column_order": "13",
                                         "data_path": "action_result.data.*.*.WindowsVersion",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "6.1.7601"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.WorkingSetSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "24576"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.WriteOperationCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.WriteTransferCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary",
@@ -1881,15 +2214,24 @@
                                     },
                                     {
                                         "data_path": "action_result.message",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "WMI Query executed"
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     }
                                 ],
                                 "product_name": "",
@@ -1901,8 +2243,15 @@
                             ".action": {
                                 "text": "hotfix query"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
                             ".border": {
                                 "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1937,6 +2286,12 @@
                             ".title": {
                                 "text": "Investigate"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -1951,7 +2306,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1960,7 +2319,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def hotfix_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('hotfix_query() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'hotfix_query' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:list_endpoints_1:action_result.data.*.ips\", \"filtered-data:filter_1:condition_1:list_endpoints_1:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'hotfix_query' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'query': \"select * from win32_quickfixengineering\",\n                'ip_hostname': filtered_results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"run query\", parameters=parameters, assets=['domainctrl1'], callback=filter_4, name=\"hotfix_query\")\n\n    return",
+                        "block_code": "def hotfix_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('hotfix_query() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'hotfix_query' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:list_endpoints_1:action_result.data.*.ips\", \"filtered-data:filter_1:condition_1:list_endpoints_1:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'hotfix_query' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'query': \"select * from win32_quickfixengineering\",\n                'namespace': \"\",\n                'ip_hostname': filtered_results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"run query\", parameters=parameters, assets=['domainctrl1'], callback=filter_4, name=\"hotfix_query\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1985,12 +2344,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 158,
-                        "line_start": 134,
+                        "line_end": 125,
+                        "line_start": 100,
                         "message": "Configuring now",
                         "name": "run query",
                         "notes": "Run a query with WMI to determine the hotfixes.",
                         "number": 1,
+                        "order": 5,
                         "outPorts": [
                             "out"
                         ],
@@ -2053,7 +2413,8 @@
                         "previous_function": "",
                         "previous_name": "hotfix_query",
                         "required_params": {
-                            "ip_hostname": true
+                            "ip_hostname": true,
+                            "query": true
                         },
                         "reviewer": "",
                         "show_number": true,
@@ -2073,6 +2434,8 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#637282",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
@@ -2112,7 +2475,8 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
                         "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.sourceAddress\", \"not in\", \"custom_list:wannacry_patched_endpoints\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        list_endpoints_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
@@ -2139,11 +2503,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 224,
-                        "line_start": 207,
+                        "line_end": 142,
+                        "line_start": 125,
                         "name": "decision",
                         "notes": "has the endpoint been already patched",
                         "number": 1,
+                        "order": 6,
                         "outPorts": [
                             "out-1"
                         ],
@@ -2246,8 +2611,10 @@
                                 "active": true,
                                 "app_name": "",
                                 "app_version": "",
+                                "appid": "",
                                 "config_type": "asset",
                                 "fields": {},
+                                "has_app": true,
                                 "id": "-",
                                 "loaded": false,
                                 "missing": false,
@@ -2255,120 +2622,47 @@
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.systemvolume_total_size",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "OS",
-                                        "column_order": 4,
-                                        "data_path": "action_result.data.*.os_environment_display_string",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.systemvolume_free_size",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.physical_memory_size",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.shard_id",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.clock_delta",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.supports_cblr",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.sensor_uptime",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Is Isolated?",
-                                        "column_order": 2,
-                                        "data_path": "action_result.data.*.is_isolating",
-                                        "data_type": "boolean"
-                                    },
-                                    {
-                                        "column_name": "Sensor ID",
-                                        "column_order": 5,
-                                        "contains": [
-                                            "carbon black sensor id"
-                                        ],
-                                        "data_path": "action_result.data.*.id",
-                                        "data_type": "numeric"
+                                        "data_path": "action_result.data.*.boot_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "54"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.build_id",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            30
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.uptime",
-                                        "data_type": "string"
+                                        "data_path": "action_result.data.*.build_version_string",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "006.000.002.70329"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.clock_delta",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "column_name": "DNS Name",
                                         "column_order": 3,
                                         "data_path": "action_result.data.*.computer_dns_name",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.last_update",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.power_state",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.next_checkin_time",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Status",
-                                        "column_order": 2,
-                                        "data_path": "action_result.data.*.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.num_eventlog_bytes",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.sensor_health_status",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.sensor_health_message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.build_version_string",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.computer_sid",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.node_id",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.cookie",
-                                        "data_type": "numeric"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "UHM.corp.contoso.com"
+                                        ]
                                     },
                                     {
                                         "column_name": "Name",
@@ -2377,29 +2671,106 @@
                                             "host name"
                                         ],
                                         "data_path": "action_result.data.*.computer_name",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "UHM"
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.license_expiration",
-                                        "data_type": "string"
+                                        "data_path": "action_result.data.*.computer_sid",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "S-1-5-21-1540634596-1233759778-829539712"
+                                        ]
                                     },
                                     {
-                                        "column_name": "Supports Isolation?",
-                                        "column_order": 4,
-                                        "data_path": "action_result.data.*.supports_isolation",
-                                        "data_type": "boolean"
+                                        "data_path": "action_result.data.*.cookie",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            111490759
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.parity_host_id",
-                                        "data_type": "string"
+                                        "data_path": "action_result.data.*.display",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.supports_2nd_gen_modloads",
-                                        "data_type": "boolean"
+                                        "data_path": "action_result.data.*.emet_dump_flags",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.network_adapters",
-                                        "data_type": "string"
+                                        "data_path": "action_result.data.*.emet_exploit_action",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            " (Locally configured)"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.emet_is_gpo",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.emet_process_count",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.emet_report_setting",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            " (Locally configured)"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.emet_telemetry_path",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.emet_version",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.event_log_flush_time",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.group_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Sensor ID",
+                                        "column_order": 5,
+                                        "contains": [
+                                            "carbon black sensor id"
+                                        ],
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            19
+                                        ]
                                     },
                                     {
                                         "column_name": "IP Addresses",
@@ -2408,85 +2779,275 @@
                                             "ip"
                                         ],
                                         "data_path": "action_result.data.*.ips",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10.17.1.42"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Is Isolated?",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.is_isolating",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.last_checkin_time",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2018-03-26 09:19:53.265543-07:00"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.last_update",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2018-03-26 09:19:56.704701-07:00"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.license_expiration",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "1990-01-01 00:00:00-08:00"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.network_adapters",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10.17.1.42,000c29725527|"
+                                        ]
                                     },
                                     {
                                         "column_name": "Isolation Enabled?",
                                         "column_order": 3,
                                         "data_path": "action_result.data.*.network_isolation_enabled",
-                                        "data_type": "boolean"
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.registration_time",
-                                        "data_type": "string"
+                                        "data_path": "action_result.data.*.next_checkin_time",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2018-03-26 09:20:24.262734-07:00"
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.restart_queued",
-                                        "data_type": "boolean"
+                                        "data_path": "action_result.data.*.node_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.notes",
+                                        "data_type": "string",
+                                        "example_values": []
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.num_eventlog_bytes",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "24800"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.num_storefiles_bytes",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "OS",
+                                        "column_order": 4,
+                                        "data_path": "action_result.data.*.os_environment_display_string",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Windows Server 2008 R2 Server Enterprise Service Pack 1, 64-bit"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.os_environment_id",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            10
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.boot_id",
-                                        "data_type": "string"
+                                        "data_path": "action_result.data.*.os_type",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.last_checkin_time",
-                                        "data_type": "string"
+                                        "data_path": "action_result.data.*.parity_host_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.group_id",
-                                        "data_type": "numeric"
+                                        "data_path": "action_result.data.*.physical_memory_size",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "4294500352"
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.display",
-                                        "data_type": "boolean"
+                                        "data_path": "action_result.data.*.power_state",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.registration_time",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2016-07-05 21:27:51.176278-07:00"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.restart_queued",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.sensor_health_message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Healthy"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.sensor_health_status",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            100
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.sensor_uptime",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "331925"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.shard_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Status",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Online"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.supports_2nd_gen_modloads",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.supports_cblr",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Supports Isolation?",
+                                        "column_order": 4,
+                                        "data_path": "action_result.data.*.supports_isolation",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.systemvolume_free_size",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "22704738304"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.systemvolume_total_size",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "107267223552"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.uninstall",
-                                        "data_type": "boolean"
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.emet_telemetry_path",
-                                        "data_type": "string"
+                                        "data_path": "action_result.data.*.uninstalled",
+                                        "data_type": "string",
+                                        "example_values": []
                                     },
                                     {
-                                        "data_path": "action_result.data.*.emet_version",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.emet_report_setting",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.emet_process_count",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.emet_exploit_action",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.emet_is_gpo",
-                                        "data_type": "boolean"
+                                        "data_path": "action_result.data.*.uptime",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "331981"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary.total_endpoints",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            9
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Total endpoints: 9"
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     }
                                 ],
                                 "product_name": "",
@@ -2498,8 +3059,15 @@
                             ".action": {
                                 "text": "list endpoints"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
                             ".border": {
                                 "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -2534,6 +3102,12 @@
                             ".title": {
                                 "text": "Investigate"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -2548,7 +3122,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -2582,12 +3160,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 233,
-                        "line_start": 224,
+                        "line_end": 151,
+                        "line_start": 142,
                         "message": "Configuring now",
                         "name": "list endpoints",
                         "notes": "Obtain a list of all endpoints from Carbon Black",
                         "number": 1,
+                        "order": 7,
                         "outPorts": [
                             "out"
                         ],
@@ -2670,6 +3249,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -2684,7 +3270,7 @@
                                 "text": "END"
                             },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_code_dark_on.svg"
                             },
                             "g.delete": {
                                 "display": "none"
@@ -2722,11 +3308,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 303,
-                        "line_start": 287,
+                        "line_end": 304,
+                        "line_start": 288,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 14,
                         "outPorts": [],
                         "ports": {
                             "groups": {
@@ -2802,10 +3389,15 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773",
                                 "transform": "rotate(0 0 0)"
                             },
                             ".border": {
                                 "transform": "rotate(45 30 70)"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
                             },
                             ".format": {
                                 "text": "format ticket"
@@ -2870,6 +3462,9 @@
                             ".title": {
                                 "text": "format"
                             },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -2881,7 +3476,8 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
                         "block_code": "def format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_ticket() called')\n    \n    template = \"\"\"The following endpoints on the network are running windows and will require an immediate update to receive a patch protecting against the wannacry outbreak: \n{0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_4:condition_1:hotfix_query:action_result.parameter.ip_hostname\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_ticket\")\n\n    create_ticket_1(container=container)\n\n    return",
@@ -2908,12 +3504,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 122,
-                        "line_end": 71,
-                        "line_start": 54,
+                        "line_end": 168,
+                        "line_start": 151,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Format return information in preparation for ticketing.",
                         "number": 1,
+                        "order": 8,
                         "outPorts": [
                             "out-1"
                         ],
@@ -3094,11 +3691,14 @@
                                 "active": true,
                                 "app_name": "",
                                 "app_version": "",
+                                "appid": "",
                                 "config_type": "asset",
                                 "fields": {
                                     "ip_hostname": "execute_win_update:action_result.parameter.ip_hostname",
+                                    "namespace": "",
                                     "query": "select * from win32_quickfixengineering"
                                 },
+                                "has_app": true,
                                 "id": "-",
                                 "loaded": false,
                                 "missing": false,
@@ -3106,205 +3706,498 @@
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
                                     },
                                     {
+                                        "column_name": "System",
+                                        "column_order": "3",
                                         "contains": [
                                             "ip",
                                             "host name"
                                         ],
                                         "data_path": "action_result.parameter.ip_hostname",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10.1.17.42"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.namespace",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "root/MicrosoftDNS"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.query",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Select * From Win32_Process",
+                                            "select * from Win32_Account where SIDType = 1",
+                                            "select * from CIM_Component"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.AccountType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "512"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.CSCreationClassName",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Win32_ComputerSystem"
+                                        ]
                                     },
                                     {
+                                        "column_name": "CSName",
+                                        "column_order": "4",
                                         "data_path": "action_result.data.*.*.CSName",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "DC1"
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "file name"
+                                        ],
                                         "data_path": "action_result.data.*.*.Caption",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "System Idle Process",
+                                            "CORP\\Administrator"
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "file name",
+                                            "file path"
+                                        ],
                                         "data_path": "action_result.data.*.*.CommandLine",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": []
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.CreationClassName",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Win32_Process"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Creation Date",
+                                        "column_order": "5",
                                         "data_path": "action_result.data.*.*.CreationDate",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "20180913031853.895628-420"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Description",
+                                        "column_order": "6",
+                                        "contains": [
+                                            "file name"
+                                        ],
                                         "data_path": "action_result.data.*.*.Description",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "System Idle Process",
+                                            "Built-in account for administering the computer/domain"
+                                        ]
                                     },
                                     {
+                                        "data_path": "action_result.data.*.*.Disabled",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "domain"
+                                        ],
+                                        "data_path": "action_result.data.*.*.Domain",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "CORP"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Executable Path",
+                                        "column_order": "7",
+                                        "contains": [
+                                            "file path",
+                                            "file name"
+                                        ],
                                         "data_path": "action_result.data.*.*.ExecutablePath",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": []
                                     },
                                     {
+                                        "column_name": "Execution State",
+                                        "column_order": "8",
                                         "data_path": "action_result.data.*.*.ExecutionState",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.FullName",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "The Administrator"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.GroupComponent",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "MicrosoftDNS_Domain.DnsServerName=\"DC1.corp.contoso.com\",ContainerName=\"..RootHints\",Name=\"com.\""
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.Handle",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.HandleCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.InstallDate",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": []
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.KernelModeTime",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "22064786432032"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.LocalAccount",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.Lockout",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.MaximumWorkingSetSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.MinimumWorkingSetSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Name",
+                                        "column_order": "2",
+                                        "contains": [
+                                            "file name"
+                                        ],
                                         "data_path": "action_result.data.*.*.Name",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "System Idle Process",
+                                            "Administrator"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.OSCreationClassName",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Win32_OperatingSystem"
+                                        ]
                                     },
                                     {
+                                        "column_name": "OS Name",
+                                        "column_order": "9",
                                         "data_path": "action_result.data.*.*.OSName",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Microsoft Windows Server 2008 R2 Enterprise |C:\\Windows|\\Device\\Harddisk0\\Partition2"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.OtherOperationCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.OtherTransferCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PageFaults",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "1"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PageFileUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Parent Process Id",
+                                        "column_order": "10",
                                         "contains": [
                                             "pid"
                                         ],
                                         "data_path": "action_result.data.*.*.ParentProcessId",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.PartComponent",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "MicrosoftDNS_Domain.DnsServerName=\"DC1.corp.contoso.com\",ContainerName=\"..RootHints\",Name=\"microsoft.com.\""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.PasswordChangeable",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.PasswordExpires",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.PasswordRequired",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PeakPageFileUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PeakVirtualSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PeakWorkingSetSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "24"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.Priority",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.PrivatePageCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Process Id",
+                                        "column_order": "0",
                                         "contains": [
                                             "pid"
                                         ],
                                         "data_path": "action_result.data.*.*.ProcessId",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.QuotaNonPagedPoolUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.QuotaPagedPoolUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.QuotaPeakNonPagedPoolUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.QuotaPeakPagedPoolUsage",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.ReadOperationCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.ReadTransferCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "data_path": "action_result.data.*.*.SID",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "S-1-5-21-3790544232-372029393-2474287633-500"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.*.SIDType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "1"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Session Id",
+                                        "column_order": "1",
                                         "data_path": "action_result.data.*.*.SessionId",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Status",
+                                        "column_order": "11",
                                         "data_path": "action_result.data.*.*.Status",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "OK"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Termination Date",
+                                        "column_order": "12",
                                         "data_path": "action_result.data.*.*.TerminationDate",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": []
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.ThreadCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.UserModeTime",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.VirtualSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
+                                        "column_name": "Windows Version",
+                                        "column_order": "13",
                                         "data_path": "action_result.data.*.*.WindowsVersion",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "6.1.7601"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.WorkingSetSize",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "24576"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.WriteOperationCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.*.WriteTransferCount",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "0"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary",
@@ -3312,15 +4205,24 @@
                                     },
                                     {
                                         "data_path": "action_result.message",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "WMI Query executed"
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     }
                                 ],
                                 "product_name": "",
@@ -3332,8 +4234,15 @@
                             ".action": {
                                 "text": "validate hotfix"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
                             ".border": {
                                 "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -3368,6 +4277,12 @@
                             ".title": {
                                 "text": "Investigate"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -3382,7 +4297,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -3391,7 +4310,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def validate_hotfix(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('validate_hotfix() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'validate_hotfix' call\n    results_data_1 = phantom.collect2(container=container, datapath=['execute_win_update:action_result.parameter.ip_hostname', 'execute_win_update:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'validate_hotfix' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'query': \"select * from win32_quickfixengineering\",\n                'ip_hostname': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"run query\", parameters=parameters, assets=['domainctrl1'], callback=filter_5, name=\"validate_hotfix\", parent_action=action)\n\n    return",
+                        "block_code": "def validate_hotfix(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('validate_hotfix() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'validate_hotfix' call\n    results_data_1 = phantom.collect2(container=container, datapath=['execute_win_update:action_result.parameter.ip_hostname', 'execute_win_update:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'validate_hotfix' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'query': \"select * from win32_quickfixengineering\",\n                'namespace': \"\",\n                'ip_hostname': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"run query\", parameters=parameters, assets=['domainctrl1'], callback=filter_5, name=\"validate_hotfix\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3416,12 +4335,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 257,
-                        "line_start": 233,
+                        "line_end": 193,
+                        "line_start": 168,
                         "message": "Configuring now",
                         "name": "run query",
                         "notes": "Ensure the hotfixes were applied.",
                         "number": 2,
+                        "order": 9,
                         "outPorts": [
                             "out"
                         ],
@@ -3484,7 +4404,8 @@
                         "previous_function": "",
                         "previous_name": "validate_hotfix",
                         "required_params": {
-                            "ip_hostname": true
+                            "ip_hostname": true,
+                            "query": true
                         },
                         "reviewer": "",
                         "show_number": true,
@@ -3504,6 +4425,8 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
@@ -3543,7 +4466,8 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
                         "block_code": "def filter_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_5() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"KB4012598\", \"not in\", \"hotfix_query:action_result.data.*.*.HotFixID\"],\n            [\"KB4012212\", \"not in\", \"hotfix_query:action_result.data.*.*.HotFixID\"],\n            [\"KB4012215\", \"not in\", \"hotfix_query:action_result.data.*.*.HotFixID\"],\n            [\"KB4012213\", \"not in\", \"hotfix_query:action_result.data.*.*.HotFixID\"],\n            [\"KB4012216\", \"not in\", \"hotfix_query:action_result.data.*.*.HotFixID\"],\n        ],\n        logical_operator='and',\n        name=\"filter_5:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        format_comments(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
@@ -3569,11 +4493,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 207,
-                        "line_start": 184,
+                        "line_end": 216,
+                        "line_start": 193,
                         "name": "filter",
                         "notes": "Filter IP addresses where the hotfix was not applied.",
                         "number": 5,
+                        "order": 10,
                         "outPorts": [
                             "out-1"
                         ],
@@ -3690,10 +4615,15 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773",
                                 "transform": "rotate(0 0 0)"
                             },
                             ".border": {
                                 "transform": "rotate(45 30 70)"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
                             },
                             ".format": {
                                 "text": "format comments"
@@ -3758,6 +4688,9 @@
                             ".title": {
                                 "text": "format"
                             },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -3769,7 +4702,8 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
                         "block_code": "def format_comments(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_comments() called')\n    \n    template = \"\"\"{{\\\"work_notes\\\": \\\"The following systems did not successfully update from the required hotfix:\n{0}\\\"}}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_5:condition_1:hotfix_query:action_result.parameter.ip_hostname\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_comments\")\n\n    update_ticket_2(container=container)\n\n    return",
@@ -3796,12 +4730,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 111,
-                        "line_start": 94,
+                        "line_end": 233,
+                        "line_start": 216,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Format return information in preparation for ticketing.",
                         "number": 2,
+                        "order": 11,
                         "outPorts": [
                             "out-1"
                         ],
@@ -3903,6 +4838,7 @@
                                 "active": true,
                                 "app_name": "ServiceNow",
                                 "app_version": "1.2.36",
+                                "appid": "",
                                 "asset_name": "servicenow",
                                 "config_type": "asset",
                                 "count": 0,
@@ -3912,6 +4848,7 @@
                                     "table": "incident",
                                     "vault_id": ""
                                 },
+                                "has_app": true,
                                 "id": 87,
                                 "loaded": false,
                                 "missing": false,
@@ -4521,6 +5458,13 @@
                             ".action": {
                                 "text": "update ticket"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -4533,6 +5477,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -4548,6 +5494,12 @@
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -4561,10 +5513,14 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def update_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('update_ticket_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'update_ticket_2' call\n    results_data_1 = phantom.collect2(container=container, datapath=['create_ticket_1:action_result.summary.created_ticket_id', 'create_ticket_1:action_result.parameter.context.artifact_id'], action_results=results)\n    formatted_data_1 = phantom.get_format_data(name='format_comments')\n\n    parameters = []\n    \n    # build parameters list for 'update_ticket_2' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'id': results_item_1[0],\n                'table': \"incident\",\n                'fields': formatted_data_1,\n                'vault_id': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"update ticket\", parameters=parameters, assets=['servicenow'], name=\"update_ticket_2\")\n\n    return",
+                        "block_code": "def update_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('update_ticket_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'update_ticket_2' call\n    results_data_1 = phantom.collect2(container=container, datapath=['create_ticket_1:action_result.summary.created_ticket_id', 'create_ticket_1:action_result.parameter.context.artifact_id'], action_results=results)\n    formatted_data_1 = phantom.get_format_data(name='format_comments')\n\n    parameters = []\n    \n    # build parameters list for 'update_ticket_2' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'table': \"incident\",\n                'vault_id': \"\",\n                'id': results_item_1[0],\n                'fields': formatted_data_1,\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"update ticket\", parameters=parameters, assets=['servicenow'], name=\"update_ticket_2\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -4589,12 +5545,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 287,
-                        "line_start": 260,
+                        "line_end": 263,
+                        "line_start": 236,
                         "message": "Configuring now",
                         "name": "update ticket",
                         "notes": "Update the ticket with the list of endpoints that were not patched and still require remediation.",
                         "number": 2,
+                        "order": 12,
                         "outPorts": [
                             "out"
                         ],
@@ -4669,7 +5626,7 @@
                         "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 1735
                     },
                     {
@@ -4691,6 +5648,7 @@
                                 "active": true,
                                 "app_name": "",
                                 "app_version": "",
+                                "appid": "",
                                 "config_type": "asset",
                                 "fields": {
                                     "args": "",
@@ -4698,6 +5656,7 @@
                                     "ph": "",
                                     "program": "wauclt.exe /updatenow"
                                 },
+                                "has_app": true,
                                 "id": "-",
                                 "loaded": false,
                                 "missing": false,
@@ -4756,8 +5715,15 @@
                             ".action": {
                                 "text": "execute win update"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
                             ".border": {
                                 "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -4792,6 +5758,12 @@
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -4806,7 +5778,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -4815,7 +5791,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def execute_win_update(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('execute_win_update() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'execute_win_update' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_4:condition_1:hotfix_query:action_result.parameter.ip_hostname\", \"filtered-data:filter_4:condition_1:hotfix_query:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'execute_win_update' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'ph': \"\",\n                'program': \"wauclt.exe /updatenow\",\n                'ip_hostname': filtered_results_item_1[0],\n                'args': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['domainctrl1'], callback=validate_hotfix, name=\"execute_win_update\", parent_action=action)\n\n    return",
+                        "block_code": "def execute_win_update(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('execute_win_update() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'execute_win_update' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_4:condition_1:hotfix_query:action_result.parameter.ip_hostname\", \"filtered-data:filter_4:condition_1:hotfix_query:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'execute_win_update' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        parameters.append({\n            'program': \"wauclt.exe /updatenow\",\n            'ph': \"\",\n            'args': \"\",\n            'ip_hostname': filtered_results_item_1[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': filtered_results_item_1[1]},\n        })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['domainctrl1'], callback=validate_hotfix, name=\"execute_win_update\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 128,
                         "callsback": true,
@@ -4840,12 +5816,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 184,
-                        "line_start": 158,
+                        "line_end": 288,
+                        "line_start": 263,
                         "message": "Configuring now",
                         "name": "execute program",
                         "notes": "Execute wapp.exe on Windows endpoints to force an update.",
                         "number": 1,
+                        "order": 13,
                         "outPorts": [
                             "out"
                         ],
@@ -4907,10 +5884,7 @@
                         },
                         "previous_function": "",
                         "previous_name": "execute_win_update",
-                        "required_params": {
-                            "ip_hostname": true,
-                            "program": true
-                        },
+                        "required_params": {},
                         "reviewer": "",
                         "show_number": false,
                         "size": {
@@ -4929,11 +5903,12 @@
             "notes": "This playbook will list all of the endpoints in the network and filter out those that are Windows systems.  Of the Windows systems, a query via WMI will be executed to determine which engineering hotfixes have been applied to the system.  For any systems that do not have the appropriate hotfix applied, those systems will be logged in a ticket and followed by the forced execution of the windows update app (wauctl.exe).  The playbook will validate that the hotfix was applied.  If it was not successfully applied, the ticket is updated to indicate the endpoints that failed the update.\n\nThe following Apps are used: \n - Carbon Black\n - Phantom Agent\n - Service now"
         },
         "schema": 3,
-        "version": "3.5.149"
+        "version": "4.2.6332"
     },
-    "create_time": "2018-02-16T23:47:06.660521+00:00",
-    "draft_mode": true,
+    "create_time": "2019-01-22T13:59:15.607938+00:00",
+    "draft_mode": false,
     "labels": [
         "events"
-    ]
+    ],
+    "tags": []
 }
