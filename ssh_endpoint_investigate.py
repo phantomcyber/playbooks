@@ -6,42 +6,6 @@ import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
 
-##############################
-# Start - Global Code Block
-
-import requests
-
-requests.packages.urllib3.disable_warnings()  # pylint: disable=E1101
-
-AUTOMATION_HEADER = {"ph-auth-token": "s43OVieY63GXAhXuC2fIPljDv5sVNksjH+B+5V2qlYc="}
-PHANTOM_BASE_URL = "https://phantom"
-PHANTOM_SELF_SIGNED_PATH = "/opt/phantom/etc/certs/this_phantom_self_signed.pem"
-
-def find_matching_case(linking_tag):
-
-    # use elasticsearch to find the linking_tag anywhere it might be
-    search_url = "{}/rest/search?query={}&page_size=0".format(PHANTOM_BASE_URL, linking_tag)
-    search_results = requests.get(search_url, headers=AUTOMATION_HEADER, verify=PHANTOM_SELF_SIGNED_PATH).json()
-
-    # look at each returned container with a matching field to see if its a case
-    case_id = None
-    for result in search_results['results']:
-        if result['category'] == 'container':
-            container_result = requests.get("{}/rest/container/{}".format(PHANTOM_BASE_URL, result['id']),
-                                            headers=AUTOMATION_HEADER, verify=PHANTOM_SELF_SIGNED_PATH).json()
-            
-            phantom.debug("looking at container: {}".format(container_result))
-            
-            if container_result['container_type'] == 'case':
-                if container_result['data']['fields']['customfield_10201'][0] == linking_tag:
-                    if container_result['status'] != "closed":
-                        case_id = container_result['id']
-                        return case_id
-    return None
-
-# End - Global Code block
-##############################
-
 def on_start(container):
     phantom.debug('on_start() called')
     
