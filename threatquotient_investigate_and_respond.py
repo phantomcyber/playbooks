@@ -420,13 +420,14 @@ def create_src_IP_ioc(action=None, success=None, container=None, results=None, h
     
     # build parameters list for 'create_src_IP_ioc' call
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        parameters.append({
-            'indicator_type': "IP Address",
-            'indicator': filtered_artifacts_item_1[0],
-            'indicator_status': "Review",
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': filtered_artifacts_item_1[1]},
-        })
+        if filtered_artifacts_item_1[0]:
+            parameters.append({
+                'indicator_type': "IP Address",
+                'indicator': filtered_artifacts_item_1[0],
+                'indicator_status': "Review",
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_artifacts_item_1[1]},
+            })
 
     phantom.act("create ioc", parameters=parameters, assets=['threatq'], name="create_src_IP_ioc")
 
@@ -451,11 +452,12 @@ def upload_file_2(action=None, success=None, container=None, results=None, handl
     
     # build parameters list for 'upload_file_2' call
     for container_item in container_data:
-        parameters.append({
-            'vault_id': container_item[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': container_item[1]},
-        })
+        if container_item[0]:
+            parameters.append({
+                'vault_id': container_item[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': container_item[1]},
+            })
 
     phantom.act("upload file", parameters=parameters, assets=['threatq'], name="upload_file_2")
 
