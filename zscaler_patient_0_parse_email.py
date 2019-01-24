@@ -31,6 +31,11 @@ Uses custom python to parse out the relevant fields from the Patient 0 alert ema
 """
 def parse_email_to_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('parse_email_to_artifact() called')
+    input_parameter_0 = ""
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
 
     FIELD_TRANSLATOR = {
         'Cloud and Organization': 'environment',
@@ -99,6 +104,10 @@ def parse_email_to_artifact(action=None, success=None, container=None, results=N
     success, message, container_id = phantom.create_container(name=container['name'], label='events')
     
     phantom.add_artifact(container=container_id, raw_data=raw, cef_data=cef, label='event', name='zScaler Alert Artifact', severity = 'medium', identifier=str(uuid.uuid4()), artifact_type='network')
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
 
     return
 
