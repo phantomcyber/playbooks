@@ -15,30 +15,6 @@ def on_start(container):
     return
 
 """
-Decide whether this is the first execution of this playbook, in which case a new Generator and Custom List will be created. If the Generator already exists the actual Active Directory query will be run.
-"""
-def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('decision_1() called')
-
-    # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["track_active_directory_admin_users", "in", "extract_response_body:formatted_data"],
-        ])
-
-    # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        get_users_1(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    # call connected blocks for 'else' condition 2
-    create_generator(action=action, success=success, container=container, results=results, handle=handle)
-
-    return
-
-"""
 Check to see if there is already a Generator asset with the tag "track_active_directory_admin_users". This will be used to decide if a new Generator asset should be created.
 """
 def check_for_generator(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -56,45 +32,6 @@ def check_for_generator(action=None, success=None, container=None, results=None,
     })
 
     phantom.act("get data", parameters=parameters, assets=['http'], callback=extract_response_body, name="check_for_generator")
-
-    return
-
-"""
-Convert the returned HTTP response body into a flat string that can be used directly in a decision.
-"""
-def extract_response_body(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('extract_response_body() called')
-    
-    template = """{0}"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "check_for_generator:action_result.data.*.response_body",
-    ]
-
-    phantom.format(container=container, template=template, parameters=parameters, name="extract_response_body")
-
-    decision_1(container=container)
-
-    return
-
-"""
-Format a message for an email listing the new Administrators that were detected.
-"""
-def format_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('format_email() called')
-    
-    template = """The Phantom playbook called track_active_directory_admin_users detected that the following new users were added to the Administrators group in Active Directory:
-{0}"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "filtered-data:filter_1:condition_1:get_users_1:action_result.data.*.samaccountname",
-    ]
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_email")
-
-    send_email_1(container=container)
 
     return
 
@@ -144,32 +81,6 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
     return
 
 """
-Send an email to notify appropriate personnel of any new Administrators that were detected.
-"""
-def send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('send_email_1() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'send_email_1' call
-    formatted_data_1 = phantom.get_format_data(name='format_email')
-
-    parameters = []
-    
-    # build parameters list for 'send_email_1' call
-    parameters.append({
-        'body': formatted_data_1,
-        'to': "notifications@example.com",
-        'from': "notifications@example.com",
-        'attachments': "",
-        'subject': "New Admin Users",
-    })
-
-    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=update_custom_list, name="send_email_1")
-
-    return
-
-"""
 Add the newly detected users to the custom list called "Active Directory Administrators".
 """
 def update_custom_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
@@ -194,14 +105,114 @@ def create_custom_list(action=None, success=None, container=None, results=None, 
     return
 
 """
-Create a Generator asset by POSTing the desired configuration to the REST API of this Phantom instance. This block should only be executed the first time this playbook is run.
+Format a message for an email listing the new Administrators that were detected.
 """
-def create_generator(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('create_generator() called')
+def format_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_email() called')
+    
+    template = """The Phantom playbook called track_active_directory_admin_users detected that the following new users were added to the Administrators group in Active Directory:
+{0}"""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "filtered-data:filter_1:condition_1:get_users_1:action_result.data.*.samaccountname",
+    ]
+
+    phantom.format(container=container, template=template, parameters=parameters, name="format_email")
+
+    send_email_1(container=container)
+
+    return
+
+"""
+Send an email to notify appropriate personnel of any new Administrators that were detected.
+"""
+def send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('send_email_1() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'send_email_1' call
+    formatted_data_1 = phantom.get_format_data(name='format_email')
+
+    parameters = []
+    
+    # build parameters list for 'send_email_1' call
+    parameters.append({
+        'body': formatted_data_1,
+        'from': "notifications@example.com",
+        'attachments': "",
+        'to': "notifications@example.com",
+        'cc': "",
+        'bcc': "",
+        'headers': "",
+        'subject': "New Admin Users",
+    })
+
+    phantom.act("send email", parameters=parameters, assets=['smtp'], callback=update_custom_list, name="send_email_1")
+
+    return
+
+"""
+Decide whether this is the first execution of this playbook, in which case a new Generator and Custom List will be created. If the Generator already exists the actual Active Directory query will be run.
+"""
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('decision_1() called')
+
+    # check for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["track_active_directory_admin_users", "in", "extract_response_body:formatted_data"],
+        ])
+
+    # call connected blocks if condition 1 matched
+    if matched_artifacts_1 or matched_results_1:
+        get_users_1(action=action, success=success, container=container, results=results, handle=handle)
+        return
+
+    # call connected blocks for 'else' condition 2
+    format_generator(action=action, success=success, container=container, results=results, handle=handle)
+
+    return
+
+"""
+Convert the returned HTTP response body into a flat string that can be used directly in a decision.
+"""
+def extract_response_body(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('extract_response_body() called')
+    
+    template = """{0}"""
+
+    # parameter list for template variable replacement
+    parameters = [
+        "check_for_generator:action_result.data.*.response_body",
+    ]
+
+    phantom.format(container=container, template=template, parameters=parameters, name="extract_response_body")
+
+    decision_1(container=container)
+
+    return
+
+"""
+Format a JSON object for creating a Generator asset to run the Active Directory check on a scheduled basis.
+
+"""
+def format_generator(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('format_generator() called')
+    input_parameter_0 = ""
+
+    format_generator__generator = None
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
 
     now_plus_minute = int(datetime.utcnow().strftime('%s')) + 60
     
-    new_generator = {
+    format_generator__generator = {
         "description": "A cronjob-style Generator to kick off the track_active_directory_admin_users Playbook",
         "name": "track_active_directory_admin_users_generator",
         "product_name": "Generator",
@@ -225,19 +236,41 @@ def create_generator(action=None, success=None, container=None, results=None, ha
             }
         }
     }
+    
+    format_generator__generator = json.dumps(format_generator__generator)
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.save_run_data(key='format_generator:generator', value=json.dumps(format_generator__generator))
+    create_generator(container=container)
+
+    return
+
+"""
+Create a Generator asset by POSTing the desired configuration to the REST API of this Phantom instance. This block should only be executed the first time this playbook is run.
+"""
+def create_generator(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('create_generator() called')
+    
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    format_generator__generator = json.loads(phantom.get_run_data(key='format_generator:generator'))
+    # collect data for 'create_generator' call
 
     parameters = []
     
     # build parameters list for 'create_generator' call
     parameters.append({
-        'location': "/rest/asset",
-        'body': json.dumps(new_generator),
+        'body': format_generator__generator,
         'headers': "",
+        'location': "/rest/asset",
         'verify_certificate': False,
     })
 
-    phantom.act("post data", parameters=parameters, assets=['http'], callback=create_custom_list, name="create_generator")    
-    
+    phantom.act("post data", parameters=parameters, assets=['http'], callback=create_custom_list, name="create_generator")
+
     return
 
 def on_finish(container, summary):
