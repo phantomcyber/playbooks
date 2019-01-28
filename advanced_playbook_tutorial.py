@@ -1,5 +1,5 @@
 """
-This is the May 12 Tech Session Playbook that shows use of filter, decision, custom lists, prompts and scheduled actions.
+This example Playbook was created for a tutorial to show various features of the Phantom Playbook editor, including filters, decisions, custom lists, prompts and scheduled actions.
 """
 
 import phantom.rules as phantom
@@ -61,7 +61,7 @@ def filter_3(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        prompt_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        playbook_tutorial_prompt(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -132,7 +132,7 @@ def decision_4(action=None, success=None, container=None, results=None, handle=N
         container=container,
         action_results=results,
         conditions=[
-            ["prompt_1:action_result.summary.response", "==", "Yes"],
+            ["playbook_tutorial_prompt:action_result.summary.response", "==", "Yes"],
         ])
 
     # call connected blocks if condition 1 matched
@@ -142,15 +142,18 @@ def decision_4(action=None, success=None, container=None, results=None, handle=N
 
     return
 
-def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('prompt_1() called')
+def playbook_tutorial_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+    phantom.debug('playbook_tutorial_prompt() called')
     
     # set user and message variables for phantom.prompt call
-    user = "sourabh@phantom.us"
-    message = """shall we block the attacker IP  
-{0} that is being connected to malware with hash 
-{1} that has more 
-{2} detections? NOTE: If you chose to block, it will be unblocked after 60 mins."""
+    user = "admin"
+    message = """Based on a SIEM event about a potential malware incident, Phantom has investigated and determined that the potential attacker IP address:  
+{0}
+
+has been connected to malware with hash 
+{1}
+
+and the above hash has {2} positive detections on a ReversingLabs reputation score. Should Phantom temporarily block the IP address using the Palo Alto Networks firewall for the next 60 minutes (after which it will be unblocked)?"""
 
     # parameter list for template variable replacement
     parameters = [
@@ -159,16 +162,21 @@ def prompt_1(action=None, success=None, container=None, results=None, handle=Non
         "filtered-data:filter_2:condition_1:file_reputation_1:action_result.summary.positives",
     ]
 
-    # response options
-    options = {
-        "type": "list",
-        "choices": [
-            "Yes",
-            "No",
-        ]
-    }
+    #responses:
+    response_types = [
+        {
+            "prompt": "",
+            "options": {
+                "type": "list",
+                "choices": [
+                    "Yes",
+                    "No",
+                ]
+            },
+        },
+    ]
 
-    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name="prompt_1", parameters=parameters, options=options, callback=decision_4)
+    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name="playbook_tutorial_prompt", parameters=parameters, response_types=response_types, callback=decision_4)
 
     return
 
@@ -233,8 +241,8 @@ def unblock_ip_1(action=None, success=None, container=None, results=None, handle
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
-    # calculate start time using delay of 1 minutes
-    start_time = datetime.now() + timedelta(minutes=1)
+    # calculate start time using delay of 60 minutes
+    start_time = datetime.now() + timedelta(minutes=60)
 
     phantom.act("unblock ip", parameters=parameters, assets=['pan'], callback=remove_from_blocklist, start_time=start_time, name="unblock_ip_1", parent_action=action)
 
@@ -288,7 +296,7 @@ def remove_from_blocklist(action=None, success=None, container=None, results=Non
     if del_rows:
         phantom.debug("deleting rows: {}".format(del_rows))
         data = { 'delete_rows': list(del_rows) }
-        requests.post('https://127.0.0.1/rest/decided_list/blocked_ips', data=json.dumps(data), verify=False)
+        requests.post('{}/decided_list/blocked_ips'.format(phantom.get_rest_base_url()), data=json.dumps(data), verify=False)
 
     return
 
