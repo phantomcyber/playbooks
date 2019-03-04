@@ -104,6 +104,9 @@ def domain_reputation_1(action=None, success=None, container=None, results=None,
 
     return
 
+"""
+Add all the of the enrichment data as a comment to Mission Control 
+"""
 def add_comment(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('add_comment() called')
 
@@ -228,6 +231,9 @@ def whois_ip_callback(action=None, success=None, container=None, results=None, h
 
     return
 
+"""
+Updating the notable event in Splunk with the enrichment data 
+"""
 def update_notable_event(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('update_notable_event() called')
     
@@ -256,6 +262,9 @@ def update_notable_event(action=None, success=None, container=None, results=None
 
     return
 
+"""
+Format a selection of the most relevant results from the executed enrichment queries for use in raising a notable event in Splunk 
+"""
 def format_notable_comment(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
     phantom.debug('format_notable_comment() called')
     
