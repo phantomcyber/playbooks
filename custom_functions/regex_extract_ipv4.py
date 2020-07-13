@@ -17,7 +17,7 @@ def regex_extract_ipv4(input_string=None, **kwargs):
     ip_list = []
     for ip in input_string:
         if ip:
-            ip_rex = re.findall('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)',str(ip))
+            ip_rex = re.findall('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)',ip)
             for ip in set(ip_rex):
                 ip_list.append(ip)
                 
