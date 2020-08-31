@@ -23,9 +23,5 @@ Please reference Splunk's Phantom [documentation](https://docs.splunk.com/Docume
 Please use Splunk Phantom's [import](https://docs.splunk.com/Documentation/Phantom/4.9/User/PlaybookList) function to upload playbooks in .tgz format.
 
 
-
-```
-
-
 ## Thanks
 These playbooks are created by the community to speed up the analyst response time and potentially decrease false positives. Security should be a team effort!
