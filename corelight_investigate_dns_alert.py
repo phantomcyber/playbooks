@@ -1,5 +1,5 @@
 """
-This playbook automates analyst workflow when reviewing a Suricata event for a malicious DNS name, combined with Zeek metadata.
+This playbook automates an analyst investigation when reviewing a Suricata event for a potentially malicious DNS query. Splunk queries are used to gather related information from Zeek metadata, and a VirusTotal query checks the reputation of any files that are extracted from the network stream by Corelight.
 """
 
 import phantom.rules as phantom
@@ -24,7 +24,7 @@ def on_start(container):
     return
 
 """
-Build a Splunk query to find the DNS log with the UID matching the Phantom event, which was triggered by a Suricata signature for a blacklisted DNS name.
+Build a Splunk query to find the DNS log with the UID matching the Phantom event, which was triggered by a Suricata signature for a blocklisted DNS name.
 """
 def format_DNS_alert_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_DNS_alert_query() called')
@@ -64,7 +64,7 @@ def run_DNS_alert_query(action=None, success=None, container=None, results=None,
         'parse_only': False,
     })
 
-    phantom.act(action="run query", parameters=parameters, assets=['splunk-demo-main'], callback=filter_DNS_answer, name="run_DNS_alert_query")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk'], callback=filter_DNS_answer, name="run_DNS_alert_query")
 
     return
 
@@ -89,10 +89,13 @@ def run_source_dest_query(action=None, success=None, container=None, results=Non
         'parse_only': False,
     })
 
-    phantom.act(action="run query", parameters=parameters, assets=['splunk-demo-main'], callback=If_traffic_between_the_two_units, name="run_source_dest_query")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk'], callback=If_traffic_between_the_two_units, name="run_source_dest_query")
 
     return
 
+"""
+If any Splunk results showed traffic between the source and destination hosts, continue the investigation.
+"""
 def If_traffic_between_the_two_units(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('If_traffic_between_the_two_units() called')
 
@@ -191,7 +194,7 @@ def query_connections(action=None, success=None, container=None, results=None, h
             'parse_only': False,
         })
 
-    phantom.act(action="run query", parameters=parameters, assets=['splunk-demo-main'], callback=filter_nonzero_bytes, name="query_connections")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk'], callback=filter_nonzero_bytes, name="query_connections")
 
     return
 
@@ -294,7 +297,7 @@ def run_HTTP_query(action=None, success=None, container=None, results=None, hand
         'parse_only': False,
     })
 
-    phantom.act(action="run query", parameters=parameters, assets=['splunk-demo-main'], callback=format_http_note, name="run_HTTP_query")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk'], callback=format_http_note, name="run_HTTP_query")
 
     return
 
@@ -338,7 +341,7 @@ def run_suricata_query(action=None, success=None, container=None, results=None, 
         'parse_only': False,
     })
 
-    phantom.act(action="run query", parameters=parameters, assets=['splunk-demo-main'], callback=filter_valid_suricata_alerts, name="run_suricata_query")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk'], callback=filter_valid_suricata_alerts, name="run_suricata_query")
 
     return
 
@@ -382,7 +385,7 @@ def run_file_query(action=None, success=None, container=None, results=None, hand
         'parse_only': False,
     })
 
-    phantom.act(action="run query", parameters=parameters, assets=['splunk-demo-main'], callback=filter_valid_files, name="run_file_query")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk'], callback=filter_valid_files, name="run_file_query")
 
     return
 
@@ -407,7 +410,7 @@ def run_SSL_query(action=None, success=None, container=None, results=None, handl
         'parse_only': False,
     })
 
-    phantom.act(action="run query", parameters=parameters, assets=['splunk-demo-main','splunk-demo-main'], callback=format_ssl_note, name="run_SSL_query")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk','splunk'], callback=format_ssl_note, name="run_SSL_query")
 
     return
 
