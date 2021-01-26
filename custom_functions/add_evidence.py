@@ -32,7 +32,7 @@ def add_evidence(container_id=None, object_id=None, content_type=None, **kwargs)
     # Post data to evidence endpoint
     response = phantom.requests.post(uri=url, json=data, verify=False).json()
     # If successful add evidence id to outputs
-    if response['success'] == 'true':
+    if response.get('success') == 'true':
         outputs['id'] = response['id']
         
     # Return a JSON-serializable object
