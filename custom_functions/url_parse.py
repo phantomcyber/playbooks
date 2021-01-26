@@ -1,17 +1,17 @@
 def url_parse(url=None, **kwargs):
     """
-    Custom function implementation of urllib.parse from python3
+    Separate a URL into its components using urlparse() from the urllib module of Python 3.
     
     Args:
-        url (CEF type: url)
+        url (CEF type: url): The URL to parse
     
     Returns a JSON-serializable object that implements the configured data paths:
-        scheme: "http(s)"
-        netloc: "www.splunk.com"
-        path: "en_us/software/splunk-security-orchestration-and-automation.html"
-        params
-        query
-        fragment
+        scheme: The scheme of the URL, such as HTTP, HTTPS, or FTP.
+        netloc: The network location of the URL, which is typically the hostname.
+        path: The path to the resource after the first slash in the URL, such as "en_us/software/splunk-security-orchestration-and-automation.html".
+        params: The parameters in the URL after the semicolon.
+        query: The query string of the URL after the question mark. Multiple parameters are not separated from each other.
+        fragment: The subcomponent of the resource which is identified after the hash sign.
     """
     ############################ Custom Code Goes Below This Line #################################
     import json
