@@ -1,4 +1,5 @@
 """
+This example Playbook was created for a tutorial to show various features of the Phantom playbook editor, including filters, decisions, custom lists, prompts and scheduled actions.
 """
 
 import phantom.rules as phantom
@@ -12,6 +13,9 @@ def on_start(container):
 
     return
 
+"""
+Start the investigation by checking if there is any threat intelligence about the file hash in the event.
+"""
 def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('file_reputation_1() called')
 
@@ -33,6 +37,9 @@ def file_reputation_1(action=None, success=None, container=None, results=None, h
 
     return
 
+"""
+Check if more than 10 intelligence sources identify the file as malicious.
+"""
 def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_1() called')
 
@@ -51,6 +58,9 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
+"""
+Reference the file that was found to be malicious in the previous filter.
+"""
 def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_2() called')
 
@@ -71,6 +81,9 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
+"""
+Check if the machine hostname is on a list used to track test machines.
+"""
 def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_1() called')
 
@@ -89,6 +102,9 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
 
     return
 
+"""
+Raise the severity of the event if the machine is not a test machine.
+"""
 def set_severity_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('set_severity_1() called')
 
@@ -96,6 +112,9 @@ def set_severity_1(action=None, success=None, container=None, results=None, hand
 
     return
 
+"""
+Kill the malicious process on the endpoint with the file name from the artifact.
+"""
 def terminate_process_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('terminate_process_1() called')
         
@@ -124,6 +143,9 @@ def terminate_process_1(action=None, success=None, container=None, results=None,
 
     return
 
+"""
+Check a custom list to see if the IP address associated with the malicious file is already on a blocklist.
+"""
 def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_3() called')
 
@@ -142,6 +164,9 @@ def filter_3(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
+"""
+Ask an analyst if the IP address should be blocked.
+"""
 def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('prompt_1() called')
     
@@ -180,6 +205,9 @@ and the above hash has {2} positive detections on a ReversingLabs reputation sco
 
     return
 
+"""
+Check the analyst response.
+"""
 def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_2() called')
 
@@ -198,6 +226,9 @@ def decision_2(action=None, success=None, container=None, results=None, handle=N
 
     return
 
+"""
+Add the IP address to a custom list of blocked IP addresses.
+"""
 def add_to_block_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('add_to_block_list() called')
 
@@ -210,6 +241,9 @@ def add_to_block_list(action=None, success=None, container=None, results=None, h
 
     return
 
+"""
+Create a new block rule on the firewall.
+"""
 def block_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('block_ip_1() called')
         
@@ -235,6 +269,9 @@ def block_ip_1(action=None, success=None, container=None, results=None, handle=N
 
     return
 
+"""
+After a time delay, unblock the IP address.
+"""
 def unblock_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('unblock_ip_1() called')
         
@@ -262,6 +299,9 @@ def unblock_ip_1(action=None, success=None, container=None, results=None, handle
 
     return
 
+"""
+Use custom code to remove the IP address from a blocklist.
+"""
 def remove_from_block_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('remove_from_block_list() called')
     
