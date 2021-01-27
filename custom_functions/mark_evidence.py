@@ -23,9 +23,7 @@ def mark_evidence(container=None, object_id=None, content_type=None, **kwargs):
     outputs = {}
     container_id = None
     valid_types = ['vault_id','artifact','actionrun','container','note']
-    phantom.debug(container_id)
-    phantom.debug(object_id)
-    phantom.debug(content_type)
+    
     # Ensure valid content_type: 
     if content_type.lower() not in valid_types:
         raise TypeError(f"The content_type '{content_type}' is not a valid content_type")
