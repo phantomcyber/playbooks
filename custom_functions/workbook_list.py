@@ -1,10 +1,11 @@
 def workbook_list(**kwargs):
     """
-    Returns a list of known workbooks
+    Return a list of all the workbooks on this Phantom instance. This might be useful to display possible options for workbooks to add to this event.
     
     Returns a JSON-serializable object that implements the configured data paths:
         *.id: Unique workbook ID
         *.name: Workbook name
+        *.description: Workbook description
         *.status: Status of the workbook, e.g. published
         *.is_default: True or False if it is the default workbook
         *.is_note_required: True or False if a note is required to finish each task in the workbook
