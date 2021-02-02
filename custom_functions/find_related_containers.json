@@ -1,0 +1,78 @@
+{
+    "create_time": "2021-02-02T22:21:31.918867+00:00",
+    "custom_function_id": "bc6cbb96990d43b3df16f31cd43b81f095bd2252",
+    "description": "Takes a provided list of indicator values to search for and finds all related containers. It will produce a list of the related container details.",
+    "draft_mode": false,
+    "inputs": [
+        {
+            "contains_type": [
+                "*"
+            ],
+            "description": "A cef value to search on such as artifact:*.cef.destinationAddress or to search all indicators in container use: *",
+            "input_type": "list",
+            "name": "value_list",
+            "placeholder": "*"
+        },
+        {
+            "contains_type": [
+                "*"
+            ],
+            "description": "The minimum number of similar indicator records that a container must have to be considered \"related.\" An invalid input will default to 1 with a debug message",
+            "input_type": "item",
+            "name": "minimum_match_count",
+            "placeholder": "1-100"
+        },
+        {
+            "contains_type": [],
+            "description": "Filters out any containers with this status",
+            "input_type": "item",
+            "name": "filter_out_status",
+            "placeholder": "closed"
+        },
+        {
+            "contains_type": [
+                "phantom container id"
+            ],
+            "description": "The container to run indicator analysis against. Supports container object or container_id. This container will also be excluded from the results for related_containers.",
+            "input_type": "item",
+            "name": "container",
+            "placeholder": "container:id"
+        }
+    ],
+    "outputs": [
+        {
+            "contains_type": [
+                "*"
+            ],
+            "data_path": "*.container_id",
+            "description": "The unique id of the related container"
+        },
+        {
+            "contains_type": [],
+            "data_path": "*.container_indicator_match_count",
+            "description": "The number of indicators matched to the related container"
+        },
+        {
+            "contains_type": [],
+            "data_path": "*.container_status",
+            "description": "The status of the related container e.g. new, open, closed"
+        },
+        {
+            "contains_type": [],
+            "data_path": "*.container_type",
+            "description": "The type of the related container, e.g. default or case"
+        },
+        {
+            "contains_type": [],
+            "data_path": "*.container_name",
+            "description": "The name of the related container"
+        },
+        {
+            "contains_type": [],
+            "data_path": "*.in_case",
+            "description": "True or False if the related container is already included in a case"
+        }
+    ],
+    "platform_version": "4.10.0.40961",
+    "python_version": "3"
+}
