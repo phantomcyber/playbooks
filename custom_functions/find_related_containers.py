@@ -103,16 +103,15 @@ def find_related_containers(value_list=None, minimum_match_count=None, filter_ou
             # If any of the containers contain more than the minimum match count request that container detail.
             if len(container_dictionary[str(k)]) >= minimum_match_count:
                 
-                # Get artifact_count of containers
+                # Grab container details
                 url = phantom.build_phantom_rest_url('container', k)
                 response_data = phantom.requests.get(url, verify=False).json()
-                artifact_count = response_data['artifact_count']
                 status = response_data['status']
                 container_type = response_data['container_type']
                 container_name = response_data['name']
                 in_case = response_data['in_case']
                 
-                # build final output
+                # Build final output
                 if status != filter_out_status and str(k) != str(current_container):
                     outputs.append({'container_id': str(k),
                                     'container_indicator_match_count': len(container_dictionary[str(k)]),
