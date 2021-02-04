@@ -3,7 +3,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, filter_ou
     Takes a provided list of indicator values to search for and finds all related containers. It will produce a list of the related container details.
     
     Args:
-        value_list (CEF type: *): A cef value to search on such as artifact:*.cef.destinationAddress or to search all indicators in container use: *
+        value_list (CEF type: *): An indicator value to search on, such as a file hash or IP address. To search on all indicator values in the container, use "*".
         minimum_match_count (CEF type: *): The minimum number of similar indicator records that a container must have to be considered "related." An invalid input will default to 1 with a debug message
         filter_out_status: Filters out any containers with this status
         container (CEF type: phantom container id): The container to run indicator analysis against. Supports container object or container_id. This container will also be excluded from the results for related_containers.
@@ -101,7 +101,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, filter_ou
             container_dictionary[str(k)] = list(set(v))
             
             # If any of the containers contain more than the minimum match count request that container detail.
-            if len(container_dictionary[str(k)]) > minimum_match_count:
+            if len(container_dictionary[str(k)]) >= minimum_match_count:
                 
                 # Get artifact_count of containers
                 url = phantom.build_phantom_rest_url('container', k)
