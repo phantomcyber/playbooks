@@ -27,6 +27,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, filter_ou
     
     # Get indicator ids based on value_list
     def fetch_indicator_ids(value_list):
+        phantom.debug("Fetching indicator IDs")
         indicator_id_list = []
         for indicator in value_list:
             url = phantom.build_phantom_rest_url() + f'indicator?_filter_value={json.dumps(indicator)}'
@@ -69,6 +70,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, filter_ou
 
     # Get list of related containers
     if indicator_id_list:
+        phantom.debug("Fetching common containers")
         for indicator_id in list(set(indicator_id_list)):
             url = phantom.build_phantom_rest_url() + 'indicator_common_container?indicator_ids={}'.format(indicator_id)
             response_data = phantom.requests.get(url, verify=False).json()
@@ -85,6 +87,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, filter_ou
     # Iterate through the newly created indicator id dictionary and create a dictionary where 
     # the keys are related containers and the values are the associated indicator ids
     if indicator_id_dictionary:
+        phantom.debug('Converting {"indicator_id": "container_id"} to {"container_id": "indicator_id"}')
         for k,v in indicator_id_dictionary.items():
             for item in v:
                 if str(item) not in container_dictionary.keys():
@@ -96,32 +99,91 @@ def find_related_containers(value_list=None, minimum_match_count=None, filter_ou
         
     # Iterate through the newly created container dictionary                
     if container_dictionary:
+        
+        container_number = 0
+        # Dedupe the number of indicators
         for k,v in container_dictionary.items():
-            # Dedupe the number of indicators
             container_dictionary[str(k)] = list(set(v))
-            
-            # If any of the containers contain more than the minimum match count request that container detail.
+             # Count how many containers are actually going to be queried based on minimum_match_count
             if len(container_dictionary[str(k)]) >= minimum_match_count:
+                container_number += 1
                 
-                # Grab container details
-                url = phantom.build_phantom_rest_url('container', k)
-                response_data = phantom.requests.get(url, verify=False).json()
-                status = response_data['status']
-                container_type = response_data['container_type']
-                container_name = response_data['name']
-                in_case = response_data['in_case']
-                
-                # Build final output
-                if status != filter_out_status and str(k) != str(current_container):
-                    outputs.append({'container_id': str(k),
-                                    'container_indicator_match_count': len(container_dictionary[str(k)]),
-                                    'container_status': status,
-                                    'container_type': container_type,
-                                    'container_name': container_name,
-                                    'in_case': in_case})
+        # If the container number is greater than 600, then its faster to grab all containers
+        if container_number >= 600:
+            phantom.debug("Number of related containers > 100. Fetching all container data")
+            # Convert status to id
+            status_id = None
+            if isinstance(filter_out_status, str):
+                url = phantom.build_phantom_rest_url('container_status') + f'?_filter_name="{filter_out_status}"'
+                response = phantom.requests.get(uri=url, verify=False).json()
+                if response['count'] > 0:
+                    status_id = response['data'][0]['id']
+            elif isinstance(filter_out_status, int):
+                status_id = filter_out_status
+
+            # Gather container data
+            url = phantom.build_phantom_rest_url('container') + '?page_size=0'
+            if status_id:
+                url +=  f'&_exclude_status_id={status_id}'
+            containers_response = phantom.requests.get(uri=url, verify=False).json()
+            all_container_dictionary = {}
+            if containers_response['count'] > 0:
+                # Build repository of available container data
+                for data in containers_response['data']:
+                    all_container_dictionary[str(data['id'])] = data
+
+                for k,v in container_dictionary.items():
+
+                    # If any of the containers contain more than the minimum match count request that container detail.
+                    if len(container_dictionary[str(k)]) >= minimum_match_count:
+
+                        # Grab container details if its a valid container based on previous filtering.
+                        if str(k) in all_container_dictionary.keys():
+                            container_data = all_container_dictionary[str(k)]
+                            status = container_data['status']
+                            container_type = container_data['container_type']
+                            container_name = container_data['name']
+                            in_case = container_data['in_case']
+
+                            # Build final output
+                            outputs.append({'container_id': str(k),
+                                            'container_indicator_match_count': len(container_dictionary[str(k)]),
+                                            'container_status': status,
+                                            'container_type': container_type,
+                                            'container_name': container_name,
+                                            'in_case': in_case})
+            else:
+                raise RuntimeError(f"'Unable to find any valid containers at url: '{url}'")
+        elif container_number < 600 and container_number > 0:
+            phantom.debug("Fetching related container data")
+            # if the container number is smaller than 600, its faster to grab each container individiually
+            for k,v in container_dictionary.items():
+                # Dedupe the number of indicators
+                container_dictionary[str(k)] = list(set(v))
+
+                # If any of the containers contain more than the minimum match count request that container detail.
+                if len(container_dictionary[str(k)]) >= minimum_match_count:
+
+                    # Grab container details
+                    url = phantom.build_phantom_rest_url('container', k)
+                    response_data = phantom.requests.get(url, verify=False).json()
+                    status = response_data['status']
+                    container_type = response_data['container_type']
+                    container_name = response_data['name']
+                    in_case = response_data['in_case']
+
+                    # Build final output
+                    if status != filter_out_status and str(k) != str(current_container):
+                        outputs.append({'container_id': str(k),
+                                        'container_indicator_match_count': len(container_dictionary[str(k)]),
+                                        'container_status': status,
+                                        'container_type': container_type,
+                                        'container_name': container_name,
+                                        'in_case': in_case})
+            
+
     else:
         raise RuntimeError('Unable to create container_dictionary')               
-    
     # Return a JSON-serializable object
     assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
     return outputs
