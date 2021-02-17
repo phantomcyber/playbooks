@@ -5,7 +5,6 @@ This playbook parses a .csv file with a list of firewall changes. The .csv file 
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -17,7 +16,7 @@ def on_start(container):
 """
 The .csv file must be in the Vault and there must be an artifact with the cef.vaultId field.
 """
-def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_1() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -30,15 +29,15 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        playbook_local_soc_fork_customer_request_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        customer_firewall_request_parse_csv(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 """
-Use custom code and the "csv" library to parse each row of the .csv file and create an artifact for each valid row. 
+Use custom code and the "csv" library to parse each row of the .csv file and create an artifact for each valid row, then call another playbook to handle the created artifact. 
 """
-def playbook_local_soc_fork_customer_request_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('playbook_local_soc_fork_customer_request_1() called')
+def customer_firewall_request_parse_csv(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('playbook_customer_firewall_request_parse_csv() called')
 
     # ----- start of added code -----
     import csv
@@ -59,7 +58,7 @@ def playbook_local_soc_fork_customer_request_1(action=None, success=None, contai
         with open(file_path, 'r') as f:
             reader = csv.DictReader(f)
             for cef_data in reader:
-                cef_data_keys = cef_data.keys()
+                cef_data_keys = list(cef_data.keys())
                 if 'action' in cef_data_keys and ('sourceAddress' in cef_data_keys or 'destinationAddress' in cef_data_keys):
                     phantom.debug('adding artifact: {}'.format(cef_data))
                     success, message, artifact_id = phantom.add_artifact(container=container,
@@ -77,15 +76,15 @@ def playbook_local_soc_fork_customer_request_1(action=None, success=None, contai
         return
     # ----- end of added code -----
 
-    # call playbook "local/soc_fork_customer_request", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/soc_fork_customer_request", container)
+    # call playbook "local/customer_firewall_request_parse_csv", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("local/customer_firewall_request_parse_csv", container)
 
     return
 
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()

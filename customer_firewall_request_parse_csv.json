@@ -2,13 +2,12 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": [] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "",
             "description": "This playbook parses a .csv file with a list of firewall changes. The .csv file must contain an \"action\" column (with values equal to either \"block_ip\" or \"unblock_ip\") and either a \"sourceAddress\" column or a \"destinationAddress\" column. Once the .csv file is parsed this playbook will create one new artifact per row. The artifacts will have the label \"customer_request\" which can then be used in a subsequent playbook to take appropriate block or unblock actions.",
-            "hash": "41082c1414c23035a1d26c872cb74676aa7898a8",
+            "hash": "49e40e7a4379a8e23addfc77bb146cdb6edc4cf9",
             "joint": {
                 "cells": [
                     {
@@ -18,6 +17,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -44,7 +50,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -67,11 +73,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 98,
-                        "line_start": 85,
+                        "line_end": 97,
+                        "line_start": 84,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 4,
                         "outPorts": [],
                         "ports": {
                             "groups": {
@@ -273,6 +280,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -285,6 +299,7 @@
                             },
                             ".title": {
                                 "ref-x": 33,
+                                "ref-y": 8,
                                 "text": "START"
                             },
                             "g.delete": {
@@ -322,11 +337,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 17,
-                        "line_start": 9,
+                        "line_end": 16,
+                        "line_start": 8,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 1,
                         "outPorts": [
                             "out"
                         ],
@@ -383,7 +399,7 @@
                             }
                         },
                         "position": {
-                            "x": 100,
+                            "x": 120,
                             "y": 100
                         },
                         "previous_function": "",
@@ -404,6 +420,8 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
@@ -443,10 +461,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.vaultId\", \"!=\", \"\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        playbook_local_soc_fork_customer_request_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.vaultId\", \"!=\", \"\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        customer_firewall_request_parse_csv(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -469,11 +488,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 37,
-                        "line_start": 20,
+                        "line_end": 36,
+                        "line_start": 19,
                         "name": "filter",
                         "notes": "The .csv file must be in the Vault and there must be an artifact with the cef.vaultId field.",
                         "number": 1,
+                        "order": 2,
                         "outPorts": [
                             "out-1"
                         ],
@@ -559,12 +579,19 @@
                         "status": "",
                         "type": "coa.Filter",
                         "warn": false,
-                        "z": 49
+                        "z": 53
                     },
                     {
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -596,13 +623,20 @@
                                 }
                             },
                             ".playbook": {
-                                "text": "local/soc_fork_custo..."
+                                "text": "customer_firewall_reque..."
+                            },
+                            ".scmName": {
+                                "text": "local"
                             },
                             ".title": {
                                 "text": "Playbook"
                             },
+                            "g.branch image": {
+                                "opacity": 1
+                            },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_code_dark_on.svg"
                             },
                             "g.delete": {
                                 "display": "none"
@@ -615,7 +649,8 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -632,10 +667,10 @@
                         "connection_name": "",
                         "connection_type": "",
                         "custom_callback": "",
-                        "custom_code": "def playbook_local_soc_fork_customer_request_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('playbook_local_soc_fork_customer_request_1() called')\n\n    # ----- start of added code -----\n    import csv\n    # get container id\n    container_id = container.get('id', None)\n\n    # use the container id to get information about any files in the vault\n    vault_info = phantom.vault_info(container_id=container_id)\n\n    # filter info returned to find the path where the file is stored in the vault\n    file_path = vault_info[2][0][\"path\"]\n    phantom.debug('vault file path: {}'.format(file_path))\n\n    # read the .csv file, file and add artifacts with the label \"customer_request\" to container\n    raw_data = {}\n    reader = None\n    try:\n        with open(file_path, 'r') as f:\n            reader = csv.DictReader(f)\n            for cef_data in reader:\n                cef_data_keys = cef_data.keys()\n                if 'action' in cef_data_keys and ('sourceAddress' in cef_data_keys or 'destinationAddress' in cef_data_keys):\n                    phantom.debug('adding artifact: {}'.format(cef_data))\n                    success, message, artifact_id = phantom.add_artifact(container=container,\n                                                                         raw_data=raw_data,\n                                                                         cef_data=cef_data,\n                                                                         label='customer_request',\n                                                                         name='Parsed CSV Artifact',\n                                                                         severity='high',\n                                                                         identifier=None,\n                                                                         artifact_type='network')\n                    if not success:\n                        phantom.error(\"Adding Artifact failed: {}\".format(message))\n    except Exception as e:\n        phantom.error(\"Exception Occurred: {}\".format(e.args[1]))\n        return\n    # ----- end of added code -----\n\n    # call playbook \"local/soc_fork_customer_request\", returns the playbook_run_id\n    playbook_run_id = phantom.playbook(\"local/soc_fork_customer_request\", container)\n\n    return",
+                        "custom_code": "def customer_firewall_request_parse_csv(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('playbook_customer_firewall_request_parse_csv() called')\n\n    # ----- start of added code -----\n    import csv\n    # get container id\n    container_id = container.get('id', None)\n\n    # use the container id to get information about any files in the vault\n    vault_info = phantom.vault_info(container_id=container_id)\n\n    # filter info returned to find the path where the file is stored in the vault\n    file_path = vault_info[2][0][\"path\"]\n    phantom.debug('vault file path: {}'.format(file_path))\n\n    # read the .csv file, file and add artifacts with the label \"customer_request\" to container\n    raw_data = {}\n    reader = None\n    try:\n        with open(file_path, 'r') as f:\n            reader = csv.DictReader(f)\n            for cef_data in reader:\n                cef_data_keys = list(cef_data.keys())\n                if 'action' in cef_data_keys and ('sourceAddress' in cef_data_keys or 'destinationAddress' in cef_data_keys):\n                    phantom.debug('adding artifact: {}'.format(cef_data))\n                    success, message, artifact_id = phantom.add_artifact(container=container,\n                                                                         raw_data=raw_data,\n                                                                         cef_data=cef_data,\n                                                                         label='customer_request',\n                                                                         name='Parsed CSV Artifact',\n                                                                         severity='high',\n                                                                         identifier=None,\n                                                                         artifact_type='network')\n                    if not success:\n                        phantom.error(\"Adding Artifact failed: {}\".format(message))\n    except Exception as e:\n        phantom.error(\"Exception Occurred: {}\".format(e.args[1]))\n        return\n    # ----- end of added code -----\n\n    # call playbook \"local/customer_firewall_request_parse_csv\", returns the playbook_run_id\n    playbook_run_id = phantom.playbook(\"local/customer_firewall_request_parse_csv\", container)\n\n    return",
                         "custom_join": "",
-                        "custom_name": "",
-                        "description": "Use custom code and the \"csv\" library to parse each row of the .csv file and create an artifact for each valid row. ",
+                        "custom_name": "customer_firewall_request_parse_csv",
+                        "description": "Use custom code and the \"csv\" library to parse each row of the .csv file and create an artifact for each valid row, then call another playbook to handle the created artifact. ",
                         "has_custom": true,
                         "has_custom_block": true,
                         "has_custom_callback": false,
@@ -647,12 +682,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 85,
-                        "line_start": 40,
+                        "line_end": 84,
+                        "line_start": 39,
                         "message": "Configuring now",
-                        "name": "local/soc_fork_customer_request",
-                        "notes": "Use custom code and the \"csv\" library to parse each row of the .csv file and create an artifact for each valid row.",
+                        "name": "soc_fork_customer_request",
+                        "notes": "Use custom code and the \"csv\" library to parse each row of the .csv file and create an artifact for each valid row, then call another playbook to handle the created artifact. ",
                         "number": 1,
+                        "order": 3,
                         "outPorts": [
                             "out"
                         ],
@@ -714,7 +750,8 @@
                             "y": 80
                         },
                         "previous_function": "",
-                        "previous_name": "playbook_local_soc_fork_customer_request_1",
+                        "previous_name": "customer_firewall_request_parse_csv",
+                        "scmName": "local",
                         "show_number": false,
                         "size": {
                             "height": 112,
@@ -725,18 +762,23 @@
                         "title": "Playbook",
                         "type": "coa.CallPlaybook",
                         "warn": false,
-                        "z": 52
+                        "z": 54
                     }
                 ]
             },
-            "notes": "This playbook does not use any apps.\n\nDeployment Notes:\n - The .csv file must be imported to the Vault, which happens automatically with apps such as IMAP or Exchange email ingestion when there is a file attachment\n - There must be an artifact with the vaultId as a CEF field, which happens automatically with apps such as IMAP or Exchange email ingestion when there is a file attachment\n - Any columns in the .csv file that do not have the header \"action\", \"sourceAddress\", or \"destinationAddress\" will be ignored"
+            "notes": "This playbook does not use any apps.\n\nDeployment Notes:\n - The .csv file must be imported to the Vault, which happens automatically with apps such as IMAP or Exchange email ingestion when there is a file attachment\n - There must be an artifact with the vaultId as a CEF field, which happens automatically with apps such as IMAP or Exchange email ingestion when there is a file attachment\n - Any columns in the .csv file that do not have the header \"action\", \"sourceAddress\", or \"destinationAddress\" will be ignored\n - The community playbook \"customer_firewall_request_parse_csv\" is called at the end of this playbook to process the created artifacts, so it should be copied from the community repository to the local repository and customized if needed"
         },
-        "schema": 3,
-        "version": "3.5.137"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2018-02-12T18:07:17.531352+00:00",
+    "create_time": "2021-01-19T18:37:17.723993+00:00",
     "draft_mode": false,
     "labels": [
         "events"
-    ]
+    ],
+    "tags": [],
+    "misc": {
+        "apps_list": []
+    }
 }
