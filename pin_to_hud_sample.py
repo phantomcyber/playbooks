@@ -5,7 +5,6 @@ Demonstrate updating the Heads-Up Display from a Playbook using a variety of ind
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 ##############################
 # Start - Global Code Block
 
@@ -35,7 +34,99 @@ def on_start(container):
 
     return
 
-def pin_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def pin_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    import random
+    phantom.debug('pin_3() called')
+
+    # collect data for 'pin_to_hud_6' call
+    dest_domain = [x for x in phantom.collect2(container=container, datapath=['artifact:*.cef.destinationDnsDomain']) if x[0]]
+    
+    pin_name = pin_name_mangle("pin_3", container)
+    
+    try:
+        most_rcnt_domain = dest_domain[0][0]
+    except:
+        pass
+    else:
+        pin_id = phantom.get_data(pin_name)
+        if not pin_id:
+            ret_val, message, pin_id = phantom.pin(container=container, message="Most Recent Domain", data=most_rcnt_domain, pin_type="card_medium", pin_style="red")
+            phantom.debug("new pin_3")
+        else:
+            ret_val, message = phantom.update_pin(pin_id, message="Most Recent Domain", data=most_rcnt_domain, pin_type="card_medium", pin_style="red")
+        if ret_val:
+            phantom.save_data(pin_id, pin_name)
+
+    # set container properties for: 
+    update_data = {
+    }
+
+    phantom.update(container, update_data)
+    return
+
+def pin_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    import random
+    phantom.debug('pin_1() called')
+
+    # collect data for 'pin_to_hud_6' call
+    dest_ip_artifacts = [x for x in phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress']) if x[0]]
+    sorc_ip_artifacts = [x for x in phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress']) if x[0]]
+
+    styles = set(["white", "red", "purple"])
+    
+    pin_name = pin_name_mangle("pin_1", container)
+    pin_id = phantom.get_data(pin_name)
+    
+    if not pin_id:
+        ret_val, message, pin_id = phantom.pin(container=container, message="Affected IPs", data=str(len(dest_ip_artifacts) + len(sorc_ip_artifacts)), pin_type="card_medium", pin_style="white")
+        phantom.debug("new pin_1")
+    else:
+        style = random.sample(styles, 1)[0]
+        phantom.debug(style)
+        ret_val, message = phantom.update_pin(pin_id, message="Affected IPs", data=str(len(dest_ip_artifacts) + len(sorc_ip_artifacts)), pin_style=style)
+    
+    if ret_val:
+        phantom.save_data(pin_id, pin_name)
+
+    # set container properties for: 
+    update_data = {
+    }
+
+    phantom.update(container, update_data)
+
+    return
+
+def pin_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    import random
+    phantom.debug('pin_2() called')
+
+    # collect data for 'pin_to_hud_6' call
+    dest_username = [x for x in phantom.collect2(container=container, datapath=['artifact:*.cef.destinationUserName']) if x[0]]
+    sorc_username = [x for x in phantom.collect2(container=container, datapath=['artifact:*.cef.sourceUserName']) if x[0]]
+
+    styles = set(["white", "red", "purple"])
+    pin_name = pin_name_mangle("pin_2", container)
+    pin_id = phantom.get_data(pin_name)
+    
+    if not pin_id:
+        ret_val, message, pin_id = phantom.pin(container=container, message="Affected Users", data=str(len(dest_username) + len(sorc_username)), pin_type="card_medium", pin_style="purple")
+        phantom.debug("new pin_2")
+    else:
+        # Delete and remake this one, for the sake of demonstration
+        ret_val, message = phantom.delete_pin(pin_id)
+        ret_val, message, pin_id = phantom.pin(container=container, message="Affected Users", data=str(len(dest_username) + len(sorc_username)), pin_type="card_medium", pin_style=random.sample(styles, 1)[0])
+    
+    if ret_val:
+        phantom.save_data(pin_id, pin_name)
+    # set container properties for: 
+    update_data = {
+    }
+
+    phantom.update(container, update_data)
+
+    return
+
+def pin_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('pin_4() called')
     artifacts = phantom.collect(container=container, datapath='artifacts:*', scope='all')
     artifacts = sorted(artifacts, key = lambda x: x['update_time'], reverse=True)
@@ -45,7 +136,7 @@ def pin_4(action=None, success=None, container=None, results=None, handle=None, 
     ioc_types = set()
 
     for artifact in artifacts:
-        for key, value in artifact['cef'].iteritems():
+        for key, value in artifact['cef'].items():
             value = str(value)
             ret, ioc_type = is_ioc(value)
             if ret:
@@ -85,102 +176,10 @@ def pin_4(action=None, success=None, container=None, results=None, handle=None, 
             phantom.save_data(pin_id_ioc_type, pin6_name)
     return
 
-def pin_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    import random
-    phantom.debug('pin_2() called')
-
-    # collect data for 'pin_to_hud_6' call
-    dest_username = filter(lambda x: x[0], phantom.collect2(container=container, datapath=['artifact:*.cef.destinationUserName']))
-    sorc_username = filter(lambda x: x[0], phantom.collect2(container=container, datapath=['artifact:*.cef.sourceUserName']))
-
-    styles = set(["white", "red", "purple"])
-    pin_name = pin_name_mangle("pin_2", container)
-    pin_id = phantom.get_data(pin_name)
-    
-    if not pin_id:
-        ret_val, message, pin_id = phantom.pin(container=container, message="Affected Users", data=str(len(dest_username) + len(sorc_username)), pin_type="card_medium", pin_style="purple")
-        phantom.debug("new pin_2")
-    else:
-        # Delete and remake this one, for the sake of demonstration
-        ret_val, message = phantom.delete_pin(pin_id)
-        ret_val, message, pin_id = phantom.pin(container=container, message="Affected Users", data=str(len(dest_username) + len(sorc_username)), pin_type="card_medium", pin_style=random.sample(styles, 1)[0])
-    
-    if ret_val:
-        phantom.save_data(pin_id, pin_name)
-    # set container properties for: 
-    update_data = {
-    }
-
-    phantom.update(container, update_data)
-
-    return
-
-def pin_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    import random
-    phantom.debug('pin_3() called')
-
-    # collect data for 'pin_to_hud_6' call
-    dest_domain = filter(lambda x: x[0], phantom.collect2(container=container, datapath=['artifact:*.cef.destinationDnsDomain']))
-    
-    pin_name = pin_name_mangle("pin_3", container)
-    
-    try:
-        most_rcnt_domain = dest_domain[0][0]
-    except:
-        pass
-    else:
-        pin_id = phantom.get_data(pin_name)
-        if not pin_id:
-            ret_val, message, pin_id = phantom.pin(container=container, message="Most Recent Domain", data=most_rcnt_domain, pin_type="card_medium", pin_style="red")
-            phantom.debug("new pin_3")
-        else:
-            ret_val, message = phantom.update_pin(pin_id, message="Most Recent Domain", data=most_rcnt_domain, pin_type="card_medium", pin_style="red")
-        if ret_val:
-            phantom.save_data(pin_id, pin_name)
-
-    # set container properties for: 
-    update_data = {
-    }
-
-    phantom.update(container, update_data)
-    return
-
-def pin_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    import random
-    phantom.debug('pin_1() called')
-
-    # collect data for 'pin_to_hud_6' call
-    dest_ip_artifacts = filter(lambda x: x[0], phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress']))
-    sorc_ip_artifacts = filter(lambda x: x[0], phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress']))
-
-    styles = set(["white", "red", "purple"])
-    
-    pin_name = pin_name_mangle("pin_1", container)
-    pin_id = phantom.get_data(pin_name)
-    
-    if not pin_id:
-        ret_val, message, pin_id = phantom.pin(container=container, message="Affected IPs", data=str(len(dest_ip_artifacts) + len(sorc_ip_artifacts)), pin_type="card_medium", pin_style="white")
-        phantom.debug("new pin_1")
-    else:
-        style = random.sample(styles, 1)[0]
-        phantom.debug(style)
-        ret_val, message = phantom.update_pin(pin_id, message="Affected IPs", data=str(len(dest_ip_artifacts) + len(sorc_ip_artifacts)), pin_style=style)
-    
-    if ret_val:
-        phantom.save_data(pin_id, pin_name)
-
-    # set container properties for: 
-    update_data = {
-    }
-
-    phantom.update(container, update_data)
-
-    return
-
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
