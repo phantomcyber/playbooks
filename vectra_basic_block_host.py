@@ -7,7 +7,6 @@ Author: Chris Johnson
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -17,44 +16,9 @@ def on_start(container):
     return
 
 """
-Determine whether the Vectra request specifies a block or an unblock.
-"""
-def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('decision_1() called')
-    
-    source_data_identifier_value = container.get('source_data_identifier', None)
-    source_data_identifier_value = container.get('source_data_identifier', None)
-
-    # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        conditions=[
-            ["vectra_block_request", "in", source_data_identifier_value],
-        ])
-
-    # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        block_ip_2(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    # check for 'elif' condition 2
-    matched_artifacts_2, matched_results_2 = phantom.condition(
-        container=container,
-        conditions=[
-            ["vectra_unblock_request", "in", source_data_identifier_value],
-        ])
-
-    # call connected blocks if condition 2 matched
-    if matched_artifacts_2 or matched_results_2:
-        unblock_ip_2(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    return
-
-"""
 Block the specified source IP address for the device.
 """
-def block_ip_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def block_ip_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('block_ip_2() called')
 
     # collect data for 'block_ip_2' call
@@ -73,14 +37,14 @@ def block_ip_2(action=None, success=None, container=None, results=None, handle=N
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("block ip", parameters=parameters, assets=['pan'], name="block_ip_2")
+    phantom.act(action="block ip", parameters=parameters, assets=['pan'], name="block_ip_2")
 
     return
 
 """
 Unblock the specified source IP address for the device.
 """
-def unblock_ip_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def unblock_ip_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('unblock_ip_2() called')
 
     # collect data for 'unblock_ip_2' call
@@ -99,14 +63,49 @@ def unblock_ip_2(action=None, success=None, container=None, results=None, handle
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("unblock ip", parameters=parameters, assets=['pan'], name="unblock_ip_2")
+    phantom.act(action="unblock ip", parameters=parameters, assets=['pan'], name="unblock_ip_2")
+
+    return
+
+"""
+Determine whether the Vectra request specifies a block or an unblock.
+"""
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('decision_1() called')
+    
+    source_data_identifier_value = container.get('source_data_identifier', None)
+    source_data_identifier_value = container.get('source_data_identifier', None)
+
+    # check for 'if' condition 1
+    matched = phantom.decision(
+        container=container,
+        conditions=[
+            ["vectra_block_request", "in", source_data_identifier_value],
+        ])
+
+    # call connected blocks if condition 1 matched
+    if matched:
+        block_ip_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        return
+
+    # check for 'elif' condition 2
+    matched = phantom.decision(
+        container=container,
+        conditions=[
+            ["vectra_unblock_request", "in", source_data_identifier_value],
+        ])
+
+    # call connected blocks if condition 2 matched
+    if matched:
+        unblock_ip_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        return
 
     return
 
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
