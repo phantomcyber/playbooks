@@ -7,7 +7,6 @@ VMWorld 2017 Demonstration: https://rackconnection.rackspace.com/youtube-us-regi
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -26,34 +25,13 @@ def on_start(container):
     return
 
 """
-Only proceed for IP's that resolved to 15 or more positives.
-"""
-def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('decision_2() called')
-
-    # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["ip_reputation:action_result.data.*.detected_urls.*.positives", ">=", 15],
-        ])
-
-    # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        NSX_block_IP(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    return
-
-"""
 Use custom thresholds to categorize high and low severity events based on the IP reputation from Virustotal and Threatstream.
 """
-def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_3() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
@@ -63,20 +41,20 @@ def decision_3(action=None, success=None, container=None, results=None, handle=N
         logical_operator='or')
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        set_severity_high(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        set_severity_high(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     # call connected blocks for 'else' condition 2
-    set_severity_low(action=action, success=success, container=container, results=results, handle=handle)
+    set_severity_low(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
 
     return
 
-def join_decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def join_decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('join_decision_3() called')
 
-    # check if all connected incoming actions are done i.e. have succeeded or failed
-    if phantom.actions_done([ 'ip_reputation', 'file_reputation' ]):
+    # check if all connected incoming playbooks, actions, or custom functions are done i.e. have succeeded or failed
+    if phantom.completed(action_names=['ip_reputation', 'file_reputation']):
         
         # call connected block "decision_3"
         decision_3(container=container, handle=handle)
@@ -86,9 +64,9 @@ def join_decision_3(action=None, success=None, container=None, results=None, han
 """
 Now that our Virustotal threshold has classified the file as malicious we will use CarbonBlack Response to block future executions of that file.
 """
-def block_hash(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def block_hash(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('block_hash() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'block_hash' call
@@ -100,24 +78,24 @@ def block_hash(action=None, success=None, container=None, results=None, handle=N
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'comment': "",
                 'hash': results_item_1[0],
+                'comment': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("block hash", parameters=parameters, assets=['carbonblack'], name="block_hash")
+    phantom.act(action="block hash", parameters=parameters, assets=['carbonblack'], name="block_hash")
 
     return
 
 """
 Only proceed if 20 or more detection engines in Virustotal classified the file as malicious.
 """
-def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_1() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
@@ -125,8 +103,8 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        block_hash(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        block_hash(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     return
@@ -134,10 +112,10 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
 """
 Set the severity of this event to Low.
 """
-def set_severity_low(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def set_severity_low(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('set_severity_low() called')
 
-    phantom.set_severity(container, "low")
+    phantom.set_severity(container=container, severity="low")
     set_status_resolved_2(container=container)
 
     return
@@ -145,27 +123,27 @@ def set_severity_low(action=None, success=None, container=None, results=None, ha
 """
 Resolve this event. The enrichment and the history of any blocking actions taken can still be reviewed in Mission Control and reopened if further action is necessary.
 """
-def set_status_resolved(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def set_status_resolved(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('set_status_resolved() called')
 
-    phantom.set_status(container, "closed")
+    phantom.set_status(container=container, status="closed")
 
     return
 
 """
 Resolve this event. The enrichment and the history of any blocking actions taken can still be reviewed in Mission Control and reopened if further action is necessary.
 """
-def set_status_resolved_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def set_status_resolved_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('set_status_resolved_2() called')
 
-    phantom.set_status(container, "closed")
+    phantom.set_status(container=container, status="closed")
 
     return
 
 """
 Query reputation aggregators to determine whether the given hashes represent known malware.
 """
-def file_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def file_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('file_reputation() called')
 
     # collect data for 'file_reputation' call
@@ -182,49 +160,24 @@ def file_reputation(action=None, success=None, container=None, results=None, han
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("file reputation", parameters=parameters, assets=['virustotal','threatstream'], callback=file_reputation_callback, name="file_reputation")
+    phantom.act(action="file reputation", parameters=parameters, assets=['virustotal'], callback=file_reputation_callback, name="file_reputation")
 
     return
 
-def file_reputation_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def file_reputation_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('file_reputation_callback() called')
     
-    decision_1(action=action, success=success, container=container, results=results, handle=handle)
-    join_decision_3(action=action, success=success, container=container, results=results, handle=handle)
-
-    return
-
-"""
-Now that we have determined that an IP is probably malicious we can add an NSX rule to block access to it.
-"""
-def NSX_block_IP(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('NSX_block_IP() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'NSX_block_IP' call
-    results_data_1 = phantom.collect2(container=container, datapath=['ip_reputation:action_result.data.*.ip', 'ip_reputation:action_result.parameter.context.artifact_id'], action_results=results)
-
-    parameters = []
-    
-    # build parameters list for 'NSX_block_IP' call
-    for results_item_1 in results_data_1:
-        parameters.append({
-            'ip': results_item_1[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': results_item_1[1]},
-        })
-
-    phantom.act("block ip", parameters=parameters, assets=['vmwarensx'], name="NSX_block_IP")
+    decision_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    join_decision_3(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
 
     return
 
 """
 Take snapshots of the detected virtual machines in case they are needed for forensics or recovery.
 """
-def snapshot_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def snapshot_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('snapshot_vm_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'snapshot_vm_1' call
@@ -242,17 +195,17 @@ def snapshot_vm_1(action=None, success=None, container=None, results=None, handl
                 'context': {'artifact_id': filtered_results_item_1[1]},
             })
 
-    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], name="snapshot_vm_1")
+    phantom.act(action="snapshot vm", parameters=parameters, assets=['vmwarevsphere'], name="snapshot_vm_1")
 
     return
 
 """
 Set the severity of this event to High.
 """
-def set_severity_high(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def set_severity_high(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('set_severity_high() called')
 
-    phantom.set_severity(container, "high")
+    phantom.set_severity(container=container, severity="high")
     set_status_resolved(container=container)
 
     return
@@ -260,7 +213,7 @@ def set_severity_high(action=None, success=None, container=None, results=None, h
 """
 Query the PhishMe Intelligence platform for threat information about files with the given MD5 hash.
 """
-def hunt_file_md5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def hunt_file_md5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('hunt_file_md5() called')
 
     # collect data for 'hunt_file_md5' call
@@ -272,20 +225,20 @@ def hunt_file_md5(action=None, success=None, container=None, results=None, handl
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
         if filtered_artifacts_item_1[0]:
             parameters.append({
-                'max_threat_count': "",
                 'hash': filtered_artifacts_item_1[0],
+                'max_threat_count': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("hunt file", parameters=parameters, assets=['phishme'], name="hunt_file_md5")
+    phantom.act(action="hunt file", parameters=parameters, assets=['phishme'], name="hunt_file_md5")
 
     return
 
 """
 Query for threat information and observations about the given IP address.
 """
-def hunt_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def hunt_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('hunt_ip_1() called')
 
     # collect data for 'hunt_ip_1' call
@@ -299,54 +252,30 @@ def hunt_ip_1(action=None, success=None, container=None, results=None, handle=No
             parameters.append({
                 'ip': filtered_artifacts_item_1[0],
                 'max_threat_count': "",
-                'ph': "",
-                'start_time': "",
-                'end_time': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("hunt ip", parameters=parameters, assets=['phishme','protectwise'], name="hunt_ip_1")
+    phantom.act(action="hunt ip", parameters=parameters, assets=['phishme'], name="hunt_ip_1")
 
     return
 
 """
 List all VMWare virtual machines to check if any snap shots should be taken.
 """
-def list_vms_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def list_vms_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('list_vms_1() called')
 
     parameters = []
 
-    phantom.act("list vms", parameters=parameters, assets=['vmwarevsphere'], callback=filter_4, name="list_vms_1")
-
-    return
-
-"""
-Only proceed with source addresses of virtual machines.
-"""
-def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('filter_4() called')
-
-    # collect filtered artifact ids for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        action_results=results,
-        conditions=[
-            ["list_vms_1:action_result.data.*.ip", "==", "artifact:*.cef.sourceAddress"],
-        ],
-        name="filter_4:condition_1")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        snapshot_vm_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+    phantom.act(action="list vms", parameters=parameters, assets=['vmwarevsphere'], callback=filter_4, name="list_vms_1")
 
     return
 
 """
 Query across all the data sources integrated into Protectwise for observations of the given SHA-256 file hash.
 """
-def hunt_file_sha256(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def hunt_file_sha256(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('hunt_file_sha256() called')
 
     # collect data for 'hunt_file_sha256' call
@@ -358,22 +287,22 @@ def hunt_file_sha256(action=None, success=None, container=None, results=None, ha
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
         if filtered_artifacts_item_1[0]:
             parameters.append({
-                'start_time': "",
-                'hash': filtered_artifacts_item_1[0],
                 'ph': "",
+                'hash': filtered_artifacts_item_1[0],
                 'end_time': "",
+                'start_time': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("hunt file", parameters=parameters, assets=['protectwise'], name="hunt_file_sha256")
+    phantom.act(action="hunt file", parameters=parameters, assets=['protectwise'], name="hunt_file_sha256")
 
     return
 
 """
 Filter the artifacts with SHA-256 file hashes.
 """
-def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_3() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -386,14 +315,14 @@ def filter_3(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        hunt_file_sha256(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        hunt_file_sha256(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 """
 Filter the artifacts with MD5 file hashes.
 """
-def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_2() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -406,15 +335,15 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        file_reputation(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        hunt_file_md5(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        file_reputation(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        hunt_file_md5(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 """
 Filter the artifacts with destination IP addresses.
 """
-def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_1() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -427,15 +356,15 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        hunt_ip_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        ip_reputation(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        hunt_ip_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        ip_reputation(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 """
 Query reputation services to determine whether the given IP address is known-good, known-bad, or unknown.
 """
-def ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('ip_reputation() called')
 
     # collect data for 'ip_reputation' call
@@ -452,22 +381,90 @@ def ip_reputation(action=None, success=None, container=None, results=None, handl
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("ip reputation", parameters=parameters, assets=['virustotal','threatstream'], callback=ip_reputation_callback, name="ip_reputation")
+    phantom.act(action="ip reputation", parameters=parameters, assets=['virustotal'], callback=ip_reputation_callback, name="ip_reputation")
 
     return
 
-def ip_reputation_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def ip_reputation_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('ip_reputation_callback() called')
     
-    decision_2(action=action, success=success, container=container, results=results, handle=handle)
-    join_decision_3(action=action, success=success, container=container, results=results, handle=handle)
+    decision_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    join_decision_3(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+
+    return
+
+"""
+Only proceed with source addresses of virtual machines.
+"""
+def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('filter_4() called')
+
+    # collect filtered artifact ids for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["list_vms_1:action_result.data.*.ip", "==", "artifact:*.cef.sourceAddress"],
+        ],
+        name="filter_4:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        snapshot_vm_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    return
+
+"""
+Only proceed for IP's that resolved to 15 or more positives.
+"""
+def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('decision_2() called')
+
+    # check for 'if' condition 1
+    matched = phantom.decision(
+        container=container,
+        action_results=results,
+        conditions=[
+            ["ip_reputation:action_result.data.*.detected_urls.*.positives", ">=", 15],
+        ])
+
+    # call connected blocks if condition 1 matched
+    if matched:
+        NSX_block_IP(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        return
+
+    return
+
+"""
+Now that we have determined that an IP is probably malicious we can add an NSX rule to block access to it.
+"""
+def NSX_block_IP(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('NSX_block_IP() called')
+        
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'NSX_block_IP' call
+    results_data_1 = phantom.collect2(container=container, datapath=['ip_reputation:action_result.data.*.ip', 'ip_reputation:action_result.parameter.context.artifact_id'], action_results=results)
+
+    parameters = []
+    
+    # build parameters list for 'NSX_block_IP' call
+    for results_item_1 in results_data_1:
+        if results_item_1[0]:
+            parameters.append({
+                'ip': results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': results_item_1[1]},
+            })
+
+    phantom.act(action="block ip", parameters=parameters, assets=['vmwarensx'], name="NSX_block_IP")
 
     return
 
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
