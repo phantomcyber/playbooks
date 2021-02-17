@@ -2,13 +2,12 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": ["NMAP Scanner"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "",
             "description": "This helper playbook uses an nmap scan to build a custom list of endpoints running an open service on TCP port 5900. This custom list will be used to enumerate MacOS High Sierra endpoints to respond to the 2017-11-28 disclosure of root user access without a password.",
-            "hash": "393d8eeb29a9bf4ac6f221d8b742fce161e9ff20",
+            "hash": "ded1e49e6259b1aca613e203c13a8b13ee1a9c50",
             "joint": {
                 "cells": [
                     {
@@ -20,6 +19,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -32,6 +38,7 @@
                             },
                             ".title": {
                                 "ref-x": 33,
+                                "ref-y": 8,
                                 "text": "START"
                             },
                             "g.delete": {
@@ -69,11 +76,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 17,
-                        "line_start": 9,
+                        "line_end": 16,
+                        "line_start": 8,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 1,
                         "outPorts": [
                             "out"
                         ],
@@ -153,6 +161,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -179,7 +194,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -202,11 +217,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 88,
-                        "line_start": 75,
+                        "line_end": 87,
+                        "line_start": 74,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 5,
                         "outPorts": [],
                         "ports": {
                             "groups": {
@@ -460,6 +476,7 @@
                                 "active": true,
                                 "app_name": "NMAP Scanner",
                                 "app_version": "1.0.25",
+                                "appid": "",
                                 "config_type": "asset",
                                 "fields": {
                                     "ip_hostname": "198.51.100.*",
@@ -468,6 +485,7 @@
                                     "script-args": "",
                                     "udp_scan": ""
                                 },
+                                "has_app": true,
                                 "id": "-",
                                 "loaded": false,
                                 "missing": false,
@@ -652,6 +670,13 @@
                             ".action": {
                                 "text": "scan port 5900"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -685,6 +710,12 @@
                             ".title": {
                                 "text": "Investigate"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -699,7 +730,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -708,7 +743,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def scan_port_5900(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('scan_port_5900() called')\n\n    # collect data for 'scan_port_5900' call\n\n    parameters = []\n    \n    # build parameters list for 'scan_port_5900' call\n    parameters.append({\n        'portlist': 5900,\n        'script-args': \"\",\n        'script': \"\",\n        'ip_hostname': \"198.51.100.*\",\n        'udp_scan': \"\",\n    })\n\n    phantom.act(\"scan network\", parameters=parameters, assets=['nmap'], callback=filter_1, name=\"scan_port_5900\")\n\n    return",
+                        "block_code": "def scan_port_5900(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('scan_port_5900() called')\n\n    # collect data for 'scan_port_5900' call\n\n    parameters = []\n    \n    # build parameters list for 'scan_port_5900' call\n    parameters.append({\n        'script': \"\",\n        'portlist': 5900,\n        'udp_scan': \"\",\n        'ip_hostname': \"198.51.100.*\",\n        'script-args': \"\",\n    })\n\n    phantom.act(action=\"scan network\", parameters=parameters, assets=['nmap'], callback=filter_1, name=\"scan_port_5900\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 36,
                         "callsback": true,
@@ -733,12 +768,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 40,
-                        "line_start": 20,
+                        "line_end": 39,
+                        "line_start": 19,
                         "message": "Configuring now",
                         "name": "scan network",
                         "notes": "Scan the given subnet with a TCP syn-ack on port 5900 to detect VNC or ARD services.",
                         "number": 1,
+                        "order": 2,
                         "outPorts": [
                             "out"
                         ],
@@ -814,13 +850,198 @@
                         "title": "Investigate",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 65
+                        "z": 68
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "api": "add list",
+                        "attrs": {
+                            ".api": {
+                                "text": "add list"
+                            },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "API"
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def add_addresses_to_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('add_addresses_to_list() called')\n\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:scan_port_5900:action_result.data.*.addresses.ipv4.*.ip'])\n\n    filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]\n\n    phantom.add_list(\"macos_endpoints\", filtered_results_item_1_0)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "color": "",
+                        "configured": [
+                            {
+                                "addListData": "filtered-data:filter_1:condition_1:scan_port_5900:action_result.data.*.addresses.ipv4.*.ip",
+                                "addListList": "macos_endpoints",
+                                "key": "add-list"
+                            }
+                        ],
+                        "connected_to_start": true,
+                        "connection_name": "scan port 5900",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "add addresses to list",
+                        "description": "Create a custom list with the given IP addresses or add to one if it exists.",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "d63e6a76-6c0f-4394-a33c-d5a615df2a0f",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 74,
+                        "line_start": 63,
+                        "message": "Configuring now",
+                        "name": "add list",
+                        "notes": "Create a custom list with the given IP addresses or add to one if it exists.",
+                        "number": 1,
+                        "order": 4,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 640,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "add_addresses_to_list",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "api",
+                        "status": "",
+                        "title": "API",
+                        "type": "coa.API",
+                        "warn": false,
+                        "z": 69
                     },
                     {
                         "active": false,
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
@@ -860,10 +1081,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"scan_port_5900:action_result.data.*.tcp.*.state\", \"==\", \"open\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        add_addresses_to_list(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"scan_port_5900:action_result.data.*.tcp.*.state\", \"==\", \"open\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        add_addresses_to_list(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -886,11 +1108,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 61,
-                        "line_start": 43,
+                        "line_end": 60,
+                        "line_start": 42,
                         "name": "filter",
                         "notes": "Only pass on ip addresses that are found to have open ports.",
                         "number": 1,
+                        "order": 3,
                         "outPorts": [
                             "out-1"
                         ],
@@ -976,185 +1199,25 @@
                         "status": "",
                         "type": "coa.Filter",
                         "warn": false,
-                        "z": 66
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".api": {
-                                "text": "add list"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "fill": "#FFFFFF",
-                                "font-size": 12,
-                                "font-weight": 300,
-                                "opacity": 0,
-                                "ref": ".background",
-                                "ref-x": 5,
-                                "ref-y": 105,
-                                "text": "Configuring now"
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "text": "API"
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "fill": "#FFFFFF"
-                            }
-                        },
-                        "block_code": "def add_addresses_to_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('add_addresses_to_list() called')\n\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_1:condition_1:scan_port_5900:action_result.data.*.addresses.ipv4.*.ip\"])\n\n    filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]\n\n    phantom.add_list(\"macos_endpoints\", filtered_results_item_1_0)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "color": "",
-                        "configured": [
-                            {
-                                "addListData": "filtered-data:filter_1:condition_1:scan_port_5900:action_result.data.*.addresses.ipv4.*.ip",
-                                "addListList": "macos_endpoints",
-                                "key": "add-list"
-                            }
-                        ],
-                        "connected_to_start": true,
-                        "connection_name": "scan port 5900",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "add addresses to list",
-                        "description": "Create a custom list with the given IP addresses or add to one if it exists.",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "d63e6a76-6c0f-4394-a33c-d5a615df2a0f",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 75,
-                        "line_start": 64,
-                        "message": "Configuring now",
-                        "name": "add list",
-                        "notes": "Create a custom list with the given IP addresses or add to one if it exists.",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 640,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "add_addresses_to_list",
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "api",
-                        "status": "",
-                        "title": "API",
-                        "type": "coa.API",
-                        "warn": false,
-                        "z": 67
+                        "z": 70
                     }
                 ]
             },
             "notes": "This playbook uses the following App:\n - nmap (scan network) [asset name = nmap] - a network scan of endpoints with TCP port 5900 allows us to build the custom list in this playbook\n\nDeployment notes\n - the hard-coded custom list name \"macos_endpoints\" is created or appended to by this playbook\n - this playbook is originally designed to be run manually as needed, but it could be configured to auto-start using Generator if desired"
         },
-        "schema": 3,
-        "version": "3.5.137"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2018-02-12T21:21:34.568485+00:00",
+    "create_time": "2021-01-21T18:33:23.348500+00:00",
     "draft_mode": false,
     "labels": [
         "events"
-    ]
+    ],
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "NMAP Scanner"
+        ]
+    }
 }
