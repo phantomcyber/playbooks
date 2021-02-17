@@ -5,7 +5,6 @@ This playbook uses ProtectWise and other tools to investigate several aspects of
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -17,7 +16,7 @@ def on_start(container):
 
     return
 
-def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_3() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -31,11 +30,11 @@ def filter_3(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        block_hash_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        block_hash_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
-def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_1() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -48,11 +47,11 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        file_reputation_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        file_reputation_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
-def whois_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def whois_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('whois_ip_1() called')
 
     # collect data for 'whois_ip_1' call
@@ -69,34 +68,34 @@ def whois_ip_1(action=None, success=None, container=None, results=None, handle=N
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("whois ip", parameters=parameters, assets=['whois'], name="whois_ip_1")
+    phantom.act(action="whois ip", parameters=parameters, assets=['whois'], name="whois_ip_1")
 
     return
 
-def get_pcap_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_pcap_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_pcap_1() called')
 
     # collect data for 'get_pcap_1' call
-    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.sensorId', 'filtered-data:filter_2:condition_1:artifact:*.cef.observationId', 'filtered-data:filter_2:condition_1:artifact:*.id'])
+    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.observationId', 'filtered-data:filter_2:condition_1:artifact:*.cef.sensorId', 'filtered-data:filter_2:condition_1:artifact:*.id'])
 
     parameters = []
     
     # build parameters list for 'get_pcap_1' call
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
-        if filtered_artifacts_item_1[1]:
+        if filtered_artifacts_item_1[0]:
             parameters.append({
-                'sensorid': filtered_artifacts_item_1[0],
+                'id': filtered_artifacts_item_1[0],
                 'type': "Observation",
-                'id': filtered_artifacts_item_1[1],
+                'sensorid': filtered_artifacts_item_1[1],
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': filtered_artifacts_item_1[2]},
             })
 
-    phantom.act("get pcap", parameters=parameters, assets=['protectwise'], name="get_pcap_1")
+    phantom.act(action="get pcap", parameters=parameters, assets=['protectwise'], name="get_pcap_1")
 
     return
 
-def geolocate_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def geolocate_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('geolocate_ip_1() called')
 
     # collect data for 'geolocate_ip_1' call
@@ -113,11 +112,11 @@ def geolocate_ip_1(action=None, success=None, container=None, results=None, hand
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("geolocate ip", parameters=parameters, assets=['maxmind'], name="geolocate_ip_1")
+    phantom.act(action="geolocate ip", parameters=parameters, assets=['maxmind'], name="geolocate_ip_1")
 
     return
 
-def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_2() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -130,15 +129,15 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        hunt_ip_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        ip_reputation_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        geolocate_ip_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        whois_ip_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        get_pcap_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        hunt_ip_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        ip_reputation_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        geolocate_ip_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        whois_ip_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        get_pcap_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
-def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_4() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -152,13 +151,13 @@ def filter_4(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        block_ip_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        block_ip_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
-def block_hash_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def block_hash_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('block_hash_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'block_hash_1' call
@@ -170,17 +169,17 @@ def block_hash_1(action=None, success=None, container=None, results=None, handle
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'comment': "",
                 'hash': results_item_1[0],
+                'comment': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("block hash", parameters=parameters, assets=['carbonblack'], callback=severity_high, name="block_hash_1")
+    phantom.act(action="block hash", parameters=parameters, assets=['carbonblack'], callback=severity_high, name="block_hash_1")
 
     return
 
-def hunt_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def hunt_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('hunt_ip_1() called')
 
     # collect data for 'hunt_ip_1' call
@@ -194,35 +193,35 @@ def hunt_ip_1(action=None, success=None, container=None, results=None, handle=No
             parameters.append({
                 'ip': filtered_artifacts_item_1[0],
                 'ph': "",
-                'start_time': "",
                 'end_time': "",
+                'start_time': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("hunt ip", parameters=parameters, assets=['protectwise'], callback=filter_4, name="hunt_ip_1")
+    phantom.act(action="hunt ip", parameters=parameters, assets=['protectwise'], callback=filter_4, name="hunt_ip_1")
 
     return
 
-def severity_high(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def severity_high(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('severity_high() called')
 
-    phantom.set_severity(container, "high")
+    phantom.set_severity(container=container, severity="high")
     resolve(container=container)
 
     return
 
-def resolve(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def resolve(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('resolve() called')
 
-    phantom.set_status(container, "closed")
+    phantom.set_status(container=container, status="closed")
     format_3(container=container)
 
     return
 
-def block_ip_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def block_ip_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('block_ip_2() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'block_ip_2' call
@@ -234,28 +233,28 @@ def block_ip_2(action=None, success=None, container=None, results=None, handle=N
     for filtered_results_item_1 in filtered_results_data_1:
         if filtered_results_item_1[0]:
             parameters.append({
-                'is_source_address': "",
                 'ip': filtered_results_item_1[0],
                 'vsys': "vsys1",
+                'is_source_address': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': filtered_results_item_1[1]},
             })
 
-    phantom.act("block ip", parameters=parameters, assets=['pan'], callback=block_ip_2_callback, name="block_ip_2")
+    phantom.act(action="block ip", parameters=parameters, assets=['pan'], callback=block_ip_2_callback, name="block_ip_2")
 
     return
 
-def block_ip_2_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def block_ip_2_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('block_ip_2_callback() called')
     
-    format_2(action=action, success=success, container=container, results=results, handle=handle)
-    format_1(action=action, success=success, container=container, results=results, handle=handle)
+    format_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    format_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
 
     return
 
-def create_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def create_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('create_ticket_2() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'create_ticket_2' call
@@ -265,32 +264,33 @@ def create_ticket_2(action=None, success=None, container=None, results=None, han
     
     # build parameters list for 'create_ticket_2' call
     parameters.append({
-        'description': "",
         'fields': "",
-        'project_key': "AP",
         'summary': formatted_data_1,
-        'priority': "",
         'assignee': "",
+        'priority': "",
         'vault_id': "",
         'issue_type': "",
+        'description': "",
+        'project_key': "AP",
+        'assignee_account_id': "",
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['jira'], name="create_ticket_2")
+    phantom.act(action="create ticket", parameters=parameters, assets=['jira'], name="create_ticket_2")
 
     return
 
-def join_create_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def join_create_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('join_create_ticket_2() called')
 
-    # check if all connected incoming actions are done i.e. have succeeded or failed
-    if phantom.actions_done([ 'block_ip_2' ]):
+    # check if all connected incoming playbooks, actions, or custom functions are done i.e. have succeeded or failed
+    if phantom.completed(action_names=['block_ip_2']):
         
         # call connected block "create_ticket_2"
         create_ticket_2(container=container, handle=handle)
     
     return
 
-def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('ip_reputation_1() called')
 
     # collect data for 'ip_reputation_1' call
@@ -307,11 +307,11 @@ def ip_reputation_1(action=None, success=None, container=None, results=None, han
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("ip reputation", parameters=parameters, assets=['virustotal'], name="ip_reputation_1")
+    phantom.act(action="ip reputation", parameters=parameters, assets=['virustotal'], name="ip_reputation_1")
 
     return
 
-def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('file_reputation_1() called')
 
     # collect data for 'file_reputation_1' call
@@ -328,11 +328,11 @@ def file_reputation_1(action=None, success=None, container=None, results=None, h
                 'context': {'artifact_id': filtered_artifacts_item_1[1]},
             })
 
-    phantom.act("file reputation", parameters=parameters, assets=['virustotal'], callback=filter_3, name="file_reputation_1")
+    phantom.act(action="file reputation", parameters=parameters, assets=['virustotal'], callback=filter_3, name="file_reputation_1")
 
     return
 
-def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_2() called')
     
     template = """Follow-up will be required for the block rules on the following IP addresses:
@@ -349,7 +349,7 @@ def format_2(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
-def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_1() called')
     
     template = """Deployed Block IP: {0}"""
@@ -365,9 +365,9 @@ def format_1(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
-def notify_status(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def notify_status(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('notify_status() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'notify_status' call
@@ -377,18 +377,21 @@ def notify_status(action=None, success=None, container=None, results=None, handl
     
     # build parameters list for 'notify_status' call
     parameters.append({
-        'body': "The container has been closed.",
+        'cc': "",
         'to': "demo.phantom@gmail.com",
+        'bcc': "",
+        'body': "The container has been closed.",
         'from': "local@localhost",
-        'attachments': "",
+        'headers': "",
         'subject': formatted_data_1,
+        'attachments': "",
     })
 
-    phantom.act("send email", parameters=parameters, assets=['smtp'], name="notify_status")
+    phantom.act(action="send email", parameters=parameters, assets=['smtp'], name="notify_status")
 
     return
 
-def format_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_3() called')
     
     template = """Phantom Notification - Deploying Block Hash for container ID:  {0}"""
@@ -407,7 +410,7 @@ def format_3(action=None, success=None, container=None, results=None, handle=Non
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
