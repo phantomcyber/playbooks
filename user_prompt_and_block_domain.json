@@ -2,13 +2,12 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": ["DomainTools", "OpenDNS Investigate"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "",
             "description": "This Playbook utilizes DomainTools to generate the risk level of a domain, and, if a high enough score, blocks the domain on OpenDNS Umbrella for 60 minutes, after approval via user prompt of a role.",
-            "hash": "44f35fead45cb68c76789b401bf50f6a96cc9f1d",
+            "hash": "7f96bacf87b9284eac7a0eaa4160d926e2287fc6",
             "joint": {
                 "cells": [
                     {
@@ -20,6 +19,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -32,6 +38,7 @@
                             },
                             ".title": {
                                 "ref-x": 33,
+                                "ref-y": 8,
                                 "text": "START"
                             },
                             "g.delete": {
@@ -69,11 +76,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 17,
-                        "line_start": 9,
+                        "line_end": 16,
+                        "line_start": 8,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 1,
                         "outPorts": [
                             "out"
                         ],
@@ -153,6 +161,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -179,7 +194,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -202,11 +217,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 166,
-                        "line_start": 153,
+                        "line_end": 171,
+                        "line_start": 158,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 8,
                         "outPorts": [],
                         "ports": {
                             "groups": {
@@ -658,41 +674,24 @@
                                 "active": true,
                                 "app_name": "",
                                 "app_version": "",
+                                "appid": "",
                                 "config_type": "asset",
                                 "fields": {
-                                    "domain": "artifact:*.cef.destinationDnsDomain"
+                                    "domain": "artifact:*.cef.destinationDnsDomain",
+                                    "use_risk_api": ""
                                 },
+                                "has_app": true,
                                 "id": "-",
                                 "loaded": false,
                                 "missing": false,
                                 "name": "domaintools",
                                 "output": [
                                     {
-                                        "column_name": "Domain",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "domain"
-                                        ],
-                                        "data_path": "action_result.data.*.domain",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Risk Score",
-                                        "column_order": 1,
-                                        "data_path": "action_result.data.*.risk_score",
-                                        "data_type": "numeric"
-                                    },
-                                    {
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.risk_score",
-                                        "data_type": "numeric"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
                                     },
                                     {
                                         "contains": [
@@ -700,7 +699,64 @@
                                             "domain"
                                         ],
                                         "data_path": "action_result.parameter.domain",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "*.splunk.com",
+                                            "splunk.com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.use_risk_api",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "column_name": "Domain",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "domain"
+                                        ],
+                                        "data_path": "action_result.data.*.domain",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "splunk.com"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Risk Score",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*.risk_score",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            5.12
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.risk_score",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            5.12
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Risk score: 5.12"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     }
                                 ],
                                 "product_name": "",
@@ -712,8 +768,15 @@
                             ".action": {
                                 "text": "domain reputation"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
                             ".border": {
                                 "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -748,6 +811,12 @@
                             ".title": {
                                 "text": "Investigate"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -762,7 +831,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -771,7 +844,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def domain_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('domain_reputation_1() called')\n\n    # collect data for 'domain_reputation_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationDnsDomain', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'domain_reputation_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'domain': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"domain reputation\", parameters=parameters, assets=['domaintools'], callback=decision_2, name=\"domain_reputation_1\")\n\n    return",
+                        "block_code": "def domain_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('domain_reputation_1() called')\n\n    # collect data for 'domain_reputation_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationDnsDomain', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'domain_reputation_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'domain': container_item[0],\n                'use_risk_api': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(action=\"domain reputation\", parameters=parameters, assets=['domaintools'], callback=decision_2, name=\"domain_reputation_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 37,
                         "callsback": true,
@@ -797,11 +870,12 @@
                         "join_optional": [],
                         "join_start": 1,
                         "line_end": 38,
-                        "line_start": 17,
+                        "line_start": 16,
                         "message": "Configuring now",
                         "name": "domain reputation",
                         "notes": "Domain Reputation from DomainTools contains a risk score, which is an analysis of the given domain, with regards to its maliciousness.",
                         "number": 1,
+                        "order": 2,
                         "outPorts": [
                             "out"
                         ],
@@ -884,6 +958,8 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#637282",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
@@ -937,10 +1013,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_2() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"domain_reputation_1:action_result.data.*.risk_score\", \">=\", 80],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        prompt_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
+                        "block_code": "def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('decision_2() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"domain_reputation_1:action_result.data.*.risk_score\", \">=\", 80],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        prompt_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -964,11 +1041,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 104,
-                        "line_start": 84,
+                        "line_end": 58,
+                        "line_start": 38,
                         "name": "decision",
                         "notes": "If the risk score is evaluated to be greater than 80, then continue; if not, the playbook is ended.",
                         "number": 2,
+                        "order": 3,
                         "outPorts": [
                             "out-1",
                             "out-2"
@@ -1076,7 +1154,8 @@
                         "approver": "Automation Engineer",
                         "attrs": {
                             ".background": {
-                                "stroke": "#637282"
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1112,10 +1191,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('prompt_1() called')\n    \n    # set user and message variables for phantom.prompt call\n    user = \"Automation Engineer\"\n    message = \"\"\"The risk score of {0} has been evaluated by DomainTools Domain Reputation as {1}, which exceeds the Playbook's defined threshold.  Would you like to block this domain?\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"domain_reputation_1:action_result.parameter.domain\",\n        \"domain_reputation_1:action_result.data.*.risk_score\",\n    ]\n\n    # response options\n    options = {\n        \"type\": \"list\",\n        \"choices\": [\n            \"Yes\",\n            \"No\",\n        ]\n    }\n\n    phantom.prompt(container=container, user=user, message=message, respond_in_mins=60, name=\"prompt_1\", parameters=parameters, options=options, callback=decision_3)\n\n    return",
+                        "block_code": "def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('prompt_1() called')\n    \n    # set user and message variables for phantom.prompt call\n    user = \"Automation Engineer\"\n    message = \"\"\"The risk score of {0} has been evaluated by DomainTools Domain Reputation as {1}, which exceeds the Playbook's defined threshold.  Would you like to block this domain?\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"domain_reputation_1:action_result.parameter.domain\",\n        \"domain_reputation_1:action_result.data.*.risk_score\",\n    ]\n\n    #responses:\n    response_types = [\n        {\n            \"prompt\": \"\",\n            \"options\": {\n                \"type\": \"list\",\n                \"choices\": [\n                    \"Yes\",\n                    \"No\",\n                ]\n            },\n        },\n    ]\n\n    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=60, name=\"prompt_1\", parameters=parameters, response_types=response_types, callback=decision_3)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1138,12 +1218,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 64,
-                        "line_start": 38,
+                        "line_end": 89,
+                        "line_start": 58,
                         "message": "The risk score of {0} has been evaluated by DomainTools Domain Reputation as {1}, which exceeds the Playbook's defined threshold.  Would you like to block this domain?",
                         "name": "prompt",
                         "notes": "If the risk score is above the acceptable threshold, all those in the Automation Engineer role are prompted as to whether or not block the domain for sixty minutes.",
                         "number": 1,
+                        "order": 4,
                         "outPorts": [
                             "out"
                         ],
@@ -1224,6 +1305,17 @@
                             "No"
                         ],
                         "response_type": "list",
+                        "responses": [
+                            {
+                                "response_key": "Yes/No",
+                                "response_options": [
+                                    "Yes",
+                                    "No"
+                                ],
+                                "response_prompt": "",
+                                "response_type": "list"
+                            }
+                        ],
                         "show_number": true,
                         "size": {
                             "height": 80,
@@ -1240,6 +1332,8 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#637282",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
@@ -1293,10 +1387,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_3() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"prompt_1:action_result.summary.response\", \"==\", \"Yes\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        block_domain_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
+                        "block_code": "def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('decision_3() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"prompt_1:action_result.summary.responses.0\", \"==\", \"Yes\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        block_domain_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1320,11 +1415,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 84,
-                        "line_start": 64,
+                        "line_end": 109,
+                        "line_start": 89,
                         "name": "decision",
                         "notes": "If the answer to the prompt is yes, the domain is then blocked.",
                         "number": 3,
+                        "order": 5,
                         "outPorts": [
                             "out-1",
                             "out-2"
@@ -1335,7 +1431,7 @@
                                     {
                                         "comparison": "==",
                                         "data_type": "",
-                                        "param": "prompt_1:action_result.summary.response",
+                                        "param": "prompt_1:action_result.summary.responses.0",
                                         "value": "Yes"
                                     }
                                 ],
@@ -1443,10 +1539,12 @@
                                 "active": true,
                                 "app_name": "",
                                 "app_version": "",
+                                "appid": "",
                                 "config_type": "asset",
                                 "fields": {
                                     "domain": "block_domain_1:action_result.parameter.domain"
                                 },
+                                "has_app": true,
                                 "id": "-",
                                 "loaded": false,
                                 "missing": false,
@@ -1489,6 +1587,13 @@
                             ".action": {
                                 "text": "unblock domain"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -1522,6 +1627,12 @@
                             ".title": {
                                 "text": "Correct"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -1536,10 +1647,12 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             },
                             "g.timer image": {
-                                "xlink:href": "/inc/coa/img/block_icon_delay_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_delay_dark_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1548,7 +1661,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def unblock_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('unblock_domain_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'unblock_domain_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['block_domain_1:action_result.parameter.domain', 'block_domain_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'unblock_domain_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'domain': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n    # calculate start time using delay of 60 minutes\n    start_time = datetime.now() + timedelta(minutes=60)\n\n    phantom.act(\"unblock domain\", parameters=parameters, assets=['opendns_umbrella'], start_time=start_time, name=\"unblock_domain_1\", parent_action=action)\n\n    return",
+                        "block_code": "def unblock_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('unblock_domain_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'unblock_domain_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['block_domain_1:action_result.parameter.domain', 'block_domain_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'unblock_domain_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'domain': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n    # calculate start time using delay of 60 minutes\n    start_time = datetime.now() + timedelta(minutes=60)\n\n    phantom.act(action=\"unblock domain\", parameters=parameters, assets=['opendns_umbrella'], start_time=start_time, name=\"unblock_domain_1\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1573,12 +1686,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 153,
-                        "line_start": 128,
+                        "line_end": 134,
+                        "line_start": 109,
                         "message": "Configuring now",
                         "name": "unblock domain",
                         "notes": "Unblocks the domain, after waiting sixty (60) minutes.  The wait is generated with custom code.",
                         "number": 1,
+                        "order": 6,
                         "outPorts": [
                             "out"
                         ],
@@ -1675,11 +1789,13 @@
                                 "active": true,
                                 "app_name": "",
                                 "app_version": "",
+                                "appid": "",
                                 "config_type": "asset",
                                 "fields": {
                                     "disable_safeguards": "",
                                     "domain": "domain_reputation_1:action_result.parameter.domain"
                                 },
+                                "has_app": true,
                                 "id": "-",
                                 "loaded": false,
                                 "missing": false,
@@ -1732,8 +1848,15 @@
                             ".action": {
                                 "text": "block domain"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
                             ".border": {
                                 "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1768,6 +1891,12 @@
                             ".title": {
                                 "text": "Contain"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -1782,7 +1911,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1791,7 +1924,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def block_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_domain_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_domain_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['domain_reputation_1:action_result.parameter.domain', 'domain_reputation_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'block_domain_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'disable_safeguards': \"\",\n                'domain': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"block domain\", parameters=parameters, assets=['opendns_umbrella'], callback=unblock_domain_1, name=\"block_domain_1\")\n\n    return",
+                        "block_code": "def block_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('block_domain_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_domain_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['domain_reputation_1:action_result.parameter.domain', 'domain_reputation_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'block_domain_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'domain': results_item_1[0],\n                'disable_safeguards': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"block domain\", parameters=parameters, assets=['opendns_umbrella'], callback=unblock_domain_1, name=\"block_domain_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1816,12 +1949,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 126,
-                        "line_end": 128,
-                        "line_start": 104,
+                        "line_end": 158,
+                        "line_start": 134,
                         "message": "Configuring now",
                         "name": "block domain",
                         "notes": "Blocks the domain utilizing OpenDNS Umbrella.",
                         "number": 1,
+                        "order": 7,
                         "outPorts": [
                             "out"
                         ],
@@ -1903,12 +2037,20 @@
             },
             "notes": "Apps Used:\n - DomainTools\n - OpenDNS Umbrella\n\nThis playbook utilizes DomainTools\u2019s risk score analysis in order to evaluate the maliciousness of a domain.  If the Risk Score is greater than a threshold specified in the playbook, an Automation Engineer is notified and is prompted as to whether to temporarily block this domain using Infoblox DDI for sixty (60) minutes."
         },
-        "schema": 3,
-        "version": "3.5.149"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2018-02-16T00:06:51.437925+00:00",
+    "create_time": "2021-01-26T19:42:10.543276+00:00",
     "draft_mode": false,
     "labels": [
         "events"
-    ]
+    ],
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "DomainTools",
+            "OpenDNS Investigate"
+        ]
+    }
 }
