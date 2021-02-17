@@ -2,13 +2,12 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": ["Exchange", "SMTP", "Cuckoo", "Splunk", "VirusTotal", "DeepSight"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "import socket",
             "description": "Investigate an email with a suspicious file attachment detected by Splunk Enterprise Security. Detonate the file attachment in a sandbox, gather network behavior from the sandbox results, and pivot on those network indicators with both external reputation queries and internal Splunk Common Information Model searches. After confirming the results with an analyst prompt, delete the email from the user's inbox, hopefully before they have opened it.",
-            "hash": "e16a9590fb95534f563c5381401ac5ca30cce5f7",
+            "hash": "b39f5d0947ef52f5b450e4fb53e61a2fcfafb9df",
             "joint": {
                 "cells": [
                     {
@@ -198,8 +197,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 25,
-                        "line_start": 17,
+                        "line_end": 24,
+                        "line_start": 16,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -396,7 +395,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -419,8 +418,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 669,
-                        "line_start": 656,
+                        "line_end": 675,
+                        "line_start": 662,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -1231,10 +1230,10 @@
                                 "display": "none"
                             },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
                             },
                             "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_warn_grey.svg"
                             },
                             "g.notes": {
                                 "display": "block"
@@ -1244,7 +1243,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def extract_attachment_info(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('extract_attachment_info() called')\n    id_value = container.get('id', None)\n\n    extract_attachment_info__vault_id = None\n    extract_attachment_info__attachment_file_name = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.cef.fileName', 'artifact:*.id'], scope='all')\n    for container_item in container_data:\n        if container_item[0]:\n            phantom.debug(\"found file with vaultId: {}\".format(container_item[0]))\n            extract_attachment_info__vault_id = container_item[0]\n            extract_attachment_info__attachment_file_name = container_item[1]\n\n    phantom.debug(\"detonating file with vaultId: {}\".format(extract_attachment_info__vault_id))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='extract_attachment_info:vault_id', value=json.dumps(extract_attachment_info__vault_id))\n    phantom.save_run_data(key='extract_attachment_info:attachment_file_name', value=json.dumps(extract_attachment_info__attachment_file_name))\n    detonate_file_1(container=container)\n\n    return",
+                        "block_code": "def extract_attachment_info(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('extract_attachment_info() called')\n    \n    id_value = container.get('id', None)\n\n    extract_attachment_info__vault_id = None\n    extract_attachment_info__attachment_file_name = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.cef.fileName', 'artifact:*.id'], scope='all')\n    for container_item in container_data:\n        if container_item[0]:\n            phantom.debug(\"found file with vaultId: {}\".format(container_item[0]))\n            extract_attachment_info__vault_id = container_item[0]\n            extract_attachment_info__attachment_file_name = container_item[1]\n\n    phantom.debug(\"detonating file with vaultId: {}\".format(extract_attachment_info__vault_id))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='extract_attachment_info:vault_id', value=json.dumps(extract_attachment_info__vault_id))\n    phantom.save_run_data(key='extract_attachment_info:attachment_file_name', value=json.dumps(extract_attachment_info__attachment_file_name))\n    detonate_file_1(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1252,7 +1251,7 @@
                         "connection_name": "get email",
                         "connection_type": "action",
                         "customCodeEndLineOffset": 8,
-                        "customCodeStartLine": 10,
+                        "customCodeStartLine": 11,
                         "custom_callback": "",
                         "custom_code": "def extract_attachment_info(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('fetch_email_metadata() called')\n    id_value = container.get('id', None)\n\n    extract_attachment_info__vault_id = None\n    extract_attachment_info__attachment_file_name = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.cef.fileName', 'artifact:*.id'], scope='all')\n    for container_item in container_data:\n        if container_item[0]:\n            phantom.debug(\"found file with vaultId: {}\".format(container_item[0]))\n            extract_attachment_info__vault_id = container_item[0]\n            extract_attachment_info__attachment_file_name = container_item[1]\n\n    phantom.debug(\"detonating file with vaultId: {}\".format(extract_attachment_info__vault_id))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='fetch_email_metadata:vault_id', value=json.dumps(extract_attachment_info__vault_id))\n    phantom.save_run_data(key='fetch_email_metadata:attachment_file_name', value=json.dumps(extract_attachment_info__attachment_file_name))\n    detonate_file_1(container=container)\n\n    return",
                         "custom_join": "",
@@ -1270,8 +1269,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
+                        "legacy": true,
                         "line_end": 340,
-                        "line_start": 310,
+                        "line_start": 309,
                         "message": "Configuring now",
                         "name": "custom function",
                         "notes": "Extract the vault ID and attachment filename to use in \"detonate file\" and other blocks.",
@@ -1363,7 +1363,7 @@
                             "width": 180
                         },
                         "state": "custom function",
-                        "status": "",
+                        "status": "deprecating",
                         "title": "custom function",
                         "type": "coa.FunctionBlock",
                         "userGeneratedCode": "\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.cef.fileName', 'artifact:*.id'], scope='all')\n    for container_item in container_data:\n        if container_item[0]:\n            phantom.debug(\"found file with vaultId: {}\".format(container_item[0]))\n            extract_attachment_info__vault_id = container_item[0]\n            extract_attachment_info__attachment_file_name = container_item[1]\n\n    phantom.debug(\"detonating file with vaultId: {}\".format(extract_attachment_info__vault_id))\n",
@@ -4600,9 +4600,9 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def detonate_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('detonate_file_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    extract_attachment_info__attachment_file_name = json.loads(phantom.get_run_data(key='extract_attachment_info:attachment_file_name'))\n    extract_attachment_info__vault_id = json.loads(phantom.get_run_data(key='extract_attachment_info:vault_id'))\n    # collect data for 'detonate_file_1' call\n\n    parameters = []\n    \n    # build parameters list for 'detonate_file_1' call\n    parameters.append({\n        'file_name': extract_attachment_info__attachment_file_name,\n        'vault_id': extract_attachment_info__vault_id,\n    })\n\n    phantom.act(\"detonate file\", parameters=parameters, assets=['cuckoo'], callback=detonate_file_1_callback, name=\"detonate_file_1\")\n\n    return",
-                        "callback_code": "def detonate_file_1_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('detonate_file_1_callback() called')\n    \n    url_reputation(action=action, success=success, container=container, results=results, handle=handle)\n    ip_reputation(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
-                        "callback_start": 127,
+                        "block_code": "def detonate_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('detonate_file_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    extract_attachment_info__vault_id = json.loads(phantom.get_run_data(key='extract_attachment_info:vault_id'))\n    extract_attachment_info__attachment_file_name = json.loads(phantom.get_run_data(key='extract_attachment_info:attachment_file_name'))\n    # collect data for 'detonate_file_1' call\n\n    parameters = []\n    \n    # build parameters list for 'detonate_file_1' call\n    parameters.append({\n        'vault_id': extract_attachment_info__vault_id,\n        'file_name': extract_attachment_info__attachment_file_name,\n    })\n\n    phantom.act(action=\"detonate file\", parameters=parameters, assets=['cuckoo'], callback=detonate_file_1_callback, name=\"detonate_file_1\")\n\n    return",
+                        "callback_code": "def detonate_file_1_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):\n    phantom.debug('detonate_file_1_callback() called')\n    \n    url_reputation(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n    ip_reputation(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n\n    return",
+                        "callback_start": 126,
                         "callsback": true,
                         "color": "#654796",
                         "connected_to_start": true,
@@ -4625,8 +4625,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 135,
-                        "line_start": 106,
+                        "line_end": 134,
+                        "line_start": 105,
                         "message": "Configuring now",
                         "name": "detonate file",
                         "notes": "Detonate the file attachment in a sandbox to determine its behavior.",
@@ -5191,7 +5191,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def get_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_email_1() called')\n\n    # collect data for 'get_email_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.message_id', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_email_1' call\n    for container_item in container_data:\n        parameters.append({\n            'ingest_email': True,\n            'use_current_container': True,\n            'container_id': \"\",\n            'id': container_item[0],\n            'vault_id': \"\",\n            'email': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[1]},\n        })\n\n    phantom.act(\"get email\", parameters=parameters, assets=['exchange'], callback=extract_attachment_info, name=\"get_email_1\")\n\n    return",
+                        "block_code": "def get_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_email_1() called')\n\n    # collect data for 'get_email_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.message_id', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_email_1' call\n    for container_item in container_data:\n        parameters.append({\n            'id': container_item[0],\n            'email': \"\",\n            'vault_id': \"\",\n            'container_id': \"\",\n            'ingest_email': True,\n            'use_current_container': True,\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[1]},\n        })\n\n    phantom.act(action=\"get email\", parameters=parameters, assets=['exchange'], callback=extract_attachment_info, name=\"get_email_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 507,
                         "callsback": true,
@@ -5216,8 +5216,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 307,
-                        "line_start": 282,
+                        "line_end": 306,
+                        "line_start": 281,
                         "message": "Configuring now",
                         "name": "get email",
                         "notes": "Use the IMAP message ID from the Splunk Common Information Model to fetch the whole email including headers and attachments.",
@@ -6620,8 +6620,8 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def url_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('url_reputation() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'url_reputation' call\n    results_data_1 = phantom.collect2(container=container, datapath=['detonate_file_1:action_result.data.*.report.network.http.*.uri', 'detonate_file_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'url_reputation' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'url': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"url reputation\", parameters=parameters, assets=['virustotal'], callback=url_reputation_callback, name=\"url_reputation\", parent_action=action)\n\n    return",
-                        "callback_code": "def url_reputation_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('url_reputation_callback() called')\n    \n    filter_virustotal_positives(action=action, success=success, container=container, results=results, handle=handle)\n    defang_url(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
+                        "block_code": "def url_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('url_reputation() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'url_reputation' call\n    results_data_1 = phantom.collect2(container=container, datapath=['detonate_file_1:action_result.data.*.report.network.http.*.uri', 'detonate_file_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'url_reputation' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'url': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"url reputation\", parameters=parameters, assets=['virustotal'], callback=url_reputation_callback, name=\"url_reputation\", parent_action=action)\n\n    return",
+                        "callback_code": "def url_reputation_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):\n    phantom.debug('url_reputation_callback() called')\n    \n    filter_virustotal_positives(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n    defang_url(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n\n    return",
                         "callback_start": 366,
                         "callsback": true,
                         "color": "",
@@ -6859,7 +6859,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def filter_virustotal_positives(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_virustotal_positives() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"url_reputation:action_result.data.*.positives\", \">\", \"3\"],\n        ],\n        name=\"filter_virustotal_positives:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        format_web_search(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def filter_virustotal_positives(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_virustotal_positives() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"url_reputation:action_result.data.*.positives\", \">\", 3],\n        ],\n        name=\"filter_virustotal_positives:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        format_web_search(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -7036,7 +7036,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_web_search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_web_search() called')\n    \n    template = \"\"\"%%\n| datamodel Web search | search Web.url=\\\"{0}\\\"\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_virustotal_positives:condition_1:url_reputation:action_result.parameter.url\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_web_search\")\n\n    run_web_search(container=container)\n\n    return",
+                        "block_code": "def format_web_search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_web_search() called')\n    \n    template = \"\"\"%%\n| datamodel Web search | search Web.url=\\\"{0}\\\"\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_virustotal_positives:condition_1:url_reputation:action_result.parameter.url\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_web_search\")\n\n    run_web_search(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -7195,7 +7195,10 @@
                                 "display": "none"
                             },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn_grey.svg"
                             },
                             "g.notes": {
                                 "display": "block"
@@ -7205,7 +7208,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def defang_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('defang_url() called')\n    results_data_1 = phantom.collect2(container=container, datapath=['url_reputation:action_result.parameter.url'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    defang_url__defanged_url = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    defang_url__defanged_url = []\n    \n    phantom.debug(\"defanging URLs:\")\n    for url in results_item_1_0:\n        defanged_url = url.replace(\"http\", \"hXXp\").replace(\".\", \"[.]\")\n        phantom.debug(\"defanged {} into {}\".format(url, defanged_url))\n        defang_url__defanged_url.append(defanged_url)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='defang_url:defanged_url', value=json.dumps(defang_url__defanged_url))\n    format_url_reputation(container=container)\n\n    return",
+                        "block_code": "def defang_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('defang_url() called')\n    \n    results_data_1 = phantom.collect2(container=container, datapath=['url_reputation:action_result.parameter.url'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    defang_url__defanged_url = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    defang_url__defanged_url = []\n    \n    phantom.debug(\"defanging URLs:\")\n    for url in results_item_1_0:\n        defanged_url = url.replace(\"http\", \"hXXp\").replace(\".\", \"[.]\")\n        phantom.debug(\"defanged {} into {}\".format(url, defanged_url))\n        defang_url__defanged_url.append(defanged_url)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='defang_url:defanged_url', value=json.dumps(defang_url__defanged_url))\n    format_url_reputation(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -7213,7 +7216,7 @@
                         "connection_name": "url reputation",
                         "connection_type": "action",
                         "customCodeEndLineOffset": 7,
-                        "customCodeStartLine": 10,
+                        "customCodeStartLine": 11,
                         "custom_callback": "",
                         "custom_code": "def defang_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('defang_url() called')\n    results_data_1 = phantom.collect2(container=container, datapath=['url_reputation:action_result.parameter.url'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    defang_url__defanged_url = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    defang_url__defanged_url = []\n    \n    phantom.debug(\"defanging URLs:\")\n    for url in results_item_1_0:\n        defanged_url = url.replace(\"http\", \"hXXp\").replace(\".\", \"[.]\")\n        phantom.debug(\"defanged {} into {}\".format(url, defanged_url))\n        defang_url__defanged_url.append(defanged_url)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='defang_url:defanged_url', value=json.dumps(defang_url__defanged_url))\n    format_url_reputation(container=container)\n\n    return",
                         "custom_join": "",
@@ -7231,8 +7234,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 620,
-                        "line_start": 592,
+                        "legacy": true,
+                        "line_end": 625,
+                        "line_start": 596,
                         "message": "Configuring now",
                         "name": "custom function",
                         "notes": "Defang the URLs by substituting hXXp fot http and [.] for . to prevent notifications from showing the actual clickable URL (which could be malicious).",
@@ -7319,7 +7323,7 @@
                             "width": 180
                         },
                         "state": "custom function",
-                        "status": "",
+                        "status": "deprecating",
                         "title": "custom function",
                         "type": "coa.FunctionBlock",
                         "userGeneratedCode": "\n    defang_url__defanged_url = []\n    \n    phantom.debug(\"defanging URLs:\")\n    for url in results_item_1_0:\n        defanged_url = url.replace(\"http\", \"hXXp\").replace(\".\", \"[.]\")\n        phantom.debug(\"defanged {} into {}\".format(url, defanged_url))\n        defang_url__defanged_url.append(defanged_url)\n",
@@ -7387,7 +7391,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_url_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_url_reputation() called')\n    \n    template = \"\"\"VirusTotal scores of URLs detected in file detonation:\n\n%%\nURL: {0}\nVirusTotal Analysis Permalink: {1}\nScore: {2}\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"defang_url:custom_function:defanged_url\",\n        \"url_reputation:action_result.data.*.permalink\",\n        \"url_reputation:action_result.message\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_url_reputation\")\n\n    join_format_analyst_message(container=container)\n\n    return",
+                        "block_code": "def format_url_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_url_reputation() called')\n    \n    template = \"\"\"VirusTotal scores of URLs detected in file detonation:\n\n%%\nURL: {0}\nVirusTotal Analysis Permalink: {1}\nScore: {2}\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"defang_url:custom_function:defanged_url\",\n        \"url_reputation:action_result.data.*.permalink\",\n        \"url_reputation:action_result.message\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_url_reputation\")\n\n    join_format_analyst_message(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -7411,8 +7415,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 562,
-                        "line_start": 538,
+                        "line_end": 566,
+                        "line_start": 542,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Gather the key results from the URL reputation  query into a formatted text block.",
@@ -7562,7 +7566,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def prompt_response_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('prompt_response_filter() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"suspicious_email_attachment_prompt:action_result.summary.responses.0\", \"==\", \"Yes\"],\n        ],\n        name=\"prompt_response_filter:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        delete_email_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        format_recipient_email(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def prompt_response_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('prompt_response_filter() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"suspicious_email_attachment_prompt:action_result.summary.responses.0\", \"==\", \"Yes\"],\n        ],\n        name=\"prompt_response_filter:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        delete_email_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        format_recipient_email(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -7585,8 +7589,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 47,
-                        "line_start": 28,
+                        "line_end": 46,
+                        "line_start": 27,
                         "name": "filter",
                         "notes": "Check the response from the prompt.",
                         "number": 4,
@@ -7881,7 +7885,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def send_recipient_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_recipient_email() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_recipient_email' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_email_1:action_result.data.*.t_ToRecipients.t_Mailbox.*.t_EmailAddress', 'get_email_1:action_result.parameter.context.artifact_id'], action_results=results)\n    formatted_data_1 = phantom.get_format_data(name='format_recipient_email')\n\n    parameters = []\n    \n    # build parameters list for 'send_recipient_email' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'body': formatted_data_1,\n                'from': \"phantom\",\n                'attachments': \"\",\n                'to': results_item_1[0],\n                'cc': \"\",\n                'bcc': \"\",\n                'headers': \"\",\n                'subject': \"Phishing Email Deleted\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['exchange_smtp'], name=\"send_recipient_email\")\n\n    return",
+                        "block_code": "def send_recipient_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('send_recipient_email() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_recipient_email' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_email_1:action_result.data.*.t_ToRecipients.t_Mailbox.*.t_EmailAddress', 'get_email_1:action_result.parameter.context.artifact_id'], action_results=results)\n    formatted_data_1 = phantom.get_format_data(name='format_recipient_email')\n\n    parameters = []\n    \n    # build parameters list for 'send_recipient_email' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'cc': \"\",\n                'to': results_item_1[0],\n                'bcc': \"\",\n                'body': formatted_data_1,\n                'from': \"phantom\",\n                'headers': \"\",\n                'subject': \"Phishing Email Deleted\",\n                'attachments': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"send email\", parameters=parameters, assets=['exchange_smtp'], name=\"send_recipient_email\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -7906,8 +7910,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 189,
-                        "line_start": 158,
+                        "line_end": 188,
+                        "line_start": 157,
                         "message": "Configuring now",
                         "name": "send email",
                         "notes": "Send an email to the recipient explaining that a suspicious email was deleted.",
@@ -8197,7 +8201,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def send_analyst_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_analyst_email() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_analyst_email' call\n    formatted_data_1 = phantom.get_format_data(name='format_analyst_message')\n\n    parameters = []\n    \n    # build parameters list for 'send_analyst_email' call\n    parameters.append({\n        'body': formatted_data_1,\n        'from': \"charlie@corp.contoso.com\",\n        'attachments': \"\",\n        'to': \"charlie@corp.contoso.com\",\n        'cc': \"\",\n        'bcc': \"\",\n        'headers': \"\",\n        'subject': \"Splunk detected suspicious email\",\n    })\n\n    phantom.act(\"send email\", parameters=parameters, assets=['exchange_smtp'], name=\"send_analyst_email\")\n\n    return",
+                        "block_code": "def send_analyst_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('send_analyst_email() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_analyst_email' call\n    formatted_data_1 = phantom.get_format_data(name='format_analyst_message')\n\n    parameters = []\n    \n    # build parameters list for 'send_analyst_email' call\n    parameters.append({\n        'cc': \"\",\n        'to': \"charlie@corp.contoso.com\",\n        'bcc': \"\",\n        'body': formatted_data_1,\n        'from': \"charlie@corp.contoso.com\",\n        'headers': \"\",\n        'subject': \"Splunk detected suspicious email\",\n        'attachments': \"\",\n    })\n\n    phantom.act(action=\"send email\", parameters=parameters, assets=['exchange_smtp'], name=\"send_analyst_email\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -8222,8 +8226,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 103,
-                        "line_start": 77,
+                        "line_end": 102,
+                        "line_start": 76,
                         "message": "Configuring now",
                         "name": "send email",
                         "notes": "Send an email to the analyst for this event notifying them that the playbook is running and the prompt is waiting for a response.",
@@ -8468,7 +8472,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def delete_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('delete_email_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'delete_email_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_email_1:action_result.parameter.id', 'get_email_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'delete_email_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'id': results_item_1[0],\n                'email': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"delete email\", parameters=parameters, assets=['exchange'], name=\"delete_email_1\")\n\n    return",
+                        "block_code": "def delete_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('delete_email_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'delete_email_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_email_1:action_result.parameter.id', 'get_email_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'delete_email_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'id': results_item_1[0],\n                'email': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"delete email\", parameters=parameters, assets=['exchange'], name=\"delete_email_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -8493,8 +8497,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 74,
-                        "line_start": 50,
+                        "line_end": 73,
+                        "line_start": 49,
                         "message": "Configuring now",
                         "name": "delete email",
                         "notes": "Delete the suspicious email from the user's inbox.",
@@ -8609,7 +8613,9 @@
                                 "config_type": "asset",
                                 "count": 0,
                                 "fields": {
+                                    "command": "",
                                     "display": "",
+                                    "parse_only": "",
                                     "query": "format_web_search:formatted_data.*"
                                 },
                                 "has_app": true,
@@ -8619,26 +8625,44 @@
                                 "name": "splunk",
                                 "output": [
                                     {
-                                        "column_name": "Host",
-                                        "column_order": "0",
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.command",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "savedsearch"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.display",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.parse_only",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
                                         "contains": [
-                                            "host name"
+                                            "splunk query"
                                         ],
-                                        "data_path": "action_result.data.*.host",
-                                        "data_type": "string"
+                                        "data_path": "action_result.parameter.query",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "\"Send to Phantom\""
+                                        ]
                                     },
                                     {
-                                        "column_name": "Time",
-                                        "column_order": "1",
-                                        "contains": [],
-                                        "data_path": "action_result.data.*._time",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Raw",
-                                        "column_order": "2",
-                                        "contains": [],
-                                        "data_path": "action_result.data.*._raw",
+                                        "data_path": "action_result.data.*._bkt",
                                         "data_type": "string"
                                     },
                                     {
@@ -8646,19 +8670,13 @@
                                         "data_type": "string"
                                     },
                                     {
-                                        "data_path": "action_result.data.*._si",
+                                        "data_path": "action_result.data.*._indextime",
                                         "data_type": "string"
                                     },
                                     {
-                                        "data_path": "action_result.data.*._bkt",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.index",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.source",
+                                        "column_name": "Raw",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*._raw",
                                         "data_type": "string"
                                     },
                                     {
@@ -8666,19 +8684,45 @@
                                         "data_type": "string"
                                     },
                                     {
-                                        "data_path": "action_result.data.*.linecount",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*._indextime",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.sourcetype",
+                                        "data_path": "action_result.data.*._si",
                                         "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*._sourcetype",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Time",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*._time",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Host",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.host",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10.1.67.187:8088"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.index",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.linecount",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.source",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.sourcetype",
                                         "data_type": "string"
                                     },
                                     {
@@ -8689,35 +8733,32 @@
                                         "data_type": "string"
                                     },
                                     {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
+                                        "data_path": "action_result.summary.total_events",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            2
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.total_events",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "contains": [
-                                            "splunk query"
-                                        ],
-                                        "data_path": "action_result.parameter.query",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.display",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Total events: 2"
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     }
                                 ],
                                 "parameters": {
@@ -8818,7 +8859,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def run_web_search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('run_web_search() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'run_web_search' call\n    formatted_data_1 = phantom.get_format_data(name='format_web_search__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'run_web_search' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'query': formatted_part_1,\n            'display': \"\",\n        })\n\n    phantom.act(\"run query\", parameters=parameters, assets=['splunk'], callback=join_format_analyst_message, name=\"run_web_search\")\n\n    return",
+                        "block_code": "def run_web_search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('run_web_search() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'run_web_search' call\n    formatted_data_1 = phantom.get_format_data(name='format_web_search__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'run_web_search' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'query': formatted_part_1,\n            'command': \"\",\n            'display': \"\",\n            'parse_only': \"\",\n        })\n\n    phantom.act(action=\"run query\", parameters=parameters, assets=['splunk'], callback=join_format_analyst_message, name=\"run_web_search\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -8843,7 +8884,7 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 511,
+                        "line_end": 513,
                         "line_start": 490,
                         "message": "Configuring now",
                         "name": "run query",
@@ -8959,7 +9000,9 @@
                                 "config_type": "asset",
                                 "count": 0,
                                 "fields": {
+                                    "command": "",
                                     "display": "",
+                                    "parse_only": "",
                                     "query": "format_dns_search:formatted_data.*"
                                 },
                                 "has_app": true,
@@ -8969,26 +9012,44 @@
                                 "name": "splunk",
                                 "output": [
                                     {
-                                        "column_name": "Host",
-                                        "column_order": "0",
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.command",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "savedsearch"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.display",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.parse_only",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
                                         "contains": [
-                                            "host name"
+                                            "splunk query"
                                         ],
-                                        "data_path": "action_result.data.*.host",
-                                        "data_type": "string"
+                                        "data_path": "action_result.parameter.query",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "\"Send to Phantom\""
+                                        ]
                                     },
                                     {
-                                        "column_name": "Time",
-                                        "column_order": "1",
-                                        "contains": [],
-                                        "data_path": "action_result.data.*._time",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Raw",
-                                        "column_order": "2",
-                                        "contains": [],
-                                        "data_path": "action_result.data.*._raw",
+                                        "data_path": "action_result.data.*._bkt",
                                         "data_type": "string"
                                     },
                                     {
@@ -8996,19 +9057,13 @@
                                         "data_type": "string"
                                     },
                                     {
-                                        "data_path": "action_result.data.*._si",
+                                        "data_path": "action_result.data.*._indextime",
                                         "data_type": "string"
                                     },
                                     {
-                                        "data_path": "action_result.data.*._bkt",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.index",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.source",
+                                        "column_name": "Raw",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*._raw",
                                         "data_type": "string"
                                     },
                                     {
@@ -9016,19 +9071,45 @@
                                         "data_type": "string"
                                     },
                                     {
-                                        "data_path": "action_result.data.*.linecount",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*._indextime",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.sourcetype",
+                                        "data_path": "action_result.data.*._si",
                                         "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*._sourcetype",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Time",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*._time",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Host",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.host",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10.1.67.187:8088"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.index",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.linecount",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.source",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.sourcetype",
                                         "data_type": "string"
                                     },
                                     {
@@ -9039,35 +9120,32 @@
                                         "data_type": "string"
                                     },
                                     {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
+                                        "data_path": "action_result.summary.total_events",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            2
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.total_events",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "contains": [
-                                            "splunk query"
-                                        ],
-                                        "data_path": "action_result.parameter.query",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.parameter.display",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Total events: 2"
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     }
                                 ],
                                 "parameters": {
@@ -9168,7 +9246,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def run_dns_search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('run_dns_search() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'run_dns_search' call\n    formatted_data_1 = phantom.get_format_data(name='format_dns_search__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'run_dns_search' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'query': formatted_part_1,\n            'display': \"\",\n        })\n\n    phantom.act(\"run query\", parameters=parameters, assets=['splunk'], callback=join_format_analyst_message, name=\"run_dns_search\")\n\n    return",
+                        "block_code": "def run_dns_search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('run_dns_search() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'run_dns_search' call\n    formatted_data_1 = phantom.get_format_data(name='format_dns_search__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'run_dns_search' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'query': formatted_part_1,\n            'command': \"\",\n            'display': \"\",\n            'parse_only': \"\",\n        })\n\n    phantom.act(action=\"run query\", parameters=parameters, assets=['splunk'], callback=join_format_analyst_message, name=\"run_dns_search\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -9193,8 +9271,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 535,
-                        "line_start": 514,
+                        "line_end": 539,
+                        "line_start": 516,
                         "message": "Configuring now",
                         "name": "run query",
                         "notes": "Run a Splunk search to check for other systems receiving DNS answers matching the suspicious IP addresses.",
@@ -9326,7 +9404,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def filter_deepsight_behaviours(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_deepsight_behaviours() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"Malware\", \"in\", \"ip_reputation:action_result.data.*.behaviours.*.behaviour\"],\n            [\"Phish_Host\", \"in\", \"ip_reputation:action_result.data.*.behaviours.*.behaviour\"],\n        ],\n        logical_operator='or',\n        name=\"filter_deepsight_behaviours:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        format_dns_search(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        format_behaviors(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def filter_deepsight_behaviours(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_deepsight_behaviours() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"Malware\", \"in\", \"ip_reputation:action_result.data.*.behaviours.*.behaviour\"],\n            [\"Phish_Host\", \"in\", \"ip_reputation:action_result.data.*.behaviours.*.behaviour\"],\n        ],\n        logical_operator='or',\n        name=\"filter_deepsight_behaviours:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        format_dns_search(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        format_behaviors(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -9866,7 +9944,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('ip_reputation() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'ip_reputation' call\n    results_data_1 = phantom.collect2(container=container, datapath=['detonate_file_1:action_result.data.*.report.network.dns.*.answers.*.data', 'detonate_file_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'ip_reputation' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"ip reputation\", parameters=parameters, assets=['symantec_deepsight'], callback=filter_deepsight_behaviours, name=\"ip_reputation\", parent_action=action)\n\n    return",
+                        "block_code": "def ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('ip_reputation() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'ip_reputation' call\n    results_data_1 = phantom.collect2(container=container, datapath=['detonate_file_1:action_result.data.*.report.network.dns.*.answers.*.data', 'detonate_file_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'ip_reputation' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"ip reputation\", parameters=parameters, assets=['symantec_deepsight'], callback=filter_deepsight_behaviours, name=\"ip_reputation\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 400,
                         "callsback": true,
@@ -10025,7 +10103,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def suspicious_email_attachment_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('suspicious_email_attachment_prompt() called')\n    \n    # set user and message variables for phantom.prompt call\n    user = \"Administrator\"\n    message = \"\"\"Please review the investigation and decide whether or not to delete the email from the user's inbox.\"\"\"\n\n    #responses:\n    response_types = [\n        {\n            \"prompt\": \"\",\n            \"options\": {\n                \"type\": \"list\",\n                \"choices\": [\n                    \"Yes\",\n                    \"No\",\n                ]\n            },\n        },\n    ]\n\n    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name=\"suspicious_email_attachment_prompt\", response_types=response_types, callback=prompt_response_filter)\n\n    return",
+                        "block_code": "def suspicious_email_attachment_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('suspicious_email_attachment_prompt() called')\n    \n    # set user and message variables for phantom.prompt call\n    user = \"Administrator\"\n    message = \"\"\"Please review the investigation and decide whether or not to delete the email from the user's inbox.\"\"\"\n\n    #responses:\n    response_types = [\n        {\n            \"prompt\": \"\",\n            \"options\": {\n                \"type\": \"list\",\n                \"choices\": [\n                    \"Yes\",\n                    \"No\",\n                ]\n            },\n        },\n    ]\n\n    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name=\"suspicious_email_attachment_prompt\", response_types=response_types, callback=prompt_response_filter)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -10048,8 +10126,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 217,
-                        "line_start": 192,
+                        "line_end": 216,
+                        "line_start": 191,
                         "message": "Please review the investigation and decide whether or not to delete the email from the user's inbox.",
                         "name": "prompt",
                         "notes": "Wait for an analyst to decide whether or not to delete the email from the user's inbox.",
@@ -10229,7 +10307,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_recipient_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_recipient_email() called')\n    \n    template = \"\"\"The security department has detected a malicious phishing email sent to this email address from {0} with the subject \\\"{1}\\\". The email has been deleted. Please contact the security department if you have any questions.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"get_email_1:action_result.data.*.t_From.t_Mailbox.t_EmailAddress\",\n        \"get_email_1:action_result.data.*.t_Subject\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_recipient_email\")\n\n    send_recipient_email(container=container)\n\n    return",
+                        "block_code": "def format_recipient_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_recipient_email() called')\n    \n    template = \"\"\"The security department has detected a malicious phishing email sent to this email address from {0} with the subject \\\"{1}\\\". The email has been deleted. Please contact the security department if you have any questions.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"get_email_1:action_result.data.*.t_From.t_Mailbox.t_EmailAddress\",\n        \"get_email_1:action_result.data.*.t_Subject\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_recipient_email\")\n\n    send_recipient_email(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -10253,8 +10331,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 155,
-                        "line_start": 138,
+                        "line_end": 154,
+                        "line_start": 137,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Build the body of an email to the recipient explaining that a suspicious email was deleted.",
@@ -10407,7 +10485,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_dns_search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_dns_search() called')\n    \n    template = \"\"\"%%\n| datamodel Network_Resolution search | search DNS.answer=\\\"{0}\\\"\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_deepsight_behaviours:condition_1:ip_reputation:action_result.parameter.ip\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_dns_search\")\n\n    run_dns_search(container=container)\n\n    return",
+                        "block_code": "def format_dns_search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_dns_search() called')\n    \n    template = \"\"\"%%\n| datamodel Network_Resolution search | search DNS.answer=\\\"{0}\\\"\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_deepsight_behaviours:condition_1:ip_reputation:action_result.parameter.ip\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_dns_search\")\n\n    run_dns_search(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -10602,7 +10680,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_analyst_message(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_analyst_message() called')\n    \n    template = \"\"\"A Splunk correlation search discovered a suspicious email file attachment:\n\nemail sender: {0}\nemail recipient: {1}\nemail subject: {2}\n\nattachment file name: {3}\nattachment SHA1 file hash: {4}\nCuckoo summary score of detonated email attachment: {5}\n\n{6}\n\n{7}\n\nHostnames of endpoints that have communicated with suspicious URLs:\n{8}\n\nHostnames of endpoints that have communicated with suspicious IP addresses:\n{9}\n\nSee the full context and respond to the analyst prompt within Phantom:\n{10}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"get_email_1:action_result.data.*.t_Sender.t_Mailbox.t_EmailAddress\",\n        \"get_email_1:action_result.data.*.t_ToRecipients.t_Mailbox.*.t_EmailAddress\",\n        \"get_email_1:action_result.data.*.t_Subject\",\n        \"detonate_file_1:action_result.parameter.file_name\",\n        \"detonate_file_1:action_result.parameter.vault_id\",\n        \"detonate_file_1:action_result.data.*.report.info.score\",\n        \"format_url_reputation:formatted_data\",\n        \"format_ip_reputation:formatted_data\",\n        \"run_web_search:action_result.data.*.host\",\n        \"run_dns_search:action_result.data.*.host\",\n        \"container:url\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_analyst_message\")\n\n    send_analyst_email(container=container)\n    suspicious_email_attachment_prompt(container=container)\n\n    return",
+                        "block_code": "def format_analyst_message(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_analyst_message() called')\n    \n    template = \"\"\"A Splunk correlation search discovered a suspicious email file attachment:\n\nemail sender: {0}\nemail recipient: {1}\nemail subject: {2}\n\nattachment file name: {3}\nattachment SHA1 file hash: {4}\nCuckoo summary score of detonated email attachment: {5}\n\n{6}\n\n{7}\n\nHostnames of endpoints that have communicated with suspicious URLs:\n{8}\n\nHostnames of endpoints that have communicated with suspicious IP addresses:\n{9}\n\nSee the full context and respond to the analyst prompt within Phantom:\n{10}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"get_email_1:action_result.data.*.t_Sender.t_Mailbox.t_EmailAddress\",\n        \"get_email_1:action_result.data.*.t_ToRecipients.t_Mailbox.*.t_EmailAddress\",\n        \"get_email_1:action_result.data.*.t_Subject\",\n        \"detonate_file_1:action_result.parameter.file_name\",\n        \"detonate_file_1:action_result.parameter.vault_id\",\n        \"detonate_file_1:action_result.data.*.report.info.score\",\n        \"format_url_reputation:formatted_data\",\n        \"format_ip_reputation:formatted_data\",\n        \"run_web_search:action_result.data.*.host\",\n        \"run_dns_search:action_result.data.*.host\",\n        \"container:url\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_analyst_message\")\n\n    send_analyst_email(container=container)\n    suspicious_email_attachment_prompt(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -10623,11 +10701,11 @@
                         "inPorts": [
                             "in"
                         ],
-                        "join_code": "def join_format_analyst_message(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('join_format_analyst_message() called')\n\n    # check if all connected incoming actions are done i.e. have succeeded or failed\n    if phantom.actions_done([ 'run_dns_search', 'run_web_search', 'url_reputation', 'ip_reputation' ]):\n        \n        # call connected block \"format_analyst_message\"\n        format_analyst_message(container=container, handle=handle)\n    \n    return",
+                        "join_code": "def join_format_analyst_message(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):\n    phantom.debug('join_format_analyst_message() called')\n\n    # check if all connected incoming playbooks, actions, or custom functions are done i.e. have succeeded or failed\n    if phantom.completed(action_names=['run_dns_search', 'run_web_search', 'url_reputation', 'ip_reputation']):\n        \n        # call connected block \"format_analyst_message\"\n        format_analyst_message(container=container, handle=handle)\n    \n    return",
                         "join_optional": [],
-                        "join_start": 268,
-                        "line_end": 279,
-                        "line_start": 220,
+                        "join_start": 267,
+                        "line_end": 278,
+                        "line_start": 219,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Gather all the key pieces of information collected so far and format them for an email to the analyst.",
@@ -10825,7 +10903,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_ip_reputation() called')\n    \n    template = \"\"\"Symantec DeepSight analysis of IP addresses detected in file detonation:\n\n%%\nIP: {0}\nBehaviors:\n{1}\n\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_deepsight_behaviours:condition_1:ip_reputation:action_result.data.*.ip\",\n        \"format_behaviors:custom_function:behaviors\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_ip_reputation\")\n\n    join_format_analyst_message(container=container)\n\n    return",
+                        "block_code": "def format_ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_ip_reputation() called')\n    \n    template = \"\"\"Symantec DeepSight analysis of IP addresses detected in file detonation:\n\n%%\nIP: {0}\nBehaviors:\n{1}\n\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:filter_deepsight_behaviours:condition_1:ip_reputation:action_result.data.*.ip\",\n        \"format_behaviors:custom_function:behaviors\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_ip_reputation\")\n\n    join_format_analyst_message(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -10849,8 +10927,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 589,
-                        "line_start": 565,
+                        "line_end": 593,
+                        "line_start": 569,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Gather together the key fields from the results of the IP reputation query for any suspicious IP addresses.",
@@ -10989,10 +11067,10 @@
                                 "display": "none"
                             },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
                             },
                             "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_error.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_warn_grey.svg"
                             },
                             "g.notes": {
                                 "display": "block"
@@ -11002,7 +11080,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_behaviors(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_behaviors() called')\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_deepsight_behaviours:condition_1:ip_reputation:action_result.data.*.behaviours\"])\n    filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]\n\n    format_behaviors__behaviors = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    format_behaviors__behaviors = []\n    for ip in filtered_results_item_1_0:\n        behavior = \"\"\n        lines = json.dumps(ip, indent=4).split('\\n')\n        for line in lines:\n            # only use the lines with keys and values, not the json {} and [] characters\n            if 1 not in [c in line for c in '{}[]']:\n                behavior += line + '\\n'\n        format_behaviors__behaviors.append(behavior)\n    \n    phantom.debug('Symantec Deepsight behaviors:')\n    phantom.debug(format_behaviors__behaviors)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='format_behaviors:behaviors', value=json.dumps(format_behaviors__behaviors))\n    format_ip_reputation(container=container)\n\n    return",
+                        "block_code": "def format_behaviors(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_behaviors() called')\n    \n    filtered_results_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_deepsight_behaviours:condition_1:ip_reputation:action_result.data.*.behaviours'])\n    filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]\n\n    format_behaviors__behaviors = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    format_behaviors__behaviors = []\n    for ip in filtered_results_item_1_0:\n        behavior = \"\"\n        lines = json.dumps(ip, indent=4).split('\\n')\n        for line in lines:\n            # only use the lines with keys and values, not the json {} and [] characters\n            if 1 not in [c in line for c in '{}[]']:\n                behavior += line + '\\n'\n        format_behaviors__behaviors.append(behavior)\n    \n    phantom.debug('Symantec Deepsight behaviors:')\n    phantom.debug(format_behaviors__behaviors)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='format_behaviors:behaviors', value=json.dumps(format_behaviors__behaviors))\n    format_ip_reputation(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -11010,7 +11088,7 @@
                         "connection_name": "ip reputation",
                         "connection_type": "action",
                         "customCodeEndLineOffset": 7,
-                        "customCodeStartLine": 10,
+                        "customCodeStartLine": 11,
                         "custom_callback": "",
                         "custom_code": "def format_behaviors(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_behaviors() called')\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_deepsight_behaviours:condition_1:ip_reputation:action_result.data.*.behaviours\"])\n    filtered_results_item_1_0 = [item[0] for item in filtered_results_data_1]\n\n    format_behaviors__behaviors = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    format_behaviors__behaviors = []\n    for ip in filtered_results_item_1_0:\n        behavior = \"\"\n        lines = json.dumps(ip, indent=4).split('\\n')\n        for line in lines:\n            # only use the lines with keys and values, not the json {} and [] characters\n            if 1 not in [c in line for c in '{}[]']:\n                behavior += line + '\\n'\n        format_behaviors__behaviors.append(behavior)\n    \n    phantom.debug('Symantec Deepsight behaviors:')\n    phantom.debug(format_behaviors__behaviors)\n    \n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='format_behaviors:behaviors', value=json.dumps(format_behaviors__behaviors))\n    format_ip_reputation(container=container)\n\n    return",
                         "custom_join": "",
@@ -11028,8 +11106,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 656,
-                        "line_start": 623,
+                        "legacy": true,
+                        "line_end": 662,
+                        "line_start": 628,
                         "message": "Configuring now",
                         "name": "custom function",
                         "notes": "Collect and format the behavioral information from Deepsight relating to the queried IP addresses.",
@@ -11116,7 +11195,7 @@
                             "width": 180
                         },
                         "state": "custom function",
-                        "status": "",
+                        "status": "deprecating",
                         "title": "custom function",
                         "type": "coa.FunctionBlock",
                         "userGeneratedCode": "\n    format_behaviors__behaviors = []\n    for ip in filtered_results_item_1_0:\n        behavior = \"\"\n        lines = json.dumps(ip, indent=4).split('\\n')\n        for line in lines:\n            # only use the lines with keys and values, not the json {} and [] characters\n            if 1 not in [c in line for c in '{}[]']:\n                behavior += line + '\\n'\n        format_behaviors__behaviors.append(behavior)\n    \n    phantom.debug('Symantec Deepsight behaviors:')\n    phantom.debug(format_behaviors__behaviors)\n    \n",
@@ -11127,13 +11206,24 @@
             },
             "notes": "This playbook uses the following Apps:\n - Microsoft Exchange (get email, delete email) [asset name = exchange] - read and delete emails from an on-premise Exchange server\n - SMTP (send email) [asset name = exchange_smtp] - send emails through the on-premise Exchange server\n - Cuckoo (detonate file) [asset name = cuckoo] - send the file to Cuckoo to execute, monitor behavior, and return a report\n - Virsutotal (url reputation) [asset name = virustotal] - check the url against all of VirusTotal's integrated scanners\n - Symantec Deepsight (ip reputation) [ asset name = opendns_investigate] - check the ip against the Symantec Deepsight threat intelligence service\n - Splunk ES (run query) [asset name = splunk] - look for internal hosts communicating with the suspicious URLs and IP addresses\n\nDeployment Notes:\n - By default the prompt is assigned to the Administrator role, which should be changed to the appropriate analyst user or role\n\n- The block called \"format recipient email\" uses the term \"the security department\", which should be substituted for something more specific to your organization\n\n- The Splunk searches rely on the Web and Network Resolution datamodels to be populated with events"
         },
-        "schema": 3,
-        "version": "4.2.7532"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2019-06-03T18:25:19.041477+00:00",
+    "create_time": "2021-01-26T17:16:42.146202+00:00",
     "draft_mode": false,
     "labels": [
         "events"
     ],
-    "tags": []
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "Exchange",
+            "SMTP",
+            "Cuckoo",
+            "Splunk",
+            "VirusTotal",
+            "DeepSight"
+        ]
+    }
 }
