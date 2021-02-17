@@ -5,7 +5,6 @@ This Playbook detonates a file in Symantec Content Analysis and enriches the ind
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -17,9 +16,9 @@ def on_start(container):
 """
 Use the file hash of the submitted file to query VirusTotal for existing detections in a wide array of sandbox engines.
 """
-def virustotal_file_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def virustotal_file_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('virustotal_file_reputation() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'virustotal_file_reputation' call
@@ -36,14 +35,14 @@ def virustotal_file_reputation(action=None, success=None, container=None, result
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("file reputation", parameters=parameters, assets=['virustotal'], callback=virustotal_file_format, name="virustotal_file_reputation", parent_action=action)
+    phantom.act(action="file reputation", parameters=parameters, assets=['virustotal'], callback=virustotal_file_format, name="virustotal_file_reputation", parent_action=action)
 
     return
 
 """
 Format the VirusTotal results for a summary to add to the ticket.
 """
-def virustotal_file_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def virustotal_file_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('virustotal_file_format() called')
     
     template = """Positives: {0}
@@ -64,7 +63,7 @@ Total Scans: {1}"""
 """
 Format the ReversingLabs results for a summary to add to the ticket.
 """
-def reversinglabs_file_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def reversinglabs_file_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('reversinglabs_file_format() called')
     
     template = """Positives: {0}
@@ -85,7 +84,7 @@ Total Scans: {1}"""
 """
 Format the OpenDNS results for a summary to add to the ticket.
 """
-def opendns_domain_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def opendns_domain_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('opendns_domain_format() called')
     
     domain_parameters = phantom.collect2(container=container, datapath=['domain_reputation_1:action_result.parameter.domain'], action_results=results)
@@ -107,7 +106,7 @@ def opendns_domain_format(action=None, success=None, container=None, results=Non
 """
 Pull together the results of all the enrichment into one text block formatted to be added to ServiceNow as Work Notes.
 """
-def synthesize_enrichment(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def synthesize_enrichment(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('synthesize_enrichment() called')
     
     template = """All of the information below and further contextual actions are available in Phantom at {0}
@@ -151,11 +150,11 @@ def synthesize_enrichment(action=None, success=None, container=None, results=Non
 
     return
 
-def join_synthesize_enrichment(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def join_synthesize_enrichment(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('join_synthesize_enrichment() called')
 
-    # check if all connected incoming actions are done i.e. have succeeded or failed
-    if phantom.actions_done([ 'lookup_url_1', 'virustotal_file_reputation', 'reversinglabs_file_rep', 'google_url_reputation', 'domain_reputation_1', 'ip_reputation', 'deepsight_url_reputation' ]):
+    # check if all connected incoming playbooks, actions, or custom functions are done i.e. have succeeded or failed
+    if phantom.completed(action_names=['lookup_url_1', 'virustotal_file_reputation', 'reversinglabs_file_rep', 'google_url_reputation', 'domain_reputation_1', 'ip_reputation', 'deepsight_url_reputation']):
         
         # call connected block "synthesize_enrichment"
         synthesize_enrichment(container=container, handle=handle)
@@ -165,7 +164,7 @@ def join_synthesize_enrichment(action=None, success=None, container=None, result
 """
 Format the Alexa results for a summary to add to the ticket.
 """
-def alexa_url_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def alexa_url_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('alexa_url_format() called')
     
     url_parameters = phantom.collect2(container=container, datapath=['lookup_url_1:action_result.parameter.url'], action_results=results)
@@ -187,7 +186,7 @@ def alexa_url_format(action=None, success=None, container=None, results=None, ha
 """
 Format the Google Safe Browsing results for a summary to add to the ticket.
 """
-def google_url_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def google_url_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('google_url_format() called')
     
     url_parameters = phantom.collect2(container=container, datapath=['google_url_reputation:action_result.parameter.url'], action_results=results)
@@ -209,7 +208,7 @@ def google_url_format(action=None, success=None, container=None, results=None, h
 """
 Format the DeepSight results for a summary to add to the ticket.
 """
-def deepsight_url_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def deepsight_url_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('deepsight_url_format() called')
 
     url_parameters = phantom.collect2(container=container, datapath=['deepsight_url_reputation:action_result.parameter.url'], action_results=results)
@@ -229,9 +228,9 @@ def deepsight_url_format(action=None, success=None, container=None, results=None
 """
 Retrieve the full report from Symantec Content Analysis once detonation is complete.
 """
-def get_report(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_report(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_report() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'get_report' call
@@ -241,34 +240,33 @@ def get_report(action=None, success=None, container=None, results=None, handle=N
     
     # build parameters list for 'get_report' call
     for results_item_1 in results_data_1:
-        if results_item_1[0]:
-            parameters.append({
-                'task_id': results_item_1[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[1]},
-            })
+        parameters.append({
+            'task_id': results_item_1[0],
+            # context (artifact id) is added to associate results with the artifact
+            'context': {'artifact_id': results_item_1[1]},
+        })
 
-    phantom.act("get report", parameters=parameters, assets=['symantec_content_analysis'], callback=get_report_callback, name="get_report", parent_action=action)
+    phantom.act(action="get report", parameters=parameters, assets=['mas'], callback=get_report_callback, name="get_report", parent_action=action)
 
     return
 
-def get_report_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_report_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('get_report_callback() called')
     
-    reversinglabs_file_rep(action=action, success=success, container=container, results=results, handle=handle)
-    lookup_url_1(action=action, success=success, container=container, results=results, handle=handle)
-    domain_reputation_1(action=action, success=success, container=container, results=results, handle=handle)
-    ip_reputation(action=action, success=success, container=container, results=results, handle=handle)
-    virustotal_file_reputation(action=action, success=success, container=container, results=results, handle=handle)
-    google_url_reputation(action=action, success=success, container=container, results=results, handle=handle)
-    deepsight_url_reputation(action=action, success=success, container=container, results=results, handle=handle)
+    reversinglabs_file_rep(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    lookup_url_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    domain_reputation_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    ip_reputation(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    virustotal_file_reputation(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    google_url_reputation(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    deepsight_url_reputation(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
 
     return
 
 """
 Verify that there is a file in the Vault to detonate.
 """
-def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_1() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -281,14 +279,14 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        content_analysis_detonate(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        content_analysis_detonate(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 """
 Create a ticket in ServiceNow with the Work Notes displaying the enriched results collected in this playbook.
 """
-def create_servicenow_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def create_servicenow_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('create_servicenow_ticket() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -314,7 +312,7 @@ def create_servicenow_ticket(action=None, success=None, container=None, results=
 """
 Detonate the file in Symantec Content Analysis using the default IntelliVM environment to produce a full report of the process activity, filesystem changes, network connections, registry changes, and other system activity when the file is executed.
 """
-def content_analysis_detonate(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def content_analysis_detonate(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('content_analysis_detonate() called')
 
     # collect data for 'content_analysis_detonate' call
@@ -326,26 +324,26 @@ def content_analysis_detonate(action=None, success=None, container=None, results
     for container_item in container_data:
         if container_item[0]:
             parameters.append({
+                'vault_id': container_item[0],
+                'environment': "IntelliVM",
                 'profile': "",
                 'priority': "high",
-                'description': "",
+                'source': "Phantom",
                 'label': "",
-                'environment': "IntelliVM",
-                'source': "www",
-                'vault_id': container_item[0],
+                'description': "",
                 'owner': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("detonate file", parameters=parameters, assets=['symantec_content_analysis'], callback=get_report, name="content_analysis_detonate")
+    phantom.act(action="detonate file", parameters=parameters, assets=['mas'], callback=get_report, name="content_analysis_detonate")
 
     return
 
 """
 Query the Google Safe Browsing API to determine if the URL detected by Symantec Content Analysis is known to be malicious.
 """
-def google_url_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def google_url_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('google_url_reputation() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -371,9 +369,9 @@ def google_url_reputation(action=None, success=None, container=None, results=Non
 """
 Query the reputation of the SHA1 file hash using ReversingLabs.
 """
-def reversinglabs_file_rep(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def reversinglabs_file_rep(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('reversinglabs_file_rep() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'reversinglabs_file_rep' call
@@ -390,14 +388,14 @@ def reversinglabs_file_rep(action=None, success=None, container=None, results=No
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("file reputation", parameters=parameters, assets=['reversinglabs'], callback=reversinglabs_file_format, name="reversinglabs_file_rep", parent_action=action)
+    phantom.act(action="file reputation", parameters=parameters, assets=['reversinglabs'], callback=reversinglabs_file_format, name="reversinglabs_file_rep", parent_action=action)
 
     return
 
 """
 Query Symantec DeepSight for threat intelligence related to the URL's requested during the file detonation.
 """
-def deepsight_url_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def deepsight_url_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('deepsight_url_reputation() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -423,7 +421,7 @@ def deepsight_url_reputation(action=None, success=None, container=None, results=
 """
 Query alexa.com for the traffic rank of the domain underlying each of the URL's requested during the file detonation. Domains without much traffic may be less legitimate.
 """
-def lookup_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def lookup_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('lookup_url_1() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -449,7 +447,7 @@ def lookup_url_1(action=None, success=None, container=None, results=None, handle
 """
 Query OpenDNS Investigate for intelligence about the domains that were resolved during file detonation.
 """
-def domain_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def domain_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('domain_reputation_1() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -475,7 +473,7 @@ def domain_reputation_1(action=None, success=None, container=None, results=None,
 """
 Query Anomali ThreatStream for intelligence related to any IP addresses that were connected to during file detonation.
 """
-def ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('ip_reputation() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -501,7 +499,7 @@ def ip_reputation(action=None, success=None, container=None, results=None, handl
 """
 Format the ThreatStream results for a summary to add to the ticket.
 """
-def threatstream_ip_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def threatstream_ip_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('threatstream_ip_format() called')
 
     ip_parameters = phantom.collect2(container=container, datapath=['ip_reputation:action_result.parameter.ip'], action_results=results)
@@ -524,7 +522,7 @@ def threatstream_ip_format(action=None, success=None, container=None, results=No
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
