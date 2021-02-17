@@ -2,13 +2,12 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": ["Jira", "SSH", "HTTP"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "",
             "description": "This playbook gathers basic system information from a CentOS 7 server using SSH. Phantom is configured to poll Jira for new tickets, and the investigation is kicked off automatically when a ticket with the tag \"new_linux_server\" is opened. The results of the SSH commands are formatted and added to the new Jira ticket as comments to help the analyst make a quick decision about how to handle the server. The first time one of these tickets comes through Phantom it will be turned into a Case, then any future tickets will be added to the existing Case to allow all of these servers to be treated as a batch.",
-            "hash": "1062e28ca16f8d171cb5a8ea1712ab14fd49ea89",
+            "hash": "f6084e8641f630229f6e46f58a9a56bdca92b340",
             "joint": {
                 "cells": [
                     {
@@ -51,7 +50,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -74,8 +73,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 465,
-                        "line_start": 452,
+                        "line_end": 474,
+                        "line_start": 461,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -216,8 +215,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 17,
-                        "line_start": 9,
+                        "line_end": 16,
+                        "line_start": 8,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -625,7 +624,10 @@
                                 "display": "none"
                             },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn_grey.svg"
                             },
                             "g.notes": {
                                 "display": "block"
@@ -635,7 +637,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def get_jira_key(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_jira_key() called')\n    input_parameter_0 = \"\"\n\n    get_jira_key__jira_key = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    container_raw = phantom.get_raw_data(container)\n    container_parsed = json.loads(container_raw)\n    get_jira_key__jira_key = container_parsed['key']\n    phantom.debug(\"using Jira ticket with key: {}\".format(get_jira_key__jira_key))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='get_jira_key:jira_key', value=json.dumps(get_jira_key__jira_key))\n    get_ticket(container=container)\n\n    return",
+                        "block_code": "def get_jira_key(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_jira_key() called')\n    \n    input_parameter_0 = \"\"\n\n    get_jira_key__jira_key = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    container_raw = phantom.get_raw_data(container)\n    container_parsed = json.loads(container_raw)\n    get_jira_key__jira_key = container_parsed['key']\n    phantom.debug(\"using Jira ticket with key: {}\".format(get_jira_key__jira_key))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='get_jira_key:jira_key', value=json.dumps(get_jira_key__jira_key))\n    get_ticket(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -643,7 +645,7 @@
                         "connection_name": "",
                         "connection_type": "",
                         "customCodeEndLineOffset": 7,
-                        "customCodeStartLine": 9,
+                        "customCodeStartLine": 10,
                         "custom_callback": "",
                         "custom_code": "def get_jira_key(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    \n    get_jira_key__jira_key = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    container_raw = phantom.get_raw_data(container)\n    container_parsed = json.loads(container_raw)\n    get_jira_key__jira_key = container_parsed['key']\n    phantom.debug(\"using Jira ticket with key: {}\".format(get_jira_key__jira_key))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='get_jira_key:jira_key', value=json.dumps(get_jira_key__jira_key))\n    get_ticket_1()\n\n    return",
                         "custom_join": "",
@@ -661,8 +663,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 124,
-                        "line_start": 99,
+                        "legacy": true,
+                        "line_end": 126,
+                        "line_start": 100,
                         "message": "Configuring now",
                         "name": "custom function",
                         "notes": "Extract the Jira Key (the project identifier plus the issue ID in the form ABC-1234) from the raw data of the container as ingested from Jira. ",
@@ -749,7 +752,7 @@
                             "width": 180
                         },
                         "state": "custom function",
-                        "status": "",
+                        "status": "deprecating",
                         "title": "custom function",
                         "type": "coa.FunctionBlock",
                         "userGeneratedCode": "\n    # Write your custom code here...\n    container_raw = phantom.get_raw_data(container)\n    container_parsed = json.loads(container_raw)\n    get_jira_key__jira_key = container_parsed['key']\n    phantom.debug(\"using Jira ticket with key: {}\".format(get_jira_key__jira_key))\n",
@@ -998,7 +1001,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def search_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('search_containers() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'search_containers' call\n\n    parameters = []\n    \n    # build parameters list for 'search_containers' call\n    parameters.append({\n        'headers': \"\",\n        'location': \"/rest/search?query=new_linux_server&page_size=0&categories=container\",\n        'verify_certificate': False,\n    })\n\n    phantom.act(\"get data\", parameters=parameters, assets=['http'], callback=format_get_containers, name=\"search_containers\")\n\n    return",
+                        "block_code": "def search_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('search_containers() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'search_containers' call\n\n    parameters = []\n    \n    # build parameters list for 'search_containers' call\n    parameters.append({\n        'headers': \"\",\n        'location': \"/rest/search?query=new_linux_server&page_size=0&categories=container\",\n        'verify_certificate': False,\n    })\n\n    phantom.act(action=\"get data\", parameters=parameters, assets=['http'], callback=format_get_containers, name=\"search_containers\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 356,
                         "callsback": true,
@@ -1023,8 +1026,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 167,
-                        "line_start": 147,
+                        "line_end": 169,
+                        "line_start": 149,
                         "message": "Configuring now",
                         "name": "get data",
                         "notes": "Search for all existing Phantom containers that match the string \"new_linux_server\" to find other similar containers.",
@@ -1169,7 +1172,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_get_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_get_containers() called')\n    \n    template = \"\"\"%%\n/rest/container/{0}\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"search_containers:action_result.data.*.response_body.results.*.id\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_get_containers\")\n\n    get_containers(container=container)\n\n    return",
+                        "block_code": "def format_get_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_get_containers() called')\n    \n    template = \"\"\"%%\n/rest/container/{0}\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"search_containers:action_result.data.*.response_body.results.*.id\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_get_containers\")\n\n    get_containers(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1193,8 +1196,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 220,
-                        "line_start": 202,
+                        "line_end": 223,
+                        "line_start": 205,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Format an HTTP GET request to send to this local Phantom instance to pull down all the metadata from each container found by the previous search.",
@@ -1520,7 +1523,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def get_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_containers() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_containers' call\n    formatted_data_1 = phantom.get_format_data(name='format_get_containers__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'get_containers' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'headers': \"\",\n            'location': formatted_part_1,\n            'verify_certificate': False,\n        })\n\n    phantom.act(\"get data\", parameters=parameters, assets=['http'], callback=promote_or_add_to_case, name=\"get_containers\")\n\n    return",
+                        "block_code": "def get_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_containers() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_containers' call\n    formatted_data_1 = phantom.get_format_data(name='format_get_containers__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'get_containers' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'headers': \"\",\n            'location': formatted_part_1,\n            'verify_certificate': False,\n        })\n\n    phantom.act(action=\"get data\", parameters=parameters, assets=['http'], callback=promote_or_add_to_case, name=\"get_containers\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1545,8 +1548,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 245,
-                        "line_start": 223,
+                        "line_end": 248,
+                        "line_start": 226,
                         "message": "Configuring now",
                         "name": "get data",
                         "notes": "Run the formatted HTTP GET request to pull the metadata about all identified containers.",
@@ -1677,10 +1680,10 @@
                                 "display": "none"
                             },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
                             },
                             "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_warn_grey.svg"
                             },
                             "g.notes": {
                                 "display": "block"
@@ -1690,7 +1693,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def promote_or_add_to_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('promote_or_add_to_case() called')\n    results_data_1 = phantom.collect2(container=container, datapath=['get_containers:action_result.data.*.response_body'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    found_case = False\n    \n    for result_container in results_item_1_0:\n        if result_container['container_type'] == 'case' and result_container['data']['fields']['customfield_10201'][0] == 'new_linux_server':\n            phantom.debug(\"found matching case with id {}, so this container (id {}) will be added to that case\".format(result_container['id'], container['id']))\n            phantom.merge(case=result_container['id'], container_id=container['id'])\n            found_case = True\n    \n    if not found_case:\n        # if the loop finishes no case was found, so this is the first one and it should be promoted to a case\n        phantom.debug(\"did not find matching case, so this container (id {}) will be promoted to a case\".format(container['id']))\n        phantom.promote(container=container, template=\"Vulnerability Disclosure\", trace=True)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n    check_centos_version(container=container)\n\n    return",
+                        "block_code": "def promote_or_add_to_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('promote_or_add_to_case() called')\n    \n    results_data_1 = phantom.collect2(container=container, datapath=['get_containers:action_result.data.*.response_body'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    found_case = False\n    \n    for result_container in results_item_1_0:\n        if result_container['container_type'] == 'case' and result_container['data']['fields']['customfield_10201'][0] == 'new_linux_server':\n            phantom.debug(\"found matching case with id {}, so this container (id {}) will be added to that case\".format(result_container['id'], container['id']))\n            phantom.merge(case=result_container['id'], container_id=container['id'])\n            found_case = True\n    \n    if not found_case:\n        # if the loop finishes no case was found, so this is the first one and it should be promoted to a case\n        phantom.debug(\"did not find matching case, so this container (id {}) will be promoted to a case\".format(container['id']))\n        phantom.promote(container=container, template=\"Vulnerability Disclosure\", trace=True)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n    check_centos_version(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1698,7 +1701,7 @@
                         "connection_name": "get containers",
                         "connection_type": "action",
                         "customCodeEndLineOffset": 5,
-                        "customCodeStartLine": 8,
+                        "customCodeStartLine": 9,
                         "custom_callback": "",
                         "custom_code": "def promote_or_add_to_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('promote_or_add_to_case() called')\n    results_data_1 = phantom.collect2(container=container, datapath=['get_containers:action_result.data.*.response_body'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    found_case = False\n    \n    for result_container in results_item_1_0:\n        if result_container['container_type'] == 'case' and result_container['data']['fields']['customfield_10201'][0] == 'new_linux_server':\n            phantom.debug(\"found matching case with id {}, so this container (id {}) will be added to that case\".format(result_container['id'], container['id']))\n            phantom.merge(case=result_container['id'], container_id=container['id'])\n            found_case = True\n    \n    if not found_case:\n        # if the loop finishes no case was found, so this is the first one and it should be promoted to a case\n        phantom.debug(\"did not find matching case, so this container (id {}) will be promoted to a case\".format(container['id']))\n        phantom.promote(container=container, template=\"Vulnerability Disclosure\", trace=True)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    return",
                         "custom_join": "",
@@ -1716,8 +1719,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 199,
-                        "line_start": 170,
+                        "legacy": true,
+                        "line_end": 202,
+                        "line_start": 172,
                         "message": "Configuring now",
                         "name": "custom function",
                         "notes": "Check if any of the identified containers from the search have been promoted to a case and have the tag \"new_linux_server\". If a match is found, merge this container into that existing case to work with all of these servers in one place. If no matching case is found, promote this container to a case and use that going forward.",
@@ -1804,7 +1808,7 @@
                             "width": 180
                         },
                         "state": "custom function",
-                        "status": "",
+                        "status": "deprecating",
                         "title": "custom function",
                         "type": "coa.FunctionBlock",
                         "userGeneratedCode": "\n    found_case = False\n    \n    for result_container in results_item_1_0:\n        if result_container['container_type'] == 'case' and result_container['data']['fields']['customfield_10201'][0] == 'new_linux_server':\n            phantom.debug(\"found matching case with id {}, so this container (id {}) will be added to that case\".format(result_container['id'], container['id']))\n            phantom.merge(case=result_container['id'], container_id=container['id'])\n            found_case = True\n    \n    if not found_case:\n        # if the loop finishes no case was found, so this is the first one and it should be promoted to a case\n        phantom.debug(\"did not find matching case, so this container (id {}) will be promoted to a case\".format(container['id']))\n        phantom.promote(container=container, template=\"Vulnerability Disclosure\", trace=True)\n",
@@ -1898,7 +1902,8 @@
                                         "data_path": "action_result.status",
                                         "data_type": "string",
                                         "example_values": [
-                                            "success"
+                                            "success",
+                                            "failed"
                                         ]
                                     },
                                     {
@@ -1912,17 +1917,29 @@
                                         ]
                                     },
                                     {
-                                        "column_name": "Description",
-                                        "column_order": 1,
                                         "data_path": "action_result.data.*.description",
                                         "data_type": "string",
                                         "example_values": [
-                                            "The Manhattan Project was a research and development project that produced the first nuclear weapons during World War II. It was led by the United States with the support of the United Kingdom and Canada."
+                                            "This is a sample testing description of the ticket"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.CustomerSanText",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.Epic Link",
                                         "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.Domain Test",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.Sprint",
@@ -1962,6 +1979,23 @@
                                         "data_type": "string"
                                     },
                                     {
+                                        "contains": [
+                                            "jira user account id"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.assignee.accountId",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "5d2ef6ab52a8370c567f27bb"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.assignee.accountType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "atlassian"
+                                        ]
+                                    },
+                                    {
                                         "data_path": "action_result.data.*.fields.assignee.active",
                                         "data_type": "boolean",
                                         "example_values": [
@@ -1983,7 +2017,7 @@
                                         "data_path": "action_result.data.*.fields.assignee.avatarUrls.24x24",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -1993,7 +2027,7 @@
                                         "data_path": "action_result.data.*.fields.assignee.avatarUrls.32x32",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2003,24 +2037,42 @@
                                         "data_path": "action_result.data.*.fields.assignee.avatarUrls.48x48",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira user display name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.assignee.displayName",
                                         "data_type": "string"
                                     },
                                     {
+                                        "contains": [
+                                            "email"
+                                        ],
                                         "data_path": "action_result.data.*.fields.assignee.emailAddress",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "abc@domain.com"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.assignee.key",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "admin"
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "user name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.assignee.name",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "admin"
+                                        ]
                                     },
                                     {
                                         "contains": [
@@ -2029,12 +2081,29 @@
                                         "data_path": "action_result.data.*.fields.assignee.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.assignee.timeZone",
                                         "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "jira user account id"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.attachment.*.author.accountId",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "557058:c4593bd2-4853-4a5e-a9ed-278ca5f17dce"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.attachment.*.author.accountType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "atlassian"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.attachment.*.author.active",
@@ -2051,7 +2120,7 @@
                                         "data_path": "action_result.data.*.fields.attachment.*.author.avatarUrls.16x16",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2061,7 +2130,7 @@
                                         "data_path": "action_result.data.*.fields.attachment.*.author.avatarUrls.24x24",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2071,7 +2140,7 @@
                                         "data_path": "action_result.data.*.fields.attachment.*.author.avatarUrls.32x32",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2081,14 +2150,17 @@
                                         "data_path": "action_result.data.*.fields.attachment.*.author.avatarUrls.48x48",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira user display name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.attachment.*.author.displayName",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Phantom Admin"
+                                            "Test Admin"
                                         ]
                                     },
                                     {
@@ -2098,7 +2170,7 @@
                                         "data_path": "action_result.data.*.fields.attachment.*.author.emailAddress",
                                         "data_type": "string",
                                         "example_values": [
-                                            "notifications@phantom.us"
+                                            "notifications@domain.us"
                                         ]
                                     },
                                     {
@@ -2109,6 +2181,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "user name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.attachment.*.author.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -2122,14 +2197,14 @@
                                         "data_path": "action_result.data.*.fields.attachment.*.author.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/user?username=admin"
+                                            "http://10.10.123.124:8080/rest/api/2/user?username=admin"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.attachment.*.author.timeZone",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Asia/Kolkata"
+                                            "UTC"
                                         ]
                                     },
                                     {
@@ -2139,7 +2214,7 @@
                                         "data_path": "action_result.data.*.fields.attachment.*.content",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/attachment/10403/Add+Comment.png"
+                                            "http://10.10.123.124:8080/secure/attachment/10403/Add+Comment.png"
                                         ]
                                     },
                                     {
@@ -2177,7 +2252,7 @@
                                         "data_path": "action_result.data.*.fields.attachment.*.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/attachment/10403"
+                                            "http://10.10.123.124:8080/rest/api/2/attachment/10403"
                                         ]
                                     },
                                     {
@@ -2194,7 +2269,7 @@
                                         "data_path": "action_result.data.*.fields.attachment.*.thumbnail",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/thumbnail/10403/_thumb_10403.png"
+                                            "http://10.10.123.124:8080/secure/thumbnail/10403/_thumb_10403.png"
                                         ]
                                     },
                                     {
@@ -2212,7 +2287,7 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.author.avatarUrls.16x16",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2222,7 +2297,7 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.author.avatarUrls.24x24",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2232,7 +2307,7 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.author.avatarUrls.32x32",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2242,14 +2317,17 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.author.avatarUrls.48x48",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira user display name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.comment.comments.*.author.displayName",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Phantom Admin"
+                                            "Test Admin"
                                         ]
                                     },
                                     {
@@ -2259,7 +2337,7 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.author.emailAddress",
                                         "data_type": "string",
                                         "example_values": [
-                                            "notifications@phantom.us"
+                                            "notifications@domain.us"
                                         ]
                                     },
                                     {
@@ -2270,6 +2348,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "user name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.comment.comments.*.author.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -2283,21 +2364,21 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.author.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/user?username=admin"
+                                            "http://10.10.123.124:8080/rest/api/2/user?username=admin"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.comment.comments.*.author.timeZone",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Asia/Kolkata"
+                                            "UTC"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.comment.comments.*.body",
                                         "data_type": "string",
                                         "example_values": [
-                                            "turn your key, sir"
+                                            "This is a sample testing comment body"
                                         ]
                                     },
                                     {
@@ -2321,7 +2402,7 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/issue/10246/comment/10004"
+                                            "http://10.10.123.124:8080/rest/api/2/issue/10246/comment/10004"
                                         ]
                                     },
                                     {
@@ -2339,7 +2420,7 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.updateAuthor.avatarUrls.16x16",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2349,7 +2430,7 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.updateAuthor.avatarUrls.24x24",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2359,7 +2440,7 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.updateAuthor.avatarUrls.32x32",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2369,14 +2450,17 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.updateAuthor.avatarUrls.48x48",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira user display name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.comment.comments.*.updateAuthor.displayName",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Phantom Admin"
+                                            "Test Admin"
                                         ]
                                     },
                                     {
@@ -2386,7 +2470,7 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.updateAuthor.emailAddress",
                                         "data_type": "string",
                                         "example_values": [
-                                            "notifications@phantom.us"
+                                            "notifications@domain.us"
                                         ]
                                     },
                                     {
@@ -2397,6 +2481,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "user name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.comment.comments.*.updateAuthor.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -2410,14 +2497,14 @@
                                         "data_path": "action_result.data.*.fields.comment.comments.*.updateAuthor.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/user?username=admin"
+                                            "http://10.10.123.124:8080/rest/api/2/user?username=admin"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.comment.comments.*.updateAuthor.timeZone",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Asia/Kolkata"
+                                            "UTC"
                                         ]
                                     },
                                     {
@@ -2425,6 +2512,22 @@
                                         "data_type": "string",
                                         "example_values": [
                                             "2016-03-15T17:11:49.767-0700"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.comment.comments.*.visibility.type",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "group",
+                                            "role"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.comment.comments.*.visibility.value",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "jira-software-users",
+                                            "Users"
                                         ]
                                     },
                                     {
@@ -2459,7 +2562,7 @@
                                         "data_path": "action_result.data.*.fields.components.*.name",
                                         "data_type": "string",
                                         "example_values": [
-                                            "comp_hork1"
+                                            "comp_test1"
                                         ]
                                     },
                                     {
@@ -2469,7 +2572,7 @@
                                         "data_path": "action_result.data.*.fields.components.*.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/component/10104"
+                                            "http://10.10.123.124:8080/rest/api/2/component/10104"
                                         ]
                                     },
                                     {
@@ -2477,6 +2580,23 @@
                                         "data_type": "string",
                                         "example_values": [
                                             "2016-03-13T13:22:08.254-0700"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "jira user account id"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.creator.accountId",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "557058:c4593bd2-4853-4a5e-a9ed-278ca5f17dce"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.creator.accountType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "atlassian"
                                         ]
                                     },
                                     {
@@ -2494,7 +2614,7 @@
                                         "data_path": "action_result.data.*.fields.creator.avatarUrls.16x16",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2504,7 +2624,7 @@
                                         "data_path": "action_result.data.*.fields.creator.avatarUrls.24x24",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2514,7 +2634,7 @@
                                         "data_path": "action_result.data.*.fields.creator.avatarUrls.32x32",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2524,14 +2644,17 @@
                                         "data_path": "action_result.data.*.fields.creator.avatarUrls.48x48",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira user display name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.creator.displayName",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Phantom Admin"
+                                            "Test Admin"
                                         ]
                                     },
                                     {
@@ -2541,7 +2664,7 @@
                                         "data_path": "action_result.data.*.fields.creator.emailAddress",
                                         "data_type": "string",
                                         "example_values": [
-                                            "notifications@phantom.us"
+                                            "notifications@domain.us"
                                         ]
                                     },
                                     {
@@ -2552,6 +2675,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "user name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.creator.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -2565,21 +2691,21 @@
                                         "data_path": "action_result.data.*.fields.creator.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/user?username=admin"
+                                            "http://10.10.123.124:8080/rest/api/2/user?username=admin"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.creator.timeZone",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Asia/Kolkata"
+                                            "UTC"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.customfield_10000.errorMessage",
                                         "data_type": "string",
                                         "example_values": [
-                                            "The Service Desk you are trying to view does not exist."
+                                            "The Service Desk you are trying to view does not exist"
                                         ]
                                     },
                                     {
@@ -2593,7 +2719,7 @@
                                         "data_path": "action_result.data.*.fields.customfield_10002.errorMessage",
                                         "data_type": "string",
                                         "example_values": [
-                                            "The Service Desk you are trying to view does not exist."
+                                            "The Service Desk you are trying to view does not exist"
                                         ]
                                     },
                                     {
@@ -2604,45 +2730,10 @@
                                         ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.fields.customfield_10100",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10101",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10109",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "0|i000lj:"
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10200",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10201",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10202",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10300",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10301",
-                                        "data_type": "string"
-                                    },
-                                    {
                                         "data_path": "action_result.data.*.fields.customfield_10400.errorMessage",
                                         "data_type": "string",
                                         "example_values": [
-                                            "The Service Desk you are trying to view does not exist."
+                                            "The Service Desk you are trying to view does not exist"
                                         ]
                                     },
                                     {
@@ -2653,66 +2744,10 @@
                                         ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.fields.customfield_10401",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10402",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10500",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10501",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10600",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10601",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10602",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10603",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10605",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10606",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10701",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10702",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10703",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10704",
-                                        "data_type": "string"
-                                    },
-                                    {
                                         "data_path": "action_result.data.*.fields.description",
                                         "data_type": "string",
                                         "example_values": [
-                                            "The Manhattan Project was a research and development project that produced the first nuclear weapons during World War II. It was led by the United States with the support of the United Kingdom and Canada."
+                                            "This is a sample testing description of the ticket"
                                         ]
                                     },
                                     {
@@ -2763,7 +2798,268 @@
                                         "data_path": "action_result.data.*.fields.fixVersions.*.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/version/10000"
+                                            "http://10.10.123.124:8080/rest/api/2/version/10000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10615"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.issuetype.avatarId",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            10303
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.issuetype.description",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "This Issue Type is used to create Zephyr Test within Jira"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.issuetype.iconUrl",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://10.10.123.124:8080/download/resources/com.thed.zephyr.je/images/icons/ico_zephyr_issuetype.png"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.issuetype.id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10400"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.issuetype.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Test"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.issuetype.self",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://10.10.123.124:8080/rest/api/2/issuetype/10400"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.issuetype.subtask",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.priority.iconUrl",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://10.10.123.124:8080/images/icons/priorities/high.svg"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.priority.id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "jira ticket priority"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.priority.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "High"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.priority.self",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://10.10.123.124:8080/rest/api/2/priority/2"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.status.description",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.status.iconUrl",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://10.10.123.124:8080/images/icons/statuses/open.png"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.status.id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.status.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "To Do"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.status.self",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://10.1.16.180:8080/rest/api/2/status/10000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.status.statusCategory.colorName",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "blue-gray"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.status.statusCategory.id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            2
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.status.statusCategory.key",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "new"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.status.statusCategory.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "To Do"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.status.statusCategory.self",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://10.10.123.124:8080/rest/api/2/statuscategory/2"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.fields.summary",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Mission Control Functionality"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "11849"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "jira ticket key"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.key",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "ZEP-14"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.outwardIssue.self",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://10.10.123.124:8080/rest/api/2/issue/11849"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.self",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://10.10.123.124:8080/rest/api/2/issueLink/10615"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.type.id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.type.inward",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "is blocked by"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.type.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Blocks"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.type.outward",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "blocks"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.issuelinks.*.type.self",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://10.10.123.124:8080/rest/api/2/issueLinkType/10000"
                                         ]
                                     },
                                     {
@@ -2777,7 +3073,7 @@
                                         "data_path": "action_result.data.*.fields.issuetype.description",
                                         "data_type": "string",
                                         "example_values": [
-                                            "A problem which impairs or prevents the functions of the product."
+                                            "A problem which impairs or prevents the functions of the product"
                                         ]
                                     },
                                     {
@@ -2787,7 +3083,7 @@
                                         "data_path": "action_result.data.*.fields.issuetype.iconUrl",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/viewavatar?size=xsmall&avatarId=10303&avatarType=issuetype"
+                                            "http://10.10.123.124:8080/secure/viewavatar?size=xsmall&avatarId=10303&avatarType=issuetype"
                                         ]
                                     },
                                     {
@@ -2798,6 +3094,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira issue type"
+                                        ],
                                         "data_path": "action_result.data.*.fields.issuetype.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -2811,7 +3110,7 @@
                                         "data_path": "action_result.data.*.fields.issuetype.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/issuetype/1"
+                                            "http://10.10.123.124:8080/rest/api/2/issuetype/1"
                                         ]
                                     },
                                     {
@@ -2843,7 +3142,7 @@
                                         "data_path": "action_result.data.*.fields.priority.iconUrl",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/images/icons/priorities/medium.svg"
+                                            "http://10.10.123.124:8080/images/icons/priorities/medium.svg"
                                         ]
                                     },
                                     {
@@ -2854,6 +3153,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira ticket priority"
+                                        ],
                                         "data_path": "action_result.data.*.fields.priority.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -2867,7 +3169,7 @@
                                         "data_path": "action_result.data.*.fields.priority.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/priority/3"
+                                            "http://10.10.123.124:8080/rest/api/2/priority/3"
                                         ]
                                     },
                                     {
@@ -2891,7 +3193,7 @@
                                         "data_path": "action_result.data.*.fields.project.avatarUrls.16x16",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/projectavatar?size=xsmall&avatarId=10403"
+                                            "http://10.10.123.124:8080/secure/projectavatar?size=xsmall&avatarId=10403"
                                         ]
                                     },
                                     {
@@ -2901,7 +3203,7 @@
                                         "data_path": "action_result.data.*.fields.project.avatarUrls.24x24",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/projectavatar?size=small&avatarId=10403"
+                                            "http://10.10.123.124:8080/secure/projectavatar?size=small&avatarId=10403"
                                         ]
                                     },
                                     {
@@ -2911,7 +3213,7 @@
                                         "data_path": "action_result.data.*.fields.project.avatarUrls.32x32",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/projectavatar?size=medium&avatarId=10403"
+                                            "http://10.10.123.124:8080/secure/projectavatar?size=medium&avatarId=10403"
                                         ]
                                     },
                                     {
@@ -2921,7 +3223,7 @@
                                         "data_path": "action_result.data.*.fields.project.avatarUrls.48x48",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/projectavatar?avatarId=10403"
+                                            "http://10.10.123.124:8080/secure/projectavatar?avatarId=10403"
                                         ]
                                     },
                                     {
@@ -2932,6 +3234,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira project key"
+                                        ],
                                         "data_path": "action_result.data.*.fields.project.key",
                                         "data_type": "string",
                                         "example_values": [
@@ -2942,7 +3247,42 @@
                                         "data_path": "action_result.data.*.fields.project.name",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Manhattan"
+                                            "TestProject"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.projectCategory.description",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "test"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.projectCategory.id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.projectCategory.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "QA-Team"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.projectCategory.self",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "https://testlab.atlassian.net/rest/api/2/projectCategory/10000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.projectTypeKey",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "software"
                                         ]
                                     },
                                     {
@@ -2952,7 +3292,22 @@
                                         "data_path": "action_result.data.*.fields.project.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/project/10100"
+                                            "http://10.10.123.124:8080/rest/api/2/project/10100"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.simplified",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.reporter.accountType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "atlassian"
                                         ]
                                     },
                                     {
@@ -2970,7 +3325,7 @@
                                         "data_path": "action_result.data.*.fields.reporter.avatarUrls.16x16",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2980,7 +3335,7 @@
                                         "data_path": "action_result.data.*.fields.reporter.avatarUrls.24x24",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -2990,7 +3345,7 @@
                                         "data_path": "action_result.data.*.fields.reporter.avatarUrls.32x32",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -3000,14 +3355,17 @@
                                         "data_path": "action_result.data.*.fields.reporter.avatarUrls.48x48",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira user display name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.reporter.displayName",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Phantom Admin"
+                                            "Test Admin"
                                         ]
                                     },
                                     {
@@ -3017,7 +3375,7 @@
                                         "data_path": "action_result.data.*.fields.reporter.emailAddress",
                                         "data_type": "string",
                                         "example_values": [
-                                            "notifications@phantom.us"
+                                            "notifications@domain.us"
                                         ]
                                     },
                                     {
@@ -3028,6 +3386,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "user name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.reporter.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -3041,21 +3402,25 @@
                                         "data_path": "action_result.data.*.fields.reporter.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/user?username=admin"
+                                            "http://10.10.123.124:8080/rest/api/2/user?username=admin"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.reporter.timeZone",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Asia/Kolkata"
+                                            "UTC"
                                         ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.resolution",
+                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.resolution.description",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Work has been completed on this issue."
+                                            "Work has been completed on this issue"
                                         ]
                                     },
                                     {
@@ -3066,6 +3431,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira ticket resolution"
+                                        ],
                                         "data_path": "action_result.data.*.fields.resolution.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -3079,7 +3447,7 @@
                                         "data_path": "action_result.data.*.fields.resolution.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/resolution/10000"
+                                            "http://10.10.123.124:8080/rest/api/2/resolution/10000"
                                         ]
                                     },
                                     {
@@ -3090,10 +3458,17 @@
                                         ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.fields.status.description",
+                                        "data_path": "action_result.data.*.fields.security",
                                         "data_type": "string",
                                         "example_values": [
                                             ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.status.description",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "This is a sample testing description"
                                         ]
                                     },
                                     {
@@ -3103,7 +3478,7 @@
                                         "data_path": "action_result.data.*.fields.status.iconUrl",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/images/icons/statuses/closed.png"
+                                            "http://10.10.123.124:8080/images/icons/statuses/closed.png"
                                         ]
                                     },
                                     {
@@ -3127,7 +3502,7 @@
                                         "data_path": "action_result.data.*.fields.status.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/status/10001"
+                                            "http://10.10.123.124:8080/rest/api/2/status/10001"
                                         ]
                                     },
                                     {
@@ -3165,14 +3540,21 @@
                                         "data_path": "action_result.data.*.fields.status.statusCategory.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/statuscategory/3"
+                                            "http://10.10.123.124:8080/rest/api/2/statuscategory/3"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.statuscategorychangedate",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2019-07-22T22:43:07.771-0700"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.summary",
                                         "data_type": "string",
                                         "example_values": [
-                                            "nuclear blast vaporizes flesh"
+                                            "Sample summary"
                                         ]
                                     },
                                     {
@@ -3231,7 +3613,7 @@
                                         "data_path": "action_result.data.*.fields.versions.*.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/version/10000"
+                                            "http://10.10.123.124:8080/rest/api/2/version/10000"
                                         ]
                                     },
                                     {
@@ -3249,7 +3631,7 @@
                                         "data_path": "action_result.data.*.fields.votes.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/issue/MAN-1/votes"
+                                            "http://10.10.123.124:8080/rest/api/2/issue/MAN-1/votes"
                                         ]
                                     },
                                     {
@@ -3274,7 +3656,7 @@
                                         "data_path": "action_result.data.*.fields.watches.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/issue/MAN-1/watchers"
+                                            "http://10.10.123.124:8080/rest/api/2/issue/MAN-1/watchers"
                                         ]
                                     },
                                     {
@@ -3313,8 +3695,6 @@
                                         ]
                                     },
                                     {
-                                        "column_name": "ID",
-                                        "column_order": 2,
                                         "data_path": "action_result.data.*.id",
                                         "data_type": "string",
                                         "example_values": [
@@ -3322,8 +3702,9 @@
                                         ]
                                     },
                                     {
-                                        "column_name": "Type",
-                                        "column_order": 3,
+                                        "contains": [
+                                            "jira issue type"
+                                        ],
                                         "data_path": "action_result.data.*.issue_type",
                                         "data_type": "string",
                                         "example_values": [
@@ -3331,8 +3712,6 @@
                                         ]
                                     },
                                     {
-                                        "column_name": "Key",
-                                        "column_order": 4,
                                         "contains": [
                                             "jira ticket key"
                                         ],
@@ -3343,8 +3722,9 @@
                                         ]
                                     },
                                     {
-                                        "column_name": "Priority",
-                                        "column_order": 6,
+                                        "contains": [
+                                            "jira ticket priority"
+                                        ],
                                         "data_path": "action_result.data.*.priority",
                                         "data_type": "string",
                                         "example_values": [
@@ -3352,6 +3732,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira project key"
+                                        ],
                                         "data_path": "action_result.data.*.project_key",
                                         "data_type": "string",
                                         "example_values": [
@@ -3359,17 +3742,19 @@
                                         ]
                                     },
                                     {
-                                        "column_name": "Reporter",
-                                        "column_order": 8,
+                                        "contains": [
+                                            "jira user display name"
+                                        ],
                                         "data_path": "action_result.data.*.reporter",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Phantom Admin"
+                                            "Test Admin"
                                         ]
                                     },
                                     {
-                                        "column_name": "Resolution",
-                                        "column_order": 7,
+                                        "contains": [
+                                            "jira ticket resolution"
+                                        ],
                                         "data_path": "action_result.data.*.resolution",
                                         "data_type": "string",
                                         "example_values": [
@@ -3377,8 +3762,6 @@
                                         ]
                                     },
                                     {
-                                        "column_name": "Status",
-                                        "column_order": 5,
                                         "data_path": "action_result.data.*.status",
                                         "data_type": "string",
                                         "example_values": [
@@ -3386,12 +3769,10 @@
                                         ]
                                     },
                                     {
-                                        "column_name": "Summary",
-                                        "column_order": 0,
                                         "data_path": "action_result.data.*.summary",
                                         "data_type": "string",
                                         "example_values": [
-                                            "nuclear blast vaporizes flesh"
+                                            "Sample summary"
                                         ]
                                     },
                                     {
@@ -3506,7 +3887,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def get_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_ticket() called')\n\n    get_jira_key__jira_key = json.loads(phantom.get_run_data(key='get_jira_key:jira_key'))\n    # collect data for 'get_ticket' call\n\n    parameters = []\n    \n    # build parameters list for 'get_ticket' call\n    parameters.append({\n        'id': get_jira_key__jira_key,\n    })\n\n    phantom.act(\"get ticket\", parameters=parameters, assets=['jira'], callback=only_new_linux_server, name=\"get_ticket\")\n\n    return",
+                        "block_code": "def get_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_ticket() called')\n\n    get_jira_key__jira_key = json.loads(phantom.get_run_data(key='get_jira_key:jira_key'))\n    # collect data for 'get_ticket' call\n\n    parameters = []\n    \n    # build parameters list for 'get_ticket' call\n    parameters.append({\n        'id': get_jira_key__jira_key,\n    })\n\n    phantom.act(action=\"get ticket\", parameters=parameters, assets=['jira'], callback=only_new_linux_server, name=\"get_ticket\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 332,
                         "callsback": true,
@@ -3531,8 +3912,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 144,
-                        "line_start": 127,
+                        "line_end": 146,
+                        "line_start": 129,
                         "message": "Configuring now",
                         "name": "get ticket",
                         "notes": "Get the full ticket from Jira to use its metadata for future actions and make sure the ingested container references a valid ticket.",
@@ -3659,6 +4040,7 @@
                                 "fields": {
                                     "command": "cat /etc/redhat-release",
                                     "ip_hostname": "get_ticket:action_result.data.*.fields.Custom Text Field One",
+                                    "script_file": "",
                                     "timeout": ""
                                 },
                                 "has_app": true,
@@ -3681,6 +4063,10 @@
                                             "host name"
                                         ],
                                         "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.script_file",
                                         "data_type": "string"
                                     },
                                     {
@@ -3818,7 +4204,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def check_centos_version(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('check_centos_version() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'check_centos_version' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.data.*.fields.Custom Text Field One', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'check_centos_version' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'command': \"cat /etc/redhat-release\",\n                'timeout': \"\",\n                'ip_hostname': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['ssh'], callback=fail_unless_centos7, name=\"check_centos_version\")\n\n    return",
+                        "block_code": "def check_centos_version(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('check_centos_version() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'check_centos_version' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.data.*.fields.Custom Text Field One', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'check_centos_version' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'command': \"cat /etc/redhat-release\",\n                'timeout': \"\",\n                'ip_hostname': results_item_1[0],\n                'script_file': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"execute program\", parameters=parameters, assets=['ssh'], callback=fail_unless_centos7, name=\"check_centos_version\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3843,8 +4229,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 273,
-                        "line_start": 248,
+                        "line_end": 277,
+                        "line_start": 251,
                         "message": "Configuring now",
                         "name": "execute program",
                         "notes": "Read the contents of the /etc/redhat-release file on the server to check the CentOS version.",
@@ -3912,7 +4298,6 @@
                         "previous_function": "",
                         "previous_name": "check_centos_version",
                         "required_params": {
-                            "command": true,
                             "ip_hostname": true
                         },
                         "reviewer": "",
@@ -4410,7 +4795,8 @@
                                 "count": 0,
                                 "fields": {
                                     "comment": "format_login:custom_function:login_table",
-                                    "id": "get_ticket:action_result.parameter.id"
+                                    "id": "get_ticket:action_result.parameter.id",
+                                    "internal": ""
                                 },
                                 "has_app": true,
                                 "id": 71,
@@ -4419,13 +4805,18 @@
                                 "name": "jira",
                                 "output": [
                                     {
+                                        "column_name": "Status",
+                                        "column_order": 2,
                                         "data_path": "action_result.status",
                                         "data_type": "string",
                                         "example_values": [
-                                            "success"
+                                            "success",
+                                            "failed"
                                         ]
                                     },
                                     {
+                                        "column_name": "Comment",
+                                        "column_order": 1,
                                         "data_path": "action_result.parameter.comment",
                                         "data_type": "string",
                                         "example_values": [
@@ -4433,6 +4824,8 @@
                                         ]
                                     },
                                     {
+                                        "column_name": "Key",
+                                        "column_order": 0,
                                         "contains": [
                                             "jira ticket key"
                                         ],
@@ -4440,6 +4833,14 @@
                                         "data_type": "string",
                                         "example_values": [
                                             "MAN-1"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.internal",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
                                         ]
                                     },
                                     {
@@ -4566,7 +4967,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def enrich_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('enrich_ticket_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    format_login__login_table = json.loads(phantom.get_run_data(key='format_login:login_table'))\n    # collect data for 'enrich_ticket_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.parameter.id', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'enrich_ticket_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'comment': format_login__login_table,\n                'id': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"add comment\", parameters=parameters, assets=['jira'], name=\"enrich_ticket_1\")\n\n    return",
+                        "block_code": "def enrich_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('enrich_ticket_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    format_login__login_table = json.loads(phantom.get_run_data(key='format_login:login_table'))\n    # collect data for 'enrich_ticket_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.parameter.id', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'enrich_ticket_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'id': results_item_1[0],\n                'comment': format_login__login_table,\n                'internal': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"add comment\", parameters=parameters, assets=['jira'], name=\"enrich_ticket_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -4591,8 +4992,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 424,
-                        "line_start": 399,
+                        "line_end": 432,
+                        "line_start": 406,
                         "message": "Configuring now",
                         "name": "add comment",
                         "notes": "Enrich the ticket with the table of previous logins.",
@@ -4713,7 +5114,8 @@
                                 "count": 0,
                                 "fields": {
                                     "comment": "Phantom failed to enrich this ticket because it looks like the server is not running CentOS 7, which is the only operating system supported by this playbook.",
-                                    "id": "get_ticket:action_result.parameter.id"
+                                    "id": "get_ticket:action_result.parameter.id",
+                                    "internal": ""
                                 },
                                 "has_app": true,
                                 "id": 71,
@@ -4722,13 +5124,18 @@
                                 "name": "jira",
                                 "output": [
                                     {
+                                        "column_name": "Status",
+                                        "column_order": 2,
                                         "data_path": "action_result.status",
                                         "data_type": "string",
                                         "example_values": [
-                                            "success"
+                                            "success",
+                                            "failed"
                                         ]
                                     },
                                     {
+                                        "column_name": "Comment",
+                                        "column_order": 1,
                                         "data_path": "action_result.parameter.comment",
                                         "data_type": "string",
                                         "example_values": [
@@ -4736,6 +5143,8 @@
                                         ]
                                     },
                                     {
+                                        "column_name": "Key",
+                                        "column_order": 0,
                                         "contains": [
                                             "jira ticket key"
                                         ],
@@ -4743,6 +5152,14 @@
                                         "data_type": "string",
                                         "example_values": [
                                             "MAN-1"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.internal",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
                                         ]
                                     },
                                     {
@@ -4869,7 +5286,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def report_failure(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('report_failure() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'report_failure' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.parameter.id', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'report_failure' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'comment': \"Phantom failed to enrich this ticket because it looks like the server is not running CentOS 7, which is the only operating system supported by this playbook.\",\n                'id': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"add comment\", parameters=parameters, assets=['jira'], name=\"report_failure\")\n\n    return",
+                        "block_code": "def report_failure(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('report_failure() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'report_failure' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.parameter.id', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'report_failure' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'id': results_item_1[0],\n                'comment': \"Phantom failed to enrich this ticket because it looks like the server is not running CentOS 7, which is the only operating system supported by this playbook.\",\n                'internal': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"add comment\", parameters=parameters, assets=['jira'], name=\"report_failure\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -4894,8 +5311,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 325,
-                        "line_start": 301,
+                        "line_end": 330,
+                        "line_start": 305,
                         "message": "Configuring now",
                         "name": "add comment",
                         "notes": "Leave a comment on the Jira ticket saying that the server is not running CentOS 7 therefore this playbook doesn't know how to handle it.",
@@ -5016,7 +5433,8 @@
                                 "count": 0,
                                 "fields": {
                                     "comment": "format_port_list:custom_function:port_table",
-                                    "id": "get_ticket:action_result.parameter.id"
+                                    "id": "get_ticket:action_result.parameter.id",
+                                    "internal": ""
                                 },
                                 "has_app": true,
                                 "id": 71,
@@ -5025,13 +5443,18 @@
                                 "name": "jira",
                                 "output": [
                                     {
+                                        "column_name": "Status",
+                                        "column_order": 2,
                                         "data_path": "action_result.status",
                                         "data_type": "string",
                                         "example_values": [
-                                            "success"
+                                            "success",
+                                            "failed"
                                         ]
                                     },
                                     {
+                                        "column_name": "Comment",
+                                        "column_order": 1,
                                         "data_path": "action_result.parameter.comment",
                                         "data_type": "string",
                                         "example_values": [
@@ -5039,6 +5462,8 @@
                                         ]
                                     },
                                     {
+                                        "column_name": "Key",
+                                        "column_order": 0,
                                         "contains": [
                                             "jira ticket key"
                                         ],
@@ -5046,6 +5471,14 @@
                                         "data_type": "string",
                                         "example_values": [
                                             "MAN-1"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.internal",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
                                         ]
                                     },
                                     {
@@ -5172,7 +5605,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def enrich_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('enrich_ticket_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    format_port_list__port_table = json.loads(phantom.get_run_data(key='format_port_list:port_table'))\n    # collect data for 'enrich_ticket_2' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.parameter.id', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'enrich_ticket_2' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'comment': format_port_list__port_table,\n                'id': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"add comment\", parameters=parameters, assets=['jira'], name=\"enrich_ticket_2\")\n\n    return",
+                        "block_code": "def enrich_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('enrich_ticket_2() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    format_port_list__port_table = json.loads(phantom.get_run_data(key='format_port_list:port_table'))\n    # collect data for 'enrich_ticket_2' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.parameter.id', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'enrich_ticket_2' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'id': results_item_1[0],\n                'comment': format_port_list__port_table,\n                'internal': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"add comment\", parameters=parameters, assets=['jira'], name=\"enrich_ticket_2\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -5197,8 +5630,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 452,
-                        "line_start": 427,
+                        "line_end": 461,
+                        "line_start": 435,
                         "message": "Configuring now",
                         "name": "add comment",
                         "notes": "Enrich the ticket with the table of open ports.",
@@ -5329,10 +5762,10 @@
                                 "display": "none"
                             },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
                             },
                             "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_error.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_warn_grey.svg"
                             },
                             "g.notes": {
                                 "display": "block"
@@ -5342,7 +5775,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_login(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_login() called')\n    results_data_1 = phantom.collect2(container=container, datapath=['get_login_history:action_result.data.*.output'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    format_login__login_table = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # format the output into Jira's markup language for rendering a table\n    format_login__login_table = \"|| output of '/usr/bin/last -a' ||\\n\"\n    last_lines = results_item_1_0[0].split('\\n')\n    for line in last_lines:\n        format_login__login_table += \"| {} |\\n\".format(line)\n    \n    phantom.debug(\"table of logins for jira:\")\n    phantom.debug(format_login__login_table)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='format_login:login_table', value=json.dumps(format_login__login_table))\n    enrich_ticket_1(container=container)\n\n    return",
+                        "block_code": "def format_login(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_login() called')\n    \n    results_data_1 = phantom.collect2(container=container, datapath=['get_login_history:action_result.data.*.output'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    format_login__login_table = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # format the output into Jira's markup language for rendering a table\n    format_login__login_table = \"|| output of '/usr/bin/last -a' ||\\n\"\n    last_lines = results_item_1_0[0].split('\\n')\n    for line in last_lines:\n        format_login__login_table += \"| {} |\\n\".format(line)\n    \n    phantom.debug(\"table of logins for jira:\")\n    phantom.debug(format_login__login_table)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='format_login:login_table', value=json.dumps(format_login__login_table))\n    enrich_ticket_1(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -5350,7 +5783,7 @@
                         "connection_name": "get login history",
                         "connection_type": "action",
                         "customCodeEndLineOffset": 7,
-                        "customCodeStartLine": 10,
+                        "customCodeStartLine": 11,
                         "custom_callback": "",
                         "custom_code": "def format_login(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_login() called')\n    results_data_1 = phantom.collect2(container=container, datapath=['get_login_history:action_result.data.*.output'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    format_login__login_table = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # format the output into Jira's markup language for rendering a table\n    format_login__login_table = \"|| output of '/usr/bin/last -a' ||\\n\"\n    last_lines = results_item_1_0[0].split('\\n')\n    for line in last_lines:\n        format_login__login_table += \"| {} |\\n\".format(line)\n    \n    phantom.debug(\"table of logins for jira:\")\n    phantom.debug(format_login__login_table)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='format_login:login_table', value=json.dumps(format_login__login_table))\n    enrich_ticket_1(container=container)\n\n    return",
                         "custom_join": "",
@@ -5368,8 +5801,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 357,
-                        "line_start": 328,
+                        "legacy": true,
+                        "line_end": 363,
+                        "line_start": 333,
                         "message": "Configuring now",
                         "name": "custom function",
                         "notes": "Format the output of \"last -a\"  into a table.",
@@ -5456,7 +5890,7 @@
                             "width": 180
                         },
                         "state": "custom function",
-                        "status": "",
+                        "status": "deprecating",
                         "title": "custom function",
                         "type": "coa.FunctionBlock",
                         "userGeneratedCode": "\n    # format the output into Jira's markup language for rendering a table\n    format_login__login_table = \"|| output of '/usr/bin/last -a' ||\\n\"\n    last_lines = results_item_1_0[0].split('\\n')\n    for line in last_lines:\n        format_login__login_table += \"| {} |\\n\".format(line)\n    \n    phantom.debug(\"table of logins for jira:\")\n    phantom.debug(format_login__login_table)\n",
@@ -5510,7 +5944,10 @@
                                 "display": "none"
                             },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn_grey.svg"
                             },
                             "g.notes": {
                                 "display": "block"
@@ -5520,7 +5957,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_port_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_port_list() called')\n    results_data_1 = phantom.collect2(container=container, datapath=['list_open_ports:action_result.data.*.output'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    format_port_list__port_table = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # format the output into Jira's markup language for rendering a table\n    format_port_list__port_table = \"|| protocol || state || recv-q || send-q || local_address:port || peer_address:port ||\\n\"\n    lines = results_item_1_0[0].split('\\n')[1:]\n    for line in lines:\n        \n        protocol, state, recv, send, local_address_port, peer_address_port = line.split()\n        format_port_list__port_table += \"| {} | {} | {} | {} | {} | {} |\\n\".format(protocol,\n                                                                        state,\n                                                                        recv,\n                                                                        send,\n                                                                        local_address_port,\n                                                                        peer_address_port)\n\n    phantom.debug(\"table of ports for jira:\")\n    phantom.debug(format_port_list__port_table)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='format_port_list:port_table', value=json.dumps(format_port_list__port_table))\n    enrich_ticket_2(container=container)\n\n    return",
+                        "block_code": "def format_port_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_port_list() called')\n    \n    results_data_1 = phantom.collect2(container=container, datapath=['list_open_ports:action_result.data.*.output'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    format_port_list__port_table = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # format the output into Jira's markup language for rendering a table\n    format_port_list__port_table = \"|| protocol || state || recv-q || send-q || local_address:port || peer_address:port ||\\n\"\n    lines = results_item_1_0[0].split('\\n')[1:]\n    for line in lines:\n        \n        protocol, state, recv, send, local_address_port, peer_address_port = line.split()\n        format_port_list__port_table += \"| {} | {} | {} | {} | {} | {} |\\n\".format(protocol,\n                                                                        state,\n                                                                        recv,\n                                                                        send,\n                                                                        local_address_port,\n                                                                        peer_address_port)\n\n    phantom.debug(\"table of ports for jira:\")\n    phantom.debug(format_port_list__port_table)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='format_port_list:port_table', value=json.dumps(format_port_list__port_table))\n    enrich_ticket_2(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -5528,7 +5965,7 @@
                         "connection_name": "list open ports",
                         "connection_type": "action",
                         "customCodeEndLineOffset": 7,
-                        "customCodeStartLine": 10,
+                        "customCodeStartLine": 11,
                         "custom_callback": "",
                         "custom_code": "def format_port_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_port_list() called')\n    results_data_1 = phantom.collect2(container=container, datapath=['list_open_ports:action_result.data.*.output'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    format_port_list__port_table = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # format the output into Jira's markup language for rendering a table\n    format_port_list__port_table = \"|| protocol || state || recv-q || send-q || local_address:port || peer_address:port ||\\n\"\n    lines = results_item_1_0[0].split('\\n')[1:]\n    for line in lines:\n        \n        protocol, state, recv, send, local_address_port, peer_address_port = line.split()\n        format_port_list__port_table += \"| {} | {} | {} | {} | {} | {} |\\n\".format(protocol,\n                                                                        state,\n                                                                        recv,\n                                                                        send,\n                                                                        local_address_port,\n                                                                        peer_address_port)\n\n    phantom.debug(\"table of ports for jira:\")\n    phantom.debug(format_port_list__port_table)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='format_port_list:port_table', value=json.dumps(format_port_list__port_table))\n    enrich_ticket_2(container=container)\n\n    return",
                         "custom_join": "",
@@ -5546,8 +5983,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 396,
-                        "line_start": 360,
+                        "legacy": true,
+                        "line_end": 403,
+                        "line_start": 366,
                         "message": "Configuring now",
                         "name": "custom function",
                         "notes": "Format the output of \"ss -tunapl\"  into a table.",
@@ -5634,7 +6072,7 @@
                             "width": 180
                         },
                         "state": "custom function",
-                        "status": "",
+                        "status": "deprecating",
                         "title": "custom function",
                         "type": "coa.FunctionBlock",
                         "userGeneratedCode": "\n    # format the output into Jira's markup language for rendering a table\n    format_port_list__port_table = \"|| protocol || state || recv-q || send-q || local_address:port || peer_address:port ||\\n\"\n    lines = results_item_1_0[0].split('\\n')[1:]\n    for line in lines:\n        \n        protocol, state, recv, send, local_address_port, peer_address_port = line.split()\n        format_port_list__port_table += \"| {} | {} | {} | {} | {} | {} |\\n\".format(protocol,\n                                                                        state,\n                                                                        recv,\n                                                                        send,\n                                                                        local_address_port,\n                                                                        peer_address_port)\n\n    phantom.debug(\"table of ports for jira:\")\n    phantom.debug(format_port_list__port_table)\n",
@@ -5701,7 +6139,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def fail_unless_centos7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('fail_unless_centos7() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"CentOS Linux release 7\", \"in\", \"check_centos_version:action_result.data.*.output\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        get_login_history(action=action, success=success, container=container, results=results, handle=handle)\n        list_open_ports(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n    report_failure(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
+                        "block_code": "def fail_unless_centos7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('fail_unless_centos7() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"CentOS Linux release 7\", \"in\", \"check_centos_version:action_result.data.*.output\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        get_login_history(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        list_open_ports(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    # call connected blocks for 'else' condition 2\n    report_failure(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -5725,8 +6163,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 298,
-                        "line_start": 276,
+                        "line_end": 302,
+                        "line_start": 280,
                         "name": "decision",
                         "notes": "This playbook was developed and tested for CentOS 7 servers, so this checks to make sure the target server is running CentOS 7.",
                         "number": 2,
@@ -5885,7 +6323,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def only_new_linux_server(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('only_new_linux_server() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"get_ticket:action_result.data.*.fields.Custom Label Field Two.0\", \"==\", \"new_linux_server\"],\n            [\"artifact:*.name\", \"==\", \"ticket fields\"],\n        ],\n        logical_operator='and',\n        name=\"only_new_linux_server:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        search_containers(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def only_new_linux_server(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('only_new_linux_server() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"get_ticket:action_result.data.*.fields.Custom Label Field Two.0\", \"==\", \"new_linux_server\"],\n            [\"artifact:*.name\", \"==\", \"ticket fields\"],\n        ],\n        logical_operator='and',\n        name=\"only_new_linux_server:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        search_containers(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -5908,8 +6346,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 40,
-                        "line_start": 20,
+                        "line_end": 39,
+                        "line_start": 19,
                         "name": "filter",
                         "notes": "Only investigate tickets of type \"new_linux_server\" and only proceed for initial ticket creation (to prevent running again when the ticket is updated).",
                         "number": 1,
@@ -6031,6 +6469,7 @@
                                 "fields": {
                                     "command": "/usr/sbin/ss -tunapl",
                                     "ip_hostname": "get_ticket:action_result.data.*.fields.Custom Text Field One",
+                                    "script_file": "",
                                     "timeout": ""
                                 },
                                 "has_app": true,
@@ -6053,6 +6492,10 @@
                                             "host name"
                                         ],
                                         "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.script_file",
                                         "data_type": "string"
                                     },
                                     {
@@ -6172,7 +6615,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def list_open_ports(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_open_ports() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_open_ports' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.data.*.fields.Custom Text Field One', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_open_ports' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'command': \"/usr/sbin/ss -tunapl\",\n                'timeout': \"\",\n                'ip_hostname': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['ssh'], callback=format_port_list, name=\"list_open_ports\")\n\n    return",
+                        "block_code": "def list_open_ports(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('list_open_ports() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_open_ports' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.data.*.fields.Custom Text Field One', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_open_ports' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'command': \"/usr/sbin/ss -tunapl\",\n                'timeout': \"\",\n                'ip_hostname': results_item_1[0],\n                'script_file': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"execute program\", parameters=parameters, assets=['ssh'], callback=format_port_list, name=\"list_open_ports\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -6197,7 +6640,7 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 96,
+                        "line_end": 97,
                         "line_start": 71,
                         "message": "Configuring now",
                         "name": "execute program",
@@ -6266,7 +6709,6 @@
                         "previous_function": "",
                         "previous_name": "list_open_ports",
                         "required_params": {
-                            "command": true,
                             "ip_hostname": true
                         },
                         "reviewer": "",
@@ -6306,6 +6748,7 @@
                                 "fields": {
                                     "command": "/usr/bin/last -a",
                                     "ip_hostname": "get_ticket:action_result.data.*.fields.Custom Text Field One",
+                                    "script_file": "",
                                     "timeout": ""
                                 },
                                 "has_app": true,
@@ -6328,6 +6771,10 @@
                                             "host name"
                                         ],
                                         "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.script_file",
                                         "data_type": "string"
                                     },
                                     {
@@ -6447,7 +6894,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def get_login_history(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_login_history() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_login_history' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.data.*.fields.Custom Text Field One', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_login_history' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'command': \"/usr/bin/last -a\",\n                'timeout': \"\",\n                'ip_hostname': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"execute program\", parameters=parameters, assets=['ssh'], callback=format_login, name=\"get_login_history\")\n\n    return",
+                        "block_code": "def get_login_history(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_login_history() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_login_history' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_ticket:action_result.data.*.fields.Custom Text Field One', 'get_ticket:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_login_history' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'command': \"/usr/bin/last -a\",\n                'timeout': \"\",\n                'ip_hostname': results_item_1[0],\n                'script_file': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"execute program\", parameters=parameters, assets=['ssh'], callback=format_login, name=\"get_login_history\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 140,
                         "callsback": true,
@@ -6473,7 +6920,7 @@
                         "join_optional": [],
                         "join_start": 1,
                         "line_end": 68,
-                        "line_start": 43,
+                        "line_start": 42,
                         "message": "Configuring now",
                         "name": "execute program",
                         "notes": "Run \"/usr/bin/last -a\" to see the login history.",
@@ -6541,7 +6988,6 @@
                         "previous_function": "",
                         "previous_name": "get_login_history",
                         "required_params": {
-                            "command": true,
                             "ip_hostname": true
                         },
                         "reviewer": "",
@@ -6561,13 +7007,21 @@
             },
             "notes": "This playbook uses the following Apps:\n - ssh (execute program) [asset name = ssh] - run shell commands to investigate activity on the server\n - jira (get ticket, update ticket) [asset name = jira] - ingest tickets to start the playbook and enrich tickets with the ssh command results formatted into tables \n\nDeployment notes:\n - To start this playbook automatically when a new Jira ticket is ingested, configure the Jira app to poll for tickets and modify this playbook to extract the server IP address from the correct field in the ticket\n - This could easily be extended to use more commands and take more advanced actions specific to the results returned from the server"
         },
-        "schema": 3,
-        "version": "4.2.6332"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2019-01-22T22:42:49.506027+00:00",
+    "create_time": "2021-01-26T17:14:18.499354+00:00",
     "draft_mode": false,
     "labels": [
         "events"
     ],
-    "tags": []
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "Jira",
+            "SSH",
+            "HTTP"
+        ]
+    }
 }

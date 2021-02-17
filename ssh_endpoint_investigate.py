@@ -5,7 +5,6 @@ This playbook gathers basic system information from a CentOS 7 server using SSH.
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -17,7 +16,7 @@ def on_start(container):
 """
 Only investigate tickets of type "new_linux_server" and only proceed for initial ticket creation (to prevent running again when the ticket is updated).
 """
-def only_new_linux_server(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def only_new_linux_server(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('only_new_linux_server() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -33,16 +32,16 @@ def only_new_linux_server(action=None, success=None, container=None, results=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        search_containers(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        search_containers(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 """
 Run "/usr/bin/last -a" to see the login history.
 """
-def get_login_history(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_login_history(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_login_history() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'get_login_history' call
@@ -57,20 +56,21 @@ def get_login_history(action=None, success=None, container=None, results=None, h
                 'command': "/usr/bin/last -a",
                 'timeout': "",
                 'ip_hostname': results_item_1[0],
+                'script_file': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("execute program", parameters=parameters, assets=['ssh'], callback=format_login, name="get_login_history")
+    phantom.act(action="execute program", parameters=parameters, assets=['ssh'], callback=format_login, name="get_login_history")
 
     return
 
 """
 Run "/usr/sbin/ss -tunapl" to see which services are listening on which TCP and UDP ports. Note that "ss" is very similar to "netstat", which is deprecated and no longer installed by default on CentOS 7.
 """
-def list_open_ports(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def list_open_ports(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('list_open_ports() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'list_open_ports' call
@@ -85,19 +85,21 @@ def list_open_ports(action=None, success=None, container=None, results=None, han
                 'command': "/usr/sbin/ss -tunapl",
                 'timeout': "",
                 'ip_hostname': results_item_1[0],
+                'script_file': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("execute program", parameters=parameters, assets=['ssh'], callback=format_port_list, name="list_open_ports")
+    phantom.act(action="execute program", parameters=parameters, assets=['ssh'], callback=format_port_list, name="list_open_ports")
 
     return
 
 """
 Extract the Jira Key (the project identifier plus the issue ID in the form ABC-1234) from the raw data of the container as ingested from Jira. 
 """
-def get_jira_key(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_jira_key(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_jira_key() called')
+    
     input_parameter_0 = ""
 
     get_jira_key__jira_key = None
@@ -124,7 +126,7 @@ def get_jira_key(action=None, success=None, container=None, results=None, handle
 """
 Get the full ticket from Jira to use its metadata for future actions and make sure the ingested container references a valid ticket.
 """
-def get_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_ticket() called')
 
     get_jira_key__jira_key = json.loads(phantom.get_run_data(key='get_jira_key:jira_key'))
@@ -137,16 +139,16 @@ def get_ticket(action=None, success=None, container=None, results=None, handle=N
         'id': get_jira_key__jira_key,
     })
 
-    phantom.act("get ticket", parameters=parameters, assets=['jira'], callback=only_new_linux_server, name="get_ticket")
+    phantom.act(action="get ticket", parameters=parameters, assets=['jira'], callback=only_new_linux_server, name="get_ticket")
 
     return
 
 """
 Search for all existing Phantom containers that match the string "new_linux_server" to find other similar containers.
 """
-def search_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def search_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('search_containers() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'search_containers' call
@@ -160,15 +162,16 @@ def search_containers(action=None, success=None, container=None, results=None, h
         'verify_certificate': False,
     })
 
-    phantom.act("get data", parameters=parameters, assets=['http'], callback=format_get_containers, name="search_containers")
+    phantom.act(action="get data", parameters=parameters, assets=['http'], callback=format_get_containers, name="search_containers")
 
     return
 
 """
 Check if any of the identified containers from the search have been promoted to a case and have the tag "new_linux_server". If a match is found, merge this container into that existing case to work with all of these servers in one place. If no matching case is found, promote this container to a case and use that going forward.
 """
-def promote_or_add_to_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def promote_or_add_to_case(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('promote_or_add_to_case() called')
+    
     results_data_1 = phantom.collect2(container=container, datapath=['get_containers:action_result.data.*.response_body'], action_results=results)
     results_item_1_0 = [item[0] for item in results_data_1]
 
@@ -199,7 +202,7 @@ def promote_or_add_to_case(action=None, success=None, container=None, results=No
 """
 Format an HTTP GET request to send to this local Phantom instance to pull down all the metadata from each container found by the previous search.
 """
-def format_get_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_get_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_get_containers() called')
     
     template = """%%
@@ -220,9 +223,9 @@ def format_get_containers(action=None, success=None, container=None, results=Non
 """
 Run the formatted HTTP GET request to pull the metadata about all identified containers.
 """
-def get_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_containers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_containers() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'get_containers' call
@@ -238,16 +241,16 @@ def get_containers(action=None, success=None, container=None, results=None, hand
             'verify_certificate': False,
         })
 
-    phantom.act("get data", parameters=parameters, assets=['http'], callback=promote_or_add_to_case, name="get_containers")
+    phantom.act(action="get data", parameters=parameters, assets=['http'], callback=promote_or_add_to_case, name="get_containers")
 
     return
 
 """
 Read the contents of the /etc/redhat-release file on the server to check the CentOS version.
 """
-def check_centos_version(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def check_centos_version(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('check_centos_version() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'check_centos_version' call
@@ -262,22 +265,23 @@ def check_centos_version(action=None, success=None, container=None, results=None
                 'command': "cat /etc/redhat-release",
                 'timeout': "",
                 'ip_hostname': results_item_1[0],
+                'script_file': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("execute program", parameters=parameters, assets=['ssh'], callback=fail_unless_centos7, name="check_centos_version")
+    phantom.act(action="execute program", parameters=parameters, assets=['ssh'], callback=fail_unless_centos7, name="check_centos_version")
 
     return
 
 """
 This playbook was developed and tested for CentOS 7 servers, so this checks to make sure the target server is running CentOS 7.
 """
-def fail_unless_centos7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def fail_unless_centos7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('fail_unless_centos7() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
@@ -285,22 +289,22 @@ def fail_unless_centos7(action=None, success=None, container=None, results=None,
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        get_login_history(action=action, success=success, container=container, results=results, handle=handle)
-        list_open_ports(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        get_login_history(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        list_open_ports(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     # call connected blocks for 'else' condition 2
-    report_failure(action=action, success=success, container=container, results=results, handle=handle)
+    report_failure(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
 
     return
 
 """
 Leave a comment on the Jira ticket saying that the server is not running CentOS 7 therefore this playbook doesn't know how to handle it.
 """
-def report_failure(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def report_failure(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('report_failure() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'report_failure' call
@@ -312,21 +316,23 @@ def report_failure(action=None, success=None, container=None, results=None, hand
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'comment': "Phantom failed to enrich this ticket because it looks like the server is not running CentOS 7, which is the only operating system supported by this playbook.",
                 'id': results_item_1[0],
+                'comment': "Phantom failed to enrich this ticket because it looks like the server is not running CentOS 7, which is the only operating system supported by this playbook.",
+                'internal': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("add comment", parameters=parameters, assets=['jira'], name="report_failure")
+    phantom.act(action="add comment", parameters=parameters, assets=['jira'], name="report_failure")
 
     return
 
 """
 Format the output of "last -a" into a table.
 """
-def format_login(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_login(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_login() called')
+    
     results_data_1 = phantom.collect2(container=container, datapath=['get_login_history:action_result.data.*.output'], action_results=results)
     results_item_1_0 = [item[0] for item in results_data_1]
 
@@ -357,8 +363,9 @@ def format_login(action=None, success=None, container=None, results=None, handle
 """
 Format the output of "ss -tunapl"  into a table.
 """
-def format_port_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_port_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_port_list() called')
+    
     results_data_1 = phantom.collect2(container=container, datapath=['list_open_ports:action_result.data.*.output'], action_results=results)
     results_item_1_0 = [item[0] for item in results_data_1]
 
@@ -396,9 +403,9 @@ def format_port_list(action=None, success=None, container=None, results=None, ha
 """
 Enrich the ticket with the table of previous logins.
 """
-def enrich_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def enrich_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('enrich_ticket_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     format_login__login_table = json.loads(phantom.get_run_data(key='format_login:login_table'))
@@ -411,22 +418,23 @@ def enrich_ticket_1(action=None, success=None, container=None, results=None, han
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'comment': format_login__login_table,
                 'id': results_item_1[0],
+                'comment': format_login__login_table,
+                'internal': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("add comment", parameters=parameters, assets=['jira'], name="enrich_ticket_1")
+    phantom.act(action="add comment", parameters=parameters, assets=['jira'], name="enrich_ticket_1")
 
     return
 
 """
 Enrich the ticket with the table of open ports.
 """
-def enrich_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def enrich_ticket_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('enrich_ticket_2() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     format_port_list__port_table = json.loads(phantom.get_run_data(key='format_port_list:port_table'))
@@ -439,20 +447,21 @@ def enrich_ticket_2(action=None, success=None, container=None, results=None, han
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'comment': format_port_list__port_table,
                 'id': results_item_1[0],
+                'comment': format_port_list__port_table,
+                'internal': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("add comment", parameters=parameters, assets=['jira'], name="enrich_ticket_2")
+    phantom.act(action="add comment", parameters=parameters, assets=['jira'], name="enrich_ticket_2")
 
     return
 
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
