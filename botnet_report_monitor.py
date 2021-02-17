@@ -1,5 +1,5 @@
 """
-This Playbook connects to multiple PAN Firewalls to monitor for behavior-based botnet detections. Any detections found by the PAN Firewall are processed by this Playbook if they have a confidence score higher than the configured value. First each of the detections is checked against a whitelist of known false positives and if the traffic source is not whitelisted the botnet detection is used to create a ticket in ServiceNow and notify collaborators using Slack.
+This Playbook connects to multiple PAN Firewalls to monitor for behavior-based botnet detections. Any detections found by the PAN Firewall are processed by this Playbook if they have a confidence score higher than the configured value. First each of the detections is checked against an allowlist of known false positives and if the traffic source is not on the allowlist the botnet detection is used to create a ticket in ServiceNow and notify collaborators using Slack.
 
 Author: Irek Romaniuk (minor changes by the Phantom team)
 """
@@ -7,7 +7,6 @@ Author: Irek Romaniuk (minor changes by the Phantom team)
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 ##############################
 # Start - Global Code Block
 
@@ -29,12 +28,20 @@ PAN = ['<PAN_URL#1>', '<PAN_URL#2>', '<PAN_URL#3>']
 def on_start(container):
     phantom.debug('on_start() called')
     
-    # get the 'Botnet_False_Positive_Whitelist' custom list in order to exclude sources included in it
+    # get the 'Botnet_False_Positive_Allowlist' custom list in order to exclude sources included in it
     include = True
-    sucess, message, botnet_whitelist = phantom.get_list(list_name='Botnet_False_Positive_Whitelist')
-    botnet_whitelist = [[str(j) for j in i] for i in botnet_whitelist]
-    botnet_whitelist = filter(None, [i[0] if phantom.valid_net(i[0]) else '' for i in botnet_whitelist])
-       
+    success, message, botnet_allowlist = phantom.get_list(list_name='Botnet_False_Positive_Allowlist')
+    botnet_allowlist = [[str(j) for j in i] for i in botnet_allowlist]
+    
+    # filter down to only valid ip ranges
+    valid_botnet_allowlist = []
+    for row in botnet_allowlist:
+        botnet_ip = row[0]
+        if botnet_ip and phantom.valid_net(botnet_ip):
+            valid_botnet_allowlist.append(botnet_ip)
+            
+    botnet_allowlist = valid_botnet_allowlist
+           
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     result = "IP Address/Username/Description:\n" 
     for pan in PAN:
@@ -52,7 +59,7 @@ def on_start(container):
             if type(data) is dict:
                 phantom.debug('Confidence: {} {}'.format(data['confidence'], CONFIDENCE))
                 if int(data['confidence']) > int(CONFIDENCE):
-                    for net in botnet_whitelist:
+                    for net in botnet_allowlist:
                         phantom.debug('{} {}'.format(data['src'], net))
                         if phantom.valid_ip(str(data['src'])) and phantom.valid_net(net):
                             if phantom.address_in_network(str(data['src']), net): 
@@ -66,7 +73,7 @@ def on_start(container):
                 for entry in data:                    
                     phantom.debug('Confidence: {} {}'.format(entry['confidence'], CONFIDENCE))
                     if int(entry['confidence']) > int(CONFIDENCE):
-                        for net in botnet_whitelist:
+                        for net in botnet_allowlist:
                             phantom.debug('{} {}'.format(entry['src'], net))
                             if phantom.valid_ip(str(entry['src'])) and phantom.valid_net(net):
                                 if phantom.address_in_network(str(entry['src']), net): 
@@ -88,7 +95,7 @@ def on_start(container):
 """
 Create a ticket in ServiceNow with the context to investigate and mitigate the potential botnet infection.
 """
-def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('create_ticket_1() called')
     # phantom.debug('Results: {}'.format(results))
     # collect data for 'create_ticket_1' call
@@ -139,7 +146,7 @@ Reboot affected host(s) as needed to fully clear quarantines malware
 """
 Notify the necessary team members via Slack including the ServiceNow ticket ID.
 """
-def send_message_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def send_message_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('send_message_1() called')
     
     # collect data for 'send_message_1' call
@@ -164,7 +171,7 @@ def send_message_1(action=None, success=None, container=None, results=None, hand
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()

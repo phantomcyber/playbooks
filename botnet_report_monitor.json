@@ -2,13 +2,11 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Jam Sessions",
-    "misc": { "apps_list": ["ServiceNow", "Slack"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "import json\nimport requests\nimport urllib3\nimport xmltodict\n\nURL = '/api/?type=report&reporttype=predefined&reportname=botnet&key='\nAPI = '<API_Key>'\n# Min confidence\nCONFIDENCE = 2\n# Firewall addresses\nPAN = ['<PAN_URL#1>', '<PAN_URL#2>', '<PAN_URL#3>']",
-            "description": "This Playbook connects to multiple PAN Firewalls to monitor for behavior-based botnet detections. Any detections found by the PAN Firewall are processed by this Playbook if they have a confidence score higher than the configured value. First each of the detections is checked against a whitelist of known false positives and if the traffic source is not whitelisted the botnet detection is used to create a ticket in ServiceNow and notify collaborators using Slack.\n\nAuthor: Irek Romaniuk (minor changes by the Phantom team)",
-            "hash": "a86cd7a44eeefdd09f85880a693cd969967db73c",
+            "description": "This Playbook connects to multiple PAN Firewalls to monitor for behavior-based botnet detections. Any detections found by the PAN Firewall are processed by this Playbook if they have a confidence score higher than the configured value. First each of the detections is checked against an allowlist of known false positives and if the traffic source is not on the allowlist the botnet detection is used to create a ticket in ServiceNow and notify collaborators using Slack.\n\nAuthor: Irek Romaniuk (minor changes by the Phantom team)",
             "joint": {
                 "cells": [
                     {
@@ -18,6 +16,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -44,7 +49,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -67,11 +72,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 177,
-                        "line_start": 164,
+                        "line_end": 184,
+                        "line_start": 171,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 4,
                         "outPorts": [],
                         "ports": {
                             "groups": {
@@ -264,144 +270,6 @@
                         "z": 9
                     },
                     {
-                        "0": "S",
-                        "1": "T",
-                        "2": "A",
-                        "3": "R",
-                        "4": "T",
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "ref-x": 33,
-                                "text": "START"
-                            },
-                            "g.code image": {
-                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.icon image": {
-                                "ref-x": 13,
-                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
-                            },
-                            "g.notes": {
-                                "display": "block"
-                            }
-                        },
-                        "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n\n    return",
-                        "callback_code": "# read-only block view not available",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
-                        "custom_callback": "",
-                        "custom_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # get the 'Botnet_False_Positive_Whitelist' custom list in order to exclude sources included in it\n    include = True\n    sucess, message, botnet_whitelist = phantom.get_list(list_name='Botnet_False_Positive_Whitelist')\n    botnet_whitelist = [[str(j) for j in i] for i in botnet_whitelist]\n    botnet_whitelist = filter(None, [i[0] if phantom.valid_net(i[0]) else '' for i in botnet_whitelist])\n       \n    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)\n    result = \"IP Address/Username/Description:\\n\" \n    for pan in PAN:\n        phantom.debug('Firewall {} called'.format(pan))\n        try:\n            response = requests.get('https://' + pan + URL + API, verify=False, timeout=3)\n        except requests.exceptions.ConnectionError: # as err:     \n            data = None       \n        doc = json.loads(json.dumps(xmltodict.parse(response.text)))\n        try:\n            data = doc['report']['result']['entry']\n        except KeyError:\n            data = None            \n        if data:                        \n            if type(data) is dict:\n                phantom.debug('Confidence: {} {}'.format(data['confidence'], CONFIDENCE))\n                if int(data['confidence']) > int(CONFIDENCE):\n                    for net in botnet_whitelist:\n                        phantom.debug('{} {}'.format(data['src'], net))\n                        if phantom.valid_ip(str(data['src'])) and phantom.valid_net(net):\n                            if phantom.address_in_network(str(data['src']), net): \n                                break\n                            else:                                   \n                                if data['srcuser'] != \"unknown user\":\n                                    phantom.debug('{} {} {}'.format(data['src'], data['srcuser'], data['description']))\n                                    if str(data['src']) not in result:\n                                        result = result + '\\n' + '{:15} {:25} {:40}'.format(data['src'], data['srcuser'], data['description'])                    \n            else:   \n                for entry in data:                    \n                    phantom.debug('Confidence: {} {}'.format(entry['confidence'], CONFIDENCE))\n                    if int(entry['confidence']) > int(CONFIDENCE):\n                        for net in botnet_whitelist:\n                            phantom.debug('{} {}'.format(entry['src'], net))\n                            if phantom.valid_ip(str(entry['src'])) and phantom.valid_net(net):\n                                if phantom.address_in_network(str(entry['src']), net): \n                                    break \n                                else:    \n                                    phantom.debug('{} not in {}'.format(str(entry['src']), net))\n                                    if entry['srcuser'] != \"unknown user\":\n                                        phantom.debug('{} is known user'.format(entry['srcuser']))                                                 \n                                        if str(entry['src']) not in result:\n                                            result = result + '\\n' + '{:15} {:25} {:40}'.format(entry['src'], entry['srcuser'], entry['description'])    \n                        \n    phantom.debug('result: {} count: {}\\n'.format(result, result.count('\\n'))) \n    if result.count('\\n') > 1:\n        # call 'create_ticket_1' block\n        create_ticket_1(container=container, results=result)\n\n    return",
-                        "custom_join": "",
-                        "custom_name": "",
-                        "description": "",
-                        "has_custom": true,
-                        "has_custom_block": true,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "0f1a86c2-4e0c-4d1c-b84c-1df447afa477",
-                        "inPorts": [],
-                        "join_code": "# read-only block view not available",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 88,
-                        "line_start": 29,
-                        "name": "",
-                        "notes": "",
-                        "number": 0,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 100,
-                            "y": 100
-                        },
-                        "previous_function": "",
-                        "previous_name": "",
-                        "show_number": true,
-                        "size": {
-                            "height": 54,
-                            "width": 80
-                        },
-                        "status": "",
-                        "title": "START",
-                        "type": "coa.StartEnd",
-                        "warn": false,
-                        "z": 16
-                    },
-                    {
                         "action": "create ticket",
                         "action_type": "generic",
                         "active": false,
@@ -422,6 +290,7 @@
                                 "active": true,
                                 "app_name": "ServiceNow",
                                 "app_version": "1.2.33",
+                                "appid": "",
                                 "config_type": "asset",
                                 "fields": {
                                     "description": "",
@@ -430,6 +299,7 @@
                                     "table": "",
                                     "vault_id": ""
                                 },
+                                "has_app": true,
                                 "id": "-",
                                 "loaded": false,
                                 "missing": false,
@@ -931,6 +801,13 @@
                             ".action": {
                                 "text": "create ticket"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -964,8 +841,12 @@
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_code_dark_on.svg"
                             },
                             "g.delete": {
                                 "display": "none"
@@ -981,7 +862,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1015,12 +900,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 139,
-                        "line_start": 91,
+                        "line_end": 146,
+                        "line_start": 98,
                         "message": "Configuring now",
                         "name": "create ticket",
                         "notes": "Create a ticket in ServiceNow with the context to investigate and mitigate the potential botnet infection.",
                         "number": 1,
+                        "order": 2,
                         "outPorts": [
                             "out"
                         ],
@@ -1094,7 +980,7 @@
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 17
+                        "z": 20
                     },
                     {
                         "action": "send message",
@@ -1114,11 +1000,13 @@
                                 "active": true,
                                 "app_name": "Slack",
                                 "app_version": "1.2.4",
+                                "appid": "",
                                 "config_type": "asset",
                                 "fields": {
                                     "destination": "",
                                     "message": ""
                                 },
+                                "has_app": true,
                                 "id": "-",
                                 "loaded": false,
                                 "missing": false,
@@ -1207,6 +1095,13 @@
                             ".action": {
                                 "text": "send message"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -1240,8 +1135,12 @@
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
                             "g.code image": {
-                                "xlink:href": "/inc/coa/img/block_icon_code_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_code_dark_on.svg"
                             },
                             "g.delete": {
                                 "display": "none"
@@ -1257,7 +1156,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1291,12 +1194,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 164,
-                        "line_start": 142,
+                        "line_end": 171,
+                        "line_start": 149,
                         "message": "Configuring now",
                         "name": "send message",
                         "notes": "Notify the necessary team members via Slack including the ServiceNow ticket ID.",
                         "number": 1,
+                        "order": 3,
                         "outPorts": [
                             "out"
                         ],
@@ -1373,18 +1277,173 @@
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 18
+                        "z": 21
+                    },
+                    {
+                        "0": "S",
+                        "1": "T",
+                        "2": "A",
+                        "3": "R",
+                        "4": "T",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "ref-x": 33,
+                                "ref-y": 8,
+                                "text": "START"
+                            },
+                            "g.code image": {
+                                "xlink:href": "/inc/coa/img/block_icon_code_dark_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            }
+                        },
+                        "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": false,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # get the 'Botnet_False_Positive_Allowlist' custom list in order to exclude sources included in it\n    include = True\n    success, message, botnet_allowlist = phantom.get_list(list_name='Botnet_False_Positive_Allowlist')\n    botnet_allowlist = [[str(j) for j in i] for i in botnet_allowlist]\n    \n    # filter down to only valid ip ranges\n    valid_botnet_allowlist = []\n    for row in botnet_allowlist:\n        botnet_ip = row[0]\n        if botnet_ip and phantom.valid_net(botnet_ip):\n            valid_botnet_allowlist.append(botnet_ip)\n            \n    botnet_allowlist = valid_botnet_allowlist\n           \n    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)\n    result = \"IP Address/Username/Description:\\n\" \n    for pan in PAN:\n        phantom.debug('Firewall {} called'.format(pan))\n        try:\n            response = requests.get('https://' + pan + URL + API, verify=False, timeout=3)\n        except requests.exceptions.ConnectionError: # as err:     \n            data = None       \n        doc = json.loads(json.dumps(xmltodict.parse(response.text)))\n        try:\n            data = doc['report']['result']['entry']\n        except KeyError:\n            data = None            \n        if data:                        \n            if type(data) is dict:\n                phantom.debug('Confidence: {} {}'.format(data['confidence'], CONFIDENCE))\n                if int(data['confidence']) > int(CONFIDENCE):\n                    for net in botnet_allowlist:\n                        phantom.debug('{} {}'.format(data['src'], net))\n                        if phantom.valid_ip(str(data['src'])) and phantom.valid_net(net):\n                            if phantom.address_in_network(str(data['src']), net): \n                                break\n                            else:                                   \n                                if data['srcuser'] != \"unknown user\":\n                                    phantom.debug('{} {} {}'.format(data['src'], data['srcuser'], data['description']))\n                                    if str(data['src']) not in result:\n                                        result = result + '\\n' + '{:15} {:25} {:40}'.format(data['src'], data['srcuser'], data['description'])                    \n            else:   \n                for entry in data:                    \n                    phantom.debug('Confidence: {} {}'.format(entry['confidence'], CONFIDENCE))\n                    if int(entry['confidence']) > int(CONFIDENCE):\n                        for net in botnet_allowlist:\n                            phantom.debug('{} {}'.format(entry['src'], net))\n                            if phantom.valid_ip(str(entry['src'])) and phantom.valid_net(net):\n                                if phantom.address_in_network(str(entry['src']), net): \n                                    break \n                                else:    \n                                    phantom.debug('{} not in {}'.format(str(entry['src']), net))\n                                    if entry['srcuser'] != \"unknown user\":\n                                        phantom.debug('{} is known user'.format(entry['srcuser']))                                                 \n                                        if str(entry['src']) not in result:\n                                            result = result + '\\n' + '{:15} {:25} {:40}'.format(entry['src'], entry['srcuser'], entry['description'])    \n                        \n    phantom.debug('result: {} count: {}\\n'.format(result, result.count('\\n'))) \n    if result.count('\\n') > 1:\n        # call 'create_ticket_1' block\n        create_ticket_1(container=container, results=result)\n\n    return",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "0f1a86c2-4e0c-4d1c-b84c-1df447afa477",
+                        "inPorts": [],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 95,
+                        "line_start": 28,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "order": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 100,
+                            "y": 100
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 54,
+                            "width": 80
+                        },
+                        "status": "",
+                        "title": "START",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 22
                     }
                 ]
             },
-            "notes": "This playbook uses the following Apps:\n  - ServiceNow (create ticket) [asset name = servicenow] - provide context in a ticket for the security team\n  - Slack (send message) [asset name = slack] - notify the team including the ID of the created ServiceNow ticket\n\nDeployment Notes:\n  - Configure a Generator asset to run on the desired interval and create a blank Event with the label \"generator_botnet_report\", which will initiate this Playbook (see the community Playbook called \"track_active_directory_admin_users\" to do this programmatically)\n  - Customize the CONFIDENCE variable according to your risk policy\n  - Change the PAN values to the network addresses of your PAN Firewalls\n  - Populate the API variable with the API key for the PAN Firewalls\n  - The PAN Firewall botnet report API can be tested with the following:\ncurl -kgX GET 'https://<pan_url>/api/?type=report&reporttype=predefined&reportname=botnet&key=<API_key>'\n  - Set the fields of the ServiceNow ticket according to your organization's best practices\n  - Set the Slack message destination to the desired target account"
+            "notes": "This playbook uses the following Apps:\n  - ServiceNow (create ticket) [asset name = servicenow] - provide context in a ticket for the security team\n  - Slack (send message) [asset name = slack] - notify the team including the ID of the created ServiceNow ticket\n\nDeployment Notes:\n  - Configure a Generator asset to run on the desired interval and create a blank Event with the label \"generator_botnet_report\", which will initiate this Playbook (see the community Playbook called \"track_active_directory_admin_users\" to do this programmatically)\n  - Customize the CONFIDENCE variable according to your risk policy\n  - Change the PAN values to the network addresses of your PAN Firewalls\n  - Populate the API variable with the API key for the PAN Firewalls\n  - The PAN Firewall botnet report API can be tested with the following:\ncurl -kgX GET 'https://<pan_url>/api/?type=report&reporttype=predefined&reportname=botnet&key=<API_key>'\n  - Set the fields of the ServiceNow ticket according to your organization's best practices\n  - Set the Slack message destination to the desired target account\n  - Create a custom list called Botnet_False_Positive_Allowlist with one IPv4 CIDR range in the first column of each row. These ranges will be ignored by the playbook."
         },
-        "schema": 3,
-        "version": "3.5.135"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2018-02-12T02:08:19.122341+00:00",
+    "create_time": "2020-12-14T21:54:48.320808+00:00",
     "draft_mode": false,
     "labels": [
         "events"
-    ]
+    ],
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "ServiceNow",
+            "Slack"
+        ]
+    }
 }
