@@ -2,13 +2,12 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": ["ExtraHop", "Nessus"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "",
             "description": "This playbook gets initiated by a Timer asset (setup for the Timer asset is in the Notes section below) every 30 minutes to query ExtraHop for any new DNS servers that have been seen on your network in the last 30 minutes.  If one or more new DNS servers are discovered then the playbook will automatically initiate a Nessus endpoint scan on the IP of the new DNS server.  In addition the playbook will retrieve the following information about the new dns server:\n  - ExtraHop device object\n  - List of peer devices communicated with in the last 30 minutes\n  - List of client and server protocols spoken in the last 30 minutes",
-            "hash": "3990c7c7b4990aecc763e80b898ccb40818f7e12",
+            "hash": "ed6e5dda12896f3243f3677a9abfa41dad19ea8a",
             "joint": {
                 "cells": [
                     {
@@ -18,6 +17,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -44,7 +50,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -67,11 +73,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 232,
-                        "line_start": 219,
+                        "line_end": 231,
+                        "line_start": 218,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 10,
                         "outPorts": [],
                         "ports": {
                             "groups": {
@@ -447,6 +454,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -459,6 +473,7 @@
                             },
                             ".title": {
                                 "ref-x": 33,
+                                "ref-y": 8,
                                 "text": "START"
                             },
                             "g.delete": {
@@ -496,11 +511,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 20,
-                        "line_start": 12,
+                        "line_end": 19,
+                        "line_start": 11,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 1,
                         "outPorts": [
                             "out"
                         ],
@@ -748,6 +764,7 @@
                         },
                         "angle": 0,
                         "app": "ExtraHop",
+                        "appid": "0c173506-b5ab-4c9f-a78c-68dea794232c",
                         "approver": "",
                         "assets": [
                             {
@@ -755,6 +772,7 @@
                                 "active": true,
                                 "app_name": "ExtraHop",
                                 "app_version": "1.0.4",
+                                "appid": "",
                                 "asset_name": "extrahop",
                                 "config_type": "asset",
                                 "count": 0,
@@ -1133,6 +1151,13 @@
                             ".action": {
                                 "text": "get devices"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -1145,6 +1170,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -1159,6 +1186,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -1176,10 +1209,14 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def get_devices_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_devices_1() called')\n\n    # collect data for 'get_devices_1' call\n\n    parameters = []\n    \n    # build parameters list for 'get_devices_1' call\n    parameters.append({\n        'minutes': 30,\n        'activity_type': \"dns_server\",\n    })\n\n    phantom.act(\"get devices\", parameters=parameters, assets=['extrahop'], callback=decision_1, name=\"get_devices_1\")\n\n    return",
+                        "block_code": "def get_devices_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_devices_1() called')\n\n    # collect data for 'get_devices_1' call\n\n    parameters = []\n    \n    # build parameters list for 'get_devices_1' call\n    parameters.append({\n        'minutes': 30,\n        'activity_type': \"dns_server\",\n    })\n\n    phantom.act(action=\"get devices\", parameters=parameters, assets=['extrahop'], callback=decision_1, name=\"get_devices_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 108,
                         "callsback": true,
@@ -1204,12 +1241,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 40,
-                        "line_start": 23,
+                        "line_end": 39,
+                        "line_start": 22,
                         "message": "Configuring now",
                         "name": "get devices",
                         "notes": "Query ExtraHop for any new DNS servers that have been seen on your network in the last 30 minutes",
                         "number": 1,
+                        "order": 2,
                         "outPorts": [
                             "out"
                         ],
@@ -1293,6 +1331,8 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#637282",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".inPorts>.port-0>.port-body": {
@@ -1331,10 +1371,11 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"get_devices_1:action_result.data.*.ipaddr4\", \"!=\", \"\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        get_device_info_1(action=action, success=success, container=container, results=results, handle=handle)\n        list_nessus_policies(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
+                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"get_devices_1:action_result.data.*.ipaddr4\", \"!=\", \"\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        get_device_info_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        list_nessus_policies(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1358,11 +1399,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 62,
-                        "line_start": 43,
+                        "line_end": 61,
+                        "line_start": 42,
                         "name": "decision",
                         "notes": "Only initiate a scan on returned devices that have an IP Address",
                         "number": 1,
+                        "order": 3,
                         "outPorts": [
                             "out-1"
                         ],
@@ -1460,6 +1502,7 @@
                         },
                         "angle": 0,
                         "app": "ExtraHop",
+                        "appid": "0c173506-b5ab-4c9f-a78c-68dea794232c",
                         "approver": "",
                         "assets": [
                             {
@@ -1467,6 +1510,7 @@
                                 "active": true,
                                 "app_name": "ExtraHop",
                                 "app_version": "1.0.4",
+                                "appid": "",
                                 "asset_name": "extrahop",
                                 "config_type": "asset",
                                 "count": 0,
@@ -1772,6 +1816,13 @@
                             ".action": {
                                 "text": "get device info"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -1784,6 +1835,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -1798,6 +1851,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -1815,12 +1874,16 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def get_device_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_device_info_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_device_info_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_devices_1:action_result.data.*.ipaddr4', 'get_devices_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_device_info_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"get device info\", parameters=parameters, assets=['extrahop'], callback=get_device_info_1_callback, name=\"get_device_info_1\")\n\n    return",
-                        "callback_code": "def get_device_info_1_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_device_info_1_callback() called')\n    \n    get_peers_1(action=action, success=success, container=container, results=results, handle=handle)\n    get_protocols_1(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
-                        "callback_start": 88,
+                        "block_code": "def get_device_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_device_info_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_device_info_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_devices_1:action_result.data.*.ipaddr4', 'get_devices_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_device_info_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"get device info\", parameters=parameters, assets=['extrahop'], callback=get_device_info_1_callback, name=\"get_device_info_1\")\n\n    return",
+                        "callback_code": "def get_device_info_1_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):\n    phantom.debug('get_device_info_1_callback() called')\n    \n    get_peers_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n    get_protocols_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n\n    return",
+                        "callback_start": 87,
                         "callsback": true,
                         "color": "",
                         "connected_to_start": true,
@@ -1843,12 +1906,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 96,
-                        "line_start": 65,
+                        "line_end": 95,
+                        "line_start": 64,
                         "message": "Configuring now",
                         "name": "get device info",
                         "notes": "Get more details about an ExtraHop device given its IP address. Details include MAC address, dhcp name, first discovered time, device type, and more",
                         "number": 1,
+                        "order": 4,
                         "outPorts": [
                             "out"
                         ],
@@ -1938,6 +2002,7 @@
                         },
                         "angle": 0,
                         "app": "ExtraHop",
+                        "appid": "0c173506-b5ab-4c9f-a78c-68dea794232c",
                         "approver": "",
                         "assets": [
                             {
@@ -1945,6 +2010,7 @@
                                 "active": true,
                                 "app_name": "ExtraHop",
                                 "app_version": "1.0.4",
+                                "appid": "",
                                 "asset_name": "extrahop",
                                 "config_type": "asset",
                                 "count": 0,
@@ -2089,6 +2155,13 @@
                             ".action": {
                                 "text": "get protocols"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -2101,6 +2174,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -2115,6 +2190,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -2132,10 +2213,14 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def get_protocols_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_protocols_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_protocols_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_device_info_1:action_result.data.*.ipaddr4', 'get_device_info_1:action_result.data.*.id', 'get_device_info_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_protocols_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get protocols\", parameters=parameters, assets=['extrahop'], name=\"get_protocols_1\", parent_action=action)\n\n    return",
+                        "block_code": "def get_protocols_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_protocols_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_protocols_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_device_info_1:action_result.data.*.ipaddr4', 'get_device_info_1:action_result.data.*.id', 'get_device_info_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_protocols_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(action=\"get protocols\", parameters=parameters, assets=['extrahop'], name=\"get_protocols_1\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2160,12 +2245,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 124,
-                        "line_start": 99,
+                        "line_end": 123,
+                        "line_start": 98,
                         "message": "Configuring now",
                         "name": "get protocols",
                         "notes": "Retrieves a list of all of the protocols that a device communicated over the last 30 minutes",
                         "number": 1,
+                        "order": 5,
                         "outPorts": [
                             "out"
                         ],
@@ -2258,6 +2344,7 @@
                         },
                         "angle": 0,
                         "app": "ExtraHop",
+                        "appid": "0c173506-b5ab-4c9f-a78c-68dea794232c",
                         "approver": "",
                         "assets": [
                             {
@@ -2265,6 +2352,7 @@
                                 "active": true,
                                 "app_name": "ExtraHop",
                                 "app_version": "1.0.4",
+                                "appid": "",
                                 "asset_name": "extrahop",
                                 "config_type": "asset",
                                 "count": 0,
@@ -2639,6 +2727,13 @@
                             ".action": {
                                 "text": "get peers"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -2651,6 +2746,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -2665,6 +2762,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -2682,10 +2785,14 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def get_peers_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_peers_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_peers_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_device_info_1:action_result.data.*.ipaddr4', 'get_device_info_1:action_result.data.*.id', 'get_device_info_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_peers_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'protocol': \"any\",\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'peer_role': \"any\",\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get peers\", parameters=parameters, assets=['extrahop'], name=\"get_peers_1\", parent_action=action)\n\n    return",
+                        "block_code": "def get_peers_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_peers_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_peers_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_device_info_1:action_result.data.*.ipaddr4', 'get_device_info_1:action_result.data.*.id', 'get_device_info_1:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_peers_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'protocol': \"any\",\n                'eh_api_id': results_item_1[1],\n                'peer_role': \"any\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(action=\"get peers\", parameters=parameters, assets=['extrahop'], name=\"get_peers_1\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2710,12 +2817,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 154,
-                        "line_start": 127,
+                        "line_end": 153,
+                        "line_start": 126,
                         "message": "Configuring now",
                         "name": "get peers",
                         "notes": "Retrieves a list of all of the peers that a device communicated with in the last 30 minutes",
                         "number": 1,
+                        "order": 6,
                         "outPorts": [
                             "out"
                         ],
@@ -2812,6 +2920,7 @@
                                 "active": true,
                                 "app_name": "Nessus",
                                 "app_version": "1.0.9",
+                                "appid": "",
                                 "asset_name": "nessus",
                                 "config_type": "asset",
                                 "count": 0,
@@ -2823,7 +2932,7 @@
                                 "id": 206,
                                 "loaded": false,
                                 "missing": false,
-                                "name": "nessus",
+                                "name": "nessus scanner",
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
@@ -3051,6 +3160,13 @@
                             ".action": {
                                 "text": "scan endpoint"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -3063,6 +3179,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -3077,6 +3195,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -3094,10 +3218,14 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def scan_endpoint_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('scan_endpoint_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'scan_endpoint_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_devices_1:action_result.data.*.ipaddr4', 'get_devices_1:action_result.parameter.context.artifact_id'], action_results=results)\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:Nessus_Policy_Name:condition_1:list_nessus_policies:action_result.data.*.id\", \"filtered-data:Nessus_Policy_Name:condition_1:list_nessus_policies:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'scan_endpoint_1' call\n    for results_item_1 in results_data_1:\n        for filtered_results_item_1 in filtered_results_data_1:\n            if results_item_1[0] and filtered_results_item_1[0]:\n                parameters.append({\n                    'target_to_scan': results_item_1[0],\n                    'policy_id': filtered_results_item_1[0],\n                    # context (artifact id) is added to associate results with the artifact\n                    'context': {'artifact_id': results_item_1[1]},\n                })\n\n    phantom.act(\"scan endpoint\", parameters=parameters, assets=['nessus'], name=\"scan_endpoint_1\")\n\n    return",
+                        "block_code": "def scan_endpoint_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('scan_endpoint_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'scan_endpoint_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_devices_1:action_result.data.*.ipaddr4', 'get_devices_1:action_result.parameter.context.artifact_id'], action_results=results)\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:Nessus_Policy_Name:condition_1:list_nessus_policies:action_result.data.*.id\", \"filtered-data:Nessus_Policy_Name:condition_1:list_nessus_policies:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'scan_endpoint_1' call\n    for results_item_1 in results_data_1:\n        for filtered_results_item_1 in filtered_results_data_1:\n            if filtered_results_item_1[0] and results_item_1[0]:\n                parameters.append({\n                    'policy_id': filtered_results_item_1[0],\n                    'target_to_scan': results_item_1[0],\n                    # context (artifact id) is added to associate results with the artifact\n                    'context': {'artifact_id': filtered_results_item_1[1]},\n                })\n\n    phantom.act(action=\"scan endpoint\", parameters=parameters, assets=['nessus scanner'], name=\"scan_endpoint_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3122,12 +3250,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 183,
-                        "line_start": 157,
+                        "line_end": 182,
+                        "line_start": 156,
                         "message": "Configuring now",
                         "name": "scan endpoint",
                         "notes": "Initiate a Nessus scan on the new dns server",
                         "number": 1,
+                        "order": 7,
                         "outPorts": [
                             "out"
                         ],
@@ -3211,6 +3340,8 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".inPorts>.port-0>.port-body": {
@@ -3249,10 +3380,11 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def Nessus_Policy_Name(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('Nessus_Policy_Name() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"list_nessus_policies:action_result.data.*.name\", \"==\", \"\"],\n        ],\n        name=\"Nessus_Policy_Name:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        scan_endpoint_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def Nessus_Policy_Name(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Nessus_Policy_Name() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"list_nessus_policies:action_result.data.*.name\", \"==\", \"\"],\n        ],\n        name=\"Nessus_Policy_Name:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        scan_endpoint_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -3275,11 +3407,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 205,
-                        "line_start": 187,
+                        "line_end": 204,
+                        "line_start": 186,
                         "name": "filter",
                         "notes": "(Requires Configuration) Filter your Nessus policies by Name and determine the corresponding Nessus policy id.\nFill this value in with the Name of the desired Nessus policy to scan the new dns server with.",
                         "number": 1,
+                        "order": 8,
                         "outPorts": [
                             "out-1"
                         ],
@@ -3382,6 +3515,7 @@
                                 "active": true,
                                 "app_name": "Nessus",
                                 "app_version": "1.0.9",
+                                "appid": "",
                                 "asset_name": "nessus",
                                 "config_type": "asset",
                                 "count": 0,
@@ -3390,7 +3524,7 @@
                                 "id": 206,
                                 "loaded": false,
                                 "missing": false,
-                                "name": "nessus",
+                                "name": "nessus scanner",
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
@@ -3534,6 +3668,13 @@
                             ".action": {
                                 "text": "list nessus policies"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -3546,6 +3687,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -3560,6 +3703,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -3577,10 +3726,14 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def list_nessus_policies(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_nessus_policies() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n\n    parameters = []\n\n    phantom.act(\"list policies\", parameters=parameters, assets=['nessus'], callback=Nessus_Policy_Name, name=\"list_nessus_policies\")\n\n    return",
+                        "block_code": "def list_nessus_policies(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('list_nessus_policies() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n\n    parameters = []\n\n    phantom.act(action=\"list policies\", parameters=parameters, assets=['nessus scanner'], callback=Nessus_Policy_Name, name=\"list_nessus_policies\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3605,12 +3758,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 219,
-                        "line_start": 208,
+                        "line_end": 218,
+                        "line_start": 207,
                         "message": "Configuring now",
                         "name": "list policies",
                         "notes": "List the available Nessus scan policies",
                         "number": 1,
+                        "order": 9,
                         "outPorts": [
                             "out"
                         ],
@@ -3690,12 +3844,20 @@
             },
             "notes": "This playbook uses the following Apps:\n - ExtraHop - Discover new DNS servers\n - Nessus - List Nessus policy ids and initiate an endpoint scan\n - Timer - Configure a timer asset as directed in the deployment notes below to run this playbook on a 30 min \"cronjob\"\n\nDeployment Notes:\n - Add the name of the desired Nessus scan policy to the Filter action configuration in this playbook\n - Configure a Timer asset with the following configuration:\n   - Asset Info\n     - Asset Name = extrahop_discover_new_dns_server\n     - Asset Description = Creates an Event that runs the extrahop_discover_new_dns_servers playbook every 30 minutes\n   - Asset Settings\n     - Name of created event = Auto discover new DNS servers\n   - Ingest Settings\n     - Label to apply to objects from this source:\n       - Choose extrahop_discovery\n         - If not in the list, select NEW ENTRY and type extrahop_discovery\n     - Polling Interval:\n       - Scheduled\n       - Every 30 minutes"
         },
-        "schema": 3,
-        "version": "3.5.206"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2018-05-22T18:12:04.783396+00:00",
+    "create_time": "2021-01-19T21:58:31.877161+00:00",
     "draft_mode": false,
     "labels": [
-        "extrahop_discovery"
-    ]
+        "events"
+    ],
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "ExtraHop",
+            "Nessus"
+        ]
+    }
 }
