@@ -2,13 +2,11 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": ["Splunk", "VirusTotal"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "import re\nimport time\n# For filter 10: If you want to error check further for false positives, you can use the DNS UID to look at sourcetype=corelight_conn and see if resp_bytes=0. This speculates that a device inline has blocked the query and can be check against.",
             "description": "This playbook automates an analyst investigation when reviewing a Suricata event for a potentially malicious DNS query. Splunk queries are used to gather related information from Zeek metadata, and a VirusTotal query checks the reputation of any files that are extracted from the network stream by Corelight.",
-            "hash": "80cebfc6e514e8bfc000e93c43b3ae72b2dc9541",
             "joint": {
                 "cells": [
                     {
@@ -10840,7 +10838,7 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 1010
                     },
                     {
@@ -11366,14 +11364,20 @@
             },
             "notes": "This playbook uses the following Apps:\n- Splunk (run query) [asset name = splunk] - query Corelight network metadata which is indexed in Splunk\n- VirusTotal (file reputation) [asset name = virustotal] - check file hashes for malware reputation\n\nDeployment Notes:\n- This playbook relies on a Corelight sensor, instrumented with Zeek and Suricata, on a portion of the network where endpoint traffic can be directly monitored (i.e. not beyond a NAT/proxy point or DNS aggregator such as Infoblox/ActiveDirectory/etc.).\n- Corelight logs ingested into your Splunk instance must include at least conn, dns, files, http, ssl, and suricata_corelight.\n- All Splunk queries within this playbook currently use an index of \u201ccorelight\u201d; this should be modified to the index used to store Corelight log data.\n- The Phantom container must include a Corelight UID that ties to a suspicious DNS request in order to run. This is most easily achieved with a saved search in Splunk that triggers when alerts are generated for any of a list of Suricata SIDs focused on malicious DNS names (list provided separately on the Corelight GitHub). \n- Questions regarding implementation can be sent to phantom-playbooks@corelight.com."
         },
-        "python_version": "2.7",
+        "python_version": "3",
         "schema": 4,
-        "version": "4.9.35731"
+        "version": "4.10.0.40961"
     },
-    "create_time": "2020-09-11T19:30:41.885057+00:00",
+    "create_time": "2021-02-17T21:05:07.343435+00:00",
     "draft_mode": false,
     "labels": [
         "events"
     ],
-    "tags": []
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "Splunk",
+            "VirusTotal"
+        ]
+    }
 }
