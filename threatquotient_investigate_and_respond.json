@@ -1,14 +1,13 @@
 {
     "blockly": false,
     "blockly_xml": "<xml></xml>",
-    "category": "Tech Sessions",
-    "misc": { "apps_list": ["ThreatQ", "Palo Alto Networks Firewall", "VirusTotal"] },
+    "category": "Use Cases",
     "coa": {
         "data": {
             "clean": true,
             "code_block": "import ipaddress",
             "description": "The playbook automates the IP and URL indicator enrichment process using ThreatQuotient's threat library and other reputation tools. The playbook will also post back threat intelligence data to ThreatQuotient if it does not already exist. Finally, block rules are deployed if URL or IP threat scoring thresholds are exceeded. This playbook was constructed for the Phantom Tech Session held on 03/24/2017 with ThreatQuotient.",
-            "hash": "1b4b4aca2d7d3a49c68a747a88304a2a99aebb41",
+            "hash": "13b2f0a04971fc975fa17885d79a488f762fe7fa",
             "joint": {
                 "cells": [
                     {
@@ -965,8 +964,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 31,
-                        "line_start": 17,
+                        "line_end": 30,
+                        "line_start": 16,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -1198,7 +1197,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def block_url_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_url_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_url_2' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_8:condition_1:src_ip_reputation_VT:action_result.data.*.detected_urls.*.urldata.*.detected_urls.*.url\", \"filtered-data:filter_8:condition_1:src_ip_reputation_VT:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'block_url_2' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'url': filtered_results_item_1[0],\n                'vsys': \"\",\n                'ph': \"\",\n                'sec_policy': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"block url\", parameters=parameters, assets=['pan'], name=\"block_url_2\", parent_action=action)\n\n    return",
+                        "block_code": "def block_url_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('block_url_2() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_url_2' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_8:condition_1:src_ip_reputation_VT:action_result.data.*.detected_urls.*.urldata.*.detected_urls.*.url\", \"filtered-data:filter_8:condition_1:src_ip_reputation_VT:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'block_url_2' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'ph': \"\",\n                'url': filtered_results_item_1[0],\n                'vsys': \"\",\n                'sec_policy': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(action=\"block url\", parameters=parameters, assets=['pan'], name=\"block_url_2\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1223,8 +1222,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 57,
-                        "line_start": 31,
+                        "line_end": 56,
+                        "line_start": 30,
                         "message": "Configuring now",
                         "name": "block url",
                         "notes": "",
@@ -1347,7 +1346,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -1370,8 +1369,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 550,
-                        "line_start": 537,
+                        "line_end": 549,
+                        "line_start": 536,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -1659,7 +1658,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def filter_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_6() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.vaultId\", \"!=\", \"\"],\n        ],\n        name=\"filter_6:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        upload_file_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def filter_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_6() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.vaultId\", \"!=\", \"\"],\n        ],\n        name=\"filter_6:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        upload_file_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1682,8 +1681,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 103,
-                        "line_start": 86,
+                        "line_end": 102,
+                        "line_start": 85,
                         "name": "filter",
                         "notes": "Check if file is present in container.",
                         "number": 6,
@@ -1929,7 +1928,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def block_src_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_src_ip() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_src_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_src_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'is_source_address': \"\",\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['pan'], name=\"block_src_ip\")\n\n    return",
+                        "block_code": "def block_src_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('block_src_ip() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_src_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_src_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                'is_source_address': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(action=\"block ip\", parameters=parameters, assets=['pan'], name=\"block_src_ip\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1954,8 +1953,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 128,
-                        "line_start": 103,
+                        "line_end": 127,
+                        "line_start": 102,
                         "message": "Configuring now",
                         "name": "block ip",
                         "notes": "",
@@ -2102,7 +2101,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_2() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"dst_ip_reputation_TQ:action_result.message\", \"==\", \"ThreatQ query did not return any information\"],\n        ],\n        name=\"filter_2:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        create_dst_IP_ioc(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    # collect filtered artifact ids for 'if' condition 2\n    matched_artifacts_2, matched_results_2 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"dst_ip_reputation_TQ:action_result.message\", \"==\", \"SUCCESS\"],\n        ],\n        name=\"filter_2:condition_2\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_2 or matched_results_2:\n        filter_4(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n        dst_ip_reputation_VT(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n\n    return",
+                        "block_code": "def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_2() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"dst_ip_reputation_TQ:action_result.message\", \"==\", \"ThreatQ query did not return any information\"],\n        ],\n        name=\"filter_2:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        create_dst_IP_ioc(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    # collect filtered artifact ids for 'if' condition 2\n    matched_artifacts_2, matched_results_2 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"dst_ip_reputation_TQ:action_result.message\", \"==\", \"SUCCESS\"],\n        ],\n        name=\"filter_2:condition_2\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_2 or matched_results_2:\n        filter_4(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n        dst_ip_reputation_VT(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -2125,8 +2124,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 160,
-                        "line_start": 128,
+                        "line_end": 159,
+                        "line_start": 127,
                         "name": "filter",
                         "notes": "If the indicator did not exist in ThreatQ threat library, then create it.   If the indicator exists in the threat library, then proceed with URL hunting and IP blocking. ",
                         "number": 2,
@@ -2281,7 +2280,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def filter_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_5() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"filtered-data:filter_3:condition_1:src_ip_reputation_TQ:action_result.data.*.status.name\", \"==\", \"Active\"],\n            [\"filtered-data:filter_3:condition_1:src_ip_reputation_TQ:action_result.data.*.adversaries.*.name\", \"!=\", \"\"],\n        ],\n        logical_operator='or',\n        name=\"filter_5:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        block_src_ip(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def filter_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_5() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"filtered-data:filter_3:condition_1:src_ip_reputation_TQ:action_result.data.*.status.name\", \"==\", \"Active\"],\n            [\"filtered-data:filter_3:condition_1:src_ip_reputation_TQ:action_result.data.*.adversaries.*.name\", \"!=\", \"\"],\n        ],\n        logical_operator='or',\n        name=\"filter_5:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        block_src_ip(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -2304,8 +2303,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 180,
-                        "line_start": 160,
+                        "line_end": 179,
+                        "line_start": 159,
                         "name": "filter",
                         "notes": "",
                         "number": 5,
@@ -2452,7 +2451,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_4() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"filtered-data:filter_2:condition_2:dst_ip_reputation_TQ:action_result.data.*.status.name\", \"==\", \"Active\"],\n            [\"filtered-data:filter_2:condition_2:dst_ip_reputation_TQ:action_result.data.*.adversaries.*.name\", \"!=\", \"\"],\n        ],\n        logical_operator='or',\n        name=\"filter_4:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        block_dst_ip(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def filter_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_4() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"filtered-data:filter_2:condition_2:dst_ip_reputation_TQ:action_result.data.*.status.name\", \"==\", \"Active\"],\n            [\"filtered-data:filter_2:condition_2:dst_ip_reputation_TQ:action_result.data.*.adversaries.*.name\", \"!=\", \"\"],\n        ],\n        logical_operator='or',\n        name=\"filter_4:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        block_dst_ip(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -2475,8 +2474,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 200,
-                        "line_start": 180,
+                        "line_end": 199,
+                        "line_start": 179,
                         "name": "filter",
                         "notes": "",
                         "number": 4,
@@ -2638,7 +2637,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_3() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"src_ip_reputation_TQ:action_result.message\", \"==\", \"SUCCESS\"],\n        ],\n        name=\"filter_3:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        filter_5(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        src_ip_reputation_VT(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    # collect filtered artifact ids for 'if' condition 2\n    matched_artifacts_2, matched_results_2 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"src_ip_reputation_TQ:action_result.message\", \"==\", \"ThreatQ query did not return any information\"],\n        ],\n        name=\"filter_3:condition_2\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_2 or matched_results_2:\n        create_src_IP_ioc(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n\n    return",
+                        "block_code": "def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_3() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"src_ip_reputation_TQ:action_result.message\", \"==\", \"SUCCESS\"],\n        ],\n        name=\"filter_3:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        filter_5(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        src_ip_reputation_VT(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    # collect filtered artifact ids for 'if' condition 2\n    matched_artifacts_2, matched_results_2 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"src_ip_reputation_TQ:action_result.message\", \"==\", \"ThreatQ query did not return any information\"],\n        ],\n        name=\"filter_3:condition_2\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_2 or matched_results_2:\n        create_src_IP_ioc(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -2661,8 +2660,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 232,
-                        "line_start": 200,
+                        "line_end": 231,
+                        "line_start": 199,
                         "name": "filter",
                         "notes": "If the indicator did not exist in ThreatQ threat library, then create it.   If the indicator exists in the threat library, then proceed with URL hunting and IP blocking. ",
                         "number": 3,
@@ -2817,7 +2816,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def filter_8(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_8() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"src_ip_reputation_VT:action_result.data.*.detected_urls.*.positives\", \">=\", \"1\"],\n        ],\n        name=\"filter_8:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        create_URL_ioc_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def filter_8(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_8() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"src_ip_reputation_VT:action_result.data.*.detected_urls.*.positives\", \">=\", 1],\n        ],\n        name=\"filter_8:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        create_URL_ioc_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -2840,8 +2839,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 250,
-                        "line_start": 232,
+                        "line_end": 249,
+                        "line_start": 231,
                         "name": "filter",
                         "notes": "",
                         "number": 8,
@@ -3106,7 +3105,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def create_URL_ioc_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_URL_ioc_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_URL_ioc_2' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_8:condition_1:src_ip_reputation_VT:action_result.data.*.detected_urls.*.urldata.*.detected_urls.*.urldata.*.detected_urls.*.urldata.*.detected_urls.*.url\", \"filtered-data:filter_8:condition_1:src_ip_reputation_VT:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'create_URL_ioc_2' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'indicator_type': \"URL\",\n                'indicator': filtered_results_item_1[0],\n                'indicator_status': \"Review\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(\"create ioc\", parameters=parameters, assets=['threatq'], callback=block_url_2, name=\"create_URL_ioc_2\")\n\n    return",
+                        "block_code": "def create_URL_ioc_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('create_URL_ioc_2() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_URL_ioc_2' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:filter_8:condition_1:src_ip_reputation_VT:action_result.data.*.detected_urls.*.urldata.*.detected_urls.*.urldata.*.detected_urls.*.urldata.*.detected_urls.*.url\", \"filtered-data:filter_8:condition_1:src_ip_reputation_VT:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'create_URL_ioc_2' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[0]:\n            parameters.append({\n                'indicator': filtered_results_item_1[0],\n                'indicator_type': \"URL\",\n                'indicator_status': \"Review\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[1]},\n            })\n\n    phantom.act(action=\"create ioc\", parameters=parameters, assets=['threatq'], callback=block_url_2, name=\"create_URL_ioc_2\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3131,8 +3130,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 275,
-                        "line_start": 250,
+                        "line_end": 274,
+                        "line_start": 249,
                         "message": "Configuring now",
                         "name": "create ioc",
                         "notes": "",
@@ -3371,7 +3370,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def block_dst_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_dst_ip() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_dst_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_dst_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'is_source_address': \"\",\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['pan'], name=\"block_dst_ip\")\n\n    return",
+                        "block_code": "def block_dst_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('block_dst_ip() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_dst_ip' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_dst_ip' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'ip': filtered_artifacts_item_1[0],\n                'vsys': \"\",\n                'is_source_address': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(action=\"block ip\", parameters=parameters, assets=['pan'], name=\"block_dst_ip\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3396,8 +3395,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 300,
-                        "line_start": 275,
+                        "line_end": 299,
+                        "line_start": 274,
                         "message": "Configuring now",
                         "name": "block ip",
                         "notes": "",
@@ -3635,7 +3634,7 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def block_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_url_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_url_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['dst_ip_reputation_VT:action_result.data.*.detected_urls.*.url', 'dst_ip_reputation_VT:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'block_url_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'url': results_item_1[0],\n                'vsys': \"\",\n                'ph': \"\",\n                'sec_policy': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"block url\", parameters=parameters, assets=['pan'], name=\"block_url_1\", parent_action=action)\n\n    return",
+                        "block_code": "def block_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('block_url_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'block_url_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['dst_ip_reputation_VT:action_result.data.*.detected_urls.*.url', 'dst_ip_reputation_VT:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'block_url_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ph': \"\",\n                'url': results_item_1[0],\n                'vsys': \"\",\n                'sec_policy': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"block url\", parameters=parameters, assets=['pan'], name=\"block_url_1\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3660,8 +3659,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 326,
-                        "line_start": 300,
+                        "line_end": 325,
+                        "line_start": 299,
                         "message": "Configuring now",
                         "name": "block url",
                         "notes": "",
@@ -3907,7 +3906,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def src_ip_reputation_TQ(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('src_ip_reputation_TQ() called')\n\n    # collect data for 'src_ip_reputation_TQ' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'src_ip_reputation_TQ' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'query': filtered_artifacts_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"ip reputation\", parameters=parameters, assets=['threatq'], callback=filter_3, name=\"src_ip_reputation_TQ\")\n\n    return",
+                        "block_code": "def src_ip_reputation_TQ(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('src_ip_reputation_TQ() called')\n\n    # collect data for 'src_ip_reputation_TQ' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'src_ip_reputation_TQ' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'query': filtered_artifacts_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(action=\"ip reputation\", parameters=parameters, assets=['threatq'], callback=filter_3, name=\"src_ip_reputation_TQ\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3932,8 +3931,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 347,
-                        "line_start": 326,
+                        "line_end": 346,
+                        "line_start": 325,
                         "message": "Configuring now",
                         "name": "ip reputation",
                         "notes": "Execute an IP reputation lookup within ThreatQ's threat library. ",
@@ -4066,7 +4065,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"dst_ip_reputation_VT:action_result.data.*.detected_urls.*.positives\", \">=\", \"1\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        create_URL_ioc_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
+                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"dst_ip_reputation_VT:action_result.data.*.detected_urls.*.positives\", \">=\", 1],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        create_URL_ioc_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -4090,8 +4089,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 365,
-                        "line_start": 347,
+                        "line_end": 364,
+                        "line_start": 346,
                         "name": "decision",
                         "notes": "If the number of positive detected URLs is >= 1, deploy block URL rule.",
                         "number": 1,
@@ -4215,7 +4214,10 @@
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
                                     },
                                     {
                                         "column_name": "Ip",
@@ -4225,113 +4227,349 @@
                                             "ipv6"
                                         ],
                                         "data_path": "action_result.parameter.ip",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "8.8.8.8"
+                                        ]
                                     },
                                     {
                                         "column_name": "As Owner",
                                         "column_order": 1,
                                         "data_path": "action_result.data.*.as_owner",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Test Inc."
+                                        ]
                                     },
                                     {
                                         "column_name": "Asn",
                                         "column_order": 2,
                                         "data_path": "action_result.data.*.asn",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "15169"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.continent",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "NA"
+                                        ]
                                     },
                                     {
                                         "column_name": "Country",
                                         "column_order": 3,
                                         "data_path": "action_result.data.*.country",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "US"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_communicating_samples.*.date",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2019-02-01 08:27:02"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_communicating_samples.*.positives",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "sha256"
+                                        ],
                                         "data_path": "action_result.data.*.detected_communicating_samples.*.sha256",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "95aea1163cd742d895f048de9b7f7ae83149ba2515b174dc6d5cfd910cb07ee3"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_communicating_samples.*.total",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            61
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_downloaded_samples.*.date",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2017-09-28 14:00:34"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_downloaded_samples.*.positives",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "sha256"
+                                        ],
+                                        "data_path": "action_result.data.*.detected_downloaded_samples.*.sha256",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2b977b6342a624097b669fd2347ffbcbdc8a814369b5f431835793dbaa2251c8"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_downloaded_samples.*.total",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            57
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_referrer_samples.*.date",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2018-02-14 12:35:57"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_referrer_samples.*.positives",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            25
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "sha256"
+                                        ],
+                                        "data_path": "action_result.data.*.detected_referrer_samples.*.sha256",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "6c16bbddc9dcbf447c44afb11387115ac657852fcdf30cf068cf6e11e8786212"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_referrer_samples.*.total",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            70
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_urls.*.positives",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            9
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_urls.*.scan_date",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2019-02-01 07:31:41"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_urls.*.total",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            67
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "url",
+                                            "file name"
+                                        ],
                                         "data_path": "action_result.data.*.detected_urls.*.url",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://vanmaulop10.com/now/index.php?mail="
+                                        ]
                                     },
                                     {
+                                        "data_path": "action_result.data.*.network",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "8.8.8.0/24"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "host name"
+                                        ],
                                         "data_path": "action_result.data.*.resolutions.*.hostname",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "*.o365answers.com"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.resolutions.*.last_resolved",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2015-12-10 00:00:00"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.response_code",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_communicating_samples.*.date",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2019-02-01 09:03:52"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_communicating_samples.*.positives",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "sha256"
+                                        ],
+                                        "data_path": "action_result.data.*.undetected_communicating_samples.*.sha256",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "414296de0c223c28910d99797701d4fa192208f4e30c32b0dc07da7602d7a4fb"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_communicating_samples.*.total",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            57
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.undetected_downloaded_samples.*.date",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2019-01-30 20:23:21"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.undetected_downloaded_samples.*.positives",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "sha256"
+                                        ],
                                         "data_path": "action_result.data.*.undetected_downloaded_samples.*.sha256",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "23926e9185d8d43c02807a838ffb373cc1977726094a4e46807c66ada9dd7660"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.undetected_downloaded_samples.*.total",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            71
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_referrer_samples.*.positives",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "sha256"
+                                        ],
+                                        "data_path": "action_result.data.*.undetected_referrer_samples.*.sha256",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "01e110d94eec3ec8abed7c9bb34fd7bcc3bd06c397ec83676431fc193be3b68e"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_referrer_samples.*.total",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            55
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_urls.*",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2018-10-01 03:53:53"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.verbose_msg",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "IP address in dataset"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary.communicating_samples",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            100
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.detected_urls",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            100
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary.downloaded_samples",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            11
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.message",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Downloaded samples: 11, Detected urls: 100, Communicating samples: 100"
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_positives",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
                                     }
                                 ],
                                 "parameters": {
@@ -4438,7 +4676,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def dst_ip_reputation_VT(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('dst_ip_reputation_VT() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'dst_ip_reputation_VT' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'dst_ip_reputation_VT' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'ip': filtered_artifacts_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"ip reputation\", parameters=parameters, assets=['virustotal'], callback=decision_1, name=\"dst_ip_reputation_VT\")\n\n    return",
+                        "block_code": "def dst_ip_reputation_VT(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('dst_ip_reputation_VT() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'dst_ip_reputation_VT' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'dst_ip_reputation_VT' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'ip': filtered_artifacts_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(action=\"ip reputation\", parameters=parameters, assets=['virustotal'], callback=decision_1, name=\"dst_ip_reputation_VT\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -4463,8 +4701,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 388,
-                        "line_start": 365,
+                        "line_end": 387,
+                        "line_start": 364,
                         "message": "Configuring now",
                         "name": "ip reputation",
                         "notes": "",
@@ -4579,7 +4817,10 @@
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success"
+                                        ]
                                     },
                                     {
                                         "column_name": "Ip",
@@ -4589,113 +4830,349 @@
                                             "ipv6"
                                         ],
                                         "data_path": "action_result.parameter.ip",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "8.8.8.8"
+                                        ]
                                     },
                                     {
                                         "column_name": "As Owner",
                                         "column_order": 1,
                                         "data_path": "action_result.data.*.as_owner",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Test Inc."
+                                        ]
                                     },
                                     {
                                         "column_name": "Asn",
                                         "column_order": 2,
                                         "data_path": "action_result.data.*.asn",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "15169"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.continent",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "NA"
+                                        ]
                                     },
                                     {
                                         "column_name": "Country",
                                         "column_order": 3,
                                         "data_path": "action_result.data.*.country",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "US"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_communicating_samples.*.date",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2019-02-01 08:27:02"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_communicating_samples.*.positives",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "sha256"
+                                        ],
                                         "data_path": "action_result.data.*.detected_communicating_samples.*.sha256",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "95aea1163cd742d895f048de9b7f7ae83149ba2515b174dc6d5cfd910cb07ee3"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_communicating_samples.*.total",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            61
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_downloaded_samples.*.date",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2017-09-28 14:00:34"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_downloaded_samples.*.positives",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "sha256"
+                                        ],
+                                        "data_path": "action_result.data.*.detected_downloaded_samples.*.sha256",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2b977b6342a624097b669fd2347ffbcbdc8a814369b5f431835793dbaa2251c8"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_downloaded_samples.*.total",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            57
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_referrer_samples.*.date",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2018-02-14 12:35:57"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_referrer_samples.*.positives",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            25
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "sha256"
+                                        ],
+                                        "data_path": "action_result.data.*.detected_referrer_samples.*.sha256",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "6c16bbddc9dcbf447c44afb11387115ac657852fcdf30cf068cf6e11e8786212"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.detected_referrer_samples.*.total",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            70
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_urls.*.positives",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            9
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_urls.*.scan_date",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2019-02-01 07:31:41"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.detected_urls.*.total",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            67
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "url",
+                                            "file name"
+                                        ],
                                         "data_path": "action_result.data.*.detected_urls.*.url",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "http://vanmaulop10.com/now/index.php?mail="
+                                        ]
                                     },
                                     {
+                                        "data_path": "action_result.data.*.network",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "8.8.8.0/24"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "host name"
+                                        ],
                                         "data_path": "action_result.data.*.resolutions.*.hostname",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "*.o365answers.com"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.resolutions.*.last_resolved",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2015-12-10 00:00:00"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.response_code",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_communicating_samples.*.date",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2019-02-01 09:03:52"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_communicating_samples.*.positives",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "sha256"
+                                        ],
+                                        "data_path": "action_result.data.*.undetected_communicating_samples.*.sha256",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "414296de0c223c28910d99797701d4fa192208f4e30c32b0dc07da7602d7a4fb"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_communicating_samples.*.total",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            57
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.undetected_downloaded_samples.*.date",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2019-01-30 20:23:21"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.undetected_downloaded_samples.*.positives",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "sha256"
+                                        ],
                                         "data_path": "action_result.data.*.undetected_downloaded_samples.*.sha256",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "23926e9185d8d43c02807a838ffb373cc1977726094a4e46807c66ada9dd7660"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.undetected_downloaded_samples.*.total",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            71
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_referrer_samples.*.positives",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "sha256"
+                                        ],
+                                        "data_path": "action_result.data.*.undetected_referrer_samples.*.sha256",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "01e110d94eec3ec8abed7c9bb34fd7bcc3bd06c397ec83676431fc193be3b68e"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_referrer_samples.*.total",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            55
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.undetected_urls.*",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2018-10-01 03:53:53"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.verbose_msg",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "IP address in dataset"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary.communicating_samples",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            100
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.detected_urls",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            100
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.summary.downloaded_samples",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            11
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.message",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Downloaded samples: 11, Detected urls: 100, Communicating samples: 100"
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_positives",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            0
+                                        ]
                                     }
                                 ],
                                 "parameters": {
@@ -4803,7 +5280,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def src_ip_reputation_VT(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('src_ip_reputation_VT() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'src_ip_reputation_VT' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'src_ip_reputation_VT' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'ip': filtered_artifacts_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"ip reputation\", parameters=parameters, assets=['virustotal'], callback=filter_8, name=\"src_ip_reputation_VT\")\n\n    return",
+                        "block_code": "def src_ip_reputation_VT(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('src_ip_reputation_VT() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'src_ip_reputation_VT' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'src_ip_reputation_VT' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'ip': filtered_artifacts_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(action=\"ip reputation\", parameters=parameters, assets=['virustotal'], callback=filter_8, name=\"src_ip_reputation_VT\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -4828,8 +5305,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 411,
-                        "line_start": 388,
+                        "line_end": 410,
+                        "line_start": 387,
                         "message": "Configuring now",
                         "name": "ip reputation",
                         "notes": "Executing an IP reputation lookup to get associated URLs.",
@@ -5085,7 +5562,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def create_src_IP_ioc(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_src_IP_ioc() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_src_IP_ioc' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'create_src_IP_ioc' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'indicator_type': \"IP Address\",\n                'indicator': filtered_artifacts_item_1[0],\n                'indicator_status': \"Review\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"create ioc\", parameters=parameters, assets=['threatq'], name=\"create_src_IP_ioc\")\n\n    return",
+                        "block_code": "def create_src_IP_ioc(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('create_src_IP_ioc() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_src_IP_ioc' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_2:artifact:*.cef.sourceAddress', 'filtered-data:filter_1:condition_2:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'create_src_IP_ioc' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'indicator': filtered_artifacts_item_1[0],\n                'indicator_type': \"IP Address\",\n                'indicator_status': \"Review\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(action=\"create ioc\", parameters=parameters, assets=['threatq'], name=\"create_src_IP_ioc\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -5110,8 +5587,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 436,
-                        "line_start": 411,
+                        "line_end": 435,
+                        "line_start": 410,
                         "message": "Configuring now",
                         "name": "create ioc",
                         "notes": "",
@@ -5330,7 +5807,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def create_event_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_event_1() called')\n\n    parameters = []\n\n    phantom.act(\"create event\", parameters=parameters, assets=['threatq'], name=\"create_event_1\")\n\n    return",
+                        "block_code": "def create_event_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('create_event_1() called')\n\n    parameters = []\n\n    phantom.act(action=\"create event\", parameters=parameters, assets=['threatq'], name=\"create_event_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -5355,8 +5832,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 445,
-                        "line_start": 436,
+                        "line_end": 444,
+                        "line_start": 435,
                         "message": "Configuring now",
                         "name": "create event",
                         "notes": "",
@@ -5579,7 +6056,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def upload_file_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('upload_file_2() called')\n\n    # collect data for 'upload_file_2' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'upload_file_2' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'vault_id': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"upload file\", parameters=parameters, assets=['threatq'], name=\"upload_file_2\")\n\n    return",
+                        "block_code": "def upload_file_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('upload_file_2() called')\n\n    # collect data for 'upload_file_2' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.vaultId', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'upload_file_2' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'vault_id': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(action=\"upload file\", parameters=parameters, assets=['threatq'], name=\"upload_file_2\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -5604,8 +6081,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 466,
-                        "line_start": 445,
+                        "line_end": 465,
+                        "line_start": 444,
                         "message": "Configuring now",
                         "name": "upload file",
                         "notes": "",
@@ -5902,7 +6379,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def create_URL_ioc_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_URL_ioc_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_URL_ioc_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['dst_ip_reputation_VT:action_result.data.*.detected_urls.*.url', 'dst_ip_reputation_VT:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'create_URL_ioc_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'indicator_type': \"URL\",\n                'indicator': results_item_1[0],\n                'indicator_status': \"Review\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"create ioc\", parameters=parameters, assets=['threatq'], callback=block_url_1, name=\"create_URL_ioc_1\")\n\n    return",
+                        "block_code": "def create_URL_ioc_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('create_URL_ioc_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_URL_ioc_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['dst_ip_reputation_VT:action_result.data.*.detected_urls.*.url', 'dst_ip_reputation_VT:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'create_URL_ioc_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'indicator': results_item_1[0],\n                'indicator_type': \"URL\",\n                'indicator_status': \"Review\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"create ioc\", parameters=parameters, assets=['threatq'], callback=block_url_1, name=\"create_URL_ioc_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -5927,8 +6404,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 491,
-                        "line_start": 466,
+                        "line_end": 490,
+                        "line_start": 465,
                         "message": "Configuring now",
                         "name": "create ioc",
                         "notes": "",
@@ -6186,7 +6663,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def create_dst_IP_ioc(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_dst_IP_ioc() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_dst_IP_ioc' call\n    inputs_data_1 = phantom.collect2(container=container, datapath=['dst_ip_reputation_TQ:artifact:*.cef.sourceAddress', 'dst_ip_reputation_TQ:artifact:*.id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'create_dst_IP_ioc' call\n    for inputs_item_1 in inputs_data_1:\n        if inputs_item_1[0]:\n            parameters.append({\n                'indicator_type': \"IP Address\",\n                'indicator': inputs_item_1[0],\n                'indicator_status': \"Review\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': inputs_item_1[1]},\n            })\n\n    phantom.act(\"create ioc\", parameters=parameters, assets=['threatq'], name=\"create_dst_IP_ioc\")\n\n    return",
+                        "block_code": "def create_dst_IP_ioc(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('create_dst_IP_ioc() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'create_dst_IP_ioc' call\n    inputs_data_1 = phantom.collect2(container=container, datapath=['dst_ip_reputation_TQ:artifact:*.cef.sourceAddress', 'dst_ip_reputation_TQ:artifact:*.id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'create_dst_IP_ioc' call\n    for inputs_item_1 in inputs_data_1:\n        if inputs_item_1[0]:\n            parameters.append({\n                'indicator': inputs_item_1[0],\n                'indicator_type': \"IP Address\",\n                'indicator_status': \"Review\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': inputs_item_1[1]},\n            })\n\n    phantom.act(action=\"create ioc\", parameters=parameters, assets=['threatq'], name=\"create_dst_IP_ioc\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -6211,8 +6688,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 516,
-                        "line_start": 491,
+                        "line_end": 515,
+                        "line_start": 490,
                         "message": "Configuring now",
                         "name": "create ioc",
                         "notes": "",
@@ -6460,7 +6937,7 @@
                                 "fill": "#E6984E"
                             }
                         },
-                        "block_code": "def dst_ip_reputation_TQ(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('dst_ip_reputation_TQ() called')\n\n    # collect data for 'dst_ip_reputation_TQ' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'dst_ip_reputation_TQ' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'query': filtered_artifacts_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(\"ip reputation\", parameters=parameters, assets=['threatq'], callback=filter_2, name=\"dst_ip_reputation_TQ\")\n\n    return",
+                        "block_code": "def dst_ip_reputation_TQ(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('dst_ip_reputation_TQ() called')\n\n    # collect data for 'dst_ip_reputation_TQ' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.destinationAddress', 'filtered-data:filter_1:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'dst_ip_reputation_TQ' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        if filtered_artifacts_item_1[0]:\n            parameters.append({\n                'query': filtered_artifacts_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_artifacts_item_1[1]},\n            })\n\n    phantom.act(action=\"ip reputation\", parameters=parameters, assets=['threatq'], callback=filter_2, name=\"dst_ip_reputation_TQ\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -6485,8 +6962,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 537,
-                        "line_start": 516,
+                        "line_end": 536,
+                        "line_start": 515,
                         "message": "Configuring now",
                         "name": "ip reputation",
                         "notes": "Execute an IP reputation lookup within ThreatQ's threat library. ",
@@ -6633,7 +7110,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.destinationAddress\", \"not in\", \"custom_list:internal range\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        dst_ip_reputation_TQ(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    # collect filtered artifact ids for 'if' condition 2\n    matched_artifacts_2, matched_results_2 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.sourceAddress\", \"not in\", \"custom_list:internal range\"],\n        ],\n        name=\"filter_1:condition_2\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_2 or matched_results_2:\n        src_ip_reputation_TQ(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n\n    return",
+                        "block_code": "def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_1() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.destinationAddress\", \"not in\", \"custom_list:internal range\"],\n        ],\n        name=\"filter_1:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        dst_ip_reputation_TQ(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    # collect filtered artifact ids for 'if' condition 2\n    matched_artifacts_2, matched_results_2 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.sourceAddress\", \"not in\", \"custom_list:internal range\"],\n        ],\n        name=\"filter_1:condition_2\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_2 or matched_results_2:\n        src_ip_reputation_TQ(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -6656,8 +7133,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 86,
-                        "line_start": 57,
+                        "line_end": 85,
+                        "line_start": 56,
                         "name": "filter",
                         "notes": "Ensure IP addresses are not in the custom list 'internal range'",
                         "number": 1,
@@ -6767,13 +7244,21 @@
             },
             "notes": "Be sure to update all assets and parameters to match your environment."
         },
-        "schema": 3,
-        "version": "4.2.6332"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2019-01-22T18:01:23.145183+00:00",
+    "create_time": "2021-01-26T18:46:19.913907+00:00",
     "draft_mode": false,
     "labels": [
         "events"
     ],
-    "tags": []
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "ThreatQ",
+            "Palo Alto Networks Firewall",
+            "VirusTotal"
+        ]
+    }
 }
