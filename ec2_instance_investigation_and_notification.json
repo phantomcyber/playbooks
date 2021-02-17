@@ -2,12 +2,12 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": ["AWS Security Hub", "AWS EC2", "Jira", "Slack", "SSH", "MaxMind", "PassiveTotal"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "",
             "description": "Investigate an AWS Security Hub finding related to an exposed EC2 instance which is being probed by potentially malicious traffic. Gather information about the EC2 configuration, the activity on the server, and any remote IP addresses that are directing traffic at the server. Notify and assign the appropriate people using a Jira ticket and a Slack message, then initiate a prompt to ask a responder whether or not the EC2 instance should be moved to an isolated EC2 Security Group using another playbook called \"EC2 Instance Isolation\".",
+            "hash": "cf418f09668db560ecb495816af7c0ffe61cfd7c",
             "joint": {
                 "cells": [
                     {
@@ -50,7 +50,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -73,8 +73,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 712,
-                        "line_start": 699,
+                        "line_end": 715,
+                        "line_start": 702,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -1148,8 +1148,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 17,
-                        "line_start": 9,
+                        "line_end": 16,
+                        "line_start": 8,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -1518,7 +1518,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def decision_ec2_resource(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_ec2_resource() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.name\", \"==\", \"AwsEc2Instance Resource Artifact\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        filter_resource_artifact(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
+                        "block_code": "def decision_ec2_resource(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('decision_ec2_resource() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        conditions=[\n            [\"artifact:*.name\", \"==\", \"AwsEc2Instance Resource Artifact\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        filter_resource_artifact(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1542,8 +1542,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 173,
-                        "line_start": 156,
+                        "line_end": 172,
+                        "line_start": 155,
                         "name": "decision",
                         "notes": "Only proceed if there is an EC2 Resource contained in the SecurityHub Finding.",
                         "number": 1,
@@ -2247,7 +2247,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def finding_ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('finding_ip_reputation() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'finding_ip_reputation' call\n    formatted_data_1 = phantom.get_format_data(name='finding_format_ip__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'finding_ip_reputation' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'ip': formatted_part_1,\n            'ph': \"\",\n            'from': \"\",\n            'to': \"\",\n        })\n\n    phantom.act(\"ip reputation\", parameters=parameters, assets=['passivetotal'], name=\"finding_ip_reputation\")\n\n    return",
+                        "block_code": "def finding_ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('finding_ip_reputation() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'finding_ip_reputation' call\n    formatted_data_1 = phantom.get_format_data(name='finding_format_ip__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'finding_ip_reputation' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'ip': formatted_part_1,\n            'ph': \"\",\n            'to': \"\",\n            'from': \"\",\n        })\n\n    phantom.act(action=\"ip reputation\", parameters=parameters, assets=['passivetotal'], name=\"finding_ip_reputation\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2272,8 +2272,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 620,
-                        "line_start": 597,
+                        "line_end": 622,
+                        "line_start": 599,
                         "message": "Configuring now",
                         "name": "ip reputation",
                         "notes": "Determine the reputation of the IP addresses seen in the Finding.",
@@ -2392,33 +2392,48 @@
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.continent_name",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Asia"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.country_iso_code",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "IN"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.country_name",
                                         "data_type": "string",
+                                        "example_values": [
+                                            "India"
+                                        ],
                                         "map_info": "Country"
                                     },
                                     {
                                         "data_path": "action_result.data.*.latitude",
                                         "data_type": "numeric",
+                                        "example_values": [
+                                            23.0333
+                                        ],
                                         "map_info": "latitude"
                                     },
                                     {
                                         "data_path": "action_result.data.*.longitude",
                                         "data_type": "numeric",
+                                        "example_values": [
+                                            72.6167
+                                        ],
                                         "map_info": "longitude"
                                     },
                                     {
@@ -2427,6 +2442,9 @@
                                         ],
                                         "data_path": "action_result.parameter.ip",
                                         "data_type": "string",
+                                        "example_values": [
+                                            "203.88.139.34"
+                                        ],
                                         "map_info": "IP Address"
                                     },
                                     {
@@ -2435,43 +2453,98 @@
                                         ],
                                         "data_path": "action_result.parameter.ip",
                                         "data_type": "string",
+                                        "example_values": [
+                                            "203.88.139.34"
+                                        ],
                                         "map_info": "name"
                                     },
                                     {
                                         "data_path": "action_result.data.*.city_name",
                                         "data_type": "string",
+                                        "example_values": [
+                                            "Ahmedabad"
+                                        ],
                                         "map_info": "City"
                                     },
                                     {
                                         "data_path": "action_result.data.*.postal_code",
                                         "data_type": "string",
+                                        "example_values": [
+                                            380007
+                                        ],
                                         "map_info": "Postal Code"
                                     },
                                     {
                                         "data_path": "action_result.data.*.as_org",
                                         "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ],
                                         "map_info": "Organization"
                                     },
                                     {
                                         "data_path": "action_result.data.*.state_iso_code",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "GJ"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.state_name",
                                         "data_type": "string",
+                                        "example_values": [
+                                            "Gujarat"
+                                        ],
                                         "map_info": "State/Province"
                                     },
                                     {
                                         "data_path": "action_result.data.*.time_zone",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Asia/Kolkata"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.city",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Ahmedabad"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.state",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "GJ"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.country",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "India"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "City: Ahmedabad, State: GJ, Country: India"
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     }
                                 ],
                                 "parameters": {
@@ -2563,7 +2636,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def finding_geolocate_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('finding_geolocate_ip() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'finding_geolocate_ip' call\n    formatted_data_1 = phantom.get_format_data(name='finding_format_ip__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'finding_geolocate_ip' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'ip': formatted_part_1,\n        })\n\n    phantom.act(\"geolocate ip\", parameters=parameters, assets=['maxmind'], name=\"finding_geolocate_ip\")\n\n    return",
+                        "block_code": "def finding_geolocate_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('finding_geolocate_ip() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'finding_geolocate_ip' call\n    formatted_data_1 = phantom.get_format_data(name='finding_format_ip__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'finding_geolocate_ip' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'ip': formatted_part_1,\n        })\n\n    phantom.act(action=\"geolocate ip\", parameters=parameters, assets=['maxmind'], name=\"finding_geolocate_ip\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2588,8 +2661,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 568,
-                        "line_start": 548,
+                        "line_end": 570,
+                        "line_start": 550,
                         "message": "Configuring now",
                         "name": "geolocate ip",
                         "notes": "Determine the geolocation of the IP addresses seen in the Finding.",
@@ -2733,7 +2806,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def connection_format_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('connection_format_ip() called')\n    \n    template = \"\"\"%%\n{0}\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filter_ip_addresses:custom_function:connection_ip_addresses\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"connection_format_ip\")\n\n    connection_geolocate_ip(container=container)\n    connection_ip_reputation(container=container)\n\n    return",
+                        "block_code": "def connection_format_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('connection_format_ip() called')\n    \n    template = \"\"\"%%\n{0}\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filter_ip_addresses:custom_function:connection_ip_addresses\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"connection_format_ip\")\n\n    connection_geolocate_ip(container=container)\n    connection_ip_reputation(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -2757,8 +2830,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 469,
-                        "line_start": 450,
+                        "line_end": 470,
+                        "line_start": 451,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Turn the remaining IP addresses into a list to allow usage in an action.",
@@ -2906,7 +2979,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def finding_format_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('finding_format_ip() called')\n    \n    template = \"\"\"%%\n{0}\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"parse_remote_ip_addrs:custom_function:ip_addresses\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"finding_format_ip\")\n\n    finding_geolocate_ip(container=container)\n    finding_ip_reputation(container=container)\n\n    return",
+                        "block_code": "def finding_format_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('finding_format_ip() called')\n    \n    template = \"\"\"%%\n{0}\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"parse_remote_ip_addrs:custom_function:ip_addresses\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"finding_format_ip\")\n\n    finding_geolocate_ip(container=container)\n    finding_ip_reputation(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -2930,8 +3003,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 545,
-                        "line_start": 526,
+                        "line_end": 547,
+                        "line_start": 528,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Turn the IP addresses from the Finding into a list to allow usage in an action.",
@@ -3065,10 +3138,10 @@
                                 "display": "none"
                             },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
                             },
                             "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_warn_grey.svg"
                             },
                             "g.notes": {
                                 "display": "block"
@@ -3078,7 +3151,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def parse_remote_ip_addrs(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('parse_remote_ip_addrs() called')\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_finding_artifact:condition_1:artifact:*.cef.ProductFields'])\n    filtered_artifacts_item_1_0 = [item[0] for item in filtered_artifacts_data_1]\n\n    parse_remote_ip_addrs__ip_addresses = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    parse_remote_ip_addrs__ip_addresses = []\n    \n    product_fields = filtered_artifacts_item_1_0[0]\n    for key in product_fields.keys():\n        if 'remoteIpDetails/ipAddressV4' in key:\n            parse_remote_ip_addrs__ip_addresses.append(product_fields[key])\n    phantom.debug(\"remote ip addresses from finding:\\n{}\".format(parse_remote_ip_addrs__ip_addresses))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='parse_remote_ip_addrs:ip_addresses', value=json.dumps(parse_remote_ip_addrs__ip_addresses))\n    finding_format_ip(container=container)\n\n    return",
+                        "block_code": "def parse_remote_ip_addrs(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('parse_remote_ip_addrs() called')\n    \n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_finding_artifact:condition_1:artifact:*.cef.ProductFields'])\n    filtered_artifacts_item_1_0 = [item[0] for item in filtered_artifacts_data_1]\n\n    parse_remote_ip_addrs__ip_addresses = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    parse_remote_ip_addrs__ip_addresses = []\n    \n    product_fields = filtered_artifacts_item_1_0[0]\n    for key in product_fields.keys():\n        if 'remoteIpDetails/ipAddressV4' in key:\n            parse_remote_ip_addrs__ip_addresses.append(product_fields[key])\n    phantom.debug(\"remote ip addresses from finding:\\n{}\".format(parse_remote_ip_addrs__ip_addresses))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='parse_remote_ip_addrs:ip_addresses', value=json.dumps(parse_remote_ip_addrs__ip_addresses))\n    finding_format_ip(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -3086,9 +3159,9 @@
                         "connection_name": "describe ec2 instance",
                         "connection_type": "action",
                         "customCodeEndLineOffset": 7,
-                        "customCodeStartLine": 10,
+                        "customCodeStartLine": 11,
                         "custom_callback": "",
-                        "custom_code": "def parse_remote_ip_addrs(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('parse_remote_ip_addrs() called')\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_finding_artifact:condition_1:artifact:*.cef.ProductFields'])\n    filtered_artifacts_item_1_0 = [item[0] for item in filtered_artifacts_data_1]\n\n    parse_remote_ip_addrs__ip_addresses = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    parse_remote_ip_addrs__ip_addresses = []\n    \n    product_fields = filtered_artifacts_item_1_0[0]\n    for key in product_fields.keys():\n        if 'remoteIpDetails/ipAddressV4' in key:\n            parse_remote_ip_addrs__ip_addresses.append(product_fields[key])\n    phantom.debug(\"remote ip addresses from finding:\\n{}\".format(parse_remote_ip_addrs__ip_addresses))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='parse_remote_ip_addrs:ip_addresses', value=json.dumps(parse_remote_ip_addrs__ip_addresses))\n\n    return",
+                        "custom_code": "def parse_remote_ip_addrs(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('parse_remote_ip_addrs() called')\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_finding_artifact:condition_1:artifact:*.cef.ProductFields'])\n    filtered_artifacts_item_1_0 = [item[0] for item in filtered_artifacts_data_1]\n\n    parse_remote_ip_addrs__ip_addresses = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    parse_remote_ip_addrs__ip_addresses = []\n    \n    product_fields = filtered_artifacts_item_1_0[0]\n    for key in list(product_fields.keys()):\n        if 'remoteIpDetails/ipAddressV4' in key:\n            parse_remote_ip_addrs__ip_addresses.append(product_fields[key])\n    phantom.debug(\"remote ip addresses from finding:\\n{}\".format(parse_remote_ip_addrs__ip_addresses))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='parse_remote_ip_addrs:ip_addresses', value=json.dumps(parse_remote_ip_addrs__ip_addresses))\n\n    return",
                         "custom_join": "",
                         "custom_name": "parse remote ip addrs",
                         "description": "Collect the remote IP addresses described in the Finding.",
@@ -3104,8 +3177,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 523,
-                        "line_start": 495,
+                        "legacy": true,
+                        "line_end": 525,
+                        "line_start": 496,
                         "message": "Configuring now",
                         "name": "custom function",
                         "notes": "Collect the remote IP addresses described in the Finding.",
@@ -3192,7 +3266,7 @@
                             "width": 180
                         },
                         "state": "custom function",
-                        "status": "",
+                        "status": "deprecating",
                         "title": "custom function",
                         "type": "coa.FunctionBlock",
                         "userGeneratedCode": "\n    parse_remote_ip_addrs__ip_addresses = []\n    \n    product_fields = filtered_artifacts_item_1_0[0]\n    for key in product_fields.keys():\n        if 'remoteIpDetails/ipAddressV4' in key:\n            parse_remote_ip_addrs__ip_addresses.append(product_fields[key])\n    phantom.debug(\"remote ip addresses from finding:\\n{}\".format(parse_remote_ip_addrs__ip_addresses))\n",
@@ -3245,7 +3319,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def decision_severity_threshold(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_severity_threshold() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.Severity.Normalized\", \">\", 35],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        decision_ec2_resource(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
+                        "block_code": "def decision_severity_threshold(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('decision_severity_threshold() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.Severity.Normalized\", \">\", 35],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        decision_ec2_resource(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -3269,8 +3343,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 640,
-                        "line_start": 623,
+                        "line_end": 642,
+                        "line_start": 625,
                         "name": "decision",
                         "notes": "Only proceed with this Finding if the SecurityHub normalized severity is above a certain threshold.",
                         "number": 3,
@@ -3395,7 +3469,7 @@
                                 }
                             },
                             "g.delete": {
-                                "display": "block"
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -3411,7 +3485,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def filter_finding_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_finding_artifact() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.name\", \"==\", \"Finding Artifact\"],\n        ],\n        name=\"filter_finding_artifact:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        describe_ec2_instance(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def filter_finding_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_finding_artifact() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.name\", \"==\", \"Finding Artifact\"],\n        ],\n        name=\"filter_finding_artifact:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        describe_ec2_instance(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -3434,8 +3508,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 153,
-                        "line_start": 136,
+                        "line_end": 152,
+                        "line_start": 135,
                         "name": "filter",
                         "notes": "Separate the main Finding artifact from the other artifacts in the Finding.",
                         "number": 2,
@@ -3574,10 +3648,10 @@
                                 "display": "none"
                             },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
                             },
                             "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_warn_grey.svg"
                             },
                             "g.notes": {
                                 "display": "block"
@@ -3587,7 +3661,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def build_finding_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('build_finding_url() called')\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_finding_artifact:condition_1:artifact:*.cef.Id'])\n    filtered_artifacts_item_1_0 = [item[0] for item in filtered_artifacts_data_1]\n\n    build_finding_url__finding_url = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # build a link to the Finding on Security Hub using a search as a URL parameter\n    base = \"https://console.aws.amazon.com/securityhub/home?region=us-east-1#/findings?search=Id%3D%255Coperator%255C%253AEQUALS%255C%253A\"\n    build_finding_url__finding_url = base + filtered_artifacts_item_1_0[0].replace(':', '%253A').replace('/', '%252F')\n    \n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='build_finding_url:finding_url', value=json.dumps(build_finding_url__finding_url))\n    format_description(container=container)\n\n    return",
+                        "block_code": "def build_finding_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('build_finding_url() called')\n    \n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_finding_artifact:condition_1:artifact:*.cef.Id'])\n    filtered_artifacts_item_1_0 = [item[0] for item in filtered_artifacts_data_1]\n\n    build_finding_url__finding_url = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # build a link to the Finding on Security Hub using a search as a URL parameter\n    base = \"https://console.aws.amazon.com/securityhub/home?region=us-east-1#/findings?search=Id%3D%255Coperator%255C%253AEQUALS%255C%253A\"\n    build_finding_url__finding_url = base + filtered_artifacts_item_1_0[0].replace(':', '%253A').replace('/', '%252F')\n    \n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='build_finding_url:finding_url', value=json.dumps(build_finding_url__finding_url))\n    format_description(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -3595,7 +3669,7 @@
                         "connection_name": "describe ec2 instance",
                         "connection_type": "action",
                         "customCodeEndLineOffset": 7,
-                        "customCodeStartLine": 10,
+                        "customCodeStartLine": 11,
                         "custom_callback": "",
                         "custom_code": "def build_finding_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('custom_function_4() called')\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_2:condition_1:artifact:*.cef.Id'])\n    filtered_artifacts_item_1_0 = [item[0] for item in filtered_artifacts_data_1]\n\n    build_finding_url__finding_url = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # build a link to the Finding on Security Hub using a search as a URL parameter\n    base = \"https://console.aws.amazon.com/securityhub/home?region=us-east-1#/findings?search=Id%3D%255Coperator%255C%253AEQUALS%255C%253A\"\n    build_finding_url__finding_url = base + filtered_artifacts_item_1_0[0].replace(':', '%253A').replace('/', '%252F')\n    \n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='custom_function_4:finding_url', value=json.dumps(build_finding_url__finding_url))\n\n    return",
                         "custom_join": "",
@@ -3613,8 +3687,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
+                        "legacy": true,
                         "line_end": 200,
-                        "line_start": 176,
+                        "line_start": 175,
                         "message": "Configuring now",
                         "name": "custom function",
                         "notes": "Use the Finding ID to construct a URL with a pre-populated SecurityHub search to view the Finding in the AWS Console.",
@@ -3701,7 +3776,7 @@
                             "width": 180
                         },
                         "state": "custom function",
-                        "status": "",
+                        "status": "deprecating",
                         "title": "custom function",
                         "type": "coa.FunctionBlock",
                         "userGeneratedCode": "\n    # build a link to the Finding on Security Hub using a search as a URL parameter\n    base = \"https://console.aws.amazon.com/securityhub/home?region=us-east-1#/findings?search=Id%3D%255Coperator%255C%253AEQUALS%255C%253A\"\n    build_finding_url__finding_url = base + filtered_artifacts_item_1_0[0].replace(':', '%253A').replace('/', '%252F')\n    ",
@@ -3769,7 +3844,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_description() called')\n    \n    template = \"\"\"Phantom received a Security Hub Finding with the following details:\n\nFinding title: {0}\nFinding description: {1}\nPhantom Mission Control link: {2}\nAWS Security Hub Finding link: {3}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"container:name\",\n        \"container:description\",\n        \"container:url\",\n        \"build_finding_url:custom_function:finding_url\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_description\")\n\n    create_ticket_1(container=container)\n    send_message_1(container=container)\n\n    return",
+                        "block_code": "def format_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_description() called')\n    \n    template = \"\"\"Phantom received a Security Hub Finding with the following details:\n\nFinding title: {0}\nFinding description: {1}\nPhantom Mission Control link: {2}\nAWS Security Hub Finding link: {3}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"container:name\",\n        \"container:description\",\n        \"container:url\",\n        \"build_finding_url:custom_function:finding_url\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_description\")\n\n    create_ticket_1(container=container)\n    send_message_1(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -3793,8 +3868,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 122,
-                        "line_end": 113,
-                        "line_start": 88,
+                        "line_end": 112,
+                        "line_start": 87,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Put together the relevant links, title, and description for the Finding to present to an analyst in both a ticket and a chat message.",
@@ -3939,6 +4014,7 @@
                                 "count": 0,
                                 "fields": {
                                     "assignee": "",
+                                    "assignee_account_id": "",
                                     "description": "format_description:formatted_data",
                                     "fields": "",
                                     "issue_type": "Bug",
@@ -3957,26 +4033,49 @@
                                         "data_path": "action_result.status",
                                         "data_type": "string",
                                         "example_values": [
-                                            "success"
+                                            "success",
+                                            "failed"
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "user name"
+                                        ],
                                         "data_path": "action_result.parameter.assignee",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Test Name"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "jira user account id"
+                                        ],
+                                        "data_path": "action_result.parameter.assignee_account_id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "5d2ef6ab52a8370c567f27bb"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.description",
                                         "data_type": "string",
                                         "example_values": [
-                                            "testing",
                                             "Jira QA automation ticket description"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.fields",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "{\"priority\": {\"name\": \"Normal\"}}",
+                                            "{\"fields\": {\"customfield_10105\": \"Test epic link name\"}}"
+                                        ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira issue type"
+                                        ],
                                         "data_path": "action_result.parameter.issue_type",
                                         "data_type": "string",
                                         "example_values": [
@@ -3985,8 +4084,14 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira ticket priority"
+                                        ],
                                         "data_path": "action_result.parameter.priority",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Normal"
+                                        ]
                                     },
                                     {
                                         "contains": [
@@ -3996,14 +4101,13 @@
                                         "data_type": "string",
                                         "example_values": [
                                             "MAN",
-                                            "PHANINCIDE"
+                                            "PRJ"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.parameter.summary",
                                         "data_type": "string",
                                         "example_values": [
-                                            "test",
                                             "Jira QA ticket"
                                         ]
                                     },
@@ -4031,7 +4135,6 @@
                                         "data_path": "action_result.data.*.description",
                                         "data_type": "string",
                                         "example_values": [
-                                            "testing",
                                             "Jira QA automation ticket description"
                                         ]
                                     },
@@ -4048,12 +4151,26 @@
                                         "data_type": "string"
                                     },
                                     {
+                                        "data_path": "action_result.data.*.fields.CustomerSanText",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
+                                    },
+                                    {
                                         "data_path": "action_result.data.*.fields.Epic Link",
                                         "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.Severity",
                                         "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.Domain Test",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.Sprint",
@@ -4075,23 +4192,36 @@
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.aggregatetimeestimate",
-                                        "data_type": "string",
-                                        "example_values": []
+                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.aggregatetimeoriginalestimate",
-                                        "data_type": "string",
-                                        "example_values": []
+                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.aggregatetimespent",
-                                        "data_type": "string",
-                                        "example_values": []
+                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.assignee",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "jira user account id"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.assignee.accountId",
                                         "data_type": "string",
-                                        "example_values": []
+                                        "example_values": [
+                                            "5d2ef6ab52a8370c567f27bb"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.assignee.accountType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "atlassian"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.assignee.active",
@@ -4108,7 +4238,7 @@
                                         "data_path": "action_result.data.*.fields.assignee.avatarUrls.16x16",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -4118,7 +4248,7 @@
                                         "data_path": "action_result.data.*.fields.assignee.avatarUrls.24x24",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -4128,7 +4258,7 @@
                                         "data_path": "action_result.data.*.fields.assignee.avatarUrls.32x32",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -4138,12 +4268,18 @@
                                         "data_path": "action_result.data.*.fields.assignee.avatarUrls.48x48",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira user display name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.assignee.displayName",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Test Name"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.assignee.emailAddress",
@@ -4154,8 +4290,14 @@
                                         "data_type": "string"
                                     },
                                     {
+                                        "contains": [
+                                            "user name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.assignee.name",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "test"
+                                        ]
                                     },
                                     {
                                         "contains": [
@@ -4164,7 +4306,7 @@
                                         "data_path": "action_result.data.*.fields.assignee.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -4196,8 +4338,24 @@
                                         "data_path": "action_result.data.*.fields.created",
                                         "data_type": "string",
                                         "example_values": [
-                                            "2018-09-25T06:31:58.854-0700",
-                                            "2018-10-03T03:42:10.913-0700"
+                                            "2018-09-25T06:31:58.854-0700"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "jira user account id"
+                                        ],
+                                        "data_path": "action_result.data.*.fields.creator.accountId",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "557058:c4593bd2-4853-4a5e-a9ed-278ca5f17dce"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.creator.accountType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "atlassian"
                                         ]
                                     },
                                     {
@@ -4215,7 +4373,7 @@
                                         "data_path": "action_result.data.*.fields.creator.avatarUrls.16x16",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -4225,7 +4383,7 @@
                                         "data_path": "action_result.data.*.fields.creator.avatarUrls.24x24",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -4235,7 +4393,7 @@
                                         "data_path": "action_result.data.*.fields.creator.avatarUrls.32x32",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -4245,14 +4403,17 @@
                                         "data_path": "action_result.data.*.fields.creator.avatarUrls.48x48",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira user display name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.creator.displayName",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Phantom Admin"
+                                            "Test Admin"
                                         ]
                                     },
                                     {
@@ -4262,7 +4423,7 @@
                                         "data_path": "action_result.data.*.fields.creator.emailAddress",
                                         "data_type": "string",
                                         "example_values": [
-                                            "notifications@phantom.us"
+                                            "notifications@domain.us"
                                         ]
                                     },
                                     {
@@ -4273,6 +4434,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "user name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.creator.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -4286,21 +4450,21 @@
                                         "data_path": "action_result.data.*.fields.creator.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/user?username=admin"
+                                            "http://10.10.123.124:8080/rest/api/2/user?username=admin"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.creator.timeZone",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Asia/Kolkata"
+                                            "UTC"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.customfield_10000.errorMessage",
                                         "data_type": "string",
                                         "example_values": [
-                                            "The Service Desk you are trying to view does not exist."
+                                            "The Service Desk you are trying to view does not exist"
                                         ]
                                     },
                                     {
@@ -4314,7 +4478,7 @@
                                         "data_path": "action_result.data.*.fields.customfield_10002.errorMessage",
                                         "data_type": "string",
                                         "example_values": [
-                                            "The Service Desk you are trying to view does not exist."
+                                            "The Service Desk you are trying to view does not exist"
                                         ]
                                     },
                                     {
@@ -4325,66 +4489,10 @@
                                         ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.fields.customfield_10100",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10101",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10102",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10103",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10104",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10106",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10109",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "0|i006qv:",
-                                            "0|i0073z:"
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10200",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10201",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10202",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10300",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10301",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
                                         "data_path": "action_result.data.*.fields.customfield_10400.errorMessage",
                                         "data_type": "string",
                                         "example_values": [
-                                            "The Service Desk you are trying to view does not exist."
+                                            "The Service Desk you are trying to view does not exist"
                                         ]
                                     },
                                     {
@@ -4393,83 +4501,6 @@
                                         "example_values": [
                                             "sd.agent.servicedesk.error.servicedesk.missing"
                                         ]
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10401",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10402",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10500",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10501",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10600",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10601",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10602",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10603",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10605",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10606",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10701",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10702",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10703",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10704",
-                                        "data_type": "string",
-                                        "example_values": []
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10801",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.data.*.fields.customfield_10802",
-                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.description",
@@ -4481,13 +4512,11 @@
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.duedate",
-                                        "data_type": "string",
-                                        "example_values": []
+                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.environment",
-                                        "data_type": "string",
-                                        "example_values": []
+                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.issuetype.avatarId",
@@ -4500,8 +4529,7 @@
                                         "data_path": "action_result.data.*.fields.issuetype.description",
                                         "data_type": "string",
                                         "example_values": [
-                                            "gh.issue.story.desc",
-                                            "A task that needs to be done."
+                                            "This is a task"
                                         ]
                                     },
                                     {
@@ -4511,8 +4539,8 @@
                                         "data_path": "action_result.data.*.fields.issuetype.iconUrl",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/images/icons/issuetypes/story.svg",
-                                            "http://10.1.16.180:8080/secure/viewavatar?size=xsmall&avatarId=10318&avatarType=issuetype"
+                                            "http://10.10.123.124:8080/images/icons/issuetypes/story.svg",
+                                            "http://10.10.123.124:8080/secure/viewavatar?size=xsmall&avatarId=10318&avatarType=issuetype"
                                         ]
                                     },
                                     {
@@ -4524,6 +4552,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira issue type"
+                                        ],
                                         "data_path": "action_result.data.*.fields.issuetype.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -4538,8 +4569,8 @@
                                         "data_path": "action_result.data.*.fields.issuetype.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/issuetype/10101",
-                                            "http://10.1.16.180:8080/rest/api/2/issuetype/3"
+                                            "http://10.10.123.124:8080/rest/api/2/issuetype/10101",
+                                            "http://10.10.123.124:8080/rest/api/2/issuetype/3"
                                         ]
                                     },
                                     {
@@ -4552,8 +4583,7 @@
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.lastViewed",
-                                        "data_type": "string",
-                                        "example_values": []
+                                        "data_type": "string"
                                     },
                                     {
                                         "contains": [
@@ -4562,7 +4592,7 @@
                                         "data_path": "action_result.data.*.fields.priority.iconUrl",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/images/icons/priorities/medium.svg"
+                                            "http://10.10.123.124:8080/images/icons/priorities/medium.svg"
                                         ]
                                     },
                                     {
@@ -4573,6 +4603,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira ticket priority"
+                                        ],
                                         "data_path": "action_result.data.*.fields.priority.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -4586,7 +4619,7 @@
                                         "data_path": "action_result.data.*.fields.priority.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/priority/3"
+                                            "http://10.10.123.124:8080/rest/api/2/priority/3"
                                         ]
                                     },
                                     {
@@ -4610,8 +4643,7 @@
                                         "data_path": "action_result.data.*.fields.project.avatarUrls.16x16",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/projectavatar?size=xsmall&avatarId=10403",
-                                            "http://10.1.16.180:8080/secure/projectavatar?size=xsmall&pid=10000&avatarId=10011"
+                                            "http://10.10.123.124:8080/secure/projectavatar?size=xsmall&avatarId=10403"
                                         ]
                                     },
                                     {
@@ -4621,8 +4653,7 @@
                                         "data_path": "action_result.data.*.fields.project.avatarUrls.24x24",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/projectavatar?size=small&avatarId=10403",
-                                            "http://10.1.16.180:8080/secure/projectavatar?size=small&pid=10000&avatarId=10011"
+                                            "http://10.10.123.124:8080/secure/projectavatar?size=small&avatarId=10403"
                                         ]
                                     },
                                     {
@@ -4632,8 +4663,7 @@
                                         "data_path": "action_result.data.*.fields.project.avatarUrls.32x32",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/projectavatar?size=medium&avatarId=10403",
-                                            "http://10.1.16.180:8080/secure/projectavatar?size=medium&pid=10000&avatarId=10011"
+                                            "http://10.10.123.124:8080/secure/projectavatar?size=medium&avatarId=10403"
                                         ]
                                     },
                                     {
@@ -4643,32 +4673,66 @@
                                         "data_path": "action_result.data.*.fields.project.avatarUrls.48x48",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/projectavatar?avatarId=10403",
-                                            "http://10.1.16.180:8080/secure/projectavatar?pid=10000&avatarId=10011"
+                                            "http://10.10.123.124:8080/secure/projectavatar?avatarId=10403"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.project.id",
                                         "data_type": "string",
                                         "example_values": [
-                                            "10100",
-                                            "10000"
+                                            "10100"
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira project key"
+                                        ],
                                         "data_path": "action_result.data.*.fields.project.key",
                                         "data_type": "string",
                                         "example_values": [
-                                            "MAN",
-                                            "PHANINCIDE"
+                                            "MAN"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.project.name",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Manhattan",
-                                            "Phantom Create Incidents"
+                                            "TestProject"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.projectCategory.description",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "test"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.projectCategory.id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.projectCategory.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "QA-Team"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.projectCategory.self",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "https://testlab.atlassian.net/rest/api/2/projectCategory/10000"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.projectTypeKey",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "software"
                                         ]
                                     },
                                     {
@@ -4678,8 +4742,22 @@
                                         "data_path": "action_result.data.*.fields.project.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/project/10100",
-                                            "http://10.1.16.180:8080/rest/api/2/project/10000"
+                                            "http://10.10.123.124:8080/rest/api/2/project/10100"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.project.simplified",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            false,
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.reporter.accountType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "atlassian"
                                         ]
                                     },
                                     {
@@ -4697,7 +4775,7 @@
                                         "data_path": "action_result.data.*.fields.reporter.avatarUrls.16x16",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=xsmall&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -4707,7 +4785,7 @@
                                         "data_path": "action_result.data.*.fields.reporter.avatarUrls.24x24",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=small&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -4717,7 +4795,7 @@
                                         "data_path": "action_result.data.*.fields.reporter.avatarUrls.32x32",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?size=medium&ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
@@ -4727,14 +4805,17 @@
                                         "data_path": "action_result.data.*.fields.reporter.avatarUrls.48x48",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/secure/useravatar?ownerId=admin&avatarId=10500"
+                                            "http://10.10.123.124:8080/secure/useravatar?ownerId=admin&avatarId=10500"
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira user display name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.reporter.displayName",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Phantom Admin"
+                                            "Test Admin"
                                         ]
                                     },
                                     {
@@ -4744,7 +4825,7 @@
                                         "data_path": "action_result.data.*.fields.reporter.emailAddress",
                                         "data_type": "string",
                                         "example_values": [
-                                            "notifications@phantom.us"
+                                            "notifications@domain.us"
                                         ]
                                     },
                                     {
@@ -4755,6 +4836,9 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "user name"
+                                        ],
                                         "data_path": "action_result.data.*.fields.reporter.name",
                                         "data_type": "string",
                                         "example_values": [
@@ -4768,20 +4852,19 @@
                                         "data_path": "action_result.data.*.fields.reporter.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/user?username=admin"
+                                            "http://10.10.123.124:8080/rest/api/2/user?username=admin"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.reporter.timeZone",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Asia/Kolkata"
+                                            "UTC"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.resolution",
-                                        "data_type": "string",
-                                        "example_values": []
+                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.resolutiondate",
@@ -4791,10 +4874,17 @@
                                         ]
                                     },
                                     {
-                                        "data_path": "action_result.data.*.fields.status.description",
+                                        "data_path": "action_result.data.*.fields.security",
                                         "data_type": "string",
                                         "example_values": [
                                             ""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.status.description",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "This is a sample testing description"
                                         ]
                                     },
                                     {
@@ -4804,7 +4894,7 @@
                                         "data_path": "action_result.data.*.fields.status.iconUrl",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/images/icons/statuses/open.png"
+                                            "http://10.10.123.124:8080/images/icons/statuses/open.png"
                                         ]
                                     },
                                     {
@@ -4828,7 +4918,7 @@
                                         "data_path": "action_result.data.*.fields.status.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/status/10000"
+                                            "http://10.10.123.124:8080/rest/api/2/status/10000"
                                         ]
                                     },
                                     {
@@ -4866,7 +4956,14 @@
                                         "data_path": "action_result.data.*.fields.status.statusCategory.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/statuscategory/2"
+                                            "http://10.10.123.124:8080/rest/api/2/statuscategory/2"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.fields.statuscategorychangedate",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2019-07-22T22:43:07.771-0700"
                                         ]
                                     },
                                     {
@@ -4879,18 +4976,15 @@
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.timeestimate",
-                                        "data_type": "string",
-                                        "example_values": []
+                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.timeoriginalestimate",
-                                        "data_type": "string",
-                                        "example_values": []
+                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.timespent",
-                                        "data_type": "string",
-                                        "example_values": []
+                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.fields.updated",
@@ -4915,8 +5009,8 @@
                                         "data_path": "action_result.data.*.fields.votes.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/issue/MAN-240/votes",
-                                            "http://10.1.16.180:8080/rest/api/2/issue/PHANINCIDE-370/votes"
+                                            "http://10.10.123.124:8080/rest/api/2/issue/MAN-240/votes",
+                                            "http://10.10.123.124:8080/rest/api/2/issue/PHANINCIDE-370/votes"
                                         ]
                                     },
                                     {
@@ -4941,8 +5035,8 @@
                                         "data_path": "action_result.data.*.fields.watches.self",
                                         "data_type": "string",
                                         "example_values": [
-                                            "http://10.1.16.180:8080/rest/api/2/issue/MAN-240/watchers",
-                                            "http://10.1.16.180:8080/rest/api/2/issue/PHANINCIDE-370/watchers"
+                                            "http://10.10.123.124:8080/rest/api/2/issue/MAN-240/watchers",
+                                            "http://10.10.123.124:8080/rest/api/2/issue/PHANINCIDE-370/watchers"
                                         ]
                                     },
                                     {
@@ -4993,6 +5087,9 @@
                                     {
                                         "column_name": "Type",
                                         "column_order": 3,
+                                        "contains": [
+                                            "jira issue type"
+                                        ],
                                         "data_path": "action_result.data.*.issue_type",
                                         "data_type": "string",
                                         "example_values": [
@@ -5020,6 +5117,9 @@
                                     {
                                         "column_name": "Priority",
                                         "column_order": 6,
+                                        "contains": [
+                                            "jira ticket priority"
+                                        ],
                                         "data_path": "action_result.data.*.priority",
                                         "data_type": "string",
                                         "example_values": [
@@ -5027,25 +5127,34 @@
                                         ]
                                     },
                                     {
+                                        "contains": [
+                                            "jira project key"
+                                        ],
                                         "data_path": "action_result.data.*.project_key",
                                         "data_type": "string",
                                         "example_values": [
                                             "MAN",
-                                            "PHANINCIDE"
+                                            "PRJ"
                                         ]
                                     },
                                     {
                                         "column_name": "Reporter",
                                         "column_order": 8,
+                                        "contains": [
+                                            "jira user display name"
+                                        ],
                                         "data_path": "action_result.data.*.reporter",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Phantom Admin"
+                                            "Test Admin"
                                         ]
                                     },
                                     {
                                         "column_name": "Resolution",
                                         "column_order": 7,
+                                        "contains": [
+                                            "jira ticket resolution"
+                                        ],
                                         "data_path": "action_result.data.*.resolution",
                                         "data_type": "string",
                                         "example_values": [
@@ -5243,7 +5352,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('create_ticket_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    name_value = container.get('name', None)\n\n    # collect data for 'create_ticket_1' call\n    formatted_data_1 = phantom.get_format_data(name='format_description')\n\n    parameters = []\n    \n    # build parameters list for 'create_ticket_1' call\n    parameters.append({\n        'description': formatted_data_1,\n        'fields': \"\",\n        'project_key': \"EK\",\n        'summary': name_value,\n        'priority': \"High\",\n        'assignee': \"\",\n        'vault_id': \"\",\n        'issue_type': \"Bug\",\n    })\n\n    phantom.act(\"create ticket\", parameters=parameters, assets=['jira'], callback=join_isolate_ec2_instance_approval, name=\"create_ticket_1\")\n\n    return",
+                        "block_code": "def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('create_ticket_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    name_value = container.get('name', None)\n\n    # collect data for 'create_ticket_1' call\n    formatted_data_1 = phantom.get_format_data(name='format_description')\n\n    parameters = []\n    \n    # build parameters list for 'create_ticket_1' call\n    parameters.append({\n        'fields': \"\",\n        'summary': name_value,\n        'assignee': \"\",\n        'priority': \"High\",\n        'vault_id': \"\",\n        'issue_type': \"Bug\",\n        'description': formatted_data_1,\n        'project_key': \"EK\",\n        'assignee_account_id': \"\",\n    })\n\n    phantom.act(action=\"create ticket\", parameters=parameters, assets=['jira'], callback=join_isolate_ec2_instance_approval, name=\"create_ticket_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -5268,8 +5377,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 671,
-                        "line_start": 643,
+                        "line_end": 674,
+                        "line_start": 645,
                         "message": "Configuring now",
                         "name": "create ticket",
                         "notes": "Create a ticket to track this incident.",
@@ -5336,7 +5445,11 @@
                         },
                         "previous_function": "",
                         "previous_name": "create_ticket_1",
-                        "required_params": {},
+                        "required_params": {
+                            "issue_type": true,
+                            "project_key": true,
+                            "summary": true
+                        },
                         "reviewer": "",
                         "show_number": false,
                         "size": {
@@ -5399,7 +5512,11 @@
                                         "column_name": "Status",
                                         "column_order": 2,
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
                                     },
                                     {
                                         "column_name": "Destination",
@@ -5565,7 +5682,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def send_message_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('send_message_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_message_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.Tags.InstanceOwnerSlack', 'describe_ec2_instance:action_result.parameter.context.artifact_id'], action_results=results)\n    formatted_data_1 = phantom.get_format_data(name='format_description')\n\n    parameters = []\n    \n    # build parameters list for 'send_message_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'message': formatted_data_1,\n                'destination': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"send message\", parameters=parameters, assets=['slack'], callback=join_isolate_ec2_instance_approval, name=\"send_message_1\")\n\n    return",
+                        "block_code": "def send_message_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('send_message_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'send_message_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.Tags.InstanceOwnerSlack', 'describe_ec2_instance:action_result.parameter.context.artifact_id'], action_results=results)\n    formatted_data_1 = phantom.get_format_data(name='format_description')\n\n    parameters = []\n    \n    # build parameters list for 'send_message_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'message': formatted_data_1,\n                'destination': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"send message\", parameters=parameters, assets=['slack'], callback=join_isolate_ec2_instance_approval, name=\"send_message_1\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -5590,8 +5707,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 699,
-                        "line_start": 674,
+                        "line_end": 702,
+                        "line_start": 677,
                         "message": "Configuring now",
                         "name": "send message",
                         "notes": "Determine the person responsible for managing the server based on a tag on the EC2 instance, and notify that person about the Finding and the potential remediation by Phantom using an individual Slack message .",
@@ -5724,7 +5841,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def isolate_ec2_instance_approval(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('isolate_ec2_instance_approval() called')\n    \n    # set user and message variables for phantom.prompt call\n    user = \"admin\"\n    message = \"\"\"The playbook ec2_instance_investigation_and_notification has investigated the EC2 instance with ID {0} and name {1}. Should Phantom quarantine the instance by changing the instance's Security Group to disallow all traffic?\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"describe_ec2_instance:action_result.parameter.instance_ids\",\n        \"describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.Tags.Name\",\n    ]\n\n    #responses:\n    response_types = [\n        {\n            \"prompt\": \"\",\n            \"options\": {\n                \"type\": \"list\",\n                \"choices\": [\n                    \"Yes\",\n                    \"No\",\n                ]\n            },\n        },\n    ]\n\n    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name=\"isolate_ec2_instance_approval\", parameters=parameters, response_types=response_types, callback=prompt_decision)\n\n    return",
+                        "block_code": "def isolate_ec2_instance_approval(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('isolate_ec2_instance_approval() called')\n    \n    # set user and message variables for phantom.prompt call\n    user = \"admin\"\n    message = \"\"\"The playbook ec2_instance_investigation_and_notification has investigated the EC2 instance with ID {0} and name {1}. Should Phantom quarantine the instance by changing the instance's Security Group to disallow all traffic?\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"describe_ec2_instance:action_result.parameter.instance_ids\",\n        \"describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.Tags.Name\",\n    ]\n\n    #responses:\n    response_types = [\n        {\n            \"prompt\": \"\",\n            \"options\": {\n                \"type\": \"list\",\n                \"choices\": [\n                    \"Yes\",\n                    \"No\",\n                ]\n            },\n        },\n    ]\n\n    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name=\"isolate_ec2_instance_approval\", parameters=parameters, response_types=response_types, callback=prompt_decision)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -5744,7 +5861,7 @@
                         "inPorts": [
                             "in"
                         ],
-                        "join_code": "def join_isolate_ec2_instance_approval(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('join_isolate_ec2_instance_approval() called')\n\n    # check if all connected incoming actions are done i.e. have succeeded or failed\n    if phantom.actions_done([ 'create_ticket_1', 'send_message_1' ]):\n        \n        # call connected block \"isolate_ec2_instance_approval\"\n        isolate_ec2_instance_approval(container=container, handle=handle)\n    \n    return",
+                        "join_code": "def join_isolate_ec2_instance_approval(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):\n    phantom.debug('join_isolate_ec2_instance_approval() called')\n\n    # check if all connected incoming playbooks, actions, or custom functions are done i.e. have succeeded or failed\n    if phantom.completed(action_names=['create_ticket_1', 'send_message_1']):\n        \n        # call connected block \"isolate_ec2_instance_approval\"\n        isolate_ec2_instance_approval(container=container, handle=handle)\n    \n    return",
                         "join_optional": [],
                         "join_start": 319,
                         "line_end": 330,
@@ -5916,7 +6033,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def prompt_decision(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('prompt_decision() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"isolate_ec2_instance_approval:action_result.summary.responses.0\", \"==\", \"Yes\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        playbook_local_ec2_instance_isolation_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n    format_security_hub_note(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
+                        "block_code": "def prompt_decision(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('prompt_decision() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"isolate_ec2_instance_approval:action_result.summary.responses.0\", \"==\", \"Yes\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        playbook_local_ec2_instance_isolation_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    # call connected blocks for 'else' condition 2\n    format_security_hub_note(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -6085,10 +6202,16 @@
                                 }
                             },
                             ".playbook": {
-                                "text": "local/ec2_instance_isolat..."
+                                "text": "ec2_instance_isolation"
+                            },
+                            ".scmName": {
+                                "text": "local"
                             },
                             ".title": {
                                 "text": "Playbook"
+                            },
+                            "g.branch image": {
+                                "opacity": 1
                             },
                             "g.code image": {
                                 "opacity": 1
@@ -6110,7 +6233,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def playbook_local_ec2_instance_isolation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('playbook_local_ec2_instance_isolation_1() called')\n    \n    # call playbook \"local/ec2_instance_isolation\", returns the playbook_run_id\n    playbook_run_id = phantom.playbook(\"local/ec2_instance_isolation\", container=container)\n\n    return",
+                        "block_code": "def playbook_local_ec2_instance_isolation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('playbook_local_ec2_instance_isolation_1() called')\n    \n    # call playbook \"local/ec2_instance_isolation\", returns the playbook_run_id\n    playbook_run_id = phantom.playbook(playbook=\"local/ec2_instance_isolation\", container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -6136,7 +6259,7 @@
                         "line_end": 365,
                         "line_start": 357,
                         "message": "Configuring now",
-                        "name": "local/ec2_instance_isolation",
+                        "name": "ec2_instance_isolation",
                         "notes": "Call another playbook to isolate the EC2 instance as specified by the prompt.",
                         "number": 1,
                         "order": 14,
@@ -6201,7 +6324,8 @@
                             "y": 100
                         },
                         "previous_function": "",
-                        "previous_name": "playbook_local_isolate_ec2_instance_1",
+                        "previous_name": "playbook_local_ec2_instance_isolation_1",
+                        "scmName": "local",
                         "show_number": false,
                         "size": {
                             "height": 100,
@@ -6275,7 +6399,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_security_hub_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_security_hub_note() called')\n    \n    template = \"\"\"Phantom investigated this incident and the analyst decided not to isolate this instance automatically. View the event in Phantom Mission Control here: {0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"container:url\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_security_hub_note\")\n\n    add_note_2(container=container)\n\n    return",
+                        "block_code": "def format_security_hub_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_security_hub_note() called')\n    \n    template = \"\"\"Phantom investigated this incident and the analyst decided not to isolate this instance automatically. View the event in Phantom Mission Control here: {0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"container:url\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_security_hub_note\")\n\n    add_note_2(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -6434,10 +6558,10 @@
                                 "display": "none"
                             },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
                             },
                             "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                                "xlink:href": "/inc/coa/img/block_icon_warn_grey.svg"
                             },
                             "g.notes": {
                                 "display": "block"
@@ -6447,7 +6571,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def filter_ip_addresses(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_ip_addresses() called')\n    results_data_1 = phantom.collect2(container=container, datapath=['list_connections_1:action_result.data.*.connections.*.remote_ip'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    filter_ip_addresses__connection_ip_addresses = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    filter_ip_addresses__connection_ip_addresses = []\n    \n    internal_cidr = \"172.31.0.0/16\"\n    for ip in results_item_1_0:\n        phantom.debug(\"checking ip {} against internal CIDR: {}\".format(ip, internal_cidr))\n        if phantom.address_in_network(ip, internal_cidr):\n            phantom.debug(\"skipping ip {} because it matches the internal CIDR\".format(ip))\n            continue\n        \n        filter_ip_addresses__connection_ip_addresses.append(ip)\n        \n    # this block outputs all the non-internal ip addresses:\n    phantom.debug(\"connection ip list:\\n{}\".format(filter_ip_addresses__connection_ip_addresses))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='filter_ip_addresses:connection_ip_addresses', value=json.dumps(filter_ip_addresses__connection_ip_addresses))\n    connection_format_ip(container=container)\n\n    return",
+                        "block_code": "def filter_ip_addresses(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_ip_addresses() called')\n    \n    results_data_1 = phantom.collect2(container=container, datapath=['list_connections_1:action_result.data.*.connections.*.remote_ip'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    filter_ip_addresses__connection_ip_addresses = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    filter_ip_addresses__connection_ip_addresses = []\n    \n    internal_cidr = \"172.31.0.0/16\"\n    for ip in results_item_1_0:\n        phantom.debug(\"checking ip {} against internal CIDR: {}\".format(ip, internal_cidr))\n        if phantom.address_in_network(ip, internal_cidr):\n            phantom.debug(\"skipping ip {} because it matches the internal CIDR\".format(ip))\n            continue\n        \n        filter_ip_addresses__connection_ip_addresses.append(ip)\n        \n    # this block outputs all the non-internal ip addresses:\n    phantom.debug(\"connection ip list:\\n{}\".format(filter_ip_addresses__connection_ip_addresses))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='filter_ip_addresses:connection_ip_addresses', value=json.dumps(filter_ip_addresses__connection_ip_addresses))\n    connection_format_ip(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -6455,7 +6579,7 @@
                         "connection_name": "list connections",
                         "connection_type": "action",
                         "customCodeEndLineOffset": 7,
-                        "customCodeStartLine": 10,
+                        "customCodeStartLine": 11,
                         "custom_callback": "",
                         "custom_code": "def filter_ip_addresses(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_ip_addresses() called')\n    results_data_1 = phantom.collect2(container=container, datapath=['list_connections_1:action_result.data.*.connections.*.remote_ip'], action_results=results)\n    results_item_1_0 = [item[0] for item in results_data_1]\n\n    filter_ip_addresses__connection_ip_addresses = None\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    filter_ip_addresses__connection_ip_addresses = []\n    \n    internal_cidr = \"172.31.0.0/16\"\n    for ip in results_item_1_0:\n        phantom.debug(\"checking ip {} against internal CIDR: {}\".format(ip, internal_cidr))\n        if phantom.address_in_network(ip, internal_cidr):\n            phantom.debug(\"skipping ip {} because it matches the internal CIDR\".format(ip))\n            continue\n        \n        filter_ip_addresses__connection_ip_addresses.append(ip)\n        \n    # this block outputs all the non-internal ip addresses:\n    phantom.debug(\"connection ip list:\\n{}\".format(filter_ip_addresses__connection_ip_addresses))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key='filter_ip_addresses:connection_ip_addresses', value=json.dumps(filter_ip_addresses__connection_ip_addresses))\n    connection_format_ip(container=container)\n\n    return",
                         "custom_join": "",
@@ -6473,7 +6597,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 447,
+                        "legacy": true,
+                        "line_end": 448,
                         "line_start": 413,
                         "message": "Configuring now",
                         "name": "custom function",
@@ -6561,7 +6686,7 @@
                             "width": 180
                         },
                         "state": "custom function",
-                        "status": "",
+                        "status": "deprecating",
                         "title": "custom function",
                         "type": "coa.FunctionBlock",
                         "userGeneratedCode": "\n    filter_ip_addresses__connection_ip_addresses = []\n    \n    internal_cidr = \"172.31.0.0/16\"\n    for ip in results_item_1_0:\n        phantom.debug(\"checking ip {} against internal CIDR: {}\".format(ip, internal_cidr))\n        if phantom.address_in_network(ip, internal_cidr):\n            phantom.debug(\"skipping ip {} because it matches the internal CIDR\".format(ip))\n            continue\n        \n        filter_ip_addresses__connection_ip_addresses.append(ip)\n        \n    # this block outputs all the non-internal ip addresses:\n    phantom.debug(\"connection ip list:\\n{}\".format(filter_ip_addresses__connection_ip_addresses))\n",
@@ -6604,33 +6729,48 @@
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.continent_name",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Asia"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.country_iso_code",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "IN"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.country_name",
                                         "data_type": "string",
+                                        "example_values": [
+                                            "India"
+                                        ],
                                         "map_info": "Country"
                                     },
                                     {
                                         "data_path": "action_result.data.*.latitude",
                                         "data_type": "numeric",
+                                        "example_values": [
+                                            23.0333
+                                        ],
                                         "map_info": "latitude"
                                     },
                                     {
                                         "data_path": "action_result.data.*.longitude",
                                         "data_type": "numeric",
+                                        "example_values": [
+                                            72.6167
+                                        ],
                                         "map_info": "longitude"
                                     },
                                     {
@@ -6639,6 +6779,9 @@
                                         ],
                                         "data_path": "action_result.parameter.ip",
                                         "data_type": "string",
+                                        "example_values": [
+                                            "203.88.139.34"
+                                        ],
                                         "map_info": "IP Address"
                                     },
                                     {
@@ -6647,43 +6790,98 @@
                                         ],
                                         "data_path": "action_result.parameter.ip",
                                         "data_type": "string",
+                                        "example_values": [
+                                            "203.88.139.34"
+                                        ],
                                         "map_info": "name"
                                     },
                                     {
                                         "data_path": "action_result.data.*.city_name",
                                         "data_type": "string",
+                                        "example_values": [
+                                            "Ahmedabad"
+                                        ],
                                         "map_info": "City"
                                     },
                                     {
                                         "data_path": "action_result.data.*.postal_code",
                                         "data_type": "string",
+                                        "example_values": [
+                                            380007
+                                        ],
                                         "map_info": "Postal Code"
                                     },
                                     {
                                         "data_path": "action_result.data.*.as_org",
                                         "data_type": "string",
+                                        "example_values": [
+                                            ""
+                                        ],
                                         "map_info": "Organization"
                                     },
                                     {
                                         "data_path": "action_result.data.*.state_iso_code",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "GJ"
+                                        ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.state_name",
                                         "data_type": "string",
+                                        "example_values": [
+                                            "Gujarat"
+                                        ],
                                         "map_info": "State/Province"
                                     },
                                     {
                                         "data_path": "action_result.data.*.time_zone",
-                                        "data_type": "string"
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Asia/Kolkata"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.city",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Ahmedabad"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.state",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "GJ"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.country",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "India"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "City: Ahmedabad, State: GJ, Country: India"
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     },
                                     {
                                         "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
                                     }
                                 ],
                                 "parameters": {
@@ -6775,7 +6973,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def connection_geolocate_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('connection_geolocate_ip() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'connection_geolocate_ip' call\n    formatted_data_1 = phantom.get_format_data(name='connection_format_ip__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'connection_geolocate_ip' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'ip': formatted_part_1,\n        })\n\n    phantom.act(\"geolocate ip\", parameters=parameters, assets=['maxmind'], name=\"connection_geolocate_ip\")\n\n    return",
+                        "block_code": "def connection_geolocate_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('connection_geolocate_ip() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'connection_geolocate_ip' call\n    formatted_data_1 = phantom.get_format_data(name='connection_format_ip__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'connection_geolocate_ip' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'ip': formatted_part_1,\n        })\n\n    phantom.act(action=\"geolocate ip\", parameters=parameters, assets=['maxmind'], name=\"connection_geolocate_ip\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -6800,8 +6998,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 492,
-                        "line_start": 472,
+                        "line_end": 493,
+                        "line_start": 473,
                         "message": "Configuring now",
                         "name": "geolocate ip",
                         "notes": "Determine the geolocation of the IP addresses seen in network connections to the EC2 instance.",
@@ -7496,7 +7694,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def connection_ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('connection_ip_reputation() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'connection_ip_reputation' call\n    formatted_data_1 = phantom.get_format_data(name='connection_format_ip__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'connection_ip_reputation' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'ip': formatted_part_1,\n            'ph': \"\",\n            'from': \"\",\n            'to': \"\",\n        })\n\n    phantom.act(\"ip reputation\", parameters=parameters, assets=['passivetotal'], name=\"connection_ip_reputation\")\n\n    return",
+                        "block_code": "def connection_ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('connection_ip_reputation() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'connection_ip_reputation' call\n    formatted_data_1 = phantom.get_format_data(name='connection_format_ip__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'connection_ip_reputation' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'ip': formatted_part_1,\n            'ph': \"\",\n            'to': \"\",\n            'from': \"\",\n        })\n\n    phantom.act(action=\"ip reputation\", parameters=parameters, assets=['passivetotal'], name=\"connection_ip_reputation\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -7521,8 +7719,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 594,
-                        "line_start": 571,
+                        "line_end": 596,
+                        "line_start": 573,
                         "message": "Configuring now",
                         "name": "ip reputation",
                         "notes": "Determine the reputation of the IP addresses seen in network connections to the EC2 instance.",
@@ -7669,8 +7867,8 @@
                                         "data_path": "action_result.parameter.findings_id",
                                         "data_type": "string",
                                         "example_values": [
-                                            "arn:aws:guardduty:us-east-1:849257271967:detector/7eb38a3ebb7f20c83dcddbc35a46a0a4/finding/4ab44dc07ff64370b4bb08d2f9b32cf5",
-                                            "arn:aws:guardduty:us-east-1:849257271967:detector/7eb38a3ebb7f20c83dcddbc35a46a0a4/finding/7cb5038e6d8f712c01ca929602c8f225"
+                                            "arn:aws:guardduty:us-east-1:123456789012:detector/123456789abcdefghi1234ab/finding/123456789abcdefghi1234ab",
+                                            "arn:aws:guardduty:us-east-1:123456789012:detector/123456789abcdefghi1234ab/finding/123456789abcdefghi1234ab"
                                         ]
                                     },
                                     {
@@ -7689,10 +7887,6 @@
                                             true,
                                             false
                                         ]
-                                    },
-                                    {
-                                        "data_path": "action_result.data",
-                                        "data_type": "string"
                                     },
                                     {
                                         "data_path": "action_result.data.*.ResponseMetadata.HTTPHeaders.connection",
@@ -7726,21 +7920,21 @@
                                         "data_path": "action_result.data.*.ResponseMetadata.HTTPHeaders.x-amz-apigw-id",
                                         "data_type": "string",
                                         "example_values": [
-                                            "YBdYdF_noAMFzyQ="
+                                            "123456789abcdefghi1234ab="
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.ResponseMetadata.HTTPHeaders.x-amzn-requestid",
                                         "data_type": "string",
                                         "example_values": [
-                                            "c41dbc3d-5d15-11e9-b3d4-8fb86926a039"
+                                            "1234abcd-12ab-ab12-ab12-123456abcdef"
                                         ]
                                     },
                                     {
                                         "data_path": "action_result.data.*.ResponseMetadata.HTTPHeaders.x-amzn-trace-id",
                                         "data_type": "string",
                                         "example_values": [
-                                            "Root=1-5cb075cf-45091c0dcb58578d7599984d;Sampled=0"
+                                            "Root=1-5cb075cf-123456789abcdefghi1234ab;Sampled=0"
                                         ]
                                     },
                                     {
@@ -7754,7 +7948,7 @@
                                         "data_path": "action_result.data.*.ResponseMetadata.RequestId",
                                         "data_type": "string",
                                         "example_values": [
-                                            "c41dbc3d-5d15-11e9-b3d4-8fb86926a039"
+                                            "1234abcd-12ab-ab12-ab12-123456abcdef"
                                         ]
                                     },
                                     {
@@ -7765,14 +7959,10 @@
                                         ]
                                     },
                                     {
-                                        "data_path": "action_result.summary",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.total_findings",
-                                        "data_type": "numeric",
+                                        "data_path": "action_result.summary.add_note",
+                                        "data_type": "string",
                                         "example_values": [
-                                            1
+                                            "Success"
                                         ]
                                     },
                                     {
@@ -7905,7 +8095,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def add_note_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('add_note_2() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    source_data_identifier_value = container.get('source_data_identifier', None)\n\n    # collect data for 'add_note_2' call\n    formatted_data_1 = phantom.get_format_data(name='format_security_hub_note')\n\n    parameters = []\n    \n    # build parameters list for 'add_note_2' call\n    parameters.append({\n        'note': formatted_data_1,\n        'findings_id': source_data_identifier_value,\n        'overwrite': \"\",\n    })\n\n    phantom.act(\"add note\", parameters=parameters, assets=['aws_security_hub'], name=\"add_note_2\")\n\n    return",
+                        "block_code": "def add_note_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('add_note_2() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    source_data_identifier_value = container.get('source_data_identifier', None)\n\n    # collect data for 'add_note_2' call\n    formatted_data_1 = phantom.get_format_data(name='format_security_hub_note')\n\n    parameters = []\n    \n    # build parameters list for 'add_note_2' call\n    parameters.append({\n        'note': formatted_data_1,\n        'overwrite': \"\",\n        'findings_id': source_data_identifier_value,\n    })\n\n    phantom.act(action=\"add note\", parameters=parameters, assets=['aws_security_hub'], name=\"add_note_2\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -8276,7 +8466,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def list_firewall_rules_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_firewall_rules_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_firewall_rules_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.NetworkInterfaces.*.Association.PublicDnsName', 'describe_ec2_instance:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_firewall_rules_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'protocol': \"\",\n                'port': \"\",\n                'chain': \"\",\n                'ip_hostname': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"list firewall rules\", parameters=parameters, assets=['ssh'], name=\"list_firewall_rules_1\", parent_action=action)\n\n    return",
+                        "block_code": "def list_firewall_rules_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('list_firewall_rules_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_firewall_rules_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.NetworkInterfaces.*.Association.PublicDnsName', 'describe_ec2_instance:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_firewall_rules_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'port': \"\",\n                'chain': \"\",\n                'protocol': \"\",\n                'ip_hostname': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"list firewall rules\", parameters=parameters, assets=['ssh'], name=\"list_firewall_rules_1\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -8605,7 +8795,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def list_processes_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_processes_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_processes_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.NetworkInterfaces.*.Association.PublicDnsName', 'describe_ec2_instance:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_processes_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip_hostname': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"list processes\", parameters=parameters, assets=['ssh'], name=\"list_processes_1\", parent_action=action)\n\n    return",
+                        "block_code": "def list_processes_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('list_processes_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_processes_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.NetworkInterfaces.*.Association.PublicDnsName', 'describe_ec2_instance:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_processes_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip_hostname': results_item_1[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"list processes\", parameters=parameters, assets=['ssh'], name=\"list_processes_1\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -9044,7 +9234,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def list_connections_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_connections_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_connections_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.NetworkInterfaces.*.Association.PublicDnsName', 'describe_ec2_instance:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_connections_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'local_addr': \"\",\n                'remote_port': \"\",\n                'remote_addr': \"\",\n                'ip_hostname': results_item_1[0],\n                'local_port': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(\"list connections\", parameters=parameters, assets=['ssh'], callback=filter_ip_addresses, name=\"list_connections_1\", parent_action=action)\n\n    return",
+                        "block_code": "def list_connections_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('list_connections_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_connections_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.NetworkInterfaces.*.Association.PublicDnsName', 'describe_ec2_instance:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_connections_1' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'local_addr': \"\",\n                'local_port': \"\",\n                'ip_hostname': results_item_1[0],\n                'remote_addr': \"\",\n                'remote_port': \"\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"list connections\", parameters=parameters, assets=['ssh'], callback=filter_ip_addresses, name=\"list_connections_1\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -9069,8 +9259,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 85,
-                        "line_start": 58,
+                        "line_end": 84,
+                        "line_start": 57,
                         "message": "Configuring now",
                         "name": "list connections",
                         "notes": "List the open network connections on the EC2 instance using SSH.",
@@ -9202,7 +9392,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def filter_resource_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('filter_resource_artifact() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.name\", \"==\", \"AwsEc2Instance Resource Artifact\"],\n        ],\n        name=\"filter_resource_artifact:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        filter_finding_artifact(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "block_code": "def filter_resource_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('filter_resource_artifact() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.name\", \"==\", \"AwsEc2Instance Resource Artifact\"],\n        ],\n        name=\"filter_resource_artifact:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        filter_finding_artifact(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -9225,8 +9415,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 133,
-                        "line_start": 116,
+                        "line_end": 132,
+                        "line_start": 115,
                         "name": "filter",
                         "notes": "Separate the EC2 resource from the other artifacts in the Finding.",
                         "number": 1,
@@ -9834,7 +10024,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def list_security_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_security_groups_1() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_security_groups_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.SecurityGroups.*.GroupId', 'describe_ec2_instance:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_security_groups_1' call\n    for results_item_1 in results_data_1:\n        parameters.append({\n            'group_ids': results_item_1[0],\n            'dry_run': \"\",\n            'max_results': \"\",\n            'filters': \"\",\n            'group_names': \"\",\n            'next_token': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': results_item_1[1]},\n        })\n\n    phantom.act(\"list security groups\", parameters=parameters, assets=['aws_ec2'], name=\"list_security_groups_1\", parent_action=action)\n\n    return",
+                        "block_code": "def list_security_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('list_security_groups_1() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_security_groups_1' call\n    results_data_1 = phantom.collect2(container=container, datapath=['describe_ec2_instance:action_result.data.*.Reservations.*.Instances.*.SecurityGroups.*.GroupId', 'describe_ec2_instance:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'list_security_groups_1' call\n    for results_item_1 in results_data_1:\n        parameters.append({\n            'dry_run': \"\",\n            'filters': \"\",\n            'group_ids': results_item_1[0],\n            'next_token': \"\",\n            'group_names': \"\",\n            'max_results': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': results_item_1[1]},\n        })\n\n    phantom.act(action=\"list security groups\", parameters=parameters, assets=['aws_ec2'], name=\"list_security_groups_1\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -10842,9 +11032,9 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def describe_ec2_instance(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('describe_ec2_instance() called')\n\n    # collect data for 'describe_ec2_instance' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_resource_artifact:condition_1:artifact:*.cef.InstanceId', 'filtered-data:filter_resource_artifact:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'describe_ec2_instance' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        parameters.append({\n            'limit': \"\",\n            'filters': \"\",\n            'instance_ids': filtered_artifacts_item_1[0],\n            'dry_run': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': filtered_artifacts_item_1[1]},\n        })\n\n    phantom.act(\"describe instance\", parameters=parameters, assets=['aws_ec2'], callback=describe_ec2_instance_callback, name=\"describe_ec2_instance\")\n\n    return",
-                        "callback_code": "def describe_ec2_instance_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('describe_ec2_instance_callback() called')\n    \n    build_finding_url(action=action, success=success, container=container, results=results, handle=handle)\n    list_security_groups_1(action=action, success=success, container=container, results=results, handle=handle)\n    list_firewall_rules_1(action=action, success=success, container=container, results=results, handle=handle)\n    list_processes_1(action=action, success=success, container=container, results=results, handle=handle)\n    list_connections_1(action=action, success=success, container=container, results=results, handle=handle)\n    parse_remote_ip_addrs(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
-                        "callback_start": 43,
+                        "block_code": "def describe_ec2_instance(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('describe_ec2_instance() called')\n\n    # collect data for 'describe_ec2_instance' call\n    filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_resource_artifact:condition_1:artifact:*.cef.InstanceId', 'filtered-data:filter_resource_artifact:condition_1:artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'describe_ec2_instance' call\n    for filtered_artifacts_item_1 in filtered_artifacts_data_1:\n        parameters.append({\n            'limit': \"\",\n            'dry_run': \"\",\n            'filters': \"\",\n            'instance_ids': filtered_artifacts_item_1[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': filtered_artifacts_item_1[1]},\n        })\n\n    phantom.act(action=\"describe instance\", parameters=parameters, assets=['aws_ec2'], callback=describe_ec2_instance_callback, name=\"describe_ec2_instance\")\n\n    return",
+                        "callback_code": "def describe_ec2_instance_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):\n    phantom.debug('describe_ec2_instance_callback() called')\n    \n    build_finding_url(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n    list_security_groups_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n    list_firewall_rules_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n    list_processes_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n    list_connections_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n    parse_remote_ip_addrs(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n\n    return",
+                        "callback_start": 42,
                         "callsback": true,
                         "color": "",
                         "connected_to_start": true,
@@ -10867,8 +11057,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 51,
-                        "line_end": 55,
-                        "line_start": 20,
+                        "line_end": 54,
+                        "line_start": 19,
                         "message": "Configuring now",
                         "name": "describe instance",
                         "notes": "Gather metadata about the EC2 instance in the Finding.",
@@ -10953,13 +11143,25 @@
             },
             "notes": "This playbook uses the following Apps:\n - AWS Security Hub (on poll, add note) [asset name = aws_security_hub] - ingest the Finding which initiates this playbook and enrich it with a note at the end\n - AWS EC2 (describe instance, list security groups) [asset name = aws_ec2] - gather information about the EC2 environment\n - Jira (create ticket) [asset name = jira] - create a Jira ticket to track the task of fixing the problem\n - Slack (send message) [asset name = slack] - send a direct message to the owner of the EC2 instance to notify them that a change is needed\n - SSH (list firewall rules, list processes, list connections) [asset name = ssh] - connect to the EC2 instance and investigate the current activity and configuration of the host-based\nfirewall\n - MaxMind (geolocate ip) [asset name = maxmind] - look up the geographic locations of the remote IP addresses\n - PassiveTotal (ip reputation) [asset name = passivetotal] - look up any known reputation information about the remote IP addresses\n\nDeployment Notes:\n - The SSH actions will only work if the EC2 instance is using any of the commonly used linux distributions.\n - In the block \"build finding url\", a link to the AWS Console is constructed using an undocumented URL format on AWS and using a hard-coded region (us-east-1). The URL format could change at any time and the region may need to be adjusted.\n - The Jira ticket is created with a hard-coded project key set to \"EK\", which should be replaced with the correct project key.\n - The \"send message\" action using Slack relies on the EC2 instance to be tagged with the key \"InstanceOwnerSlack\" and the value set to the Slack username of the person who is responsible for the EC2 instance. This could be replaced with an email address or other communication mechanism.\n - The prompt block should be assigned to the correct user or role. Currently it is assigned to the user \"admin\".\n - The custom function called \"filter ip addresses\" has a hard-coded internal CIDR which ignores local AWS VPC traffic. That CIDR should be changed for the target EC2 environment."
         },
-        "schema": 3,
-        "version": "4.5.15425"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2019-07-08T16:45:47.386182+00:00",
+    "create_time": "2021-01-19T21:45:46.339746+00:00",
     "draft_mode": false,
     "labels": [
-        "aws_security_hub"
+        "events"
     ],
-    "tags": []
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "AWS Security Hub",
+            "AWS EC2",
+            "Jira",
+            "Slack",
+            "SSH",
+            "MaxMind",
+            "PassiveTotal"
+        ]
+    }
 }

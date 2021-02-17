@@ -5,7 +5,6 @@ Investigate an AWS Security Hub finding related to an exposed EC2 instance which
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -17,7 +16,7 @@ def on_start(container):
 """
 Gather metadata about the EC2 instance in the Finding.
 """
-def describe_ec2_instance(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def describe_ec2_instance(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('describe_ec2_instance() called')
 
     # collect data for 'describe_ec2_instance' call
@@ -29,35 +28,35 @@ def describe_ec2_instance(action=None, success=None, container=None, results=Non
     for filtered_artifacts_item_1 in filtered_artifacts_data_1:
         parameters.append({
             'limit': "",
+            'dry_run': "",
             'filters': "",
             'instance_ids': filtered_artifacts_item_1[0],
-            'dry_run': "",
             # context (artifact id) is added to associate results with the artifact
             'context': {'artifact_id': filtered_artifacts_item_1[1]},
         })
 
-    phantom.act("describe instance", parameters=parameters, assets=['aws_ec2'], callback=describe_ec2_instance_callback, name="describe_ec2_instance")
+    phantom.act(action="describe instance", parameters=parameters, assets=['aws_ec2'], callback=describe_ec2_instance_callback, name="describe_ec2_instance")
 
     return
 
-def describe_ec2_instance_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def describe_ec2_instance_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('describe_ec2_instance_callback() called')
     
-    build_finding_url(action=action, success=success, container=container, results=results, handle=handle)
-    list_security_groups_1(action=action, success=success, container=container, results=results, handle=handle)
-    list_firewall_rules_1(action=action, success=success, container=container, results=results, handle=handle)
-    list_processes_1(action=action, success=success, container=container, results=results, handle=handle)
-    list_connections_1(action=action, success=success, container=container, results=results, handle=handle)
-    parse_remote_ip_addrs(action=action, success=success, container=container, results=results, handle=handle)
+    build_finding_url(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    list_security_groups_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    list_firewall_rules_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    list_processes_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    list_connections_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    parse_remote_ip_addrs(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
 
     return
 
 """
 List the open network connections on the EC2 instance using SSH.
 """
-def list_connections_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def list_connections_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('list_connections_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'list_connections_1' call
@@ -70,22 +69,22 @@ def list_connections_1(action=None, success=None, container=None, results=None, 
         if results_item_1[0]:
             parameters.append({
                 'local_addr': "",
-                'remote_port': "",
-                'remote_addr': "",
-                'ip_hostname': results_item_1[0],
                 'local_port': "",
+                'ip_hostname': results_item_1[0],
+                'remote_addr': "",
+                'remote_port': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("list connections", parameters=parameters, assets=['ssh'], callback=filter_ip_addresses, name="list_connections_1", parent_action=action)
+    phantom.act(action="list connections", parameters=parameters, assets=['ssh'], callback=filter_ip_addresses, name="list_connections_1", parent_action=action)
 
     return
 
 """
 Put together the relevant links, title, and description for the Finding to present to an analyst in both a ticket and a chat message.
 """
-def format_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_description() called')
     
     template = """Phantom received a Security Hub Finding with the following details:
@@ -113,7 +112,7 @@ AWS Security Hub Finding link: {3}"""
 """
 Separate the EC2 resource from the other artifacts in the Finding.
 """
-def filter_resource_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_resource_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_resource_artifact() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -126,14 +125,14 @@ def filter_resource_artifact(action=None, success=None, container=None, results=
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        filter_finding_artifact(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        filter_finding_artifact(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 """
 Separate the main Finding artifact from the other artifacts in the Finding.
 """
-def filter_finding_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_finding_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_finding_artifact() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -146,26 +145,26 @@ def filter_finding_artifact(action=None, success=None, container=None, results=N
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        describe_ec2_instance(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        describe_ec2_instance(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 """
 Only proceed if there is an EC2 Resource contained in the SecurityHub Finding.
 """
-def decision_ec2_resource(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_ec2_resource(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_ec2_resource() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         conditions=[
             ["artifact:*.name", "==", "AwsEc2Instance Resource Artifact"],
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        filter_resource_artifact(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        filter_resource_artifact(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     return
@@ -173,8 +172,9 @@ def decision_ec2_resource(action=None, success=None, container=None, results=Non
 """
 Use the Finding ID to construct a URL with a pre-populated SecurityHub search to view the Finding in the AWS Console.
 """
-def build_finding_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def build_finding_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('build_finding_url() called')
+    
     filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_finding_artifact:condition_1:artifact:*.cef.Id'])
     filtered_artifacts_item_1_0 = [item[0] for item in filtered_artifacts_data_1]
 
@@ -200,9 +200,9 @@ def build_finding_url(action=None, success=None, container=None, results=None, h
 """
 List the security groups that the EC2 instance belongs to. This should show the potentially vulnerable configuration described by the Finding.
 """
-def list_security_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def list_security_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('list_security_groups_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'list_security_groups_1' call
@@ -213,26 +213,26 @@ def list_security_groups_1(action=None, success=None, container=None, results=No
     # build parameters list for 'list_security_groups_1' call
     for results_item_1 in results_data_1:
         parameters.append({
-            'group_ids': results_item_1[0],
             'dry_run': "",
-            'max_results': "",
             'filters': "",
-            'group_names': "",
+            'group_ids': results_item_1[0],
             'next_token': "",
+            'group_names': "",
+            'max_results': "",
             # context (artifact id) is added to associate results with the artifact
             'context': {'artifact_id': results_item_1[1]},
         })
 
-    phantom.act("list security groups", parameters=parameters, assets=['aws_ec2'], name="list_security_groups_1", parent_action=action)
+    phantom.act(action="list security groups", parameters=parameters, assets=['aws_ec2'], name="list_security_groups_1", parent_action=action)
 
     return
 
 """
 List the host-based firewall rules on the EC2 instance using SSH.
 """
-def list_firewall_rules_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def list_firewall_rules_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('list_firewall_rules_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'list_firewall_rules_1' call
@@ -244,24 +244,24 @@ def list_firewall_rules_1(action=None, success=None, container=None, results=Non
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'protocol': "",
                 'port': "",
                 'chain': "",
+                'protocol': "",
                 'ip_hostname': results_item_1[0],
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("list firewall rules", parameters=parameters, assets=['ssh'], name="list_firewall_rules_1", parent_action=action)
+    phantom.act(action="list firewall rules", parameters=parameters, assets=['ssh'], name="list_firewall_rules_1", parent_action=action)
 
     return
 
 """
 List the running processes on the EC2 instance using SSH.
 """
-def list_processes_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def list_processes_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('list_processes_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'list_processes_1' call
@@ -278,14 +278,14 @@ def list_processes_1(action=None, success=None, container=None, results=None, ha
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("list processes", parameters=parameters, assets=['ssh'], name="list_processes_1", parent_action=action)
+    phantom.act(action="list processes", parameters=parameters, assets=['ssh'], name="list_processes_1", parent_action=action)
 
     return
 
 """
 Ask the analyst whether to isolate the EC2 instance using a change in security groups.
 """
-def isolate_ec2_instance_approval(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def isolate_ec2_instance_approval(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('isolate_ec2_instance_approval() called')
     
     # set user and message variables for phantom.prompt call
@@ -316,11 +316,11 @@ def isolate_ec2_instance_approval(action=None, success=None, container=None, res
 
     return
 
-def join_isolate_ec2_instance_approval(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def join_isolate_ec2_instance_approval(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('join_isolate_ec2_instance_approval() called')
 
-    # check if all connected incoming actions are done i.e. have succeeded or failed
-    if phantom.actions_done([ 'create_ticket_1', 'send_message_1' ]):
+    # check if all connected incoming playbooks, actions, or custom functions are done i.e. have succeeded or failed
+    if phantom.completed(action_names=['create_ticket_1', 'send_message_1']):
         
         # call connected block "isolate_ec2_instance_approval"
         isolate_ec2_instance_approval(container=container, handle=handle)
@@ -330,11 +330,11 @@ def join_isolate_ec2_instance_approval(action=None, success=None, container=None
 """
 Check the result from the previous prompt block.
 """
-def prompt_decision(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def prompt_decision(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('prompt_decision() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
@@ -342,32 +342,32 @@ def prompt_decision(action=None, success=None, container=None, results=None, han
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        playbook_local_ec2_instance_isolation_1(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        playbook_local_ec2_instance_isolation_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     # call connected blocks for 'else' condition 2
-    format_security_hub_note(action=action, success=success, container=container, results=results, handle=handle)
+    format_security_hub_note(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
 
     return
 
 """
 Call another playbook to isolate the EC2 instance as specified by the prompt.
 """
-def playbook_local_ec2_instance_isolation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def playbook_local_ec2_instance_isolation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('playbook_local_ec2_instance_isolation_1() called')
     
     # call playbook "local/ec2_instance_isolation", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/ec2_instance_isolation", container=container)
+    playbook_run_id = phantom.playbook(playbook="local/ec2_instance_isolation", container=container)
 
     return
 
 """
 Add the formatted note to the SecurityHub Finding.
 """
-def add_note_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def add_note_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('add_note_2() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     source_data_identifier_value = container.get('source_data_identifier', None)
@@ -380,18 +380,18 @@ def add_note_2(action=None, success=None, container=None, results=None, handle=N
     # build parameters list for 'add_note_2' call
     parameters.append({
         'note': formatted_data_1,
-        'findings_id': source_data_identifier_value,
         'overwrite': "",
+        'findings_id': source_data_identifier_value,
     })
 
-    phantom.act("add note", parameters=parameters, assets=['aws_security_hub'], name="add_note_2")
+    phantom.act(action="add note", parameters=parameters, assets=['aws_security_hub'], name="add_note_2")
 
     return
 
 """
 Format a note describing the "No" response from the prompt.
 """
-def format_security_hub_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_security_hub_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_security_hub_note() called')
     
     template = """Phantom investigated this incident and the analyst decided not to isolate this instance automatically. View the event in Phantom Mission Control here: {0}"""
@@ -410,8 +410,9 @@ def format_security_hub_note(action=None, success=None, container=None, results=
 """
 Filter out the IP addresses that belong to the internal AWS VPC.
 """
-def filter_ip_addresses(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_ip_addresses(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_ip_addresses() called')
+    
     results_data_1 = phantom.collect2(container=container, datapath=['list_connections_1:action_result.data.*.connections.*.remote_ip'], action_results=results)
     results_item_1_0 = [item[0] for item in results_data_1]
 
@@ -447,7 +448,7 @@ def filter_ip_addresses(action=None, success=None, container=None, results=None,
 """
 Turn the remaining IP addresses into a list to allow usage in an action.
 """
-def connection_format_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def connection_format_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('connection_format_ip() called')
     
     template = """%%
@@ -469,9 +470,9 @@ def connection_format_ip(action=None, success=None, container=None, results=None
 """
 Determine the geolocation of the IP addresses seen in network connections to the EC2 instance.
 """
-def connection_geolocate_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def connection_geolocate_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('connection_geolocate_ip() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'connection_geolocate_ip' call
@@ -485,15 +486,16 @@ def connection_geolocate_ip(action=None, success=None, container=None, results=N
             'ip': formatted_part_1,
         })
 
-    phantom.act("geolocate ip", parameters=parameters, assets=['maxmind'], name="connection_geolocate_ip")
+    phantom.act(action="geolocate ip", parameters=parameters, assets=['maxmind'], name="connection_geolocate_ip")
 
     return
 
 """
 Collect the remote IP addresses described in the Finding.
 """
-def parse_remote_ip_addrs(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def parse_remote_ip_addrs(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('parse_remote_ip_addrs() called')
+    
     filtered_artifacts_data_1 = phantom.collect2(container=container, datapath=['filtered-data:filter_finding_artifact:condition_1:artifact:*.cef.ProductFields'])
     filtered_artifacts_item_1_0 = [item[0] for item in filtered_artifacts_data_1]
 
@@ -523,7 +525,7 @@ def parse_remote_ip_addrs(action=None, success=None, container=None, results=Non
 """
 Turn the IP addresses from the Finding into a list to allow usage in an action.
 """
-def finding_format_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def finding_format_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('finding_format_ip() called')
     
     template = """%%
@@ -545,9 +547,9 @@ def finding_format_ip(action=None, success=None, container=None, results=None, h
 """
 Determine the geolocation of the IP addresses seen in the Finding.
 """
-def finding_geolocate_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def finding_geolocate_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('finding_geolocate_ip() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'finding_geolocate_ip' call
@@ -561,16 +563,16 @@ def finding_geolocate_ip(action=None, success=None, container=None, results=None
             'ip': formatted_part_1,
         })
 
-    phantom.act("geolocate ip", parameters=parameters, assets=['maxmind'], name="finding_geolocate_ip")
+    phantom.act(action="geolocate ip", parameters=parameters, assets=['maxmind'], name="finding_geolocate_ip")
 
     return
 
 """
 Determine the reputation of the IP addresses seen in network connections to the EC2 instance.
 """
-def connection_ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def connection_ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('connection_ip_reputation() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'connection_ip_reputation' call
@@ -583,20 +585,20 @@ def connection_ip_reputation(action=None, success=None, container=None, results=
         parameters.append({
             'ip': formatted_part_1,
             'ph': "",
-            'from': "",
             'to': "",
+            'from': "",
         })
 
-    phantom.act("ip reputation", parameters=parameters, assets=['passivetotal'], name="connection_ip_reputation")
+    phantom.act(action="ip reputation", parameters=parameters, assets=['passivetotal'], name="connection_ip_reputation")
 
     return
 
 """
 Determine the reputation of the IP addresses seen in the Finding.
 """
-def finding_ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def finding_ip_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('finding_ip_reputation() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'finding_ip_reputation' call
@@ -609,30 +611,30 @@ def finding_ip_reputation(action=None, success=None, container=None, results=Non
         parameters.append({
             'ip': formatted_part_1,
             'ph': "",
-            'from': "",
             'to': "",
+            'from': "",
         })
 
-    phantom.act("ip reputation", parameters=parameters, assets=['passivetotal'], name="finding_ip_reputation")
+    phantom.act(action="ip reputation", parameters=parameters, assets=['passivetotal'], name="finding_ip_reputation")
 
     return
 
 """
 Only proceed with this Finding if the SecurityHub normalized severity is above a certain threshold.
 """
-def decision_severity_threshold(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_severity_threshold(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_severity_threshold() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         conditions=[
             ["artifact:*.cef.Severity.Normalized", ">", 35],
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        decision_ec2_resource(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        decision_ec2_resource(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     return
@@ -640,9 +642,9 @@ def decision_severity_threshold(action=None, success=None, container=None, resul
 """
 Create a ticket to track this incident.
 """
-def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('create_ticket_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     name_value = container.get('name', None)
@@ -654,26 +656,27 @@ def create_ticket_1(action=None, success=None, container=None, results=None, han
     
     # build parameters list for 'create_ticket_1' call
     parameters.append({
-        'description': formatted_data_1,
         'fields': "",
-        'project_key': "EK",
         'summary': name_value,
-        'priority': "High",
         'assignee': "",
+        'priority': "High",
         'vault_id': "",
         'issue_type': "Bug",
+        'description': formatted_data_1,
+        'project_key': "EK",
+        'assignee_account_id': "",
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['jira'], callback=join_isolate_ec2_instance_approval, name="create_ticket_1")
+    phantom.act(action="create ticket", parameters=parameters, assets=['jira'], callback=join_isolate_ec2_instance_approval, name="create_ticket_1")
 
     return
 
 """
 Determine the person responsible for managing the server based on a tag on the EC2 instance, and notify that person about the Finding and the potential remediation by Phantom using an individual Slack message .
 """
-def send_message_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def send_message_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('send_message_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'send_message_1' call
@@ -692,14 +695,14 @@ def send_message_1(action=None, success=None, container=None, results=None, hand
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("send message", parameters=parameters, assets=['slack'], callback=join_isolate_ec2_instance_approval, name="send_message_1")
+    phantom.act(action="send message", parameters=parameters, assets=['slack'], callback=join_isolate_ec2_instance_approval, name="send_message_1")
 
     return
 
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
