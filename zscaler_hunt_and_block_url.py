@@ -5,7 +5,6 @@ When a suspicious URL is detected, this playbook can be used to identify interna
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -17,7 +16,7 @@ def on_start(container):
 """
 Check for existing scans of this URL on Virustotal.
 """
-def url_reputation_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def url_reputation_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('url_reputation_2() called')
 
     # collect data for 'url_reputation_2' call
@@ -34,27 +33,27 @@ def url_reputation_2(action=None, success=None, container=None, results=None, ha
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("url reputation", parameters=parameters, assets=['virustotal'], callback=decision_1, name="url_reputation_2")
+    phantom.act(action="url reputation", parameters=parameters, assets=['virustotal'], callback=decision_1, name="url_reputation_2")
 
     return
 
 """
 Continue if the URL has over 4 positive scans.
 """
-def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_1() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
-            ["url_reputation_2:action_result.summary.positives", ">", "4"],
+            ["url_reputation_2:action_result.summary.positives", ">", 4],
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        format_splunk_query(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        format_splunk_query(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     return
@@ -62,7 +61,7 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
 """
 Match back to the username of the executive.
 """
-def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_2() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -76,15 +75,15 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        exec_short_description(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        prompt_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        exec_short_description(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        prompt_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 """
 Match back to the non-executive username.
 """
-def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_3() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -98,27 +97,27 @@ def filter_3(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        quarantine_regular_device(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        quarantine_regular_device(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 """
 Check the prompt response.
 """
-def decision_7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_7() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
-            ["prompt_1:action_result.summary.response", "==", "Yes"],
+            ["prompt_1:action_result.summary.responses.0", "==", "Yes"],
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        quarantine_exec_device(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        quarantine_exec_device(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     return
@@ -126,9 +125,9 @@ def decision_7(action=None, success=None, container=None, results=None, handle=N
 """
 Since the prompt was confirmed, quarantine the executive's device.
 """
-def quarantine_exec_device(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def quarantine_exec_device(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('quarantine_exec_device() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'quarantine_exec_device' call
@@ -145,14 +144,14 @@ def quarantine_exec_device(action=None, success=None, container=None, results=No
                 'context': {'artifact_id': filtered_results_item_1[1]},
             })
 
-    phantom.act("quarantine device", parameters=parameters, assets=['carbonblack'], name="quarantine_exec_device")
+    phantom.act(action="quarantine device", parameters=parameters, assets=['carbonblack'], name="quarantine_exec_device")
 
     return
 
 """
 Build a Splunk query to check the zScaler proxy logs for events where the given URL was requested.
 """
-def format_splunk_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_splunk_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_splunk_query() called')
     
     template = """host=\"zscalertwo-phantom\" index=\"proxy_logs_zscaler\" sourcetype=\"csv\"  | eval cleansed_url=replace(\"{0}\", \"http[s]*\\:\\/\\/\", \"\") | where URL=cleansed_url | rename \"Client IP\" as client_ip \"Policy Action\" as policy_action, \"URL Class\" as url_class, \"URL Category\" as url_category | fields client_ip, policy_action, url_class, url_category, User"""
@@ -171,9 +170,9 @@ def format_splunk_query(action=None, success=None, container=None, results=None,
 """
 Run the Splunk query built in the previous format block.
 """
-def run_query_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def run_query_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('run_query_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'run_query_1' call
@@ -184,19 +183,21 @@ def run_query_1(action=None, success=None, container=None, results=None, handle=
     # build parameters list for 'run_query_1' call
     parameters.append({
         'query': formatted_data_1,
+        'command': "",
         'display': "client_ip, url, url_category, url_class, User",
+        'parse_only': "",
     })
 
-    phantom.act("run query", parameters=parameters, assets=['splunk_es'], callback=get_user_attributes_1, name="run_query_1")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk_es'], callback=get_user_attributes_1, name="run_query_1")
 
     return
 
 """
 Query Active Directory for information about the username retrieved from Splunk.
 """
-def get_user_attributes_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_user_attributes_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_user_attributes_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'get_user_attributes_1' call
@@ -208,25 +209,25 @@ def get_user_attributes_1(action=None, success=None, container=None, results=Non
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'username': results_item_1[0],
                 'fields': "",
+                'username': results_item_1[0],
                 'attribute': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("get user attributes", parameters=parameters, app={ "name": 'LDAP' }, callback=decision_5, name="get_user_attributes_1", parent_action=action)
+    phantom.act(action="get user attributes", parameters=parameters, app={ "name": 'LDAP' }, callback=decision_5, name="get_user_attributes_1", parent_action=action)
 
     return
 
 """
 Only proceed if the URL request was allowed by zScaler.
 """
-def decision_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_5() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
@@ -234,9 +235,9 @@ def decision_5(action=None, success=None, container=None, results=None, handle=N
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        filter_1(action=action, success=success, container=container, results=results, handle=handle)
-        lookup_url_2(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        filter_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        lookup_url_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     return
@@ -244,9 +245,9 @@ def decision_5(action=None, success=None, container=None, results=None, handle=N
 """
 Query zScaler to retrieve the URL classification and categorization.
 """
-def lookup_url_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def lookup_url_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('lookup_url_2() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'lookup_url_2' call
@@ -263,16 +264,16 @@ def lookup_url_2(action=None, success=None, container=None, results=None, handle
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("lookup url", parameters=parameters, app={ "name": 'Zscaler' }, callback=zscaler_category_filter, name="lookup_url_2")
+    phantom.act(action="lookup url", parameters=parameters, app={ "name": 'Zscaler' }, callback=zscaler_category_filter, name="lookup_url_2")
 
     return
 
 """
 Block URL's with security classifications.
 """
-def block_url_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def block_url_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('block_url_2() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'block_url_2' call
@@ -290,14 +291,14 @@ def block_url_2(action=None, success=None, container=None, results=None, handle=
                 'context': {'artifact_id': filtered_results_item_1[1]},
             })
 
-    phantom.act("block url", parameters=parameters, assets=['zscaler'], name="block_url_2")
+    phantom.act(action="block url", parameters=parameters, assets=['zscaler'], name="block_url_2")
 
     return
 
 """
 Handle the situation differently if the user is in the Executives department.
 """
-def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_1() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -311,7 +312,7 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        filter_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        filter_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     # collect filtered artifact ids for 'if' condition 2
     matched_artifacts_2, matched_results_2 = phantom.condition(
@@ -324,14 +325,14 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_2 or matched_results_2:
-        filter_3(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
+        filter_3(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
 
     return
 
 """
 Format the short description (title) of the ticket.
 """
-def regular_short_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def regular_short_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('regular_short_description() called')
     
     template = """Endpoint connected to malicious URL - {0}"""
@@ -350,7 +351,7 @@ def regular_short_description(action=None, success=None, container=None, results
 """
 Format the long-form description of the ticket.
 """
-def regular_long_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def regular_long_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('regular_long_description() called')
     
     template = """Endpoint as trying to access a known bad URL:
@@ -381,34 +382,34 @@ Splunk Results:
 """
 Create the ServiceNow ticket with the formatted short description and long description.
 """
-def create_regular_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def create_regular_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('create_regular_ticket() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'create_regular_ticket' call
-    formatted_data_1 = phantom.get_format_data(name='regular_short_description')
-    formatted_data_2 = phantom.get_format_data(name='regular_long_description')
+    formatted_data_1 = phantom.get_format_data(name='regular_long_description')
+    formatted_data_2 = phantom.get_format_data(name='regular_short_description')
 
     parameters = []
     
     # build parameters list for 'create_regular_ticket' call
     parameters.append({
-        'short_description': formatted_data_1,
         'table': "incident",
-        'vault_id': "",
-        'description': formatted_data_2,
         'fields': "{\"urgency\":\"2\"}",
+        'vault_id': "",
+        'description': formatted_data_1,
+        'short_description': formatted_data_2,
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], name="create_regular_ticket")
+    phantom.act(action="create ticket", parameters=parameters, assets=['servicenow'], name="create_regular_ticket")
 
     return
 
 """
 Format the short description (title) of the ticket.
 """
-def exec_short_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def exec_short_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('exec_short_description() called')
     
     template = """Please Investigate Executive Workstation - {0}"""
@@ -427,7 +428,7 @@ def exec_short_description(action=None, success=None, container=None, results=No
 """
 Format the long-form description of the ticket.
 """
-def exec_long_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def exec_long_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('exec_long_description() called')
     
     template = """Executive was trying to access a known bad URL:
@@ -458,59 +459,64 @@ Splunk Results:
 """
 Create the ServiceNow ticket with the formatted short description and long description.
 """
-def create_exec_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def create_exec_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('create_exec_ticket() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'create_exec_ticket' call
-    formatted_data_1 = phantom.get_format_data(name='exec_short_description')
-    formatted_data_2 = phantom.get_format_data(name='exec_long_description')
+    formatted_data_1 = phantom.get_format_data(name='exec_long_description')
+    formatted_data_2 = phantom.get_format_data(name='exec_short_description')
 
     parameters = []
     
     # build parameters list for 'create_exec_ticket' call
     parameters.append({
-        'short_description': formatted_data_1,
         'table': "incident",
-        'vault_id': "",
-        'description': formatted_data_2,
         'fields': "{\"urgency\":\"1\"}",
+        'vault_id': "",
+        'description': formatted_data_1,
+        'short_description': formatted_data_2,
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], name="create_exec_ticket")
+    phantom.act(action="create ticket", parameters=parameters, assets=['servicenow'], name="create_exec_ticket")
 
     return
 
 """
 Since this is an executive, prompt an analyst before quarantining.
 """
-def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def prompt_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('prompt_1() called')
     
     # set user and message variables for phantom.prompt call
     user = "admin"
     message = """High priority asset has visited malicious URL. Please review and determine if device should be quarantined?"""
 
-    # response options
-    options = {
-        "type": "list",
-        "choices": [
-            "Yes",
-            "No",
-        ]
-    }
+    #responses:
+    response_types = [
+        {
+            "prompt": "",
+            "options": {
+                "type": "list",
+                "choices": [
+                    "Yes",
+                    "No",
+                ]
+            },
+        },
+    ]
 
-    phantom.prompt(container=container, user=user, message=message, respond_in_mins=30, name="prompt_1", options=options, callback=decision_7)
+    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name="prompt_1", response_types=response_types, callback=decision_7)
 
     return
 
 """
 Quarantine the non-executive device.
 """
-def quarantine_regular_device(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def quarantine_regular_device(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('quarantine_regular_device() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'quarantine_regular_device' call
@@ -527,14 +533,14 @@ def quarantine_regular_device(action=None, success=None, container=None, results
                 'context': {'artifact_id': filtered_results_item_1[1]},
             })
 
-    phantom.act("quarantine device", parameters=parameters, assets=['carbonblack'], callback=regular_short_description, name="quarantine_regular_device")
+    phantom.act(action="quarantine device", parameters=parameters, assets=['carbonblack'], callback=regular_short_description, name="quarantine_regular_device")
 
     return
 
 """
 If there is a security classification, meaning zScaler has identified something malicious about the URL, then proceed to block it.
 """
-def zscaler_category_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def zscaler_category_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('zscaler_category_filter() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -548,14 +554,14 @@ def zscaler_category_filter(action=None, success=None, container=None, results=N
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        block_url_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        block_url_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
