@@ -5,7 +5,6 @@ Investigate endpoints associated with events that successfully match against the
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
 
@@ -100,7 +99,7 @@ def on_start(container):
 
     return
 
-def list_processes_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def list_processes_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('list_processes_1() called')
 
     # collect data for 'list_processes_1' call
@@ -117,20 +116,20 @@ def list_processes_1(action=None, success=None, container=None, results=None, ha
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act("list processes", parameters=parameters, assets=['carbonblack'], callback=join_format_ticket, name="list_processes_1")
+    phantom.act(action="list processes", parameters=parameters, assets=['carbonblack'], callback=join_format_ticket, name="list_processes_1")
 
     return
 
-def set_status_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def set_status_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('set_status_2() called')
 
-    phantom.set_status(container, "open")
+    phantom.set_status(container=container, status="open")
 
     return
 
-def snapshot_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def snapshot_vm_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('snapshot_vm_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'snapshot_vm_1' call
@@ -148,11 +147,11 @@ def snapshot_vm_1(action=None, success=None, container=None, results=None, handl
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("snapshot vm", parameters=parameters, assets=['vmwarevsphere'], callback=join_format_ticket, name="snapshot_vm_1", parent_action=action)
+    phantom.act(action="snapshot vm", parameters=parameters, assets=['vmwarevsphere'], callback=join_format_ticket, name="snapshot_vm_1", parent_action=action)
 
     return
 
-def get_system_info_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_system_info_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_system_info_2() called')
 
     # collect data for 'get_system_info_2' call
@@ -169,11 +168,11 @@ def get_system_info_2(action=None, success=None, container=None, results=None, h
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("get system info", parameters=parameters, assets=['vmwarevsphere'], callback=snapshot_vm_1, name="get_system_info_2")
+    phantom.act(action="get system info", parameters=parameters, assets=['vmwarevsphere'], callback=snapshot_vm_1, name="get_system_info_2")
 
     return
 
-def get_system_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_system_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_system_info_1() called')
 
     # collect data for 'get_system_info_1' call
@@ -190,19 +189,19 @@ def get_system_info_1(action=None, success=None, container=None, results=None, h
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act("get system info", parameters=parameters, assets=['carbonblack'], callback=get_system_info_1_callback, name="get_system_info_1")
+    phantom.act(action="get system info", parameters=parameters, assets=['carbonblack'], callback=get_system_info_1_callback, name="get_system_info_1")
 
     return
 
-def get_system_info_1_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_system_info_1_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('get_system_info_1_callback() called')
     
-    update_infected_list(action=action, success=success, container=container, results=results, handle=handle)
-    join_format_ticket(action=action, success=success, container=container, results=results, handle=handle)
+    update_infected_list(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    join_format_ticket(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
 
     return
 
-def list_connections_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def list_connections_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('list_connections_1() called')
 
     # collect data for 'list_connections_1' call
@@ -214,20 +213,20 @@ def list_connections_1(action=None, success=None, container=None, results=None, 
     for container_item in container_data:
         parameters.append({
             'pid': "",
+            'ip_hostname': container_item[0],
             'process_name': "",
             'carbonblack_process_id': "",
-            'ip_hostname': container_item[0],
             # context (artifact id) is added to associate results with the artifact
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act("list connections", parameters=parameters, assets=['carbonblack'], callback=join_format_ticket, name="list_connections_1")
+    phantom.act(action="list connections", parameters=parameters, assets=['carbonblack'], callback=join_format_ticket, name="list_connections_1")
 
     return
 
-def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def create_ticket_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('create_ticket_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'create_ticket_1' call
@@ -237,27 +236,71 @@ def create_ticket_1(action=None, success=None, container=None, results=None, han
     
     # build parameters list for 'create_ticket_1' call
     parameters.append({
-        'short_description': "Confirmed Wannacry Event",
-        'table': "",
+        'table': "incident",
+        'fields': "",
         'vault_id': "",
         'description': formatted_data_1,
-        'fields': "",
+        'short_description': "Confirmed Wannacry Event",
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], callback=set_severity_status_1, name="create_ticket_1")
+    phantom.act(action="create ticket", parameters=parameters, assets=['servicenow'], callback=set_severity_status_1, name="create_ticket_1")
 
     return
 
-def set_severity_status_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def set_severity_status_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('set_severity_status_1() called')
 
-    phantom.set_severity(container, "high")
+    phantom.set_severity(container=container, severity="high")
 
-    phantom.set_status(container, "closed")
+    phantom.set_status(container=container, status="closed")
 
     return
 
-def update_infected_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('decision_2() called')
+
+    # check for 'if' condition 1
+    matched = phantom.decision(
+        container=container,
+        conditions=[
+            ["artifact:*.cef.sourceAddress", "not in", "custom_list:wannacry_infected_endpoints"],
+        ])
+
+    # call connected blocks if condition 1 matched
+    if matched:
+        decision_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        return
+
+    return
+
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('decision_1() called')
+
+    # check for 'if' condition 1
+    matched = phantom.decision(
+        container=container,
+        conditions=[
+            ["artifact:*.cef.fileHash", "in", "custom_list:wannacry_hashes"],
+            ["artifact:*.cef.destinationDnsDomain", "in", "custom_list:wannacry_domains"],
+            ["artifact:*.cef.destinationAddress", "in", "custom_list:wannacry_ip_addrs"],
+            ["artifact:*.cef.fileName", "in", "custom_list:wannacry_file_names"],
+        ],
+        logical_operator='or')
+
+    # call connected blocks if condition 1 matched
+    if matched:
+        get_system_info_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        list_connections_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        list_processes_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        get_system_info_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        return
+
+    # call connected blocks for 'else' condition 2
+    set_status_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+
+    return
+
+def update_infected_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('updated_infected_list() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -274,7 +317,10 @@ def update_infected_list(action=None, success=None, container=None, results=None
     
     return
 
-def format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+"""
+Format action result data in preparation for creating a ticket.
+"""
+def format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_ticket() called')
     
     template = """VM Snapshots have been taken.  They are stored at the following vault IDs:
@@ -307,65 +353,21 @@ Full system info results from Carbon Black:
 
     return
 
-def join_format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def join_format_ticket(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('join_format_ticket() called')
 
-    # check if all connected incoming actions are done i.e. have succeeded or failed
-    if phantom.actions_done([ 'list_connections_1', 'list_processes_1', 'snapshot_vm_1', 'get_system_info_1' ]):
+    # check if all connected incoming playbooks, actions, or custom functions are done i.e. have succeeded or failed
+    if phantom.completed(action_names=['snapshot_vm_1', 'list_processes_1', 'list_connections_1', 'get_system_info_1']):
         
         # call connected block "format_ticket"
         format_ticket(container=container, handle=handle)
     
     return
 
-def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('decision_2() called')
-
-    # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        conditions=[
-            ["artifact:*.cef.sourceAddress", "not in", "custom_list:wannacry_infected_endpoints"],
-        ])
-
-    # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        decision_1(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    return
-
-def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('decision_1() called')
-
-    # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        conditions=[
-            ["artifact:*.cef.fileHash", "in", "custom_list:wannacry_hashes"],
-            ["artifact:*.cef.destinationDnsDomain", "in", "custom_list:wannacry_domains"],
-            ["artifact:*.cef.destinationAddress", "in", "custom_list:wannacry_ip_addrs"],
-            ["artifact:*.cef.fileName", "in", "custom_list:wannacry_file_names"],
-        ],
-        logical_operator='or')
-
-    # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        get_system_info_1(action=action, success=success, container=container, results=results, handle=handle)
-        list_connections_1(action=action, success=success, container=container, results=results, handle=handle)
-        list_processes_1(action=action, success=success, container=container, results=results, handle=handle)
-        get_system_info_2(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    # call connected blocks for 'else' condition 2
-    set_status_2(action=action, success=success, container=container, results=results, handle=handle)
-
-    return
-
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
