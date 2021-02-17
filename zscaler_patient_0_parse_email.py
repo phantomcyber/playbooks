@@ -5,7 +5,6 @@ This utility playbook parses Patient 0 alert emails from zScaler to create anoth
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 ##############################
 # Start - Global Code Block
 
@@ -29,8 +28,9 @@ def on_start(container):
 """
 Uses custom python to parse out the relevant fields from the Patient 0 alert email sent by zScaler. Creates a new container with the same name as the email subject and populates it with one zScaler Alert Artifact containing the parsed fields.
 """
-def parse_email_to_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def parse_email_to_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('parse_email_to_artifact() called')
+    
     input_parameter_0 = ""
 
     ################################################################################
@@ -114,7 +114,7 @@ def parse_email_to_artifact(action=None, success=None, container=None, results=N
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()

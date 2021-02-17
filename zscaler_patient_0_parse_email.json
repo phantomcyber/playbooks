@@ -2,13 +2,12 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": [] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "import json\nimport base64\nfrom datetime import datetime, timedelta\nimport re\nimport uuid",
             "description": "This utility playbook parses Patient 0 alert emails from zScaler to create another Phantom container and artifact for use in further automation.",
-            "hash": "7fed60f91e4c5655874105584ff53cd9894350ef",
+            "hash": "5eb6b8e4bb44b70d6e904d95999d5e99e7dbd4f4",
             "joint": {
                 "cells": [
                     {
@@ -51,7 +50,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -216,8 +215,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 29,
-                        "line_start": 21,
+                        "line_end": 28,
+                        "line_start": 20,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -335,6 +334,47 @@
                         "z": 50
                     },
                     {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "3462cfca-bd8e-4db5-830c-38a8d0c236a5",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "dc3136c6-57fd-4576-88f0-e59b7c4e201c",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "3df31570-6c52-472a-a019-452ef9cc837a",
+                            "port": null,
+                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 62
+                    },
+                    {
                         "active": false,
                         "angle": 0,
                         "attrs": {
@@ -381,7 +421,10 @@
                                 "display": "none"
                             },
                             "g.error": {
-                                "opacity": 0
+                                "opacity": 1
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn_grey.svg"
                             },
                             "g.notes": {
                                 "display": "block"
@@ -391,7 +434,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def parse_email_to_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('parse_email_to_artifact() called')\n    input_parameter_0 = \"\"\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    FIELD_TRANSLATOR = {\n        'Cloud and Organization': 'environment',\n        'File MD5 hash': 'fileHashMd5',\n        'Threat Category': 'threatCategory',\n        'Threat Name': 'threatName',\n        'Transactions involving this content': 'eventLink'\n    }\n    \n    # the full content of the email  is outside any artifact in the container['data'] field\n    raw_data = phantom.get_raw_data(container)\n    \n    # build regular expressions to parse the Zscaler-specific email format\n    allowed_re = re.compile(r\"(?<=allowed )[0-9]+\")\n    quarantined_re = re.compile(r\"(?<=quarantined )[0-9]+\")\n    blocked_re = re.compile(r\"(?<=blocked )[0-9]+\")\n    \n    cef={}\n    raw={}\n    \n    # the content may or may not be base64 encoded so handle both\n    base64index = raw_data.find('base64\\\\r\\\\n\\\\r\\\\n')\n    phantom.debug(base64index)\n    if base64index != -1:\n        raw_data = raw_data[base64index+14:]\n        raw_data = raw_data[:raw_data.find('\\\\r\\\\n\\\\r\\\\n')].replace('\\\\r\\\\n','\\r\\n')\n    \n        raw_data = base64.b64decode(raw_data)\n    \n        for line in raw_data.split('\\n'):\n            kv_pair = line.split(\":\")\n            phantom.debug(str(kv_pair))\n            if len(kv_pair) > 1:\n                kv_pair[1] = ':'.join(kv_pair[1:])\n                if kv_pair[0].strip() != 'First downloaded':\n                    cef[FIELD_TRANSLATOR[kv_pair[0].strip()]] = kv_pair[1].strip()\n                else:\n                    kv_pair[1] = kv_pair[1].strip()\n                    cef['startTime'] = kv_pair[1][:kv_pair[1].find('.')]\n                    cef['timesAllowed'] = allowed_re.findall(kv_pair[1])[0]\n                    cef['timesQuarantined'] = quarantined_re.findall(kv_pair[1])[0]\n                    cef['timesBlocked'] = blocked_re.findall(kv_pair[1])[0]\n\n    # if there is no base64, try to parse as plain text using regexes\n    else:\n        for field_label in FIELD_TRANSLATOR.keys():\n            field_re = re.compile(r\"{}:[ \\\\r\\\\n]+(.*?)\\\\r\\\\n\".format(field_label))\n            re_result = field_re.findall(raw_data)\n            if re_result:\n                field_value = re_result[0]\n                cef[FIELD_TRANSLATOR[field_label]] = field_value\n\n            re_result = re.findall(r\"First downloaded: (.*?)\\.\", raw_data)\n            if re_result and len(re_result[0]) < 200:\n                cef['startTime'] = re_result[0]\n            re_result = allowed_re.findall(raw_data)\n            if re_result:\n                cef['timesAllowed'] = re_result[0]\n            re_result = quarantined_re.findall(raw_data)\n            if re_result:\n                cef['timesQuarantined'] = re_result[0]\n            re_result = blocked_re.findall(raw_data)\n            if re_result:\n                cef['timesBlocked'] = re_result[0]\n\n    success, message, container_id = phantom.create_container(name=container['name'], label='events')\n    \n    phantom.add_artifact(container=container_id, raw_data=raw, cef_data=cef, label='event', name='zScaler Alert Artifact', severity = 'medium', identifier=str(uuid.uuid4()), artifact_type='network')\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    return",
+                        "block_code": "def parse_email_to_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('parse_email_to_artifact() called')\n    \n    input_parameter_0 = \"\"\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    FIELD_TRANSLATOR = {\n        'Cloud and Organization': 'environment',\n        'File MD5 hash': 'fileHashMd5',\n        'Threat Category': 'threatCategory',\n        'Threat Name': 'threatName',\n        'Transactions involving this content': 'eventLink'\n    }\n    \n    # the full content of the email  is outside any artifact in the container['data'] field\n    raw_data = phantom.get_raw_data(container)\n    \n    # build regular expressions to parse the Zscaler-specific email format\n    allowed_re = re.compile(r\"(?<=allowed )[0-9]+\")\n    quarantined_re = re.compile(r\"(?<=quarantined )[0-9]+\")\n    blocked_re = re.compile(r\"(?<=blocked )[0-9]+\")\n    \n    cef={}\n    raw={}\n    \n    # the content may or may not be base64 encoded so handle both\n    base64index = raw_data.find('base64\\\\r\\\\n\\\\r\\\\n')\n    phantom.debug(base64index)\n    if base64index != -1:\n        raw_data = raw_data[base64index+14:]\n        raw_data = raw_data[:raw_data.find('\\\\r\\\\n\\\\r\\\\n')].replace('\\\\r\\\\n','\\r\\n')\n    \n        raw_data = base64.b64decode(raw_data)\n    \n        for line in raw_data.split('\\n'):\n            kv_pair = line.split(\":\")\n            phantom.debug(str(kv_pair))\n            if len(kv_pair) > 1:\n                kv_pair[1] = ':'.join(kv_pair[1:])\n                if kv_pair[0].strip() != 'First downloaded':\n                    cef[FIELD_TRANSLATOR[kv_pair[0].strip()]] = kv_pair[1].strip()\n                else:\n                    kv_pair[1] = kv_pair[1].strip()\n                    cef['startTime'] = kv_pair[1][:kv_pair[1].find('.')]\n                    cef['timesAllowed'] = allowed_re.findall(kv_pair[1])[0]\n                    cef['timesQuarantined'] = quarantined_re.findall(kv_pair[1])[0]\n                    cef['timesBlocked'] = blocked_re.findall(kv_pair[1])[0]\n\n    # if there is no base64, try to parse as plain text using regexes\n    else:\n        for field_label in FIELD_TRANSLATOR.keys():\n            field_re = re.compile(r\"{}:[ \\\\r\\\\n]+(.*?)\\\\r\\\\n\".format(field_label))\n            re_result = field_re.findall(raw_data)\n            if re_result:\n                field_value = re_result[0]\n                cef[FIELD_TRANSLATOR[field_label]] = field_value\n\n            re_result = re.findall(r\"First downloaded: (.*?)\\.\", raw_data)\n            if re_result and len(re_result[0]) < 200:\n                cef['startTime'] = re_result[0]\n            re_result = allowed_re.findall(raw_data)\n            if re_result:\n                cef['timesAllowed'] = re_result[0]\n            re_result = quarantined_re.findall(raw_data)\n            if re_result:\n                cef['timesQuarantined'] = re_result[0]\n            re_result = blocked_re.findall(raw_data)\n            if re_result:\n                cef['timesBlocked'] = re_result[0]\n\n    success, message, container_id = phantom.create_container(name=container['name'], label='events')\n    \n    phantom.add_artifact(container=container_id, raw_data=raw, cef_data=cef, label='event', name='zScaler Alert Artifact', severity = 'medium', identifier=str(uuid.uuid4()), artifact_type='network')\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -399,14 +442,14 @@
                         "connection_name": "",
                         "connection_type": "",
                         "customCodeEndLineOffset": 4,
-                        "customCodeStartLine": 7,
+                        "customCodeStartLine": 8,
                         "custom_callback": "",
-                        "custom_code": "def parse_email_to_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('parse_email_to_artifact() called')\n    input_parameter_0 = \"\"\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    FIELD_TRANSLATOR = {\n        'Cloud and Organization': 'environment',\n        'File MD5 hash': 'fileHashMd5',\n        'Threat Category': 'threatCategory',\n        'Threat Name': 'threatName',\n        'Transactions involving this content': 'eventLink'\n    }\n    \n    # the full content of the email  is outside any artifact in the container['data'] field\n    raw_data = phantom.get_raw_data(container)\n    \n    # build regular expressions to parse the Zscaler-specific email format\n    allowed_re = re.compile(r\"(?<=allowed )[0-9]+\")\n    quarantined_re = re.compile(r\"(?<=quarantined )[0-9]+\")\n    blocked_re = re.compile(r\"(?<=blocked )[0-9]+\")\n    \n    cef={}\n    raw={}\n    \n    # the content may or may not be base64 encoded so handle both\n    base64index = raw_data.find('base64\\\\r\\\\n\\\\r\\\\n')\n    phantom.debug(base64index)\n    if base64index != -1:\n        raw_data = raw_data[base64index+14:]\n        raw_data = raw_data[:raw_data.find('\\\\r\\\\n\\\\r\\\\n')].replace('\\\\r\\\\n','\\r\\n')\n    \n        raw_data = base64.b64decode(raw_data)\n    \n        for line in raw_data.split('\\n'):\n            kv_pair = line.split(\":\")\n            phantom.debug(str(kv_pair))\n            if len(kv_pair) > 1:\n                kv_pair[1] = ':'.join(kv_pair[1:])\n                if kv_pair[0].strip() != 'First downloaded':\n                    cef[FIELD_TRANSLATOR[kv_pair[0].strip()]] = kv_pair[1].strip()\n                else:\n                    kv_pair[1] = kv_pair[1].strip()\n                    cef['startTime'] = kv_pair[1][:kv_pair[1].find('.')]\n                    cef['timesAllowed'] = allowed_re.findall(kv_pair[1])[0]\n                    cef['timesQuarantined'] = quarantined_re.findall(kv_pair[1])[0]\n                    cef['timesBlocked'] = blocked_re.findall(kv_pair[1])[0]\n\n    # if there is no base64, try to parse as plain text using regexes\n    else:\n        for field_label in FIELD_TRANSLATOR.keys():\n            field_re = re.compile(r\"{}:[ \\\\r\\\\n]+(.*?)\\\\r\\\\n\".format(field_label))\n            re_result = field_re.findall(raw_data)\n            if re_result:\n                field_value = re_result[0]\n                cef[FIELD_TRANSLATOR[field_label]] = field_value\n\n            re_result = re.findall(r\"First downloaded: (.*?)\\.\", raw_data)\n            if re_result and len(re_result[0]) < 200:\n                cef['startTime'] = re_result[0]\n            re_result = allowed_re.findall(raw_data)\n            if re_result:\n                cef['timesAllowed'] = re_result[0]\n            re_result = quarantined_re.findall(raw_data)\n            if re_result:\n                cef['timesQuarantined'] = re_result[0]\n            re_result = blocked_re.findall(raw_data)\n            if re_result:\n                cef['timesBlocked'] = re_result[0]\n\n    success, message, container_id = phantom.create_container(name=container['name'], label='events')\n    \n    phantom.add_artifact(container=container_id, raw_data=raw, cef_data=cef, label='event', name='zScaler Alert Artifact', severity = 'medium', identifier=str(uuid.uuid4()), artifact_type='network')\n\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    return",
+                        "custom_code": "def parse_email_to_artifact(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('parse_email_to_artifact() called')\n    input_parameter_0 = \"\"\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    FIELD_TRANSLATOR = {\n        'Cloud and Organization': 'environment',\n        'File MD5 hash': 'fileHashMd5',\n        'Threat Category': 'threatCategory',\n        'Threat Name': 'threatName',\n        'Transactions involving this content': 'eventLink'\n    }\n    \n    # the full content of the email  is outside any artifact in the container['data'] field\n    raw_data = phantom.get_raw_data(container)\n    \n    # build regular expressions to parse the Zscaler-specific email format\n    allowed_re = re.compile(r\"(?<=allowed )[0-9]+\")\n    quarantined_re = re.compile(r\"(?<=quarantined )[0-9]+\")\n    blocked_re = re.compile(r\"(?<=blocked )[0-9]+\")\n    \n    cef={}\n    raw={}\n    \n    # the content may or may not be base64 encoded so handle both\n    base64index = raw_data.find('base64\\\\r\\\\n\\\\r\\\\n')\n    phantom.debug(base64index)\n    if base64index != -1:\n        raw_data = raw_data[base64index+14:]\n        raw_data = raw_data[:raw_data.find('\\\\r\\\\n\\\\r\\\\n')].replace('\\\\r\\\\n','\\r\\n')\n    \n        raw_data = base64.b64decode(raw_data)\n    \n        for line in raw_data.split('\\n'):\n            kv_pair = line.split(\":\")\n            phantom.debug(str(kv_pair))\n            if len(kv_pair) > 1:\n                kv_pair[1] = ':'.join(kv_pair[1:])\n                if kv_pair[0].strip() != 'First downloaded':\n                    cef[FIELD_TRANSLATOR[kv_pair[0].strip()]] = kv_pair[1].strip()\n                else:\n                    kv_pair[1] = kv_pair[1].strip()\n                    cef['startTime'] = kv_pair[1][:kv_pair[1].find('.')]\n                    cef['timesAllowed'] = allowed_re.findall(kv_pair[1])[0]\n                    cef['timesQuarantined'] = quarantined_re.findall(kv_pair[1])[0]\n                    cef['timesBlocked'] = blocked_re.findall(kv_pair[1])[0]\n\n    # if there is no base64, try to parse as plain text using regexes\n    else:\n        for field_label in list(FIELD_TRANSLATOR.keys()):\n            field_re = re.compile(r\"{}:[ \\\\r\\\\n]+(.*?)\\\\r\\\\n\".format(field_label))\n            re_result = field_re.findall(raw_data)\n            if re_result:\n                field_value = re_result[0]\n                cef[FIELD_TRANSLATOR[field_label]] = field_value\n\n            re_result = re.findall(r\"First downloaded: (.*?)\\.\", raw_data)\n            if re_result and len(re_result[0]) < 200:\n                cef['startTime'] = re_result[0]\n            re_result = allowed_re.findall(raw_data)\n            if re_result:\n                cef['timesAllowed'] = re_result[0]\n            re_result = quarantined_re.findall(raw_data)\n            if re_result:\n                cef['timesQuarantined'] = re_result[0]\n            re_result = blocked_re.findall(raw_data)\n            if re_result:\n                cef['timesBlocked'] = re_result[0]\n\n    success, message, container_id = phantom.create_container(name=container['name'], label='events')\n    \n    phantom.add_artifact(container=container_id, raw_data=raw, cef_data=cef, label='event', name='zScaler Alert Artifact', severity = 'medium', identifier=str(uuid.uuid4()), artifact_type='network')\n\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    return",
                         "custom_join": "",
                         "custom_name": "parse email to artifact",
                         "description": "Uses custom python to parse out the relevant fields from the Patient 0 alert email sent by zScaler. Creates a new container with the same name as the email subject and populates it with one zScaler Alert Artifact containing the parsed fields.",
                         "functionBlock": "custom function",
-                        "has_custom": false,
+                        "has_custom": true,
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
@@ -417,8 +460,9 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
+                        "legacy": true,
                         "line_end": 114,
-                        "line_start": 32,
+                        "line_start": 31,
                         "message": "Configuring now",
                         "name": "custom function",
                         "notes": "Uses custom python to parse out the relevant fields from the Patient 0 alert email sent by zScaler. Creates a new container with the same name as the email subject and populates it with one zScaler Alert Artifact containing the parsed fields.",
@@ -505,65 +549,28 @@
                             "width": 180
                         },
                         "state": "custom function",
-                        "status": "",
+                        "status": "deprecating",
                         "title": "custom function",
                         "type": "coa.FunctionBlock",
                         "userGeneratedCode": "\n    FIELD_TRANSLATOR = {\n        'Cloud and Organization': 'environment',\n        'File MD5 hash': 'fileHashMd5',\n        'Threat Category': 'threatCategory',\n        'Threat Name': 'threatName',\n        'Transactions involving this content': 'eventLink'\n    }\n    \n    # the full content of the email  is outside any artifact in the container['data'] field\n    raw_data = phantom.get_raw_data(container)\n    \n    # build regular expressions to parse the Zscaler-specific email format\n    allowed_re = re.compile(r\"(?<=allowed )[0-9]+\")\n    quarantined_re = re.compile(r\"(?<=quarantined )[0-9]+\")\n    blocked_re = re.compile(r\"(?<=blocked )[0-9]+\")\n    \n    cef={}\n    raw={}\n    \n    # the content may or may not be base64 encoded so handle both\n    base64index = raw_data.find('base64\\\\r\\\\n\\\\r\\\\n')\n    phantom.debug(base64index)\n    if base64index != -1:\n        raw_data = raw_data[base64index+14:]\n        raw_data = raw_data[:raw_data.find('\\\\r\\\\n\\\\r\\\\n')].replace('\\\\r\\\\n','\\r\\n')\n    \n        raw_data = base64.b64decode(raw_data)\n    \n        for line in raw_data.split('\\n'):\n            kv_pair = line.split(\":\")\n            phantom.debug(str(kv_pair))\n            if len(kv_pair) > 1:\n                kv_pair[1] = ':'.join(kv_pair[1:])\n                if kv_pair[0].strip() != 'First downloaded':\n                    cef[FIELD_TRANSLATOR[kv_pair[0].strip()]] = kv_pair[1].strip()\n                else:\n                    kv_pair[1] = kv_pair[1].strip()\n                    cef['startTime'] = kv_pair[1][:kv_pair[1].find('.')]\n                    cef['timesAllowed'] = allowed_re.findall(kv_pair[1])[0]\n                    cef['timesQuarantined'] = quarantined_re.findall(kv_pair[1])[0]\n                    cef['timesBlocked'] = blocked_re.findall(kv_pair[1])[0]\n\n    # if there is no base64, try to parse as plain text using regexes\n    else:\n        for field_label in FIELD_TRANSLATOR.keys():\n            field_re = re.compile(r\"{}:[ \\\\r\\\\n]+(.*?)\\\\r\\\\n\".format(field_label))\n            re_result = field_re.findall(raw_data)\n            if re_result:\n                field_value = re_result[0]\n                cef[FIELD_TRANSLATOR[field_label]] = field_value\n\n            re_result = re.findall(r\"First downloaded: (.*?)\\.\", raw_data)\n            if re_result and len(re_result[0]) < 200:\n                cef['startTime'] = re_result[0]\n            re_result = allowed_re.findall(raw_data)\n            if re_result:\n                cef['timesAllowed'] = re_result[0]\n            re_result = quarantined_re.findall(raw_data)\n            if re_result:\n                cef['timesQuarantined'] = re_result[0]\n            re_result = blocked_re.findall(raw_data)\n            if re_result:\n                cef['timesBlocked'] = re_result[0]\n\n    success, message, container_id = phantom.create_container(name=container['name'], label='events')\n    \n    phantom.add_artifact(container=container_id, raw_data=raw, cef_data=cef, label='event', name='zScaler Alert Artifact', severity = 'medium', identifier=str(uuid.uuid4()), artifact_type='network')\n\n",
                         "warn": false,
-                        "z": 61
-                    },
-                    {
-                        "attrs": {
-                            ".connection": {
-                                "stroke": "#818D99",
-                                "stroke-width": 2
-                            },
-                            ".marker-target": {
-                                "d": "M 10 0 L 0 5 L 10 10 z",
-                                "fill": "#818D99",
-                                "stroke": "#818D99"
-                            }
-                        },
-                        "connector": {
-                            "args": {
-                                "radius": 5
-                            },
-                            "name": "rounded"
-                        },
-                        "endDirections": [
-                            "left"
-                        ],
-                        "id": "3462cfca-bd8e-4db5-830c-38a8d0c236a5",
-                        "router": {
-                            "name": "metro"
-                        },
-                        "source": {
-                            "id": "dc3136c6-57fd-4576-88f0-e59b7c4e201c",
-                            "port": null,
-                            "selector": "g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
-                        },
-                        "startDirections": [
-                            "right"
-                        ],
-                        "target": {
-                            "id": "3df31570-6c52-472a-a019-452ef9cc837a",
-                            "port": null,
-                            "selector": "g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
-                        },
-                        "type": "link",
-                        "z": 62
+                        "z": 63
                     }
                 ]
             },
             "notes": "The playbook does not use any Apps because all the functionality is in one Python function called \"parse_email_to_artifact\". This function reads relevant fields from the zScaler alert email created by configuring Patient 0 as described here: https://help.zscaler.com/zia/configuring-patient-0-alert \n\nThe output is a new container that is created and populated with a single artifact containing the parsed fields.\n\nDeployment notes:\n -  configure an imap, Exchange, or other email ingestion App to receive emails sent by zScaler\n - ensure the label of the incoming emails matches the \"Operates on\" label for this playbook (set to \"events\" by default)\n - configure any follow-on playbooks to use the created container, such as the community playbook called \"zscaler_malicious_file_response\""
         },
-        "schema": 3,
-        "version": "4.2.6332"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2019-01-24T19:24:59.301182+00:00",
+    "create_time": "2021-02-17T16:18:02.302135+00:00",
     "draft_mode": false,
     "labels": [
         "events"
     ],
-    "tags": []
+    "tags": [],
+    "misc": {
+        "apps_list": []
+    }
 }
