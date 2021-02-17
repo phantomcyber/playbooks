@@ -7,7 +7,6 @@ Author: Chris Johnson
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -16,19 +15,48 @@ def on_start(container):
 
     return
 
-def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+"""
+Send the email.
+"""
+def send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('send_email_1() called')
+        
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'send_email_1' call
+    formatted_data_1 = phantom.get_format_data(name='format_email')
+
+    parameters = []
+    
+    # build parameters list for 'send_email_1' call
+    parameters.append({
+        'cc': "",
+        'to': "soc_team@example.com",
+        'bcc': "",
+        'body': formatted_data_1,
+        'from': "phantom@example.com",
+        'headers': "",
+        'subject': "Notification from Vectra via Phantom",
+        'attachments': "",
+    })
+
+    phantom.act(action="send email", parameters=parameters, assets=['smtp'], name="send_email_1")
+
+    return
+
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_1() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         conditions=[
             ["artifact:*.cef.act", "==", "block"],
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        get_detections_1(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        get_detections_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     # call connected blocks for 'else' condition 2
@@ -38,7 +66,7 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
 """
 Query for matching detections to retrieve the type.
 """
-def get_detections_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_detections_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_detections_1() called')
 
     # collect data for 'get_detections_1' call
@@ -49,22 +77,22 @@ def get_detections_1(action=None, success=None, container=None, results=None, ha
     # build parameters list for 'get_detections_1' call
     for container_item in container_data:
         parameters.append({
-            'src_ip': container_item[0],
             'state': "active",
+            'src_ip': container_item[0],
             'dettypes': "Suspicious Remote Execution",
             'dest_port': "",
             # context (artifact id) is added to associate results with the artifact
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act("get detections", parameters=parameters, assets=['vae-demo'], callback=format_email, name="get_detections_1")
+    phantom.act(action="get detections", parameters=parameters, assets=['vae-demo'], callback=format_email, name="get_detections_1")
 
     return
 
 """
 Build the email body for the notification.
 """
-def format_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_email(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_email() called')
     
     template = """This is a notification that the following host has exceeded the threshold and needs further investigation:
@@ -91,36 +119,10 @@ Detections:
 
     return
 
-"""
-Send the email.
-"""
-def send_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-    phantom.debug('send_email_1() called')
-    
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'send_email_1' call
-    formatted_data_1 = phantom.get_format_data(name='format_email')
-
-    parameters = []
-    
-    # build parameters list for 'send_email_1' call
-    parameters.append({
-        'body': formatted_data_1,
-        'to': "soc_team@example.com",
-        'from': "phantom@example.com",
-        'attachments': "",
-        'subject': "Notification from Vectra via Phantom",
-    })
-
-    phantom.act("send email", parameters=parameters, assets=['smtp'], name="send_email_1")
-
-    return
-
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
