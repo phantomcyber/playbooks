@@ -5,7 +5,6 @@ This Playbook uses custom code to execute a wide range of investigative queries 
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 ##############################
 # Start - Global Code Block
 
@@ -590,7 +589,7 @@ def on_start(container):
     
     return
 
-def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     if not success or not results:
         return
@@ -606,7 +605,7 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
     
     return
 
-def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     if not success or not results:
         return
@@ -622,7 +621,7 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     return
 
-def get_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     
     unique_file_hashes=[]
     parameters = []
@@ -641,9 +640,9 @@ def get_file_1(action=None, success=None, container=None, results=None, handle=N
     
     return
 
-def detonate_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def detonate_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('detonate_file_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'detonate_file_1' call
@@ -655,17 +654,17 @@ def detonate_file_1(action=None, success=None, container=None, results=None, han
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'file_name': "",
                 'vault_id': results_item_1[0],
+                'file_name': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("detonate file", parameters=parameters, assets=['cuckoo'], name="detonate_file_1", parent_action=action)
+    phantom.act(action="detonate file", parameters=parameters, assets=['cuckoo'], name="detonate_file_1", parent_action=action)
 
     return
 
-def detonate_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def detonate_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     
     unique_urls=[]
     parameters = []
@@ -684,7 +683,7 @@ def detonate_url_1(action=None, success=None, container=None, results=None, hand
     
     return
 
-def geolocate_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def geolocate_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets = get_filtered_assets(action="geolocate ip", products=["GeoIP2"])
     
@@ -712,7 +711,7 @@ def geolocate_ip_1(action=None, success=None, container=None, results=None, hand
     
     return
 
-def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def ip_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets = get_filtered_assets(action="ip reputation", products=["VirusTotal"])
     
@@ -740,7 +739,7 @@ def ip_reputation_1(action=None, success=None, container=None, results=None, han
     
     return
 
-def lookup_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def lookup_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets = get_filtered_assets(action="lookup domain", products=["Passive DNS"])
     
@@ -768,7 +767,7 @@ def lookup_domain_1(action=None, success=None, container=None, results=None, han
         
     return
 
-def domain_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def domain_reputation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets = get_filtered_assets(action="domain reputation", products=["URLVoid"])
     
@@ -796,7 +795,7 @@ def domain_reputation(action=None, success=None, container=None, results=None, h
     
     return
 
-def whois_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def whois_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets = get_filtered_assets(action="whois domain", products=["DomainTools"])
     
@@ -824,7 +823,7 @@ def whois_domain_1(action=None, success=None, container=None, results=None, hand
         
     return
 
-def hunt_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def hunt_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets = get_filtered_assets(action="hunt domain", products=["ThreatScape", "Falcon Host API"])
     
@@ -852,7 +851,7 @@ def hunt_domain_1(action=None, success=None, container=None, results=None, handl
         
     return
 
-def reverse_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def reverse_domain_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets=get_filtered_assets(action="reverse domain", products=["DomainTools"])
     
@@ -880,7 +879,7 @@ def reverse_domain_1(action=None, success=None, container=None, results=None, ha
     
     return
 
-def reverse_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def reverse_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     
     assets = get_filtered_assets(action="reverse ip", products=["HackerTarget"])
     
@@ -908,7 +907,7 @@ def reverse_ip_1(action=None, success=None, container=None, results=None, handle
     
     return
 
-def hunt_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def hunt_url_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets = get_filtered_assets(action="hunt url", products=["FireAMP"])
     
@@ -932,7 +931,7 @@ def hunt_url_1(action=None, success=None, container=None, results=None, handle=N
     
     return
 
-def url_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def url_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets = get_filtered_assets(action="url reputation", products=["Safe Browsing", "VirusTotal"])
     
@@ -962,7 +961,7 @@ def url_reputation_1(action=None, success=None, container=None, results=None, ha
         
     return
 
-def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets = get_filtered_assets(action="file reputation", products=["TitaniumCloud", "ThreatStream"])
     
@@ -986,7 +985,7 @@ def file_reputation_1(action=None, success=None, container=None, results=None, h
 
     return
 
-def whois_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def whois_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets = get_filtered_assets(action="whois ip", products=["Whois RDAP"])
     
@@ -1014,14 +1013,38 @@ def whois_ip_1(action=None, success=None, container=None, results=None, handle=N
         
     return
 
-def set_status_open(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def set_status_open(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('set_status_open() called')
 
-    phantom.set_status(container, "open")
+    phantom.set_status(container=container, status="open")
 
     return
 
-def hunt_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def hunt_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+
+    assets= get_filtered_assets(action="hunt file", products=["Carbon Black Protection"])
+    
+    if not assets:
+        return
+    
+    container_data = handle # 6th item is file hash
+
+    parameters = []
+    
+    # build parameters list for 'hunt_file_1' call
+    param_values=[]
+    for container_item in container_data:
+        if container_item[6]:
+            if container_item[6] not in param_values:
+                param_values.append(container_item[6])
+                parameters.append({'hash': container_item[6],'context': {'artifact_id': container_item[7]}})
+
+    if parameters:
+        phantom.act("hunt file", parameters=parameters, name="hunt_file_1", assets=assets)    
+
+    return
+
+def hunt_ip_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
 
     assets = get_filtered_assets(action="hunt ip", products= ["FireAMP"])
     
@@ -1047,30 +1070,6 @@ def hunt_ip_1(action=None, success=None, container=None, results=None, handle=No
     if parameters:
         phantom.act("hunt ip", parameters=parameters, name="hunt_ip_1", assets=assets)    
     
-    return
-
-def hunt_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
-
-    assets= get_filtered_assets(action="hunt file", products=["Carbon Black Protection"])
-    
-    if not assets:
-        return
-    
-    container_data = handle # 6th item is file hash
-
-    parameters = []
-    
-    # build parameters list for 'hunt_file_1' call
-    param_values=[]
-    for container_item in container_data:
-        if container_item[6]:
-            if container_item[6] not in param_values:
-                param_values.append(container_item[6])
-                parameters.append({'hash': container_item[6],'context': {'artifact_id': container_item[7]}})
-
-    if parameters:
-        phantom.act("hunt file", parameters=parameters, name="hunt_file_1", assets=assets)    
-
     return
 
 def on_finish(container, summary):
