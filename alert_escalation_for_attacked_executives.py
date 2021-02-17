@@ -5,7 +5,6 @@ This playbook automatically escalates an event's severity and sensitivity based 
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -14,39 +13,39 @@ def on_start(container):
 
     return
 
-def escalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def escalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('escalate_alert() called')
 
-    phantom.set_sensitivity(container, "red")
+    phantom.set_sensitivity(container=container, sensitivity="red")
 
-    phantom.set_severity(container, "high")
+    phantom.set_severity(container=container, severity="high")
 
     return
 
-def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_1() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         conditions=[
             ["artifact:*.cef.suser", "!=", ""],
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        list_user_groups_1(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        list_user_groups_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     # call connected blocks for 'else' condition 2
 
     return
 
-def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_3() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
@@ -54,19 +53,19 @@ def decision_3(action=None, success=None, container=None, results=None, handle=N
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        decision_4(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        decision_4(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     # call connected blocks for 'else' condition 2
 
     return
 
-def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('decision_4() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
@@ -74,15 +73,15 @@ def decision_4(action=None, success=None, container=None, results=None, handle=N
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        escalate_alert(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        escalate_alert(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     # call connected blocks for 'else' condition 2
 
     return
 
-def list_user_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def list_user_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('list_user_groups_1() called')
 
     # collect data for 'list_user_groups_1' call
@@ -99,14 +98,14 @@ def list_user_groups_1(action=None, success=None, container=None, results=None, 
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("list user groups", parameters=parameters, assets=['domainctrl1'], callback=decision_3, name="list_user_groups_1")
+    phantom.act(action="list user groups", parameters=parameters, assets=['active directory'], callback=decision_3, name="list_user_groups_1")
 
     return
 
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()

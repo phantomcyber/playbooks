@@ -2,13 +2,11 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": ["LDAP"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "",
             "description": "This playbook automatically escalates an event's severity and sensitivity based upon the cef.suser found in the artifact.  This cef.suser is then used to list groups that the user belongs to using the LDAP app; if one of those groups is the \"Executive\" group, then the event is escalated to Severity \"High\" with TLP:RED as the sensitivity.",
-            "hash": "382cab1a0e41394e495d2994798b500673f22ca4",
             "joint": {
                 "cells": [
                     {
@@ -20,6 +18,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -32,6 +37,7 @@
                             },
                             ".title": {
                                 "ref-x": 33,
+                                "ref-y": 8,
                                 "text": "START"
                             },
                             "g.delete": {
@@ -69,11 +75,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 17,
-                        "line_start": 9,
+                        "line_end": 16,
+                        "line_start": 8,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 1,
                         "outPorts": [
                             "out"
                         ],
@@ -153,6 +160,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -179,7 +193,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -202,11 +216,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 119,
-                        "line_start": 106,
+                        "line_end": 118,
+                        "line_start": 105,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 7,
                         "outPorts": [],
                         "ports": {
                             "groups": {
@@ -614,179 +629,6 @@
                         "z": 24
                     },
                     {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".api": {
-                                "text": "set sensitivity, severity"
-                            },
-                            ".border": {
-                                "height": 88
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "fill": "#FFFFFF",
-                                "font-size": 12,
-                                "font-weight": 300,
-                                "opacity": 0,
-                                "ref": ".background",
-                                "ref-x": 5,
-                                "ref-y": 105,
-                                "text": "Configuring now"
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "text": "API"
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.notes": {
-                                "display": "block",
-                                "opacity": 1
-                            },
-                            "rect.warn-background": {
-                                "fill": "#FFFFFF"
-                            },
-                            "text.icon": {
-                                "fill": "#FFFFFF"
-                            }
-                        },
-                        "block_code": "def escalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('escalate_alert() called')\n\n    phantom.set_sensitivity(container, \"red\")\n\n    phantom.set_severity(container, \"high\")\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "color": "",
-                        "configured": [
-                            {
-                                "key": "set-sensitivity",
-                                "setSensitivitySensitivity": "red"
-                            },
-                            {
-                                "key": "set-severity",
-                                "setSeveritySeverity": "high"
-                            }
-                        ],
-                        "connected_to_start": true,
-                        "connection_name": "list user groups",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "escalate alert",
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "25ed21b1-8ed8-4e14-bc31-9e190ba1f704",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 26,
-                        "line_start": 17,
-                        "message": "Configuring now",
-                        "name": "set sensitivity, severity",
-                        "notes": "This block sets the sensitivity to TLP:RED and the severity to HIGH to help differentiate it from other events.",
-                        "number": 1,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 920,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "escalate_alert",
-                        "show_number": false,
-                        "size": {
-                            "height": 112,
-                            "width": 168
-                        },
-                        "state": "api",
-                        "status": "",
-                        "title": "API",
-                        "type": "coa.API",
-                        "warn": false,
-                        "z": 31
-                    },
-                    {
                         "attrs": {
                             ".connection": {
                                 "stroke": "#6C7A89",
@@ -838,6 +680,8 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#637282",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
@@ -891,10 +735,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.suser\", \"!=\", \"\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        list_user_groups_1(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
+                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        conditions=[\n            [\"artifact:*.cef.suser\", \"!=\", \"\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        list_user_groups_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -918,11 +763,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 45,
-                        "line_start": 26,
+                        "line_end": 44,
+                        "line_start": 25,
                         "name": "decision",
                         "notes": "This block determines if the artifact has a cef.sname value populated.",
                         "number": 1,
+                        "order": 3,
                         "outPorts": [
                             "out-1",
                             "out-2"
@@ -1022,13 +868,328 @@
                         "status": "",
                         "type": "coa.Decision",
                         "warn": "",
-                        "z": 33
+                        "z": 43
+                    },
+                    {
+                        "action": "list user groups",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "username": "artifact:*.cef.suser"
+                        },
+                        "angle": 0,
+                        "app": "",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "list user groups",
+                                "actions": [
+                                    "get users",
+                                    "reset password",
+                                    "set password",
+                                    "get system attributes",
+                                    "get user attributes",
+                                    "set system attribute",
+                                    "change system ou",
+                                    "list user groups",
+                                    "enable user",
+                                    "disable user",
+                                    "test connectivity",
+                                    "run query",
+                                    "list users",
+                                    "get system info",
+                                    "list services"
+                                ],
+                                "active": true,
+                                "app_name": "LDAP",
+                                "app_version": "1.2.47",
+                                "appid": "84110F27-6602-4DC8-A6F2-0311B1720BF8",
+                                "asset_name": "active directory",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "username": "artifact:*.cef.suser"
+                                },
+                                "has_app": true,
+                                "id": 231,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "active directory",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Username",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "user name",
+                                            "ldap distinguished name"
+                                        ],
+                                        "data_path": "action_result.parameter.username",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "test_user3"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Groups",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*.group",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "CN=TestUsers,DC=corp,DC=contoso,DC=com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.total_groups",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            2
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Member of (2):\r\nCN=TestUsers,DC=corp,DC=contoso,DC=com\nCN=Remote Desktop Users,CN=Builtin,DC=corp,DC=contoso,DC=com\n"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "username": {
+                                        "contains": [
+                                            "user name",
+                                            "ldap distinguished name"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Username (to get groups it belongs to)",
+                                        "key": "username",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "Windows Server",
+                                "product_vendor": "Microsoft",
+                                "targets": "231",
+                                "type": "directory service"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "list user groups"
+                            },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "fill": "#FFFFFF",
+                                "font-size": 12,
+                                "font-weight": 300,
+                                "opacity": 0,
+                                "ref": ".background",
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block",
+                                "opacity": 1
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
+                            },
+                            "rect.warn-background": {
+                                "fill": "#FFFFFF"
+                            },
+                            "text.icon": {
+                                "fill": "#FFFFFF"
+                            }
+                        },
+                        "block_code": "def list_user_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('list_user_groups_1() called')\n\n    # collect data for 'list_user_groups_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.suser', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'list_user_groups_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'username': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(action=\"list user groups\", parameters=parameters, assets=['active directory'], callback=decision_3, name=\"list_user_groups_1\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "#654796",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "4cfcf49e-6b12-40c7-b8de-a8f986d863ae",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 105,
+                        "line_start": 84,
+                        "message": "Configuring now",
+                        "name": "list user groups",
+                        "notes": "By utilizing the LDAP app, the 'list user groups' action is used to retrieve all the groups that the user belongs to.",
+                        "number": 1,
+                        "order": 6,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 400,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "list_user_groups_1",
+                        "required_params": {
+                            "username": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 112,
+                            "width": 168
+                        },
+                        "state": "action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 44
                     },
                     {
                         "active": false,
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#637282",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
@@ -1082,10 +1243,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_3() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"list_user_groups_1:action_result.summary.total_groups\", \">\", 0],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        decision_4(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
+                        "block_code": "def decision_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('decision_3() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"list_user_groups_1:action_result.summary.total_groups\", \">\", 0],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        decision_4(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1109,11 +1271,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 65,
-                        "line_start": 45,
+                        "line_end": 64,
+                        "line_start": 44,
                         "name": "decision",
                         "notes": "Allows the playbook to continue workflow if the user belongs to at least one group.",
                         "number": 3,
+                        "order": 4,
                         "outPorts": [
                             "out-1",
                             "out-2"
@@ -1213,13 +1376,15 @@
                         "status": "",
                         "type": "coa.Decision",
                         "warn": "",
-                        "z": 34
+                        "z": 45
                     },
                     {
                         "active": false,
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#637282",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".border": {
@@ -1273,10 +1438,11 @@
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_4() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"CN=Executive\", \"in\", \"list_user_groups_1:action_result.data.*.group\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        escalate_alert(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
+                        "block_code": "def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('decision_4() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"CN=Executive\", \"in\", \"list_user_groups_1:action_result.data.*.group\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        escalate_alert(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    # call connected blocks for 'else' condition 2\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1300,11 +1466,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 85,
-                        "line_start": 65,
+                        "line_end": 84,
+                        "line_start": 64,
                         "name": "decision",
                         "notes": "Checks if the user belongs to the Executive group.",
                         "number": 4,
+                        "order": 5,
                         "outPorts": [
                             "out-1",
                             "out-2"
@@ -1404,78 +1571,25 @@
                         "status": "",
                         "type": "coa.Decision",
                         "warn": "",
-                        "z": 35
+                        "z": 48
                     },
                     {
-                        "action": "list user groups",
-                        "action_type": "investigate",
                         "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "username": "artifact:*.cef.suser"
-                        },
                         "angle": 0,
-                        "app": "",
-                        "approver": "",
-                        "assets": [
-                            {
-                                "action": "",
-                                "active": true,
-                                "app_name": "",
-                                "app_version": "",
-                                "config_type": "asset",
-                                "fields": {
-                                    "username": "artifact:*.cef.suser"
-                                },
-                                "id": "-",
-                                "loaded": false,
-                                "missing": false,
-                                "name": "domainctrl1",
-                                "output": [
-                                    {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.message",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Username",
-                                        "column_order": 0,
-                                        "contains": [
-                                            "user name"
-                                        ],
-                                        "data_path": "action_result.parameter.username",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Groups",
-                                        "column_order": 1,
-                                        "data_path": "action_result.data.*.group",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary.total_groups",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric"
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric"
-                                    }
-                                ],
-                                "product_name": "",
-                                "product_vendor": "",
-                                "type": "directory service"
-                            }
-                        ],
+                        "api": "set sensitivity, severity",
                         "attrs": {
-                            ".action": {
-                                "text": "list user groups"
+                            ".api": {
+                                "text": "set sensitivity, severity"
+                            },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".border": {
+                                "height": 88
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -1508,7 +1622,10 @@
                                 }
                             },
                             ".title": {
-                                "text": "Investigate"
+                                "text": "API"
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -1516,15 +1633,13 @@
                             "g.error": {
                                 "opacity": 0
                             },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
-                            },
                             "g.notes": {
                                 "display": "block",
                                 "opacity": 1
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             },
                             "rect.warn-background": {
                                 "fill": "#FFFFFF"
@@ -1533,37 +1648,47 @@
                                 "fill": "#FFFFFF"
                             }
                         },
-                        "block_code": "def list_user_groups_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('list_user_groups_1() called')\n\n    # collect data for 'list_user_groups_1' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.suser', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'list_user_groups_1' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'username': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"list user groups\", parameters=parameters, assets=['domainctrl1'], callback=decision_3, name=\"list_user_groups_1\")\n\n    return",
+                        "block_code": "def escalate_alert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('escalate_alert() called')\n\n    phantom.set_sensitivity(container=container, sensitivity=\"red\")\n\n    phantom.set_severity(container=container, severity=\"high\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
-                        "callsback": true,
-                        "color": "#654796",
+                        "callsback": false,
+                        "color": "",
+                        "configured": [
+                            {
+                                "key": "set-sensitivity",
+                                "setSensitivitySensitivity": "red"
+                            },
+                            {
+                                "key": "set-severity",
+                                "setSeveritySeverity": "high"
+                            }
+                        ],
                         "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
+                        "connection_name": "list user groups",
+                        "connection_type": "action",
                         "custom_callback": "",
                         "custom_code": "",
                         "custom_join": "",
-                        "custom_name": "",
-                        "delay": 0,
+                        "custom_name": "escalate alert",
                         "description": "",
                         "has_custom": false,
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
-                        "id": "4cfcf49e-6b12-40c7-b8de-a8f986d863ae",
+                        "id": "25ed21b1-8ed8-4e14-bc31-9e190ba1f704",
                         "inPorts": [
                             "in"
                         ],
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 106,
-                        "line_start": 85,
+                        "line_end": 25,
+                        "line_start": 16,
                         "message": "Configuring now",
-                        "name": "list user groups",
-                        "notes": "By utilizing the LDAP app, the 'list user groups' action is used to retrieve all the groups that the user belongs to.",
+                        "name": "set sensitivity, severity",
+                        "notes": "This block sets the sensitivity to TLP:RED and the severity to HIGH to help differentiate it from other events.",
                         "number": 1,
+                        "order": 2,
                         "outPorts": [
                             "out"
                         ],
@@ -1620,37 +1745,40 @@
                             }
                         },
                         "position": {
-                            "x": 400,
+                            "x": 920,
                             "y": 80
                         },
                         "previous_function": "",
-                        "previous_name": "list_user_groups_1",
-                        "required_params": {
-                            "username": true
-                        },
-                        "reviewer": "",
+                        "previous_name": "escalate_alert",
                         "show_number": false,
                         "size": {
                             "height": 112,
                             "width": 168
                         },
-                        "state": "asset",
+                        "state": "api",
                         "status": "",
-                        "title": "Investigate",
-                        "type": "coa.Action",
+                        "title": "API",
+                        "type": "coa.API",
                         "warn": false,
-                        "z": 36
+                        "z": 49
                     }
                 ]
             },
             "notes": "Apps Used:\n - LDAP\n\nNaturally, events in which an executive's machines are compromised are going to be of utmost importance, with regards to the amount of sensitive information they may contain.  Unfortunately, it can be hard to decipher which events need more attention in comparison to others without clear indications of needed attention.  By utilizing LDAP to determine whether an user is an executive, the container can be automatically escalated to a higher severity and sensitivity using the Phantom API."
         },
-        "schema": 3,
-        "version": "3.5.135"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40677"
     },
-    "create_time": "2018-02-12T02:04:19.048567+00:00",
+    "create_time": "2020-12-08T19:04:03.220760+00:00",
     "draft_mode": false,
     "labels": [
         "events"
-    ]
+    ],
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "LDAP"
+        ]
+    }
 }
