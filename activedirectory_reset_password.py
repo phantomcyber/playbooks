@@ -5,7 +5,6 @@ This playbook resets the password of a potentially compromised user account. Fir
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 ##############################
 # Start - Global Code Block
 
@@ -25,8 +24,9 @@ def on_start(container):
 """
 Custom code block that generates a strong random password
 """
-def generate_password(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def generate_password(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('generate_password() called')
+    
     input_parameter_0 = ""
 
     generate_password__strong_password = None
@@ -59,7 +59,7 @@ def generate_password(action=None, success=None, container=None, results=None, h
 
     return
 
-def reset_password(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def reset_password(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('reset_password() called')
     
     # set user and message variables for phantom.prompt call
@@ -89,11 +89,11 @@ def reset_password(action=None, success=None, container=None, results=None, hand
 
     return
 
-def reset_option(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def reset_option(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('reset_option() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
@@ -101,21 +101,21 @@ def reset_option(action=None, success=None, container=None, results=None, handle
         ])
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        generate_password(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        generate_password(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     # call connected blocks for 'else' condition 2
-    format_decline_msg(action=action, success=success, container=container, results=results, handle=handle)
+    format_decline_msg(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
 
     return
 
 """
 Reset the Active Directory password of the user to the generated password
 """
-def reset_ad_password(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def reset_ad_password(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('reset_ad_password() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     generate_password__strong_password = json.loads(phantom.get_run_data(key='generate_password:strong_password'))
@@ -134,11 +134,11 @@ def reset_ad_password(action=None, success=None, container=None, results=None, h
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("set password", parameters=parameters, assets=['active directory'], name="reset_ad_password")
+    phantom.act(action="set password", parameters=parameters, assets=['active directory'], name="reset_ad_password")
 
     return
 
-def add_comment_pwd_reset(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def add_comment_pwd_reset(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('add_comment_pwd_reset() called')
 
     formatted_data_1 = phantom.get_format_data(name='format_pwd_message')
@@ -150,7 +150,7 @@ def add_comment_pwd_reset(action=None, success=None, container=None, results=Non
 """
 Formats a message about the password reset to provide in the comments
 """
-def format_pwd_message(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_pwd_message(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_pwd_message() called')
     
     template = """Reset user {0} password to {1}"""
@@ -170,7 +170,7 @@ def format_pwd_message(action=None, success=None, container=None, results=None, 
 """
 Formats a message stating the user declined to reset the password
 """
-def format_decline_msg(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_decline_msg(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_decline_msg() called')
     
     template = """Analyst declined to reset password for user: {0}"""
@@ -189,7 +189,7 @@ def format_decline_msg(action=None, success=None, container=None, results=None, 
 """
 Add the comment notifying the reader that the password reset was declined
 """
-def add_comment_no_reset(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def add_comment_no_reset(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('add_comment_no_reset() called')
 
     formatted_data_1 = phantom.get_format_data(name='format_decline_msg')
@@ -201,7 +201,7 @@ def add_comment_no_reset(action=None, success=None, container=None, results=None
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
