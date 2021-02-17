@@ -5,7 +5,6 @@ Respond to a malicious file alert from the zScaler web proxy by gathering more i
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -17,9 +16,9 @@ def on_start(container):
 """
 Copy the file back to the Phantom Vault.
 """
-def get_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_file_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'get_file_1' call
@@ -29,21 +28,25 @@ def get_file_1(action=None, success=None, container=None, results=None, handle=N
     
     # build parameters list for 'get_file_1' call
     for results_item_1 in results_data_1:
-        if results_item_1[0]:
-            parameters.append({
-                'hash': results_item_1[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[1]},
-            })
+        parameters.append({
+            'hash': results_item_1[0],
+            'ph_0': "",
+            'offset': "",
+            'get_count': "",
+            'sensor_id': "",
+            'file_source': "",
+            # context (artifact id) is added to associate results with the artifact
+            'context': {'artifact_id': results_item_1[1]},
+        })
 
-    phantom.act("get file", parameters=parameters, assets=['carbonblack'], callback=join_format_short_description, name="get_file_1", parent_action=action)
+    phantom.act(action="get file", parameters=parameters, assets=['carbonblack'], callback=join_format_short_description, name="get_file_1", parent_action=action)
 
     return
 
 """
 Gather general system information about affected endpoints.
 """
-def get_system_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_system_info_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_system_info_1() called')
     
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -72,7 +75,7 @@ def get_system_info_1(action=None, success=None, container=None, results=None, h
 """
 Quarantine affected endpoints from the network.
 """
-def quarantine_device_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def quarantine_device_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('quarantine_device_2() called')
 
     # collect data for 'quarantine_device_2' call
@@ -98,7 +101,7 @@ def quarantine_device_2(action=None, success=None, container=None, results=None,
 """
 Make the summary for the ServiceNow ticket.
 """
-def format_short_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_short_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_short_description() called')
     
     template = """Malicious MD5 Found on Endpoint(s) - {0}"""
@@ -114,11 +117,11 @@ def format_short_description(action=None, success=None, container=None, results=
 
     return
 
-def join_format_short_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def join_format_short_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('join_format_short_description() called')
 
-    # check if all connected incoming actions are done i.e. have succeeded or failed
-    if phantom.actions_done([ 'quarantine_device_2', 'get_system_info_1', 'get_file_1', 'get_user_attributes_1', 'file_reputation_1', 'block_hash_1' ]):
+    # check if all connected incoming playbooks, actions, or custom functions are done i.e. have succeeded or failed
+    if phantom.completed(action_names=['quarantine_device_2', 'get_system_info_1', 'get_file_1', 'get_user_attributes_1', 'file_reputation_1', 'block_hash_1']):
         
         # call connected block "format_short_description"
         format_short_description(container=container, handle=handle)
@@ -128,7 +131,7 @@ def join_format_short_description(action=None, success=None, container=None, res
 """
 Make the body of the ServiceNow ticket description.
 """
-def format_long_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_long_description(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_long_description() called')
     
     template = """Zscaler sent a Patient 0 Alert to Phantom, which executed the Playbook called \"zscaler_malicious_file_response\" to take the following actions:
@@ -164,34 +167,34 @@ Additional details can be found within Phantom Mission Control:
 """
 Create a ServiceNow ticket.
 """
-def create_ticket_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def create_ticket_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('create_ticket_3() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'create_ticket_3' call
-    formatted_data_1 = phantom.get_format_data(name='format_short_description')
-    formatted_data_2 = phantom.get_format_data(name='format_long_description')
+    formatted_data_1 = phantom.get_format_data(name='format_long_description')
+    formatted_data_2 = phantom.get_format_data(name='format_short_description')
 
     parameters = []
     
     # build parameters list for 'create_ticket_3' call
     parameters.append({
-        'short_description': formatted_data_1,
         'table': "incident",
-        'vault_id': "",
-        'description': formatted_data_2,
         'fields': "",
+        'vault_id': "",
+        'description': formatted_data_1,
+        'short_description': formatted_data_2,
     })
 
-    phantom.act("create ticket", parameters=parameters, assets=['servicenow'], name="create_ticket_3")
+    phantom.act(action="create ticket", parameters=parameters, assets=['servicenow'], name="create_ticket_3")
 
     return
 
 """
 Build a Splunk query to determine the affected user during the malicious file alert.
 """
-def format_proxy_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_proxy_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_proxy_query() called')
     
     template = """host=\"zscalertwo-phantom\" index=\"proxy_logs_zscaler\" sourcetype=\"csv\"  MD5=\"{0}\" | rename \"Client IP\" as client_ip \"Policy Action\" as policy_action | fields client_ip, policy_action, MD5, User"""
@@ -210,7 +213,7 @@ def format_proxy_query(action=None, success=None, container=None, results=None, 
 """
 Look up any known reputation information about the detected file on VirusTotal.
 """
-def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def file_reputation_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('file_reputation_1() called')
 
     # collect data for 'file_reputation_1' call
@@ -227,14 +230,14 @@ def file_reputation_1(action=None, success=None, container=None, results=None, h
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("file reputation", parameters=parameters, assets=['virustotal'], callback=join_format_short_description, name="file_reputation_1")
+    phantom.act(action="file reputation", parameters=parameters, assets=['virustotal'], callback=join_format_short_description, name="file_reputation_1")
 
     return
 
 """
 Block future executions of files with the detected hash.
 """
-def block_hash_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def block_hash_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('block_hash_1() called')
 
     # collect data for 'block_hash_1' call
@@ -246,20 +249,20 @@ def block_hash_1(action=None, success=None, container=None, results=None, handle
     for container_item in container_data:
         if container_item[0]:
             parameters.append({
-                'comment': "Patient zero alert from zScaler validate in Virus Total",
                 'hash': container_item[0],
+                'comment': "Patient zero alert from zScaler validate in Virus Total",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("block hash", parameters=parameters, assets=['carbonblack'], callback=join_format_short_description, name="block_hash_1")
+    phantom.act(action="block hash", parameters=parameters, assets=['carbonblack'], callback=join_format_short_description, name="block_hash_1")
 
     return
 
 """
 Find endpoints where the detected file is on disk.
 """
-def hunt_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def hunt_file_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('hunt_file_1() called')
 
     # collect data for 'hunt_file_1' call
@@ -272,31 +275,31 @@ def hunt_file_1(action=None, success=None, container=None, results=None, handle=
         if container_item[0]:
             parameters.append({
                 'hash': container_item[0],
-                'range': "0-10",
                 'type': "",
+                'range': "0-10",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("hunt file", parameters=parameters, assets=['carbonblack'], callback=hunt_file_1_callback, name="hunt_file_1")
+    phantom.act(action="hunt file", parameters=parameters, assets=['carbonblack'], callback=hunt_file_1_callback, name="hunt_file_1")
 
     return
 
-def hunt_file_1_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def hunt_file_1_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):
     phantom.debug('hunt_file_1_callback() called')
     
-    quarantine_device_2(action=action, success=success, container=container, results=results, handle=handle)
-    get_file_1(action=action, success=success, container=container, results=results, handle=handle)
-    get_system_info_1(action=action, success=success, container=container, results=results, handle=handle)
+    quarantine_device_2(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    get_file_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+    get_system_info_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
 
     return
 
 """
 Query Active Directory for information about the affected user such as failed logins or the department in the organization.
 """
-def get_user_attributes_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_user_attributes_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_user_attributes_1() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'get_user_attributes_1' call
@@ -308,21 +311,21 @@ def get_user_attributes_1(action=None, success=None, container=None, results=Non
     for results_item_1 in results_data_1:
         if results_item_1[0]:
             parameters.append({
-                'username': results_item_1[0],
                 'fields': "",
+                'username': results_item_1[0],
                 'attribute': "",
                 # context (artifact id) is added to associate results with the artifact
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act("get user attributes", parameters=parameters, app={ "name": 'LDAP' }, callback=join_format_short_description, name="get_user_attributes_1", parent_action=action)
+    phantom.act(action="get user attributes", parameters=parameters, app={ "name": 'LDAP' }, callback=join_format_short_description, name="get_user_attributes_1", parent_action=action)
 
     return
 
 """
 Run a Splunk query to determine the affected user during the malicious file alert.
 """
-def run_query_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def run_query_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('run_query_2() called')
 
     # collect data for 'run_query_2' call
@@ -333,17 +336,19 @@ def run_query_2(action=None, success=None, container=None, results=None, handle=
     # build parameters list for 'run_query_2' call
     parameters.append({
         'query': formatted_data_1,
+        'command': "",
         'display': "client_ip, policy_action, MD5, User",
+        'parse_only': "",
     })
 
-    phantom.act("run query", parameters=parameters, assets=['splunk_es'], callback=get_user_attributes_1, name="run_query_2")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk_es'], callback=get_user_attributes_1, name="run_query_2")
 
     return
 
 """
 Only operate on artifacts such as that created by the community playbook "zscaler_patient_0_parse_email", which parses emails from zScaler Patient 0 alerts.
 """
-def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def filter_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_1() called')
 
     # collect filtered artifact ids for 'if' condition 1
@@ -356,17 +361,17 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        format_proxy_query(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        file_reputation_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        block_hash_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-        hunt_file_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        format_proxy_query(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        file_reputation_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        block_hash_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        hunt_file_1(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()
