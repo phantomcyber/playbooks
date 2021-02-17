@@ -2,13 +2,12 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": ["ExtraHop", "Palo Alto Networks Firewall"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "",
             "description": "This playbook processes an ExtraHop detection of an internal database being accessed externally.  The playbook will block the corresponding client source IP Address on a Palo Alto Networks Firewall as well as retrieve the following information on both the client and server:\n  - ExtraHop device objects\n  - List of peer devices communicated with in the last 30 minutes\n  - List of client and server protocols spoken in the last 30 minutes",
-            "hash": "ff5ec59ae97740390f399f9c028427b7ed82b152",
+            "hash": "8d080d5296fb8c579b0ce91de90c1d977d1f1683",
             "joint": {
                 "cells": [
                     {
@@ -18,6 +17,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -44,7 +50,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -67,11 +73,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 261,
-                        "line_start": 248,
+                        "line_end": 260,
+                        "line_start": 247,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 10,
                         "outPorts": [],
                         "ports": {
                             "groups": {
@@ -476,6 +483,13 @@
                         "active": false,
                         "angle": 0,
                         "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".outPorts>.port-out": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -488,6 +502,7 @@
                             },
                             ".title": {
                                 "ref-x": 33,
+                                "ref-y": 8,
                                 "text": "START"
                             },
                             "g.delete": {
@@ -525,11 +540,12 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 20,
-                        "line_start": 12,
+                        "line_end": 19,
+                        "line_start": 11,
                         "name": "",
                         "notes": "",
                         "number": 0,
+                        "order": 1,
                         "outPorts": [
                             "out"
                         ],
@@ -811,6 +827,8 @@
                         "angle": 0,
                         "attrs": {
                             ".background": {
+                                "fill": "#000000",
+                                "stroke": "#637282",
                                 "transform": "rotate(45 30 70)"
                             },
                             ".inPorts>.port-0>.port-body": {
@@ -846,10 +864,11 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        conditions=[\n            [\"artifact:*.label\", \"==\", \"publicly_exposed_db\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        get_db_device_info(action=action, success=success, container=container, results=results, handle=handle)\n        get_client_device_info(action=action, success=success, container=container, results=results, handle=handle)\n        block_client_ip(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    return",
+                        "block_code": "def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('decision_1() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        conditions=[\n            [\"artifact:*.label\", \"==\", \"publicly_exposed_db\"],\n        ])\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        get_db_device_info(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        get_client_device_info(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        block_client_ip(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -873,11 +892,12 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 42,
-                        "line_start": 23,
+                        "line_end": 41,
+                        "line_start": 22,
                         "name": "decision",
                         "notes": "Continue running this playbook only if the artifact label is \"publicly_exposed_db\"",
                         "number": 1,
+                        "order": 2,
                         "outPorts": [
                             "out-1"
                         ],
@@ -975,6 +995,7 @@
                         },
                         "angle": 0,
                         "app": "ExtraHop",
+                        "appid": "0c173506-b5ab-4c9f-a78c-68dea794232c",
                         "approver": "",
                         "assets": [
                             {
@@ -982,6 +1003,7 @@
                                 "active": true,
                                 "app_name": "ExtraHop",
                                 "app_version": "1.0.4",
+                                "appid": "",
                                 "asset_name": "extrahop",
                                 "config_type": "asset",
                                 "count": 0,
@@ -1287,6 +1309,13 @@
                             ".action": {
                                 "text": "get db device info"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -1299,6 +1328,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -1313,6 +1344,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -1330,12 +1367,16 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def get_db_device_info(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_db_device_info() called')\n\n    # collect data for 'get_db_device_info' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_db_device_info' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"get device info\", parameters=parameters, assets=['extrahop'], callback=get_db_device_info_callback, name=\"get_db_device_info\")\n\n    return",
-                        "callback_code": "def get_db_device_info_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_db_device_info_callback() called')\n    \n    get_db_peers(action=action, success=success, container=container, results=results, handle=handle)\n    get_db_protocols(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
-                        "callback_start": 66,
+                        "block_code": "def get_db_device_info(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_db_device_info() called')\n\n    # collect data for 'get_db_device_info' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_db_device_info' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(action=\"get device info\", parameters=parameters, assets=['extrahop'], callback=get_db_device_info_callback, name=\"get_db_device_info\")\n\n    return",
+                        "callback_code": "def get_db_device_info_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):\n    phantom.debug('get_db_device_info_callback() called')\n    \n    get_db_peers(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n    get_db_protocols(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n\n    return",
+                        "callback_start": 65,
                         "callsback": true,
                         "color": "",
                         "connected_to_start": true,
@@ -1358,12 +1399,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 74,
-                        "line_start": 45,
+                        "line_end": 73,
+                        "line_start": 44,
                         "message": "Configuring now",
                         "name": "get device info",
                         "notes": "Get more details about the internal database server given its IP address. Details include MAC address, dhcp name, first discovered time, device type, and more",
                         "number": 1,
+                        "order": 3,
                         "outPorts": [
                             "out"
                         ],
@@ -1451,6 +1493,7 @@
                         },
                         "angle": 0,
                         "app": "ExtraHop",
+                        "appid": "0c173506-b5ab-4c9f-a78c-68dea794232c",
                         "approver": "",
                         "assets": [
                             {
@@ -1458,6 +1501,7 @@
                                 "active": true,
                                 "app_name": "ExtraHop",
                                 "app_version": "1.0.4",
+                                "appid": "",
                                 "asset_name": "extrahop",
                                 "config_type": "asset",
                                 "count": 0,
@@ -1763,6 +1807,13 @@
                             ".action": {
                                 "text": "get client device info"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -1775,6 +1826,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -1789,6 +1842,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -1806,12 +1865,16 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def get_client_device_info(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_client_device_info() called')\n\n    # collect data for 'get_client_device_info' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_client_device_info' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"get device info\", parameters=parameters, assets=['extrahop'], callback=get_client_device_info_callback, name=\"get_client_device_info\")\n\n    return",
-                        "callback_code": "def get_client_device_info_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_client_device_info_callback() called')\n    \n    get_client_peers(action=action, success=success, container=container, results=results, handle=handle)\n    get_client_protocols(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
-                        "callback_start": 98,
+                        "block_code": "def get_client_device_info(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_client_device_info() called')\n\n    # collect data for 'get_client_device_info' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_client_device_info' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(action=\"get device info\", parameters=parameters, assets=['extrahop'], callback=get_client_device_info_callback, name=\"get_client_device_info\")\n\n    return",
+                        "callback_code": "def get_client_device_info_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):\n    phantom.debug('get_client_device_info_callback() called')\n    \n    get_client_peers(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n    get_client_protocols(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n\n    return",
+                        "callback_start": 97,
                         "callsback": true,
                         "color": "",
                         "connected_to_start": true,
@@ -1834,12 +1897,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 106,
-                        "line_start": 77,
+                        "line_end": 105,
+                        "line_start": 76,
                         "message": "Configuring now",
                         "name": "get device info",
                         "notes": "Get more details about the external client given its IP address. Details include MAC address, dhcp name, first discovered time, device type, and more",
                         "number": 2,
+                        "order": 4,
                         "outPorts": [
                             "out"
                         ],
@@ -1931,6 +1995,7 @@
                         },
                         "angle": 0,
                         "app": "ExtraHop",
+                        "appid": "0c173506-b5ab-4c9f-a78c-68dea794232c",
                         "approver": "",
                         "assets": [
                             {
@@ -1938,6 +2003,7 @@
                                 "active": true,
                                 "app_name": "ExtraHop",
                                 "app_version": "1.0.4",
+                                "appid": "",
                                 "asset_name": "extrahop",
                                 "config_type": "asset",
                                 "count": 0,
@@ -2312,6 +2378,13 @@
                             ".action": {
                                 "text": "get db peers"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -2324,6 +2397,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -2338,6 +2413,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -2355,10 +2436,14 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def get_db_peers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_db_peers() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_db_peers' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_db_device_info:action_result.data.*.ipaddr4', 'get_db_device_info:action_result.data.*.id', 'get_db_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_db_peers' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'protocol': \"any\",\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'peer_role': \"any\",\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get peers\", parameters=parameters, assets=['extrahop'], name=\"get_db_peers\", parent_action=action)\n\n    return",
+                        "block_code": "def get_db_peers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_db_peers() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_db_peers' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_db_device_info:action_result.data.*.ipaddr4', 'get_db_device_info:action_result.data.*.id', 'get_db_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_db_peers' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'protocol': \"any\",\n                'eh_api_id': results_item_1[1],\n                'peer_role': \"any\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(action=\"get peers\", parameters=parameters, assets=['extrahop'], name=\"get_db_peers\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2383,12 +2468,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 136,
-                        "line_start": 109,
+                        "line_end": 135,
+                        "line_start": 108,
                         "message": "Configuring now",
                         "name": "get peers",
                         "notes": "Retrieves a list of all of the peers that a device communicated with in the last 30 minutes",
                         "number": 1,
+                        "order": 5,
                         "outPorts": [
                             "out"
                         ],
@@ -2479,6 +2565,7 @@
                         },
                         "angle": 0,
                         "app": "ExtraHop",
+                        "appid": "0c173506-b5ab-4c9f-a78c-68dea794232c",
                         "approver": "",
                         "assets": [
                             {
@@ -2486,6 +2573,7 @@
                                 "active": true,
                                 "app_name": "ExtraHop",
                                 "app_version": "1.0.4",
+                                "appid": "",
                                 "asset_name": "extrahop",
                                 "config_type": "asset",
                                 "count": 0,
@@ -2630,6 +2718,13 @@
                             ".action": {
                                 "text": "get db protocols"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -2642,6 +2737,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -2656,6 +2753,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -2673,10 +2776,14 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def get_db_protocols(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_db_protocols() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_db_protocols' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_db_device_info:action_result.data.*.ipaddr4', 'get_db_device_info:action_result.data.*.id', 'get_db_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_db_protocols' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get protocols\", parameters=parameters, assets=['extrahop'], name=\"get_db_protocols\", parent_action=action)\n\n    return",
+                        "block_code": "def get_db_protocols(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_db_protocols() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_db_protocols' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_db_device_info:action_result.data.*.ipaddr4', 'get_db_device_info:action_result.data.*.id', 'get_db_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_db_protocols' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(action=\"get protocols\", parameters=parameters, assets=['extrahop'], name=\"get_db_protocols\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2701,12 +2808,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 164,
-                        "line_start": 139,
+                        "line_end": 163,
+                        "line_start": 138,
                         "message": "Configuring now",
                         "name": "get protocols",
                         "notes": "Retrieves a list of all of the protocols that a device communicated over the last 30 minutes",
                         "number": 1,
+                        "order": 6,
                         "outPorts": [
                             "out"
                         ],
@@ -2799,6 +2907,7 @@
                         },
                         "angle": 0,
                         "app": "ExtraHop",
+                        "appid": "0c173506-b5ab-4c9f-a78c-68dea794232c",
                         "approver": "",
                         "assets": [
                             {
@@ -2806,6 +2915,7 @@
                                 "active": true,
                                 "app_name": "ExtraHop",
                                 "app_version": "1.0.4",
+                                "appid": "",
                                 "asset_name": "extrahop",
                                 "config_type": "asset",
                                 "count": 0,
@@ -3180,6 +3290,13 @@
                             ".action": {
                                 "text": "get client peers"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -3192,6 +3309,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -3206,6 +3325,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -3223,10 +3348,14 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def get_client_peers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_client_peers() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_client_peers' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_client_device_info:action_result.data.*.ipaddr4', 'get_client_device_info:action_result.data.*.id', 'get_client_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_client_peers' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'protocol': \"any\",\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'peer_role': \"any\",\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get peers\", parameters=parameters, assets=['extrahop'], name=\"get_client_peers\", parent_action=action)\n\n    return",
+                        "block_code": "def get_client_peers(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_client_peers() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_client_peers' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_client_device_info:action_result.data.*.ipaddr4', 'get_client_device_info:action_result.data.*.id', 'get_client_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_client_peers' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'protocol': \"any\",\n                'eh_api_id': results_item_1[1],\n                'peer_role': \"any\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(action=\"get peers\", parameters=parameters, assets=['extrahop'], name=\"get_client_peers\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3251,12 +3380,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 194,
-                        "line_start": 167,
+                        "line_end": 193,
+                        "line_start": 166,
                         "message": "Configuring now",
                         "name": "get peers",
                         "notes": "Retrieves a list of all of the peers that a device communicated with in the last 30 minutes",
                         "number": 2,
+                        "order": 7,
                         "outPorts": [
                             "out"
                         ],
@@ -3347,6 +3477,7 @@
                         },
                         "angle": 0,
                         "app": "ExtraHop",
+                        "appid": "0c173506-b5ab-4c9f-a78c-68dea794232c",
                         "approver": "",
                         "assets": [
                             {
@@ -3354,6 +3485,7 @@
                                 "active": true,
                                 "app_name": "ExtraHop",
                                 "app_version": "1.0.4",
+                                "appid": "",
                                 "asset_name": "extrahop",
                                 "config_type": "asset",
                                 "count": 0,
@@ -3498,6 +3630,13 @@
                             ".action": {
                                 "text": "get client protocols"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -3510,6 +3649,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -3524,6 +3665,12 @@
                             },
                             ".title": {
                                 "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -3541,10 +3688,14 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def get_client_protocols(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_client_protocols() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_client_protocols' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_client_device_info:action_result.data.*.ipaddr4', 'get_client_device_info:action_result.data.*.id', 'get_client_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_client_protocols' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(\"get protocols\", parameters=parameters, assets=['extrahop'], name=\"get_client_protocols\", parent_action=action)\n\n    return",
+                        "block_code": "def get_client_protocols(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_client_protocols() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_client_protocols' call\n    results_data_1 = phantom.collect2(container=container, datapath=['get_client_device_info:action_result.data.*.ipaddr4', 'get_client_device_info:action_result.data.*.id', 'get_client_device_info:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'get_client_protocols' call\n    for results_item_1 in results_data_1:\n        if results_item_1[0]:\n            parameters.append({\n                'ip': results_item_1[0],\n                'minutes': 30,\n                'eh_api_id': results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[2]},\n            })\n\n    phantom.act(action=\"get protocols\", parameters=parameters, assets=['extrahop'], name=\"get_client_protocols\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3569,12 +3720,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 222,
-                        "line_start": 197,
+                        "line_end": 221,
+                        "line_start": 196,
                         "message": "Configuring now",
                         "name": "get protocols",
                         "notes": "Retrieves a list of all of the protocols that a device communicated over the last 30 minutes",
                         "number": 2,
+                        "order": 8,
                         "outPorts": [
                             "out"
                         ],
@@ -3665,6 +3817,7 @@
                         },
                         "angle": 0,
                         "app": "Palo Alto Networks Firewall",
+                        "appid": "e025e4ba-65be-438d-835f-95fe5da6b6d0",
                         "approver": "",
                         "assets": [
                             {
@@ -3672,6 +3825,7 @@
                                 "active": true,
                                 "app_name": "Palo Alto Networks Firewall",
                                 "app_version": "1.2.26",
+                                "appid": "",
                                 "config_type": "app",
                                 "fields": {
                                     "ip": "artifact:*.cef.sourceAddress",
@@ -3762,6 +3916,7 @@
                                 "active": true,
                                 "app_name": "Palo Alto Networks Firewall",
                                 "app_version": "1.2.26",
+                                "appid": "",
                                 "asset_name": "pan",
                                 "config_type": "asset",
                                 "count": 0,
@@ -3855,6 +4010,13 @@
                             ".action": {
                                 "text": "block client ip"
                             },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
                                 "ref-x": 0.5
@@ -3867,6 +4029,8 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
                             ".outPorts>.port-out": {
@@ -3881,6 +4045,12 @@
                             },
                             ".title": {
                                 "text": "Contain"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
                             },
                             "g.delete": {
                                 "display": "none"
@@ -3898,10 +4068,14 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "xlink:href": "/inc/coa/img/block_icon_note_on.svg"
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def block_client_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('block_client_ip() called')\n\n    # collect data for 'block_client_ip' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_client_ip' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'is_source_address': True,\n                'ip': container_item[0],\n                'vsys': \"vsys1\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"block ip\", parameters=parameters, assets=['pan'], name=\"block_client_ip\")\n\n    return",
+                        "block_code": "def block_client_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('block_client_ip() called')\n\n    # collect data for 'block_client_ip' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'block_client_ip' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'ip': container_item[0],\n                'vsys': \"vsys1\",\n                'is_source_address': True,\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(action=\"block ip\", parameters=parameters, assets=['pan'], name=\"block_client_ip\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3926,12 +4100,13 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 248,
-                        "line_start": 225,
+                        "line_end": 247,
+                        "line_start": 224,
                         "message": "Configuring now",
                         "name": "block ip",
                         "notes": "Block the source IP that is externally accessing an internal database on the Palo Alto Networks Firewall",
                         "number": 1,
+                        "order": 9,
                         "outPorts": [
                             "out"
                         ],
@@ -4013,12 +4188,20 @@
             },
             "notes": "This playbook uses the following Apps:\n - ExtraHop - get device details, get list of peers and protocols\n - Palo Alto Networks Firewall - Block the source IP address\n\nDeployment Notes:\n  - The artifact label needs to be \"publicly_exposed_db\" for this playbook to run"
         },
-        "schema": 3,
-        "version": "3.5.206"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2018-05-22T18:38:30.471164+00:00",
+    "create_time": "2021-01-19T21:57:15.387352+00:00",
     "draft_mode": false,
     "labels": [
-        "extrahop_events"
-    ]
+        "events"
+    ],
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "ExtraHop",
+            "Palo Alto Networks Firewall"
+        ]
+    }
 }
