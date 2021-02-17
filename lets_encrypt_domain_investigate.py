@@ -5,7 +5,6 @@ Investigate domain names and URLs of a potentially malicious website. These doma
 import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
-
 def on_start(container):
     phantom.debug('on_start() called')
     
@@ -17,7 +16,7 @@ def on_start(container):
 """
 Show a comment but don't continue the playbook if the certificate issuer's distinguished name does not match Let's Encrypt
 """
-def not_lets_encrypt_cert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def not_lets_encrypt_cert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('not_lets_encrypt_cert() called')
 
     phantom.comment(container=container, comment="Not all of the censys.io results matched the issuer distinguished name of a Let's Encrypt certificate, so no further processing will be done")
@@ -27,7 +26,7 @@ def not_lets_encrypt_cert(action=None, success=None, container=None, results=Non
 """
 Prevent the playbook from continuing if more than 50 results were found in Censys to avoid cluttering the investigation. Refine the Censys query if this happens too often.
 """
-def too_many_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def too_many_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('too_many_results() called')
 
     phantom.comment(container=container, comment="More than 50 results were returned by censys.io, so the playbook will not proceed and the results need to be investigated manually")
@@ -37,7 +36,7 @@ def too_many_results(action=None, success=None, container=None, results=None, ha
 """
 Query the Censys certificate dataset for a list of TLS certificates used on the domains that are being investigated
 """
-def censys_query_certificate(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def censys_query_certificate(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('censys_query_certificate() called')
 
     # collect data for 'censys_query_certificate' call
@@ -51,18 +50,18 @@ def censys_query_certificate(action=None, success=None, container=None, results=
             'query': formatted_part_1,
         })
 
-    phantom.act("query certificate", parameters=parameters, assets=['censys'], callback=match_against_lets_encrypt_issuer_dn, name="censys_query_certificate")
+    phantom.act(action="query certificate", parameters=parameters, assets=['censys'], callback=match_against_lets_encrypt_issuer_dn, name="censys_query_certificate")
 
     return
 
 """
 Check whether the results show the Let's Encrypt distinguished name as the issuer and how many results there are. Continue with the playbook if there are less than 50 results and they all match Let's Encrypt, otherwise add a comment explaining what happened and stop the playbook.
 """
-def match_against_lets_encrypt_issuer_dn(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def match_against_lets_encrypt_issuer_dn(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('match_against_lets_encrypt_issuer_dn() called')
 
     # check for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
@@ -72,14 +71,14 @@ def match_against_lets_encrypt_issuer_dn(action=None, success=None, container=No
         logical_operator='and')
 
     # call connected blocks if condition 1 matched
-    if matched_artifacts_1 or matched_results_1:
-        get_screenshot_of_url(action=action, success=success, container=container, results=results, handle=handle)
-        scan_url_with_urlscanio(action=action, success=success, container=container, results=results, handle=handle)
-        whois_domain(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        get_screenshot_of_url(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        scan_url_with_urlscanio(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
+        whois_domain(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     # check for 'elif' condition 2
-    matched_artifacts_2, matched_results_2 = phantom.condition(
+    matched = phantom.decision(
         container=container,
         action_results=results,
         conditions=[
@@ -89,19 +88,19 @@ def match_against_lets_encrypt_issuer_dn(action=None, success=None, container=No
         logical_operator='and')
 
     # call connected blocks if condition 2 matched
-    if matched_artifacts_2 or matched_results_2:
-        too_many_results(action=action, success=success, container=container, results=results, handle=handle)
+    if matched:
+        too_many_results(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
         return
 
     # call connected blocks for 'else' condition 3
-    not_lets_encrypt_cert(action=action, success=success, container=container, results=results, handle=handle)
+    not_lets_encrypt_cert(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)
 
     return
 
 """
 Format the Censys SSL certificate query and Passivetotal whois results associated with the initial requested domains
 """
-def format_associated_data(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_associated_data(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_associated_data() called')
     
     template = """Censys SSL Cert Information:
@@ -129,7 +128,7 @@ Domain Countries Registered:{3}"""
 """
 Display the formatted Censys and PassiveTotal results in the event comments
 """
-def display_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def display_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('display_results() called')
 
     formatted_data_1 = phantom.get_format_data(name='format_associated_data')
@@ -141,9 +140,9 @@ def display_results(action=None, success=None, container=None, results=None, han
 """
 Use Screenshot Machine to obtain a screenshot of the URLs in the container
 """
-def get_screenshot_of_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def get_screenshot_of_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_screenshot_of_url() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'get_screenshot_of_url' call
@@ -161,16 +160,16 @@ def get_screenshot_of_url(action=None, success=None, container=None, results=Non
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("get screenshot", parameters=parameters, assets=['screenshot_machine'], name="get_screenshot_of_url")
+    phantom.act(action="get screenshot", parameters=parameters, assets=['screenshot machine'], name="get_screenshot_of_url")
 
     return
 
 """
 Use urlscan.io to profile the behavior of the website identified by the URLs in the container
 """
-def scan_url_with_urlscanio(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def scan_url_with_urlscanio(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('scan_url_with_urlscanio() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'scan_url_with_urlscanio' call
@@ -188,16 +187,16 @@ def scan_url_with_urlscanio(action=None, success=None, container=None, results=N
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("detonate url", parameters=parameters, assets=['urlscan_io'], name="scan_url_with_urlscanio")
+    phantom.act(action="detonate url", parameters=parameters, assets=['urlscan'], name="scan_url_with_urlscanio")
 
     return
 
 """
 Use PassiveTotal to collect registration information about the domains
 """
-def whois_domain(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def whois_domain(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('whois_domain() called')
-    
+        
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
     # collect data for 'whois_domain' call
@@ -214,14 +213,14 @@ def whois_domain(action=None, success=None, container=None, results=None, handle
                 'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act("whois domain", parameters=parameters, assets=['passivetotal'], callback=format_associated_data, name="whois_domain")
+    phantom.act(action="whois domain", parameters=parameters, assets=['passivetotal'], callback=format_associated_data, name="whois_domain")
 
     return
 
 """
 Wrap the domain names in quotes so that the Censys query only returns exact matches
 """
-def format_censys_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):
+def format_censys_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_censys_query() called')
     
     template = """%%
@@ -242,7 +241,7 @@ def format_censys_query(action=None, success=None, container=None, results=None,
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
     # This function is called after all actions are completed.
-    # summary of all the action and/or all detals of actions 
+    # summary of all the action and/or all details of actions
     # can be collected here.
 
     # summary_json = phantom.get_summary()

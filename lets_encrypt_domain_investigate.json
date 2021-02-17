@@ -2,13 +2,12 @@
     "blockly": false,
     "blockly_xml": "<xml></xml>",
     "category": "Use Cases",
-    "misc": { "apps_list": ["Censys", "PassiveTotal", "Screenshot Machine", "urlscan.io"] },
     "coa": {
         "data": {
             "clean": true,
             "code_block": "",
             "description": "Investigate domain names and URLs of a potentially malicious website. These domain names and URLs could come from anywhere, but this Playbook was designed to work with the Splunk Analytic Story called \"Common Phishing Frameworks\", which focuses on evilginx2 phishing techniques that harvest credentials from fake login sites. The full investigation is only completed if at least one of the TLS certificates of the domains matches the issuer distinguished name of Let's Encrypt, which is a free service that provides automatically issued TLS certificates. This Playbook gathers certificate information for the domains, queries whois for the domains, takes a screenshot of each of the URLs, and does a urlscan.io scan of each of the URLs. Finally, all the results are formatted together and posted to the event comments.",
-            "hash": "80599971896fe28b4dec28398cbb2bdb1e13428e",
+            "hash": "c342fe8d60759b05c88d82290e847fc071365933",
             "joint": {
                 "cells": [
                     {
@@ -360,8 +359,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 17,
-                        "line_start": 9,
+                        "line_end": 16,
+                        "line_start": 8,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -642,6 +641,9 @@
                             ".title": {
                                 "text": "format"
                             },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -656,7 +658,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_censys_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_censys_query() called')\n    \n    template = \"\"\"%%\n\\\"{0}\\\"\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.query\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_censys_query\")\n\n    censys_query_certificate(container=container)\n\n    return",
+                        "block_code": "def format_censys_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_censys_query() called')\n    \n    template = \"\"\"%%\n\\\"{0}\\\"\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.query\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_censys_query\")\n\n    censys_query_certificate(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -680,8 +682,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 242,
-                        "line_start": 224,
+                        "line_end": 241,
+                        "line_start": 223,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Wrap the domain names in quotes so that the Censys query only returns exact matches",
@@ -829,7 +831,7 @@
                                 }
                             },
                             "g.delete": {
-                                "display": "block"
+                                "display": "none"
                             },
                             "g.error": {
                                 "opacity": 0
@@ -845,7 +847,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def match_against_lets_encrypt_issuer_dn(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('match_against_lets_encrypt_issuer_dn() called')\n\n    # check for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"censys_query_certificate:action_result.data.*.parsed_issuer_dn\", \"==\", \"C=US, O=Let's Encrypt, CN=Let's Encrypt Authority X3\"],\n            [\"censys_query_certificate:action_result.summary.result_count\", \"<=\", 50],\n        ],\n        logical_operator='and')\n\n    # call connected blocks if condition 1 matched\n    if matched_artifacts_1 or matched_results_1:\n        get_screenshot_of_url(action=action, success=success, container=container, results=results, handle=handle)\n        scan_url_with_urlscanio(action=action, success=success, container=container, results=results, handle=handle)\n        whois_domain(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # check for 'elif' condition 2\n    matched_artifacts_2, matched_results_2 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"censys_query_certificate:action_result.data.*.parsed_issuer_dn\", \"==\", \"C=US, O=Let's Encrypt, CN=Let's Encrypt Authority X3\"],\n            [\"censys_query_certificate:action_result.summary.result_count\", \">\", 50],\n        ],\n        logical_operator='and')\n\n    # call connected blocks if condition 2 matched\n    if matched_artifacts_2 or matched_results_2:\n        too_many_results(action=action, success=success, container=container, results=results, handle=handle)\n        return\n\n    # call connected blocks for 'else' condition 3\n    not_lets_encrypt_cert(action=action, success=success, container=container, results=results, handle=handle)\n\n    return",
+                        "block_code": "def match_against_lets_encrypt_issuer_dn(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('match_against_lets_encrypt_issuer_dn() called')\n\n    # check for 'if' condition 1\n    matched = phantom.decision(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"censys_query_certificate:action_result.data.*.parsed_issuer_dn\", \"==\", \"C=US, O=Let's Encrypt, CN=Let's Encrypt Authority X3\"],\n            [\"censys_query_certificate:action_result.summary.result_count\", \"<=\", 50],\n        ],\n        logical_operator='and')\n\n    # call connected blocks if condition 1 matched\n    if matched:\n        get_screenshot_of_url(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        scan_url_with_urlscanio(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        whois_domain(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    # check for 'elif' condition 2\n    matched = phantom.decision(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"censys_query_certificate:action_result.data.*.parsed_issuer_dn\", \"==\", \"C=US, O=Let's Encrypt, CN=Let's Encrypt Authority X3\"],\n            [\"censys_query_certificate:action_result.summary.result_count\", \">\", 50],\n        ],\n        logical_operator='and')\n\n    # call connected blocks if condition 2 matched\n    if matched:\n        too_many_results(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n        return\n\n    # call connected blocks for 'else' condition 3\n    not_lets_encrypt_cert(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -869,8 +871,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 101,
-                        "line_start": 61,
+                        "line_end": 100,
+                        "line_start": 60,
                         "name": "decision",
                         "notes": "Check whether the results show the Let's Encrypt distinguished name as the issuer and how many results there are. Continue with the playbook if there are less than 50 results and they all match Let's Encrypt, otherwise add a comment explaining what happened and stop the playbook.",
                         "number": 1,
@@ -1066,7 +1068,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def too_many_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('too_many_results() called')\n\n    phantom.comment(container=container, comment=\"More than 50 results were returned by censys.io, so the playbook will not proceed and the results need to be investigated manually\")\n\n    return",
+                        "block_code": "def too_many_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('too_many_results() called')\n\n    phantom.comment(container=container, comment=\"More than 50 results were returned by censys.io, so the playbook will not proceed and the results need to be investigated manually\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1096,8 +1098,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 37,
-                        "line_start": 30,
+                        "line_end": 36,
+                        "line_start": 29,
                         "message": "Configuring now",
                         "name": "add comment",
                         "notes": "Prevent the playbook from continuing if more than 50 results were found in Censys to avoid cluttering the investigation. Refine the Censys query if this happens too often.",
@@ -1237,7 +1239,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_associated_data(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('format_associated_data() called')\n    \n    template = \"\"\"Censys SSL Cert Information:\nIssuer DNs:{0}\nDomains:{1}\n\nPassiveTotal Whois Information:\nDomain Organizations Registered: {2}\nDomain Countries Registered:{3}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"censys_query_certificate:action_result.data.*.parsed_issuer_dn\",\n        \"censys_query_certificate:action_result.data.*.parsed_subject_dn\",\n        \"whois_domain:action_result.summary.organization\",\n        \"whois_domain:action_result.summary.country\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_associated_data\")\n\n    display_results(container=container)\n\n    return",
+                        "block_code": "def format_associated_data(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_associated_data() called')\n    \n    template = \"\"\"Censys SSL Cert Information:\nIssuer DNs:{0}\nDomains:{1}\n\nPassiveTotal Whois Information:\nDomain Organizations Registered: {2}\nDomain Countries Registered:{3}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"censys_query_certificate:action_result.data.*.parsed_issuer_dn\",\n        \"censys_query_certificate:action_result.data.*.parsed_subject_dn\",\n        \"whois_domain:action_result.summary.organization\",\n        \"whois_domain:action_result.summary.country\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_associated_data\")\n\n    display_results(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1261,8 +1263,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 146,
-                        "line_end": 129,
-                        "line_start": 104,
+                        "line_end": 128,
+                        "line_start": 103,
                         "message": "Configuring now",
                         "name": "format",
                         "notes": "Format the Censys SSL certificate query and Passivetotal whois results associated with the initial requested domains",
@@ -1428,7 +1430,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def display_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('display_results() called')\n\n    formatted_data_1 = phantom.get_format_data(name='format_associated_data')\n\n    phantom.comment(container=container, comment=formatted_data_1)\n\n    return",
+                        "block_code": "def display_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('display_results() called')\n\n    formatted_data_1 = phantom.get_format_data(name='format_associated_data')\n\n    phantom.comment(container=container, comment=formatted_data_1)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1458,8 +1460,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 85,
-                        "line_end": 141,
-                        "line_start": 132,
+                        "line_end": 140,
+                        "line_start": 131,
                         "message": "Configuring now",
                         "name": "add comment",
                         "notes": "Display the formatted Censys and PassiveTotal results in the event comments",
@@ -1578,7 +1580,7 @@
                                 "display": "block"
                             }
                         },
-                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all detals of actions \n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
                         "callback_code": "# read-only block view not available",
                         "callback_start": 1,
                         "callsback": false,
@@ -1601,8 +1603,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 255,
-                        "line_start": 242,
+                        "line_end": 254,
+                        "line_start": 241,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -1881,7 +1883,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def censys_query_certificate(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('censys_query_certificate() called')\n\n    # collect data for 'censys_query_certificate' call\n    formatted_data_1 = phantom.get_format_data(name='format_censys_query__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'censys_query_certificate' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'query': formatted_part_1,\n        })\n\n    phantom.act(\"query certificate\", parameters=parameters, assets=['censys'], callback=match_against_lets_encrypt_issuer_dn, name=\"censys_query_certificate\")\n\n    return",
+                        "block_code": "def censys_query_certificate(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('censys_query_certificate() called')\n\n    # collect data for 'censys_query_certificate' call\n    formatted_data_1 = phantom.get_format_data(name='format_censys_query__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'censys_query_certificate' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'query': formatted_part_1,\n        })\n\n    phantom.act(action=\"query certificate\", parameters=parameters, assets=['censys'], callback=match_against_lets_encrypt_issuer_dn, name=\"censys_query_certificate\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1906,8 +1908,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 58,
-                        "line_start": 40,
+                        "line_end": 57,
+                        "line_start": 39,
                         "message": "Configuring now",
                         "name": "query certificate",
                         "notes": "Query the Censys certificate dataset for a list of TLS certificates used on the domains that are being investigated",
@@ -1987,7 +1989,7 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 277
                     },
                     {
@@ -2054,7 +2056,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def not_lets_encrypt_cert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('not_lets_encrypt_cert() called')\n\n    phantom.comment(container=container, comment=\"Not all of the censys.io results matched the issuer distinguished name of a Let's Encrypt certificate, so no further processing will be done\")\n\n    return",
+                        "block_code": "def not_lets_encrypt_cert(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('not_lets_encrypt_cert() called')\n\n    phantom.comment(container=container, comment=\"Not all of the censys.io results matched the issuer distinguished name of a Let's Encrypt certificate, so no further processing will be done\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -2084,8 +2086,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 27,
-                        "line_start": 20,
+                        "line_end": 26,
+                        "line_start": 19,
                         "message": "Configuring now",
                         "name": "add comment",
                         "notes": "Show a comment but don't continue the playbook if the certificate issuer's distinguished name does not match Let's Encrypt",
@@ -2691,7 +2693,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def whois_domain(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('whois_domain() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'whois_domain' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.query', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'whois_domain' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'domain': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"whois domain\", parameters=parameters, assets=['passivetotal'], callback=format_associated_data, name=\"whois_domain\")\n\n    return",
+                        "block_code": "def whois_domain(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('whois_domain() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'whois_domain' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.query', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'whois_domain' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'domain': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(action=\"whois domain\", parameters=parameters, assets=['passivetotal'], callback=format_associated_data, name=\"whois_domain\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2716,8 +2718,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 221,
-                        "line_start": 198,
+                        "line_end": 220,
+                        "line_start": 197,
                         "message": "Configuring now",
                         "name": "whois domain",
                         "notes": "Use PassiveTotal to collect registration information about the domains",
@@ -2835,7 +2837,7 @@
                                 "id": 9,
                                 "loaded": false,
                                 "missing": false,
-                                "name": "screenshot_machine",
+                                "name": "screenshot machine",
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
@@ -3039,7 +3041,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def get_screenshot_of_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('get_screenshot_of_url() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_screenshot_of_url' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.requestURL', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_screenshot_of_url' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'url': container_item[0],\n                'size': \"Normal\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"get screenshot\", parameters=parameters, assets=['screenshot_machine'], name=\"get_screenshot_of_url\")\n\n    return",
+                        "block_code": "def get_screenshot_of_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('get_screenshot_of_url() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'get_screenshot_of_url' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.requestURL', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'get_screenshot_of_url' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'url': container_item[0],\n                'size': \"Normal\",\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(action=\"get screenshot\", parameters=parameters, assets=['screenshot machine'], name=\"get_screenshot_of_url\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -3064,8 +3066,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 168,
-                        "line_start": 144,
+                        "line_end": 167,
+                        "line_start": 143,
                         "message": "Configuring now",
                         "name": "get screenshot",
                         "notes": "Use Screenshot Machine to obtain a screenshot of the URLs in the container",
@@ -3186,7 +3188,7 @@
                                 "id": 8,
                                 "loaded": false,
                                 "missing": false,
-                                "name": "urlscan_io",
+                                "name": "urlscan",
                                 "output": [
                                     {
                                         "contains": [
@@ -5893,7 +5895,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def scan_url_with_urlscanio(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None):\n    phantom.debug('scan_url_with_urlscanio() called')\n    \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'scan_url_with_urlscanio' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.requestURL', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'scan_url_with_urlscanio' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'url': container_item[0],\n                'private': True,\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(\"detonate url\", parameters=parameters, assets=['urlscan_io'], name=\"scan_url_with_urlscanio\")\n\n    return",
+                        "block_code": "def scan_url_with_urlscanio(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('scan_url_with_urlscanio() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'scan_url_with_urlscanio' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.requestURL', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'scan_url_with_urlscanio' call\n    for container_item in container_data:\n        if container_item[0]:\n            parameters.append({\n                'url': container_item[0],\n                'private': True,\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': container_item[1]},\n            })\n\n    phantom.act(action=\"detonate url\", parameters=parameters, assets=['urlscan'], name=\"scan_url_with_urlscanio\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -5918,8 +5920,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 195,
-                        "line_start": 171,
+                        "line_end": 194,
+                        "line_start": 170,
                         "message": "Configuring now",
                         "name": "detonate url",
                         "notes": "Use urlscan.io to profile the behavior of the website identified by the URLs in the container",
@@ -6006,13 +6008,22 @@
             },
             "notes": "This playbook uses the following Apps:\n - Censys (query certificate) [asset name = censys] - query the Censys asset database\n - PassiveTotal (whois domain) [asset name = passivetotal] - query the PassiveTotal whois service for information about the domain\n - Screenshot Machine (get screenshot) [asset name = screenshot_machine] - Capture a screenshot of the URL to see if it looks like a fake login screen or other malicious website\n - urlscan.io (detonate url) [asset name = urlscan_io] - scan the URL to profile its behavior\nDeployment Notes:\n - the evilginx2 Detection Search puts the suspicious domain name in the \"query\" field of the artifact, so that should be changed if the domain name is in another field such as destinationDnsDomain"
         },
-        "schema": 3,
-        "version": "4.2.7532"
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.0.40961"
     },
-    "create_time": "2019-04-29T16:37:52.541059+00:00",
+    "create_time": "2021-01-21T18:26:22.661250+00:00",
     "draft_mode": false,
     "labels": [
         "events"
     ],
-    "tags": []
+    "tags": [],
+    "misc": {
+        "apps_list": [
+            "Censys",
+            "PassiveTotal",
+            "Screenshot Machine",
+            "urlscan.io"
+        ]
+    }
 }
