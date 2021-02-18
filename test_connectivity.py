@@ -14,6 +14,7 @@ def get_report_cb(action, success, incident, results, handle):
 
 def on_start(incident):
 
+    # run test connectivity on all available assets
     phantom.act('test connectivity', parameters=[], callback=get_report_cb)
 
     return
