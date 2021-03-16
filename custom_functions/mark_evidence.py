@@ -67,7 +67,7 @@ def mark_evidence(container=None, object_id=None, content_type=None, **kwargs):
     # else error out 
     if response.get('success'):
         outputs['id'] = response['id']
-    elif response.get('failed') and response.get('message') == 'Already added to Evidence':
+    elif response.get('failed') and response.get('message') == 'Already added to Evidence.':
         phantom.debug(f"{content_type} \'{container_id}\' {response['message']}")
     else:
         raise RuntimeError(f"Unable to add evidence: {response}")
