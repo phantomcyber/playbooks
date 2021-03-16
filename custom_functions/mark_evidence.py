@@ -50,6 +50,9 @@ def mark_evidence(container=None, object_id=None, content_type=None, **kwargs):
         raise TypeError("The input 'container' is neither a container dictionary nor an int, so it cannot be used")
     
     # Build json dictionary for requests post
+    phantom.debug(f"{type(container_id)} {container_id}")
+    phantom.debug(f"{type(object_id)} {object_id}")
+    phantom.debug(f"{type(content_type)} {content_type}")
     data = {
         "container_id": container_id,
         "object_id": object_id,
@@ -64,11 +67,11 @@ def mark_evidence(container=None, object_id=None, content_type=None, **kwargs):
     
     # If successful add evidence id to outputs
     # elif evidence already exists print to debug
-    # else error out 
-    if response.get('success'):
-        outputs['id'] = response['id']
-    elif response.get('failed') and response.get('message') == 'Already added to Evidence':
+    # else error out
+    if response.get('failed') and response.get('message') == 'Already added to Evidence.':
         phantom.debug(f"{content_type} \'{container_id}\' {response['message']}")
+    elif response.get('success'):
+        outputs['id'] = response['id']
     else:
         raise RuntimeError(f"Unable to add evidence: {response}")
         
