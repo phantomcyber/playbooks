@@ -1,12 +1,13 @@
 {
     "blockly": false,
     "blockly_xml": "<xml></xml>",
-    "category": "Uncategorized",
+    "category": "Threat Response",
     "coa": {
         "data": {
             "clean": true,
             "code_block": "",
             "description": "",
+            "hash": "eb508e6ccd0fe93a7721d17f2c01fa807e899e94",
             "joint": {
                 "cells": [
                     {
@@ -1644,6 +1645,12 @@
                             ".title": {
                                 "text": "Generic"
                             },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
                             "g.delete": {
                                 "display": "none"
                             },
@@ -1655,9 +1662,15 @@
                             },
                             "g.notes": {
                                 "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1
+                            },
+                            "g.timer image": {
+                                "opacity": 1
                             }
                         },
-                        "block_code": "def Terminate_Process(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Process() called')\n\n    # collect data for 'Terminate_Process' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.cef.process_id', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Process' call\n    for container_item in container_data:\n        parameters.append({\n            'ip_hostname': container_item[0],\n            'pid': container_item[1],\n            'name': \"\",\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[2]},\n        })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['windowsrm'], callback=Format_Splunk_Search, name=\"Terminate_Process\")\n\n    return",
+                        "block_code": "def Terminate_Process(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Process() called')\n\n    # collect data for 'Terminate_Process' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.process_id', 'artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Process' call\n    for container_item in container_data:\n        parameters.append({\n            'pid': container_item[0],\n            'name': \"\",\n            'ip_hostname': container_item[1],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[2]},\n        })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['windowsrm'], callback=Format_Splunk_Search, name=\"Terminate_Process\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1761,7 +1774,7 @@
                         "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 28
                     }
                 ]
@@ -1772,7 +1785,7 @@
         "schema": 4,
         "version": "4.10.2.47587"
     },
-    "create_time": "2021-03-20T03:01:21.025148+00:00",
+    "create_time": "2021-03-21T20:56:32.246242+00:00",
     "draft_mode": false,
     "labels": [
         "*"

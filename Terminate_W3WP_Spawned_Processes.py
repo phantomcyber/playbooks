@@ -80,16 +80,16 @@ def Terminate_Process(action=None, success=None, container=None, results=None, h
     phantom.debug('Terminate_Process() called')
 
     # collect data for 'Terminate_Process' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.cef.process_id', 'artifact:*.id'])
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.process_id', 'artifact:*.cef.destinationAddress', 'artifact:*.id'])
 
     parameters = []
     
     # build parameters list for 'Terminate_Process' call
     for container_item in container_data:
         parameters.append({
-            'ip_hostname': container_item[0],
-            'pid': container_item[1],
+            'pid': container_item[0],
             'name': "",
+            'ip_hostname': container_item[1],
             # context (artifact id) is added to associate results with the artifact
             'context': {'artifact_id': container_item[2]},
         })
