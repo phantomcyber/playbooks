@@ -6,7 +6,7 @@ def regex_extract_ipv4(input_string=None, **kwargs):
         input_string (CEF type: *): An input string that may contain an arbitrary number of ipv4 addresses
     
     Returns a JSON-serializable object that implements the configured data paths:
-        *.ipv4 (CEF type: *): Extracted ipv4 address
+        *.ipv4 (CEF type: ip): Extracted ipv4 address
     """
     ############################ Custom Code Goes Below This Line #################################
     import json
