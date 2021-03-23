@@ -7,6 +7,7 @@
             "clean": true,
             "code_block": "",
             "description": "",
+            "hash": "7bf7d878d260751325112ad34bbfd319ea83922f",
             "joint": {
                 "cells": [
                     {
@@ -198,7 +199,7 @@
                         "callback_start": 1,
                         "callsback": false,
                         "connected_to_start": true,
-                        "connection_name": "Delete Webshell",
+                        "connection_name": "Delete File",
                         "connection_type": "action",
                         "custom_callback": "",
                         "custom_code": "",
@@ -469,12 +470,12 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def Format_Del_Command(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Format_Del_Command() called')\n    \n    template = \"\"\"del \\\"{0}\\\"\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.filePath\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"Format_Del_Command\")\n\n    Delete_Webshell(container=container)\n\n    return",
+                        "block_code": "def Format_Del_Command(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Format_Del_Command() called')\n    \n    template = \"\"\"del \\\"{0}\\\"\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.filePath\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"Format_Del_Command\")\n\n    Delete_File(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
                         "connected_to_start": true,
-                        "connection_name": "Gather Shell Details",
+                        "connection_name": "Gather File Contents",
                         "connection_type": "action",
                         "custom_callback": "",
                         "custom_code": "",
@@ -641,7 +642,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def Format_More_Command(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Format_More_Command() called')\n    \n    template = \"\"\"more \\\"{0}\\\"\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.filePath\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"Format_More_Command\")\n\n    Gather_Shell_Details(container=container)\n\n    return",
+                        "block_code": "def Format_More_Command(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Format_More_Command() called')\n    \n    template = \"\"\"more \\\"{0}\\\"\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.filePath\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"Format_More_Command\")\n\n    Gather_File_Contents(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1118,7 +1119,7 @@
                         ],
                         "attrs": {
                             ".action": {
-                                "text": "Gather Shell Details"
+                                "text": "Gather File Contents"
                             },
                             ".background": {
                                 "fill": "#000000",
@@ -1181,7 +1182,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def Gather_Shell_Details(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Gather_Shell_Details() called')\n\n    # collect data for 'Gather_Shell_Details' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n    formatted_data_1 = phantom.get_format_data(name='Format_More_Command')\n\n    parameters = []\n    \n    # build parameters list for 'Gather_Shell_Details' call\n    for container_item in container_data:\n        parameters.append({\n            'async': \"\",\n            'parser': \"\",\n            'command': formatted_data_1,\n            'shell_id': \"\",\n            'arguments': \"\",\n            'command_id': \"\",\n            'ip_hostname': container_item[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[1]},\n        })\n\n    phantom.act(action=\"run command\", parameters=parameters, assets=['windowsrm'], callback=Format_Del_Command, name=\"Gather_Shell_Details\")\n\n    return",
+                        "block_code": "def Gather_File_Contents(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Gather_File_Contents() called')\n\n    # collect data for 'Gather_File_Contents' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n    formatted_data_1 = phantom.get_format_data(name='Format_More_Command')\n\n    parameters = []\n    \n    # build parameters list for 'Gather_File_Contents' call\n    for container_item in container_data:\n        parameters.append({\n            'async': \"\",\n            'parser': \"\",\n            'command': formatted_data_1,\n            'shell_id': \"\",\n            'arguments': \"\",\n            'command_id': \"\",\n            'ip_hostname': container_item[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[1]},\n        })\n\n    phantom.act(action=\"run command\", parameters=parameters, assets=['windowsrm'], callback=Format_Del_Command, name=\"Gather_File_Contents\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1192,7 +1193,7 @@
                         "custom_callback": "",
                         "custom_code": "",
                         "custom_join": "",
-                        "custom_name": "Gather Shell Details",
+                        "custom_name": "Gather File Contents",
                         "delay": 0,
                         "description": "",
                         "has_custom": false,
@@ -1273,7 +1274,7 @@
                             "y": 80
                         },
                         "previous_function": "",
-                        "previous_name": "Gather_Shell_Details",
+                        "previous_name": "Gather_File_Contents",
                         "required_params": {},
                         "reviewer": "",
                         "show_number": true,
@@ -1286,7 +1287,7 @@
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 37
+                        "z": 39
                     },
                     {
                         "action": "run command",
@@ -1298,7 +1299,7 @@
                             "async": "",
                             "command": "Format_Del_Command:formatted_data",
                             "command_id": "",
-                            "ip_hostname": "Gather_Shell_Details:artifact:*.cef.destinationAddress",
+                            "ip_hostname": "Gather_File_Contents:artifact:*.cef.destinationAddress",
                             "parser": "",
                             "shell_id": ""
                         },
@@ -1346,7 +1347,7 @@
                                     "async": "",
                                     "command": "Format_Del_Command:formatted_data",
                                     "command_id": "",
-                                    "ip_hostname": "Gather_Shell_Details:artifact:*.cef.destinationAddress",
+                                    "ip_hostname": "Gather_File_Contents:artifact:*.cef.destinationAddress",
                                     "parser": "",
                                     "shell_id": ""
                                 },
@@ -1575,7 +1576,7 @@
                         ],
                         "attrs": {
                             ".action": {
-                                "text": "Delete Webshell"
+                                "text": "Delete File"
                             },
                             ".background": {
                                 "fill": "#000000",
@@ -1641,18 +1642,18 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def Delete_Webshell(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Delete_Webshell() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Delete_Webshell' call\n    inputs_data_1 = phantom.collect2(container=container, datapath=['Gather_Shell_Details:artifact:*.cef.destinationAddress', 'Gather_Shell_Details:artifact:*.id'], action_results=results)\n    formatted_data_1 = phantom.get_format_data(name='Format_Del_Command')\n\n    parameters = []\n    \n    # build parameters list for 'Delete_Webshell' call\n    for inputs_item_1 in inputs_data_1:\n        parameters.append({\n            'async': \"\",\n            'parser': \"\",\n            'command': formatted_data_1,\n            'shell_id': \"\",\n            'arguments': \"\",\n            'command_id': \"\",\n            'ip_hostname': inputs_item_1[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': inputs_item_1[1]},\n        })\n\n    phantom.act(action=\"run command\", parameters=parameters, assets=['windowsrm'], name=\"Delete_Webshell\")\n\n    return",
+                        "block_code": "def Delete_File(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Delete_File() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Delete_File' call\n    inputs_data_1 = phantom.collect2(container=container, datapath=['Gather_File_Contents:artifact:*.cef.destinationAddress', 'Gather_File_Contents:artifact:*.id'], action_results=results)\n    formatted_data_1 = phantom.get_format_data(name='Format_Del_Command')\n\n    parameters = []\n    \n    # build parameters list for 'Delete_File' call\n    for inputs_item_1 in inputs_data_1:\n        parameters.append({\n            'async': \"\",\n            'parser': \"\",\n            'command': formatted_data_1,\n            'shell_id': \"\",\n            'arguments': \"\",\n            'command_id': \"\",\n            'ip_hostname': inputs_item_1[0],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': inputs_item_1[1]},\n        })\n\n    phantom.act(action=\"run command\", parameters=parameters, assets=['windowsrm'], name=\"Delete_File\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
                         "color": "",
                         "connected_to_start": true,
-                        "connection_name": "Gather Shell Details",
+                        "connection_name": "Gather File Contents",
                         "connection_type": "action",
                         "custom_callback": "",
                         "custom_code": "",
                         "custom_join": "",
-                        "custom_name": "Delete Webshell",
+                        "custom_name": "Delete File",
                         "delay": 0,
                         "description": "",
                         "has_custom": false,
@@ -1733,7 +1734,7 @@
                             "y": 220
                         },
                         "previous_function": "",
-                        "previous_name": "Delete_Webshell",
+                        "previous_name": "Delete_File",
                         "required_params": {},
                         "reviewer": "",
                         "show_number": true,
@@ -1746,7 +1747,7 @@
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": false,
-                        "z": 38
+                        "z": 40
                     }
                 ]
             },
@@ -1756,7 +1757,7 @@
         "schema": 4,
         "version": "4.10.2.47587"
     },
-    "create_time": "2021-03-21T21:35:33.944101+00:00",
+    "create_time": "2021-03-23T21:01:34.491530+00:00",
     "draft_mode": false,
     "labels": [
         "*"

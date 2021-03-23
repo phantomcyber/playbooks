@@ -12,18 +12,18 @@ def on_start(container):
 
     return
 
-def Delete_Webshell(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug('Delete_Webshell() called')
+def Delete_File(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('Delete_File() called')
         
     #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
     
-    # collect data for 'Delete_Webshell' call
-    inputs_data_1 = phantom.collect2(container=container, datapath=['Gather_Shell_Details:artifact:*.cef.destinationAddress', 'Gather_Shell_Details:artifact:*.id'], action_results=results)
+    # collect data for 'Delete_File' call
+    inputs_data_1 = phantom.collect2(container=container, datapath=['Gather_File_Contents:artifact:*.cef.destinationAddress', 'Gather_File_Contents:artifact:*.id'], action_results=results)
     formatted_data_1 = phantom.get_format_data(name='Format_Del_Command')
 
     parameters = []
     
-    # build parameters list for 'Delete_Webshell' call
+    # build parameters list for 'Delete_File' call
     for inputs_item_1 in inputs_data_1:
         parameters.append({
             'async': "",
@@ -37,7 +37,7 @@ def Delete_Webshell(action=None, success=None, container=None, results=None, han
             'context': {'artifact_id': inputs_item_1[1]},
         })
 
-    phantom.act(action="run command", parameters=parameters, assets=['windowsrm'], name="Delete_Webshell")
+    phantom.act(action="run command", parameters=parameters, assets=['windowsrm'], name="Delete_File")
 
     return
 
@@ -53,7 +53,7 @@ def Format_Del_Command(action=None, success=None, container=None, results=None, 
 
     phantom.format(container=container, template=template, parameters=parameters, name="Format_Del_Command")
 
-    Delete_Webshell(container=container)
+    Delete_File(container=container)
 
     return
 
@@ -69,20 +69,20 @@ def Format_More_Command(action=None, success=None, container=None, results=None,
 
     phantom.format(container=container, template=template, parameters=parameters, name="Format_More_Command")
 
-    Gather_Shell_Details(container=container)
+    Gather_File_Contents(container=container)
 
     return
 
-def Gather_Shell_Details(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug('Gather_Shell_Details() called')
+def Gather_File_Contents(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('Gather_File_Contents() called')
 
-    # collect data for 'Gather_Shell_Details' call
+    # collect data for 'Gather_File_Contents' call
     container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])
     formatted_data_1 = phantom.get_format_data(name='Format_More_Command')
 
     parameters = []
     
-    # build parameters list for 'Gather_Shell_Details' call
+    # build parameters list for 'Gather_File_Contents' call
     for container_item in container_data:
         parameters.append({
             'async': "",
@@ -96,7 +96,7 @@ def Gather_Shell_Details(action=None, success=None, container=None, results=None
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act(action="run command", parameters=parameters, assets=['windowsrm'], callback=Format_Del_Command, name="Gather_Shell_Details")
+    phantom.act(action="run command", parameters=parameters, assets=['windowsrm'], callback=Format_Del_Command, name="Gather_File_Contents")
 
     return
 
