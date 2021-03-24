@@ -7,6 +7,7 @@
             "clean": true,
             "code_block": "",
             "description": "This playbook acts on processes that have been determined to be malicious (ie spawned shells like cmd or powershell).\n\nIt terminates these processes via  Windows Remote Management.\n\nIt then queries Splunk to determine if that process launches any child processes.  If child processes are found, the playbook then attempts to terminate those via Windows Remote Management.",
+            "hash": "1d85412bfa71f2aee4eccb59d81d8a051ba10939",
             "joint": {
                 "cells": [
                     {
@@ -545,7 +546,7 @@
                                 "id": 6,
                                 "loaded": false,
                                 "missing": false,
-                                "name": "windowsrm",
+                                "name": "winrm",
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
@@ -892,7 +893,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def Terminate_Child_Processes(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Child_Processes() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Terminate_Child_Processes' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n    results_data_1 = phantom.collect2(container=container, datapath=['Find_Child_Processes:action_result.data.*.ProcessId', 'Find_Child_Processes:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Child_Processes' call\n    for container_item in container_data:\n        for results_item_1 in results_data_1:\n            parameters.append({\n                'pid': results_item_1[0],\n                'name': \"\",\n                'ip_hostname': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['windowsrm','winrm'], name=\"Terminate_Child_Processes\", parent_action=action)\n\n    return",
+                        "block_code": "def Terminate_Child_Processes(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Child_Processes() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Terminate_Child_Processes' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n    results_data_1 = phantom.collect2(container=container, datapath=['Find_Child_Processes:action_result.data.*.ProcessId', 'Find_Child_Processes:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Child_Processes' call\n    for container_item in container_data:\n        for results_item_1 in results_data_1:\n            parameters.append({\n                'pid': results_item_1[0],\n                'name': \"\",\n                'ip_hostname': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['winrm','winrm'], name=\"Terminate_Child_Processes\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -996,7 +997,7 @@
                         "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 42
                     },
                     {
@@ -1042,7 +1043,7 @@
                                 "id": 7,
                                 "loaded": false,
                                 "missing": false,
-                                "name": "splunk-1",
+                                "name": "splunk",
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
@@ -1533,7 +1534,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def Find_Child_Processes(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Find_Child_Processes() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Find_Child_Processes' call\n    formatted_data_1 = phantom.get_format_data(name='Format_Splunk_Search')\n\n    parameters = []\n    \n    # build parameters list for 'Find_Child_Processes' call\n    parameters.append({\n        'query': formatted_data_1,\n        'command': \"search\",\n        'display': \"\",\n        'parse_only': \"\",\n    })\n\n    phantom.act(action=\"run query\", parameters=parameters, assets=['splunk-1','splunk'], callback=Terminate_Child_Processes, name=\"Find_Child_Processes\")\n\n    return",
+                        "block_code": "def Find_Child_Processes(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Find_Child_Processes() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Find_Child_Processes' call\n    formatted_data_1 = phantom.get_format_data(name='Format_Splunk_Search')\n\n    parameters = []\n    \n    # build parameters list for 'Find_Child_Processes' call\n    parameters.append({\n        'query': formatted_data_1,\n        'command': \"search\",\n        'display': \"\",\n        'parse_only': \"\",\n    })\n\n    phantom.act(action=\"run query\", parameters=parameters, assets=['splunk','splunk'], callback=Terminate_Child_Processes, name=\"Find_Child_Processes\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1639,7 +1640,7 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 43
                     },
                     {
@@ -1700,7 +1701,7 @@
                                 "id": 6,
                                 "loaded": false,
                                 "missing": false,
-                                "name": "windowsrm",
+                                "name": "winrm",
                                 "output": [
                                     {
                                         "data_path": "action_result.status",
@@ -2044,7 +2045,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def Terminate_Process(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Process() called')\n\n    # collect data for 'Terminate_Process' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.process_id', 'artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Process' call\n    for container_item in container_data:\n        parameters.append({\n            'pid': container_item[0],\n            'name': \"\",\n            'ip_hostname': container_item[1],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[2]},\n        })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['windowsrm','winrm'], callback=Format_Splunk_Search, name=\"Terminate_Process\")\n\n    return",
+                        "block_code": "def Terminate_Process(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Process() called')\n\n    # collect data for 'Terminate_Process' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.process_id', 'artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Process' call\n    for container_item in container_data:\n        parameters.append({\n            'pid': container_item[0],\n            'name': \"\",\n            'ip_hostname': container_item[1],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[2]},\n        })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['winrm','winrm'], callback=Format_Splunk_Search, name=\"Terminate_Process\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -2148,7 +2149,7 @@
                         "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
-                        "warn": "",
+                        "warn": false,
                         "z": 44
                     },
                     {
@@ -2337,7 +2338,7 @@
         "schema": 4,
         "version": "4.10.2.47587"
     },
-    "create_time": "2021-03-24T21:53:22.738712+00:00",
+    "create_time": "2021-03-24T22:01:39.066672+00:00",
     "draft_mode": false,
     "labels": [
         "*"

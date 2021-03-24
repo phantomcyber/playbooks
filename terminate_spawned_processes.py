@@ -52,7 +52,7 @@ def Find_Child_Processes(action=None, success=None, container=None, results=None
         'parse_only': "",
     })
 
-    phantom.act(action="run query", parameters=parameters, assets=['splunk-1','splunk'], callback=Terminate_Child_Processes, name="Find_Child_Processes")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk','splunk'], callback=Terminate_Child_Processes, name="Find_Child_Processes")
 
     return
 
@@ -78,7 +78,7 @@ def Terminate_Child_Processes(action=None, success=None, container=None, results
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act(action="terminate process", parameters=parameters, assets=['windowsrm','winrm'], name="Terminate_Child_Processes", parent_action=action)
+    phantom.act(action="terminate process", parameters=parameters, assets=['winrm','winrm'], name="Terminate_Child_Processes", parent_action=action)
 
     return
 
@@ -100,7 +100,7 @@ def Terminate_Process(action=None, success=None, container=None, results=None, h
             'context': {'artifact_id': container_item[2]},
         })
 
-    phantom.act(action="terminate process", parameters=parameters, assets=['windowsrm','winrm'], callback=Format_Splunk_Search, name="Terminate_Process")
+    phantom.act(action="terminate process", parameters=parameters, assets=['winrm','winrm'], callback=Format_Splunk_Search, name="Terminate_Process")
 
     return
 
