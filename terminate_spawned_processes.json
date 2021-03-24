@@ -7,7 +7,6 @@
             "clean": true,
             "code_block": "",
             "description": "This playbook acts on processes that have been determined to be malicious (ie spawned shells like cmd or powershell).\n\nIt terminates these processes via  Windows Remote Management.\n\nIt then queries Splunk to determine if that process launches any child processes.  If child processes are found, the playbook then attempts to terminate those via Windows Remote Management.",
-            "hash": "444452720abd9f5c416665e02c67abd2c1be02a3",
             "joint": {
                 "cells": [
                     {
@@ -489,18 +488,351 @@
                         "z": 24
                     },
                     {
+                        "action": "terminate process",
+                        "action_type": "generic",
                         "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "ip_hostname": "artifact:*.cef.destinationAddress",
+                            "name": "",
+                            "pid": "Find_Child_Processes:action_result.data.*.ProcessId"
+                        },
                         "angle": 0,
+                        "app": "Windows Remote Management",
+                        "appid": "a0222b95-b006-4c9e-9578-1428defcec0f",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "terminate process",
+                                "actions": [
+                                    "deactivate partition",
+                                    "test connectivity",
+                                    "run command",
+                                    "run script",
+                                    "list processes",
+                                    "activate partition",
+                                    "terminate process",
+                                    "list connections",
+                                    "list firewall rules",
+                                    "delete firewall rule",
+                                    "block ip",
+                                    "add firewall rule",
+                                    "logoff user",
+                                    "list sessions",
+                                    "shutdown system",
+                                    "restart system",
+                                    "list policies",
+                                    "block file path",
+                                    "delete policy",
+                                    "get file",
+                                    "upload file",
+                                    "copy file",
+                                    "delete file"
+                                ],
+                                "active": true,
+                                "app_name": "Windows Remote Management",
+                                "app_version": "2.0.0",
+                                "appid": "a0222b95-b006-4c9e-9578-1428defcec0f",
+                                "asset_name": "windowsrm",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "ip_hostname": "artifact:*.cef.destinationAddress",
+                                    "name": "",
+                                    "pid": "Find_Child_Processes:action_result.data.*.ProcessId"
+                                },
+                                "has_app": true,
+                                "id": 6,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "windowsrm",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip",
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "8.8.8.8"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "process name"
+                                        ],
+                                        "data_path": "action_result.parameter.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "iexplore"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "pid"
+                                        ],
+                                        "data_path": "action_result.parameter.pid",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            451
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Message",
+                                        "column_order": 0,
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Successfully terminated process"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "ip_hostname": {
+                                        "contains": [
+                                            "ip",
+                                            "host name"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP/Hostname",
+                                        "key": "ip_hostname",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": false
+                                    },
+                                    "name": {
+                                        "contains": [
+                                            "process name"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Name of program to terminate, accepts wildcards",
+                                        "key": "name",
+                                        "order": 2,
+                                        "primary": true,
+                                        "required": false
+                                    },
+                                    "pid": {
+                                        "contains": [
+                                            "pid"
+                                        ],
+                                        "data_type": "numeric",
+                                        "default": null,
+                                        "description": "The PID of the process to terminate",
+                                        "key": "pid",
+                                        "order": 1,
+                                        "primary": true,
+                                        "required": false
+                                    }
+                                },
+                                "product_name": "Windows Remote Management",
+                                "product_vendor": "Microsoft",
+                                "targets": "6",
+                                "type": "endpoint"
+                            },
+                            {
+                                "action": "terminate process",
+                                "actions": [
+                                    "deactivate partition",
+                                    "test connectivity",
+                                    "run command",
+                                    "run script",
+                                    "list processes",
+                                    "activate partition",
+                                    "terminate process",
+                                    "list connections",
+                                    "list firewall rules",
+                                    "delete firewall rule",
+                                    "block ip",
+                                    "add firewall rule",
+                                    "logoff user",
+                                    "list sessions",
+                                    "shutdown system",
+                                    "restart system",
+                                    "list policies",
+                                    "block file path",
+                                    "delete policy",
+                                    "get file",
+                                    "upload file",
+                                    "copy file",
+                                    "delete file"
+                                ],
+                                "active": true,
+                                "app_name": "Windows Remote Management",
+                                "app_version": "2.0.0",
+                                "appid": "a0222b95-b006-4c9e-9578-1428defcec0f",
+                                "asset_name": "winrm",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "ip_hostname": "artifact:*.cef.destinationAddress",
+                                    "name": "",
+                                    "pid": "Find_Child_Processes:action_result.data.*.ProcessId"
+                                },
+                                "has_app": true,
+                                "id": 9,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "winrm",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip",
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "8.8.8.8"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "process name"
+                                        ],
+                                        "data_path": "action_result.parameter.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "iexplore"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "pid"
+                                        ],
+                                        "data_path": "action_result.parameter.pid",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            451
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Message",
+                                        "column_order": 0,
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Successfully terminated process"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "ip_hostname": {
+                                        "contains": [
+                                            "ip",
+                                            "host name"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP/Hostname",
+                                        "key": "ip_hostname",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": false
+                                    },
+                                    "name": {
+                                        "contains": [
+                                            "process name"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Name of program to terminate, accepts wildcards",
+                                        "key": "name",
+                                        "order": 2,
+                                        "primary": true,
+                                        "required": false
+                                    },
+                                    "pid": {
+                                        "contains": [
+                                            "pid"
+                                        ],
+                                        "data_type": "numeric",
+                                        "default": null,
+                                        "description": "The PID of the process to terminate",
+                                        "key": "pid",
+                                        "order": 1,
+                                        "primary": true,
+                                        "required": false
+                                    }
+                                },
+                                "product_name": "Windows Remote Management",
+                                "product_vendor": "Microsoft",
+                                "targets": "9",
+                                "type": "endpoint"
+                            }
+                        ],
                         "attrs": {
+                            ".action": {
+                                "text": "Terminate Child Process..."
+                            },
                             ".background": {
                                 "fill": "#000000",
                                 "stroke": "#5C6773"
                             },
                             ".color-band": {
                                 "fill": "#3C444D"
-                            },
-                            ".format": {
-                                "text": "Format Splunk Search"
                             },
                             ".inPorts>.port-in": {
                                 "ref": ".background",
@@ -514,20 +846,25 @@
                             },
                             ".message": {
                                 "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
                                 "text": "Configuring now"
                             },
-                            ".outPorts>.port-out-1": {
+                            ".outPorts>.port-out": {
                                 "ref": ".background",
                                 "ref-x": 0.5
                             },
-                            ".outPorts>.port-out-1>.port-body": {
+                            ".outPorts>.port-out>.port-body": {
                                 "port": {
-                                    "id": "out-1",
+                                    "id": "out",
                                     "type": "out"
                                 }
                             },
                             ".title": {
-                                "text": "format"
+                                "text": "Generic"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
                             },
                             "g.code image": {
                                 "opacity": 1
@@ -541,58 +878,54 @@
                             "g.error image": {
                                 "xlink:href": "/inc/coa/img/block_icon_warn.svg"
                             },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
                             "g.notes": {
                                 "display": "block"
                             },
                             "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def Format_Splunk_Search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Format_Splunk_Search() called')\n    \n    template = \"\"\"index=* dest={1} parent_process_id={0} | fields *\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.process_id\",\n        \"artifact:*.cef.destinationAddress\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"Format_Splunk_Search\")\n\n    Find_Child_Processes(container=container)\n\n    return",
+                        "block_code": "def Terminate_Child_Processes(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Child_Processes() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Terminate_Child_Processes' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n    results_data_1 = phantom.collect2(container=container, datapath=['Find_Child_Processes:action_result.data.*.ProcessId', 'Find_Child_Processes:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Child_Processes' call\n    for container_item in container_data:\n        for results_item_1 in results_data_1:\n            parameters.append({\n                'pid': results_item_1[0],\n                'name': \"\",\n                'ip_hostname': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['windowsrm','winrm'], name=\"Terminate_Child_Processes\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
-                        "callsback": false,
+                        "callsback": true,
+                        "color": "",
                         "connected_to_start": true,
-                        "connection_name": "Terminate Process",
+                        "connection_name": "Find Child Processes",
                         "connection_type": "action",
                         "custom_callback": "",
                         "custom_code": "",
                         "custom_join": "",
-                        "custom_name": "Format Splunk Search",
+                        "custom_name": "Terminate Child Processes",
+                        "delay": 0,
                         "description": "",
-                        "format": "format",
                         "has_custom": false,
                         "has_custom_block": false,
                         "has_custom_callback": false,
                         "has_custom_join": false,
-                        "id": "454dadb8-bc3e-412b-b8bc-e3e4bcb04128",
+                        "id": "62030899-94c3-4e83-80fe-fb9cdfe7a94d",
                         "inPorts": [
                             "in"
                         ],
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 37,
-                        "line_start": 20,
+                        "line_end": 85,
+                        "line_start": 59,
                         "message": "Configuring now",
-                        "name": "format",
-                        "notes": "",
+                        "name": "terminate process",
+                        "notes": "This action uses the results from the prior Splunk search action to terminate any child processes.",
                         "number": 1,
-                        "order": 2,
+                        "order": 4,
                         "outPorts": [
-                            "out-1"
-                        ],
-                        "parameters": [
-                            {
-                                "position": 0,
-                                "type": "",
-                                "value": "artifact:*.cef.process_id"
-                            },
-                            {
-                                "position": 1,
-                                "type": "",
-                                "value": "artifact:*.cef.destinationAddress"
-                            }
+                            "out"
                         ],
                         "ports": {
                             "groups": {
@@ -648,22 +981,23 @@
                         },
                         "position": {
                             "x": 260,
-                            "y": 80
+                            "y": 360
                         },
                         "previous_function": "",
-                        "previous_name": "Format_Splunk_Search",
+                        "previous_name": "Terminate_Child_Processes",
+                        "required_params": {},
+                        "reviewer": "",
                         "show_number": true,
                         "size": {
                             "height": 100,
                             "width": 180
                         },
-                        "state": "format",
+                        "state": "app_action_assets",
                         "status": "",
-                        "template": "index=* dest={1} parent_process_id={0} | fields *",
-                        "title": "format",
-                        "type": "coa.Format",
-                        "warn": false,
-                        "z": 29
+                        "title": "Generic",
+                        "type": "coa.Action",
+                        "warn": "",
+                        "z": 42
                     },
                     {
                         "action": "run query",
@@ -1192,7 +1526,8 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "opacity": 1
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             },
                             "g.timer image": {
                                 "opacity": 1
@@ -1227,7 +1562,7 @@
                         "line_start": 37,
                         "message": "Configuring now",
                         "name": "run query",
-                        "notes": "",
+                        "notes": "This searches the Splunk instance for any child processes which have been spawned by the parent process on the affected host.",
                         "number": 1,
                         "order": 3,
                         "outPorts": [
@@ -1305,518 +1640,7 @@
                         "title": "Investigate",
                         "type": "coa.Action",
                         "warn": "",
-                        "z": 32
-                    },
-                    {
-                        "action": "terminate process",
-                        "action_type": "generic",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {
-                            "ip_hostname": "artifact:*.cef.destinationAddress",
-                            "name": "",
-                            "pid": "Find_Child_Processes:action_result.data.*.ProcessId"
-                        },
-                        "angle": 0,
-                        "app": "Windows Remote Management",
-                        "appid": "a0222b95-b006-4c9e-9578-1428defcec0f",
-                        "approver": "",
-                        "assets": [
-                            {
-                                "action": "terminate process",
-                                "actions": [
-                                    "deactivate partition",
-                                    "test connectivity",
-                                    "run command",
-                                    "run script",
-                                    "list processes",
-                                    "activate partition",
-                                    "terminate process",
-                                    "list connections",
-                                    "list firewall rules",
-                                    "delete firewall rule",
-                                    "block ip",
-                                    "add firewall rule",
-                                    "logoff user",
-                                    "list sessions",
-                                    "shutdown system",
-                                    "restart system",
-                                    "list policies",
-                                    "block file path",
-                                    "delete policy",
-                                    "get file",
-                                    "upload file",
-                                    "copy file",
-                                    "delete file"
-                                ],
-                                "active": true,
-                                "app_name": "Windows Remote Management",
-                                "app_version": "2.0.0",
-                                "appid": "a0222b95-b006-4c9e-9578-1428defcec0f",
-                                "asset_name": "windowsrm",
-                                "config_type": "asset",
-                                "count": 0,
-                                "fields": {
-                                    "ip_hostname": "artifact:*.cef.destinationAddress",
-                                    "name": "",
-                                    "pid": "Find_Child_Processes:action_result.data.*.ProcessId"
-                                },
-                                "has_app": true,
-                                "id": 6,
-                                "loaded": false,
-                                "missing": false,
-                                "name": "windowsrm",
-                                "output": [
-                                    {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "success",
-                                            "failed"
-                                        ]
-                                    },
-                                    {
-                                        "contains": [
-                                            "ip",
-                                            "host name"
-                                        ],
-                                        "data_path": "action_result.parameter.ip_hostname",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "8.8.8.8"
-                                        ]
-                                    },
-                                    {
-                                        "contains": [
-                                            "process name"
-                                        ],
-                                        "data_path": "action_result.parameter.name",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "iexplore"
-                                        ]
-                                    },
-                                    {
-                                        "contains": [
-                                            "pid"
-                                        ],
-                                        "data_path": "action_result.parameter.pid",
-                                        "data_type": "numeric",
-                                        "example_values": [
-                                            451
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "action_result.data",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Message",
-                                        "column_order": 0,
-                                        "data_path": "action_result.message",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "Successfully terminated process"
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric",
-                                        "example_values": [
-                                            1
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric",
-                                        "example_values": [
-                                            1
-                                        ]
-                                    }
-                                ],
-                                "parameters": {
-                                    "ip_hostname": {
-                                        "contains": [
-                                            "ip",
-                                            "host name"
-                                        ],
-                                        "data_type": "string",
-                                        "default": null,
-                                        "description": "IP/Hostname",
-                                        "key": "ip_hostname",
-                                        "order": 0,
-                                        "primary": true,
-                                        "required": false
-                                    },
-                                    "name": {
-                                        "contains": [
-                                            "process name"
-                                        ],
-                                        "data_type": "string",
-                                        "default": null,
-                                        "description": "Name of program to terminate, accepts wildcards",
-                                        "key": "name",
-                                        "order": 2,
-                                        "primary": true,
-                                        "required": false
-                                    },
-                                    "pid": {
-                                        "contains": [
-                                            "pid"
-                                        ],
-                                        "data_type": "numeric",
-                                        "default": null,
-                                        "description": "The PID of the process to terminate",
-                                        "key": "pid",
-                                        "order": 1,
-                                        "primary": true,
-                                        "required": false
-                                    }
-                                },
-                                "product_name": "Windows Remote Management",
-                                "product_vendor": "Microsoft",
-                                "targets": "6",
-                                "type": "endpoint"
-                            },
-                            {
-                                "action": "terminate process",
-                                "actions": [
-                                    "deactivate partition",
-                                    "test connectivity",
-                                    "run command",
-                                    "run script",
-                                    "list processes",
-                                    "activate partition",
-                                    "terminate process",
-                                    "list connections",
-                                    "list firewall rules",
-                                    "delete firewall rule",
-                                    "block ip",
-                                    "add firewall rule",
-                                    "logoff user",
-                                    "list sessions",
-                                    "shutdown system",
-                                    "restart system",
-                                    "list policies",
-                                    "block file path",
-                                    "delete policy",
-                                    "get file",
-                                    "upload file",
-                                    "copy file",
-                                    "delete file"
-                                ],
-                                "active": true,
-                                "app_name": "Windows Remote Management",
-                                "app_version": "2.0.0",
-                                "appid": "a0222b95-b006-4c9e-9578-1428defcec0f",
-                                "asset_name": "winrm",
-                                "config_type": "asset",
-                                "count": 0,
-                                "fields": {
-                                    "ip_hostname": "artifact:*.cef.destinationAddress",
-                                    "name": "",
-                                    "pid": "Find_Child_Processes:action_result.data.*.ProcessId"
-                                },
-                                "has_app": true,
-                                "id": 9,
-                                "loaded": false,
-                                "missing": false,
-                                "name": "winrm",
-                                "output": [
-                                    {
-                                        "data_path": "action_result.status",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "success",
-                                            "failed"
-                                        ]
-                                    },
-                                    {
-                                        "contains": [
-                                            "ip",
-                                            "host name"
-                                        ],
-                                        "data_path": "action_result.parameter.ip_hostname",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "8.8.8.8"
-                                        ]
-                                    },
-                                    {
-                                        "contains": [
-                                            "process name"
-                                        ],
-                                        "data_path": "action_result.parameter.name",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "iexplore"
-                                        ]
-                                    },
-                                    {
-                                        "contains": [
-                                            "pid"
-                                        ],
-                                        "data_path": "action_result.parameter.pid",
-                                        "data_type": "numeric",
-                                        "example_values": [
-                                            451
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "action_result.data",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "data_path": "action_result.summary",
-                                        "data_type": "string"
-                                    },
-                                    {
-                                        "column_name": "Message",
-                                        "column_order": 0,
-                                        "data_path": "action_result.message",
-                                        "data_type": "string",
-                                        "example_values": [
-                                            "Successfully terminated process"
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects",
-                                        "data_type": "numeric",
-                                        "example_values": [
-                                            1
-                                        ]
-                                    },
-                                    {
-                                        "data_path": "summary.total_objects_successful",
-                                        "data_type": "numeric",
-                                        "example_values": [
-                                            1
-                                        ]
-                                    }
-                                ],
-                                "parameters": {
-                                    "ip_hostname": {
-                                        "contains": [
-                                            "ip",
-                                            "host name"
-                                        ],
-                                        "data_type": "string",
-                                        "default": null,
-                                        "description": "IP/Hostname",
-                                        "key": "ip_hostname",
-                                        "order": 0,
-                                        "primary": true,
-                                        "required": false
-                                    },
-                                    "name": {
-                                        "contains": [
-                                            "process name"
-                                        ],
-                                        "data_type": "string",
-                                        "default": null,
-                                        "description": "Name of program to terminate, accepts wildcards",
-                                        "key": "name",
-                                        "order": 2,
-                                        "primary": true,
-                                        "required": false
-                                    },
-                                    "pid": {
-                                        "contains": [
-                                            "pid"
-                                        ],
-                                        "data_type": "numeric",
-                                        "default": null,
-                                        "description": "The PID of the process to terminate",
-                                        "key": "pid",
-                                        "order": 1,
-                                        "primary": true,
-                                        "required": false
-                                    }
-                                },
-                                "product_name": "Windows Remote Management",
-                                "product_vendor": "Microsoft",
-                                "targets": "9",
-                                "type": "endpoint"
-                            }
-                        ],
-                        "attrs": {
-                            ".action": {
-                                "text": "Terminate Child Process..."
-                            },
-                            ".background": {
-                                "fill": "#000000",
-                                "stroke": "#5C6773"
-                            },
-                            ".color-band": {
-                                "fill": "#3C444D"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "opacity": 0,
-                                "ref-x": 5,
-                                "ref-y": 105,
-                                "text": "Configuring now"
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "text": "Generic"
-                            },
-                            "g.approver image": {
-                                "opacity": 1
-                            },
-                            "g.code image": {
-                                "opacity": 1
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
-                            },
-                            "g.icon image": {
-                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
-                            },
-                            "g.notes": {
-                                "display": "block"
-                            },
-                            "g.notes image": {
-                                "opacity": 1
-                            },
-                            "g.timer image": {
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def Terminate_Child_Processes(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Child_Processes() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Terminate_Child_Processes' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n    results_data_1 = phantom.collect2(container=container, datapath=['Find_Child_Processes:action_result.data.*.ProcessId', 'Find_Child_Processes:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Child_Processes' call\n    for container_item in container_data:\n        for results_item_1 in results_data_1:\n            parameters.append({\n                'pid': results_item_1[0],\n                'name': \"\",\n                'ip_hostname': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['windowsrm','winrm'], name=\"Terminate_Child_Processes\", parent_action=action)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "color": "",
-                        "connected_to_start": true,
-                        "connection_name": "Find Child Processes",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "Terminate Child Processes",
-                        "delay": 0,
-                        "description": "",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "62030899-94c3-4e83-80fe-fb9cdfe7a94d",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 85,
-                        "line_start": 59,
-                        "message": "Configuring now",
-                        "name": "terminate process",
-                        "notes": "",
-                        "number": 1,
-                        "order": 4,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 260,
-                            "y": 360
-                        },
-                        "previous_function": "",
-                        "previous_name": "Terminate_Child_Processes",
-                        "required_params": {},
-                        "reviewer": "",
-                        "show_number": true,
-                        "size": {
-                            "height": 100,
-                            "width": 180
-                        },
-                        "state": "app_action_assets",
-                        "status": "",
-                        "title": "Generic",
-                        "type": "coa.Action",
-                        "warn": "",
-                        "z": 34
+                        "z": 43
                     },
                     {
                         "action": "terminate process",
@@ -2213,7 +2037,8 @@
                                 "display": "block"
                             },
                             "g.notes image": {
-                                "opacity": 1
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             },
                             "g.timer image": {
                                 "opacity": 1
@@ -2248,7 +2073,7 @@
                         "line_start": 85,
                         "message": "Configuring now",
                         "name": "terminate process",
-                        "notes": "",
+                        "notes": "This action terminates the process in question on the affected host.",
                         "number": 2,
                         "order": 5,
                         "outPorts": [
@@ -2324,7 +2149,185 @@
                         "title": "Generic",
                         "type": "coa.Action",
                         "warn": "",
-                        "z": 35
+                        "z": 44
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".format": {
+                                "text": "Format Splunk Search"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "def Format_Splunk_Search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Format_Splunk_Search() called')\n    \n    template = \"\"\"index=* dest={1} parent_process_id={0} | fields *\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.process_id\",\n        \"artifact:*.cef.destinationAddress\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"Format_Splunk_Search\")\n\n    Find_Child_Processes(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "Terminate Process",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "Format Splunk Search",
+                        "description": "",
+                        "format": "format",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "454dadb8-bc3e-412b-b8bc-e3e4bcb04128",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 37,
+                        "line_start": 20,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "This is a format block which creates the actual Splunk search used in the next action.",
+                        "number": 1,
+                        "order": 2,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": "artifact:*.cef.process_id"
+                            },
+                            {
+                                "position": 1,
+                                "type": "",
+                                "value": "artifact:*.cef.destinationAddress"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 260,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "Format_Splunk_Search",
+                        "show_number": true,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "index=* dest={1} parent_process_id={0} | fields *",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 45
                     }
                 ]
             },
