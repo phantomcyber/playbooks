@@ -1,4 +1,9 @@
 """
+This playbook acts on processes that have been determine to be malicious (ie spawned shells like cmd or powershell).
+
+It terminates these processes via  Windows Remote Management.
+
+It then queries Splunk to determine if that process launches any child processes.  If child processes are found, the playbook then attempts to terminate those via Windows Remote Management.
 """
 
 import phantom.rules as phantom
@@ -15,11 +20,12 @@ def on_start(container):
 def Format_Splunk_Search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('Format_Splunk_Search() called')
     
-    template = """index=* parent_process_id={0} | fields *"""
+    template = """index=* dest={1} parent_process_id={0} | fields *"""
 
     # parameter list for template variable replacement
     parameters = [
         "artifact:*.cef.process_id",
+        "artifact:*.cef.destinationAddress",
     ]
 
     phantom.format(container=container, template=template, parameters=parameters, name="Format_Splunk_Search")
@@ -46,7 +52,7 @@ def Find_Child_Processes(action=None, success=None, container=None, results=None
         'parse_only': "",
     })
 
-    phantom.act(action="run query", parameters=parameters, assets=['splunk-1'], callback=Terminate_Child_Processes, name="Find_Child_Processes")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk-1','splunk'], callback=Terminate_Child_Processes, name="Find_Child_Processes")
 
     return
 
@@ -72,7 +78,7 @@ def Terminate_Child_Processes(action=None, success=None, container=None, results
                 'context': {'artifact_id': results_item_1[1]},
             })
 
-    phantom.act(action="terminate process", parameters=parameters, assets=['windowsrm'], name="Terminate_Child_Processes", parent_action=action)
+    phantom.act(action="terminate process", parameters=parameters, assets=['windowsrm','winrm'], name="Terminate_Child_Processes", parent_action=action)
 
     return
 
@@ -94,7 +100,7 @@ def Terminate_Process(action=None, success=None, container=None, results=None, h
             'context': {'artifact_id': container_item[2]},
         })
 
-    phantom.act(action="terminate process", parameters=parameters, assets=['windowsrm'], callback=Format_Splunk_Search, name="Terminate_Process")
+    phantom.act(action="terminate process", parameters=parameters, assets=['windowsrm','winrm'], callback=Format_Splunk_Search, name="Terminate_Process")
 
     return
 

@@ -6,7 +6,8 @@
         "data": {
             "clean": true,
             "code_block": "",
-            "description": "",
+            "description": "This playbook acts on processes that have been determine to be malicious (ie spawned shells like cmd or powershell).\n\nIt terminates these processes via  Windows Remote Management.\n\nIt then queries Splunk to determine if that process launches any child processes.  If child processes are found, the playbook then attempts to terminate those via Windows Remote Management.",
+            "hash": "618547e52f01d4c783bbe02a6ce8901f22ceb3ba",
             "joint": {
                 "cells": [
                     {
@@ -75,8 +76,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 15,
-                        "line_start": 7,
+                        "line_end": 20,
+                        "line_start": 12,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -216,8 +217,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 114,
-                        "line_start": 101,
+                        "line_end": 120,
+                        "line_start": 107,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -371,178 +372,6 @@
                         "z": 17
                     },
                     {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "fill": "#000000",
-                                "stroke": "#5C6773"
-                            },
-                            ".color-band": {
-                                "fill": "#3C444D"
-                            },
-                            ".format": {
-                                "text": "Format Splunk Search"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "opacity": 0,
-                                "text": "Configuring now"
-                            },
-                            ".outPorts>.port-out-1": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out-1>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "text": "format"
-                            },
-                            "g.code image": {
-                                "opacity": 1
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
-                            },
-                            "g.notes": {
-                                "display": "block"
-                            },
-                            "g.notes image": {
-                                "opacity": 1
-                            }
-                        },
-                        "block_code": "def Format_Splunk_Search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Format_Splunk_Search() called')\n    \n    template = \"\"\"index=* parent_process_id={0} | fields *\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.process_id\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"Format_Splunk_Search\")\n\n    Find_Child_Processes(container=container)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "Terminate Process",
-                        "connection_type": "action",
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "Format Splunk Search",
-                        "description": "",
-                        "format": "format",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "454dadb8-bc3e-412b-b8bc-e3e4bcb04128",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 31,
-                        "line_start": 15,
-                        "message": "Configuring now",
-                        "name": "format",
-                        "notes": "",
-                        "number": 1,
-                        "order": 2,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "parameters": [
-                            {
-                                "position": 0,
-                                "type": "",
-                                "value": "artifact:*.cef.process_id"
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 260,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "Format_Splunk_Search",
-                        "show_number": true,
-                        "size": {
-                            "height": 100,
-                            "width": 180
-                        },
-                        "state": "format",
-                        "status": "",
-                        "template": "index=* parent_process_id={0} | fields *",
-                        "title": "format",
-                        "type": "coa.Format",
-                        "warn": false,
-                        "z": 18
-                    },
-                    {
                         "attrs": {
                             ".connection": {
                                 "stroke": "#818D99",
@@ -658,6 +487,183 @@
                         },
                         "type": "link",
                         "z": 24
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".format": {
+                                "text": "Format Splunk Search"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1
+                            }
+                        },
+                        "block_code": "def Format_Splunk_Search(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Format_Splunk_Search() called')\n    \n    template = \"\"\"index=* dest={1} parent_process_id={0} | fields *\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"artifact:*.cef.process_id\",\n        \"artifact:*.cef.destinationAddress\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"Format_Splunk_Search\")\n\n    Find_Child_Processes(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "Terminate Process",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "Format Splunk Search",
+                        "description": "",
+                        "format": "format",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "454dadb8-bc3e-412b-b8bc-e3e4bcb04128",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 37,
+                        "line_start": 20,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "",
+                        "number": 1,
+                        "order": 2,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": "artifact:*.cef.process_id"
+                            },
+                            {
+                                "position": 1,
+                                "type": "",
+                                "value": "artifact:*.cef.destinationAddress"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 260,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "Format_Splunk_Search",
+                        "show_number": true,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "index=* dest={1} parent_process_id={0} | fields *",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 29
                     },
                     {
                         "action": "run query",
@@ -898,6 +904,230 @@
                                 "product_vendor": "Splunk Inc.",
                                 "targets": "7",
                                 "type": "siem"
+                            },
+                            {
+                                "action": "run query",
+                                "actions": [
+                                    "test connectivity",
+                                    "get host events",
+                                    "on poll",
+                                    "run query",
+                                    "update event",
+                                    "post data"
+                                ],
+                                "active": true,
+                                "app_name": "Splunk",
+                                "app_version": "2.0.34",
+                                "appid": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                                "asset_name": "splunk",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "command": "search",
+                                    "display": "",
+                                    "parse_only": "",
+                                    "query": "Format_Splunk_Search:formatted_data"
+                                },
+                                "has_app": true,
+                                "id": 8,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "splunk",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.command",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "savedsearch"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.display",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.parse_only",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "splunk query"
+                                        ],
+                                        "data_path": "action_result.parameter.query",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "\"Send to Phantom\""
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*._bkt",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*._cd",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*._indextime",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Raw",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*._raw",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*._serial",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*._si",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*._sourcetype",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Time",
+                                        "column_order": 1,
+                                        "data_path": "action_result.data.*._time",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Host",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.host",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "10.1.67.187:8088"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.index",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.linecount",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.source",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.sourcetype",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.data.*.splunk_server",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.total_events",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            2
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.sid",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "1612177958.977510"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Sid: 1612177958.977510, Total events: 2"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "command": {
+                                        "data_type": "string",
+                                        "default": "search",
+                                        "description": "Beginning command (in Splunk Processing Language)",
+                                        "key": "command",
+                                        "order": 0,
+                                        "required": false,
+                                        "value_list": [
+                                            "search",
+                                            "eval",
+                                            "savedsearch",
+                                            "stats",
+                                            "table",
+                                            "tstats"
+                                        ]
+                                    },
+                                    "display": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Display fields (comma-separated)",
+                                        "key": "display",
+                                        "order": 2,
+                                        "required": false
+                                    },
+                                    "parse_only": {
+                                        "data_type": "boolean",
+                                        "default": false,
+                                        "description": "Parse only",
+                                        "key": "parse_only",
+                                        "order": 3,
+                                        "required": false
+                                    },
+                                    "query": {
+                                        "contains": [
+                                            "splunk query"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Query to run (in Splunk Processing Language)",
+                                        "key": "query",
+                                        "order": 1,
+                                        "primary": true,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "Splunk Enterprise",
+                                "product_vendor": "Splunk Inc.",
+                                "targets": "8",
+                                "type": "siem"
                             }
                         ],
                         "attrs": {
@@ -968,7 +1198,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def Find_Child_Processes(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Find_Child_Processes() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Find_Child_Processes' call\n    formatted_data_1 = phantom.get_format_data(name='Format_Splunk_Search')\n\n    parameters = []\n    \n    # build parameters list for 'Find_Child_Processes' call\n    parameters.append({\n        'query': formatted_data_1,\n        'command': \"search\",\n        'display': \"\",\n        'parse_only': \"\",\n    })\n\n    phantom.act(action=\"run query\", parameters=parameters, assets=['splunk-1'], callback=Terminate_Child_Processes, name=\"Find_Child_Processes\")\n\n    return",
+                        "block_code": "def Find_Child_Processes(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Find_Child_Processes() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Find_Child_Processes' call\n    formatted_data_1 = phantom.get_format_data(name='Format_Splunk_Search')\n\n    parameters = []\n    \n    # build parameters list for 'Find_Child_Processes' call\n    parameters.append({\n        'query': formatted_data_1,\n        'command': \"search\",\n        'display': \"\",\n        'parse_only': \"\",\n    })\n\n    phantom.act(action=\"run query\", parameters=parameters, assets=['splunk-1','splunk'], callback=Terminate_Child_Processes, name=\"Find_Child_Processes\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -993,8 +1223,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 53,
-                        "line_start": 31,
+                        "line_end": 59,
+                        "line_start": 37,
                         "message": "Configuring now",
                         "name": "run query",
                         "notes": "",
@@ -1074,8 +1304,8 @@
                         "status": "",
                         "title": "Investigate",
                         "type": "coa.Action",
-                        "warn": false,
-                        "z": 26
+                        "warn": "",
+                        "z": 32
                     },
                     {
                         "action": "terminate process",
@@ -1251,6 +1481,166 @@
                                 "product_vendor": "Microsoft",
                                 "targets": "6",
                                 "type": "endpoint"
+                            },
+                            {
+                                "action": "terminate process",
+                                "actions": [
+                                    "deactivate partition",
+                                    "test connectivity",
+                                    "run command",
+                                    "run script",
+                                    "list processes",
+                                    "activate partition",
+                                    "terminate process",
+                                    "list connections",
+                                    "list firewall rules",
+                                    "delete firewall rule",
+                                    "block ip",
+                                    "add firewall rule",
+                                    "logoff user",
+                                    "list sessions",
+                                    "shutdown system",
+                                    "restart system",
+                                    "list policies",
+                                    "block file path",
+                                    "delete policy",
+                                    "get file",
+                                    "upload file",
+                                    "copy file",
+                                    "delete file"
+                                ],
+                                "active": true,
+                                "app_name": "Windows Remote Management",
+                                "app_version": "2.0.0",
+                                "appid": "a0222b95-b006-4c9e-9578-1428defcec0f",
+                                "asset_name": "winrm",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "ip_hostname": "artifact:*.cef.destinationAddress",
+                                    "name": "",
+                                    "pid": "Find_Child_Processes:action_result.data.*.ProcessId"
+                                },
+                                "has_app": true,
+                                "id": 9,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "winrm",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip",
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "8.8.8.8"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "process name"
+                                        ],
+                                        "data_path": "action_result.parameter.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "iexplore"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "pid"
+                                        ],
+                                        "data_path": "action_result.parameter.pid",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            451
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Message",
+                                        "column_order": 0,
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Successfully terminated process"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "ip_hostname": {
+                                        "contains": [
+                                            "ip",
+                                            "host name"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP/Hostname",
+                                        "key": "ip_hostname",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": false
+                                    },
+                                    "name": {
+                                        "contains": [
+                                            "process name"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Name of program to terminate, accepts wildcards",
+                                        "key": "name",
+                                        "order": 2,
+                                        "primary": true,
+                                        "required": false
+                                    },
+                                    "pid": {
+                                        "contains": [
+                                            "pid"
+                                        ],
+                                        "data_type": "numeric",
+                                        "default": null,
+                                        "description": "The PID of the process to terminate",
+                                        "key": "pid",
+                                        "order": 1,
+                                        "primary": true,
+                                        "required": false
+                                    }
+                                },
+                                "product_name": "Windows Remote Management",
+                                "product_vendor": "Microsoft",
+                                "targets": "9",
+                                "type": "endpoint"
                             }
                         ],
                         "attrs": {
@@ -1321,7 +1711,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def Terminate_Child_Processes(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Child_Processes() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Terminate_Child_Processes' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n    results_data_1 = phantom.collect2(container=container, datapath=['Find_Child_Processes:action_result.data.*.ProcessId', 'Find_Child_Processes:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Child_Processes' call\n    for container_item in container_data:\n        for results_item_1 in results_data_1:\n            parameters.append({\n                'pid': results_item_1[0],\n                'name': \"\",\n                'ip_hostname': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['windowsrm'], name=\"Terminate_Child_Processes\", parent_action=action)\n\n    return",
+                        "block_code": "def Terminate_Child_Processes(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Child_Processes() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'Terminate_Child_Processes' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])\n    results_data_1 = phantom.collect2(container=container, datapath=['Find_Child_Processes:action_result.data.*.ProcessId', 'Find_Child_Processes:action_result.parameter.context.artifact_id'], action_results=results)\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Child_Processes' call\n    for container_item in container_data:\n        for results_item_1 in results_data_1:\n            parameters.append({\n                'pid': results_item_1[0],\n                'name': \"\",\n                'ip_hostname': container_item[0],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': results_item_1[1]},\n            })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['windowsrm','winrm'], name=\"Terminate_Child_Processes\", parent_action=action)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1346,8 +1736,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 79,
-                        "line_start": 53,
+                        "line_end": 85,
+                        "line_start": 59,
                         "message": "Configuring now",
                         "name": "terminate process",
                         "notes": "",
@@ -1425,8 +1815,8 @@
                         "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
-                        "warn": false,
-                        "z": 27
+                        "warn": "",
+                        "z": 34
                     },
                     {
                         "action": "terminate process",
@@ -1602,6 +1992,166 @@
                                 "product_vendor": "Microsoft",
                                 "targets": "6",
                                 "type": "endpoint"
+                            },
+                            {
+                                "action": "terminate process",
+                                "actions": [
+                                    "deactivate partition",
+                                    "test connectivity",
+                                    "run command",
+                                    "run script",
+                                    "list processes",
+                                    "activate partition",
+                                    "terminate process",
+                                    "list connections",
+                                    "list firewall rules",
+                                    "delete firewall rule",
+                                    "block ip",
+                                    "add firewall rule",
+                                    "logoff user",
+                                    "list sessions",
+                                    "shutdown system",
+                                    "restart system",
+                                    "list policies",
+                                    "block file path",
+                                    "delete policy",
+                                    "get file",
+                                    "upload file",
+                                    "copy file",
+                                    "delete file"
+                                ],
+                                "active": true,
+                                "app_name": "Windows Remote Management",
+                                "app_version": "2.0.0",
+                                "appid": "a0222b95-b006-4c9e-9578-1428defcec0f",
+                                "asset_name": "winrm",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "ip_hostname": "artifact:*.cef.destinationAddress",
+                                    "name": "",
+                                    "pid": "artifact:*.cef.process_id"
+                                },
+                                "has_app": true,
+                                "id": 9,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "winrm",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "ip",
+                                            "host name"
+                                        ],
+                                        "data_path": "action_result.parameter.ip_hostname",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "8.8.8.8"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "process name"
+                                        ],
+                                        "data_path": "action_result.parameter.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "iexplore"
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "pid"
+                                        ],
+                                        "data_path": "action_result.parameter.pid",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            451
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.summary",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Message",
+                                        "column_order": 0,
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Successfully terminated process"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "ip_hostname": {
+                                        "contains": [
+                                            "ip",
+                                            "host name"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "IP/Hostname",
+                                        "key": "ip_hostname",
+                                        "order": 0,
+                                        "primary": true,
+                                        "required": false
+                                    },
+                                    "name": {
+                                        "contains": [
+                                            "process name"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Name of program to terminate, accepts wildcards",
+                                        "key": "name",
+                                        "order": 2,
+                                        "primary": true,
+                                        "required": false
+                                    },
+                                    "pid": {
+                                        "contains": [
+                                            "pid"
+                                        ],
+                                        "data_type": "numeric",
+                                        "default": null,
+                                        "description": "The PID of the process to terminate",
+                                        "key": "pid",
+                                        "order": 1,
+                                        "primary": true,
+                                        "required": false
+                                    }
+                                },
+                                "product_name": "Windows Remote Management",
+                                "product_vendor": "Microsoft",
+                                "targets": "9",
+                                "type": "endpoint"
                             }
                         ],
                         "attrs": {
@@ -1669,7 +2219,7 @@
                                 "opacity": 1
                             }
                         },
-                        "block_code": "def Terminate_Process(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Process() called')\n\n    # collect data for 'Terminate_Process' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.process_id', 'artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Process' call\n    for container_item in container_data:\n        parameters.append({\n            'pid': container_item[0],\n            'name': \"\",\n            'ip_hostname': container_item[1],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[2]},\n        })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['windowsrm'], callback=Format_Splunk_Search, name=\"Terminate_Process\")\n\n    return",
+                        "block_code": "def Terminate_Process(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('Terminate_Process() called')\n\n    # collect data for 'Terminate_Process' call\n    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.process_id', 'artifact:*.cef.destinationAddress', 'artifact:*.id'])\n\n    parameters = []\n    \n    # build parameters list for 'Terminate_Process' call\n    for container_item in container_data:\n        parameters.append({\n            'pid': container_item[0],\n            'name': \"\",\n            'ip_hostname': container_item[1],\n            # context (artifact id) is added to associate results with the artifact\n            'context': {'artifact_id': container_item[2]},\n        })\n\n    phantom.act(action=\"terminate process\", parameters=parameters, assets=['windowsrm','winrm'], callback=Format_Splunk_Search, name=\"Terminate_Process\")\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": true,
@@ -1694,8 +2244,8 @@
                         "join_code": "",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 101,
-                        "line_start": 79,
+                        "line_end": 107,
+                        "line_start": 85,
                         "message": "Configuring now",
                         "name": "terminate process",
                         "notes": "",
@@ -1773,18 +2323,18 @@
                         "status": "",
                         "title": "Generic",
                         "type": "coa.Action",
-                        "warn": false,
-                        "z": 28
+                        "warn": "",
+                        "z": 35
                     }
                 ]
             },
-            "notes": ""
+            "notes": "Windows Remote Management must be enabled on the remote hosts.\n\nSplunk must be capturing process spawning, via something like Sysmon or 4688 events from the Windows event log."
         },
         "python_version": "3",
         "schema": 4,
         "version": "4.10.2.47587"
     },
-    "create_time": "2021-03-21T21:35:54.708709+00:00",
+    "create_time": "2021-03-24T21:50:58.533545+00:00",
     "draft_mode": false,
     "labels": [
         "*"
