@@ -1,5 +1,5 @@
 """
-This playbook acts on processes that have been determine to be malicious (ie spawned shells like cmd or powershell).
+This playbook acts on processes that have been determined to be malicious (ie spawned shells like cmd or powershell).
 
 It terminates these processes via  Windows Remote Management.
 
