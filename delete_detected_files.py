@@ -1,4 +1,9 @@
 """
+This playbook acts upon events where a file has been determined to be malicious (ie webshells being dropped on an end host).
+
+Before deleting the file, we run a "more' command on the file in question to extract its contents.
+
+We then run a delete on the file in question.
 """
 
 import phantom.rules as phantom
@@ -37,7 +42,7 @@ def Delete_File(action=None, success=None, container=None, results=None, handle=
             'context': {'artifact_id': inputs_item_1[1]},
         })
 
-    phantom.act(action="run command", parameters=parameters, assets=['windowsrm'], name="Delete_File")
+    phantom.act(action="run command", parameters=parameters, assets=['windowsrm','winrm'], name="Delete_File")
 
     return
 
@@ -96,7 +101,7 @@ def Gather_File_Contents(action=None, success=None, container=None, results=None
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act(action="run command", parameters=parameters, assets=['windowsrm'], callback=Format_Del_Command, name="Gather_File_Contents")
+    phantom.act(action="run command", parameters=parameters, assets=['windowsrm','winrm'], callback=Format_Del_Command, name="Gather_File_Contents")
 
     return
 
