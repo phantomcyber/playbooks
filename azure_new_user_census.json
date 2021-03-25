@@ -1,0 +1,3658 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "misc": {
+        "apps_list": [
+            "Azure AD Graph",
+            "MS Graph for Office 365",
+            "Phantom"
+        ]
+    }
+    "coa": {
+        "data": {
+            "clean": true,
+            "code_block": "",
+            "description": "Conduct a census of all the new users added to Azure Active Directory in the last week. Query both the Azure AD Graph API and the Office 365 Graph API to identify user accounts that can be managed in both.",
+            "hash": "9f681f3524fe188a0376dba27b13068b2ef0f569",
+            "joint": {
+                "cells": [
+                    {
+                        "0": "S",
+                        "1": "T",
+                        "2": "A",
+                        "3": "R",
+                        "4": "T",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "ref-x": 33,
+                                "ref-y": 8,
+                                "text": "START"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "ref-x": 13,
+                                "xlink:href": "/inc/coa/img/block_icon_start.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            }
+                        },
+                        "block_code": "def on_start(container):\n    phantom.debug('on_start() called')\n    \n    # call 'list_users_azure_ad' block\n    list_users_azure_ad(container=container)\n\n    # call 'cf_community_datetime_modify_1' block\n    cf_community_datetime_modify_1(container=container)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "cdd576a4-12a8-419c-af1b-52916c5777c9",
+                        "inPorts": [],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 19,
+                        "line_start": 8,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "order": 1,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 100,
+                            "y": 100
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 54,
+                            "width": 80
+                        },
+                        "status": "",
+                        "title": "START",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 1
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "97565c59-1d4f-4cba-9753-ea496c8d5e41",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "cdd576a4-12a8-419c-af1b-52916c5777c9",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "cb2793f7-01d5-424e-afc9-c3b8cc75f986",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 3
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "61fd3b92-84e4-4060-8c57-341360a94193",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "cdd576a4-12a8-419c-af1b-52916c5777c9",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "6ae781bf-033d-42f2-b87e-c04263129a8b",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 6
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "9867920c-f2e6-498f-a566-7da25a096801",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "cb2793f7-01d5-424e-afc9-c3b8cc75f986",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "df5a2046-7b50-49fb-b195-a17819699995",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 8
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "37bbcfcd-1af8-48ee-8e0c-dc94ce4a866f",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "6ae781bf-033d-42f2-b87e-c04263129a8b",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "df5a2046-7b50-49fb-b195-a17819699995",
+                            "port": "in",
+                            "selector": "> g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 10
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "57babe76-bd70-4304-98f5-6beb33f0c5ab",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "df5a2046-7b50-49fb-b195-a17819699995",
+                            "port": "out-1",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "249c5bd4-3502-4355-b041-d059435be625",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 21
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "f1c0694d-b90d-440c-9f7c-18fa9b2b592a",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "249c5bd4-3502-4355-b041-d059435be625",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "c6f75c62-d33e-43b8-9ef7-78e6120d5219",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 28
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "0d2e326e-b88f-4dd8-a05c-6fa6e654740d",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "c6f75c62-d33e-43b8-9ef7-78e6120d5219",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "c3de7f36-2981-461a-a4cb-4d75091b6b37",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 34
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "83a260d1-f193-49ae-a66f-c50f1c333a3e",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "c3de7f36-2981-461a-a4cb-4d75091b6b37",
+                            "port": "out-1",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "61926bc8-2f68-473c-95eb-481e9e295688",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 36
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "2cf585ba-dc6e-4a04-a16e-6e15d3ba0241",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "61926bc8-2f68-473c-95eb-481e9e295688",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "3ffdad0f-e633-4a3f-9846-9a086ec8dc5c",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 38
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "12c95a11-ccce-4a41-a28d-50751fbfa745",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "c3de7f36-2981-461a-a4cb-4d75091b6b37",
+                            "port": "out-1",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "96837281-1e66-4b60-b08e-6362b53b120e",
+                            "selector": ".port-body[type=\"input\"]"
+                        },
+                        "type": "link",
+                        "z": 55
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "8f60cb64-a76b-4c37-b06a-4f6ffaec809b",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "3ffdad0f-e633-4a3f-9846-9a086ec8dc5c",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "d07f6122-3993-4b9a-bfdc-cacf7535bb2f",
+                            "selector": "> g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 58
+                    },
+                    {
+                        "0": "E",
+                        "1": "N",
+                        "2": "D",
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".title": {
+                                "text": "END"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_end.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            }
+                        },
+                        "block_code": "def on_finish(container, summary):\n    phantom.debug('on_finish() called')\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    return",
+                        "callback_code": "# read-only block view not available",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "list users ms graph, save user artifacts",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "d07f6122-3993-4b9a-bfdc-cacf7535bb2f",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "# read-only block view not available",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 277,
+                        "line_start": 264,
+                        "name": "",
+                        "notes": "",
+                        "number": 0,
+                        "order": 11,
+                        "outPorts": [],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1760,
+                            "y": 240
+                        },
+                        "previous_function": "",
+                        "previous_name": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 54,
+                            "width": 80
+                        },
+                        "status": "",
+                        "title": "END",
+                        "type": "coa.StartEnd",
+                        "warn": false,
+                        "z": 59
+                    },
+                    {
+                        "attrs": {
+                            ".connection": {
+                                "stroke": "#818D99",
+                                "stroke-width": 2
+                            },
+                            ".marker-target": {
+                                "d": "M 10 0 L 0 5 L 10 10 z",
+                                "fill": "#818D99",
+                                "stroke": "#818D99"
+                            }
+                        },
+                        "connector": {
+                            "args": {
+                                "radius": 5
+                            },
+                            "name": "rounded"
+                        },
+                        "endDirections": [
+                            "left"
+                        ],
+                        "id": "2963b525-5871-4633-a44a-998cef456343",
+                        "router": {
+                            "name": "metro"
+                        },
+                        "source": {
+                            "id": "96837281-1e66-4b60-b08e-6362b53b120e",
+                            "selector": "> g:nth-child(1) > g:nth-child(2) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "startDirections": [
+                            "right"
+                        ],
+                        "target": {
+                            "id": "d07f6122-3993-4b9a-bfdc-cacf7535bb2f",
+                            "selector": "> g:nth-child(1) > g:nth-child(1) > g:nth-child(1) > circle:nth-child(1)"
+                        },
+                        "type": "link",
+                        "z": 60
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".format": {
+                                "text": "format graph filter"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "def format_graph_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_graph_filter() called')\n    \n    template = \"\"\"%%\nuserPrincipalName eq '{0}'\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:new_user_filter:condition_1:list_users_azure_ad:action_result.data.*.userPrincipalName\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_graph_filter\")\n\n    list_users_ms_graph(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "list users azure ad, datetime_modify",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "format graph filter",
+                        "description": "Format a $filter for Microsoft Graph to match the userPrincipalName",
+                        "format": "format",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "249c5bd4-3502-4355-b041-d059435be625",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 130,
+                        "line_start": 112,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "Format a $filter for Microsoft Graph to match the userPrincipalName",
+                        "number": 2,
+                        "order": 5,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": "filtered-data:new_user_filter:condition_1:list_users_azure_ad:action_result.data.*.userPrincipalName"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 640,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "format_graph_filter",
+                        "show_number": true,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "%%\nuserPrincipalName eq '{0}'\n%%",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 96
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773",
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 2
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "def match_users(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('match_users() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"list_users_ms_graph:action_result.data.*.userPrincipalName\", \"==\", \"list_users_azure_ad:action_result.data.*.userPrincipalName\"],\n        ],\n        name=\"match_users:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        format_note(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n        save_user_artifacts(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "list users ms graph",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "match users",
+                        "description": "Match the userPrincipalName fields from the Azure AD API and the MS Graph API to collect matching records from both",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "c3de7f36-2981-461a-a4cb-4d75091b6b37",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 176,
+                        "line_start": 157,
+                        "name": "filter",
+                        "notes": "Match the userPrincipalName fields from the Azure AD API and the MS Graph API to collect matching records from both",
+                        "number": 2,
+                        "order": 7,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": "==",
+                                        "data_type": "",
+                                        "param": "list_users_ms_graph:action_result.data.*.userPrincipalName",
+                                        "value": "list_users_azure_ad:action_result.data.*.userPrincipalName"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1120,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "match_users",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "filter",
+                        "status": "",
+                        "type": "coa.Filter",
+                        "warn": false,
+                        "z": 98
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "api": "add note",
+                        "attrs": {
+                            ".api": {
+                                "text": "add note"
+                            },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "API"
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "def add_note_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('add_note_3() called')\n\n    formatted_data_1 = phantom.get_format_data(name='format_note')\n\n    note_title = \"Azure New User Census\"\n    note_content = formatted_data_1\n    note_format = \"markdown\"\n    phantom.add_note(container=container, note_type=\"general\", title=note_title, content=note_content, note_format=note_format)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "color": "",
+                        "configured": [
+                            {
+                                "addNoteContent": "format_note:formatted_data",
+                                "addNoteNoteFormat": "markdown",
+                                "addNoteTitle": "Azure New User Census",
+                                "key": "add-note"
+                            }
+                        ],
+                        "connected_to_start": true,
+                        "connection_name": "list users ms graph",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "description": "Post the note to the investigation",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "3ffdad0f-e633-4a3f-9846-9a086ec8dc5c",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 228,
+                        "line_start": 216,
+                        "message": "Configuring now",
+                        "name": "add note",
+                        "notes": "Post the note to the investigation",
+                        "number": 3,
+                        "order": 9,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1500,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "add_note_3",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "api",
+                        "status": "",
+                        "title": "API",
+                        "type": "coa.API",
+                        "warn": false,
+                        "z": 100
+                    },
+                    {
+                        ".scmName/text": "community",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {},
+                        "amount_to_modify-3": "-7",
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".customFunction": {
+                                "text": "datetime_modify"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".scmName": {
+                                "text": "community"
+                            },
+                            ".title": {
+                                "text": "custom function"
+                            },
+                            ".title-info": {
+                                "text": ""
+                            },
+                            "g.branch image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "def cf_community_datetime_modify_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('cf_community_datetime_modify_1() called')\n    \n    literal_values_0 = [\n        [\n            -7,\n            \"days\",\n            \"%Y-%m-%dT%H:%M:%SZ\",\n        ],\n    ]\n\n    parameters = []\n\n    for item0 in literal_values_0:\n        parameters.append({\n            'input_datetime': None,\n            'amount_to_modify': item0[0],\n            'modification_unit': item0[1],\n            'input_format_string': None,\n            'output_format_string': item0[2],\n        })\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################    \n\n    # call custom function \"community/datetime_modify\", returns the custom_function_run_id\n    phantom.custom_function(custom_function='community/datetime_modify', parameters=parameters, name='cf_community_datetime_modify_1', callback=join_new_user_filter)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "cfDisplayPath": "community/datetime_modify",
+                        "cfInputs": {
+                            "amount_to_modify": {
+                                "collectionType": "literal_values",
+                                "dataPath": "-7",
+                                "paramName": "item0[0]",
+                                "type": "item"
+                            },
+                            "input_datetime": {
+                                "dataPath": "",
+                                "type": "item"
+                            },
+                            "input_format_string": {
+                                "dataPath": "",
+                                "type": "item"
+                            },
+                            "modification_unit": {
+                                "collectionType": "literal_values",
+                                "dataPath": "days",
+                                "paramName": "item0[1]",
+                                "type": "item"
+                            },
+                            "output_format_string": {
+                                "collectionType": "literal_values",
+                                "dataPath": "%Y-%m-%dT%H:%M:%SZ",
+                                "paramName": "item0[2]",
+                                "type": "item"
+                            }
+                        },
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "currentVersion": true,
+                        "customCodeEndLineOffset": 7,
+                        "customCodeStartLine": 24,
+                        "customFunction": "community/datetime_modify",
+                        "customFunctionId": null,
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "",
+                        "delay": 0,
+                        "description": "Create a time stamp to compare against for finding new users. Change the amount_to_modify to adjust the number of days to look back.",
+                        "draftMode": false,
+                        "existingCF": true,
+                        "functionBlock": "custom function",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "6ae781bf-033d-42f2-b87e-c04263129a8b",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 77,
+                        "line_start": 41,
+                        "message": "Configuring now",
+                        "modification_unit-2": "days",
+                        "name": "datetime_modify",
+                        "notes": "Create a time stamp to compare against for finding new users. Change the amount_to_modify to adjust the number of days to look back.",
+                        "number": 1,
+                        "order": 3,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "output_format_string-4": "%Y-%m-%dT%H:%M:%SZ",
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 240,
+                            "y": 220
+                        },
+                        "previous_function": "",
+                        "previous_name": "cf_community_datetime_modify_1",
+                        "selectedCustomFunction": {
+                            "description": "Change a timestamp by adding or subtracting minutes, hours, or days.",
+                            "draftMode": false,
+                            "id": 1,
+                            "inputs": [
+                                {
+                                    "_pretty_custom_function": "datetime_modify",
+                                    "contains_type": [
+                                        ""
+                                    ],
+                                    "custom_function": 1,
+                                    "description": "The datetime to modify, which should be provided in a string format determined by input_format_string",
+                                    "id": 1,
+                                    "input_type": "item",
+                                    "name": "input_datetime",
+                                    "placeholder": "2020-06-27T14:53:08.219016Z"
+                                },
+                                {
+                                    "_pretty_custom_function": "datetime_modify",
+                                    "contains_type": [],
+                                    "custom_function": 1,
+                                    "description": "The format string to use for the input according to the Python's datetime.strptime() formatting rules. If none is provided the default will be '%Y-%m-%dT%H:%M:%S.%fZ'",
+                                    "id": 2,
+                                    "input_type": "item",
+                                    "name": "input_format_string",
+                                    "placeholder": "%Y-%m-%dT%H:%M:%S.%fZ"
+                                },
+                                {
+                                    "_pretty_custom_function": "datetime_modify",
+                                    "contains_type": [
+                                        ""
+                                    ],
+                                    "custom_function": 1,
+                                    "description": "Choose a unit to modify the date by, which must be either seconds, minutes, hours, or days. If none is provided the default will be 'minutes'",
+                                    "id": 3,
+                                    "input_type": "item",
+                                    "name": "modification_unit",
+                                    "placeholder": "minutes"
+                                },
+                                {
+                                    "_pretty_custom_function": "datetime_modify",
+                                    "contains_type": [],
+                                    "custom_function": 1,
+                                    "description": "The number of seconds, minutes, hours, or days to add or subtract. Use a negative number such as -1.5 to subtract time. Defaults to zero.",
+                                    "id": 4,
+                                    "input_type": "item",
+                                    "name": "amount_to_modify",
+                                    "placeholder": "0"
+                                },
+                                {
+                                    "_pretty_custom_function": "datetime_modify",
+                                    "contains_type": [],
+                                    "custom_function": 1,
+                                    "description": "The format string to use for the output according to the Python's datetime.strftime() formatting rules. If none is provided the default will be '%Y-%m-%dT%H:%M:%S.%fZ'",
+                                    "id": 5,
+                                    "input_type": "item",
+                                    "name": "output_format_string",
+                                    "placeholder": "%Y-%m-%dT%H:%M:%S.%fZ"
+                                }
+                            ],
+                            "name": "datetime_modify",
+                            "outputs": [
+                                {
+                                    "_pretty_custom_function": "datetime_modify",
+                                    "contains_type": [],
+                                    "custom_function": 1,
+                                    "data_path": "datetime_string",
+                                    "description": "The output datetime as formatted by the given output_format_string using Python's datetime.strftime()",
+                                    "id": 1
+                                },
+                                {
+                                    "_pretty_custom_function": "datetime_modify",
+                                    "contains_type": [],
+                                    "custom_function": 1,
+                                    "data_path": "epoch_time",
+                                    "description": "An integer representing the output time as a number of seconds since January 1 1970 assuming a naive UTC timezone. This is easier to use for comparisons to other epoch timestamps.",
+                                    "id": 2
+                                },
+                                {
+                                    "_pretty_custom_function": "datetime_modify",
+                                    "contains_type": [],
+                                    "custom_function": 1,
+                                    "data_path": "seconds_modified",
+                                    "description": "The number of seconds (positive or negative) by which the input was modified",
+                                    "id": 3
+                                }
+                            ],
+                            "playbooks": {
+                                "draft_playbooks": [],
+                                "draft_version_id": null,
+                                "playbooks": [
+                                    {
+                                        "active": false,
+                                        "display_path": "community/aws_find_inactive_users",
+                                        "draft_mode": false,
+                                        "id": 6,
+                                        "name": "aws_find_inactive_users",
+                                        "viewable": true
+                                    },
+                                    {
+                                        "active": false,
+                                        "display_path": "community/corelight_investigate_dns_alert",
+                                        "draft_mode": false,
+                                        "id": 83,
+                                        "name": "corelight_investigate_dns_alert",
+                                        "viewable": true
+                                    }
+                                ]
+                            },
+                            "scmId": 1,
+                            "scmName": "community"
+                        },
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "repo",
+                        "status": "",
+                        "title": "custom function",
+                        "type": "coa.CustomFunctionBlock",
+                        "userGeneratedCode": "    # Write your custom code here...",
+                        "warn": false,
+                        "z": 102
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773",
+                                "transform": "rotate(45 30 70)"
+                            },
+                            ".inPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".number": {
+                                "text": 1
+                            },
+                            ".outPorts>.port-0": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                },
+                                "ref-x": 83,
+                                "ref-y": 40
+                            },
+                            ".outPorts>.port-0>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "def new_user_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('new_user_filter() called')\n\n    # collect filtered artifact ids for 'if' condition 1\n    matched_artifacts_1, matched_results_1 = phantom.condition(\n        container=container,\n        action_results=results,\n        conditions=[\n            [\"list_users_azure_ad:action_result.data.*.createdDateTime\", \">=\", \"cf_community_datetime_modify_1:custom_function_result.data.datetime_string\"],\n        ],\n        name=\"new_user_filter:condition_1\")\n\n    # call connected blocks if filtered artifacts or results\n    if matched_artifacts_1 or matched_results_1:\n        format_graph_filter(action=action, success=success, container=container, results=results, handle=handle, custom_function=custom_function, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "list users azure ad, datetime_modify",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "new_user_filter",
+                        "description": "Filter on users created recently using the createdDateTime field",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "df5a2046-7b50-49fb-b195-a17819699995",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "def join_new_user_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None):\n    phantom.debug('join_new_user_filter() called')\n\n    # check if all connected incoming playbooks, actions, or custom functions are done i.e. have succeeded or failed\n    if phantom.completed(action_names=['list_users_azure_ad'], custom_function_names=['cf_community_datetime_modify_1']):\n        \n        # call connected block \"new_user_filter\"\n        new_user_filter(container=container, handle=handle)\n    \n    return",
+                        "join_optional": [],
+                        "join_start": 98,
+                        "line_end": 109,
+                        "line_start": 80,
+                        "name": "filter",
+                        "notes": "Filter on users created recently using the createdDateTime field",
+                        "number": 1,
+                        "order": 4,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "outputs": [
+                            {
+                                "conditions": [
+                                    {
+                                        "comparison": ">=",
+                                        "data_type": "",
+                                        "param": "list_users_azure_ad:action_result.data.*.createdDateTime",
+                                        "value": "cf_community_datetime_modify_1:custom_function_result.data.datetime_string"
+                                    }
+                                ],
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 500,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "new_user_filter",
+                        "show_number": true,
+                        "size": {
+                            "height": 82,
+                            "width": 82
+                        },
+                        "state": "filter",
+                        "status": "",
+                        "type": "coa.Filter",
+                        "warn": false,
+                        "z": 103
+                    },
+                    {
+                        "action": "add artifact",
+                        "action_type": "generic",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "cef_dictionary": "",
+                            "cef_name": "userPrincipalName",
+                            "cef_value": "filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.userPrincipalName",
+                            "container_id": "container:id",
+                            "contains": "azure user principal name",
+                            "label": "user",
+                            "name": "New Azure User",
+                            "run_automation": "False",
+                            "source_data_identifier": "filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.id"
+                        },
+                        "angle": 0,
+                        "app": "Phantom",
+                        "appid": "deb82aa9-22cc-4675-9cf1-534b8d006eb7",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "add artifact",
+                                "actions": [
+                                    "no op",
+                                    "update list",
+                                    "get action result",
+                                    "create container",
+                                    "import container",
+                                    "export container",
+                                    "deflate item",
+                                    "add artifact",
+                                    "find listitem",
+                                    "add listitem",
+                                    "find artifacts",
+                                    "update artifact tags",
+                                    "add note",
+                                    "update artifact",
+                                    "test connectivity"
+                                ],
+                                "active": true,
+                                "app_name": "Phantom",
+                                "app_version": "3.1.2",
+                                "appid": "deb82aa9-22cc-4675-9cf1-534b8d006eb7",
+                                "asset_name": "phantom",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "cef_dictionary": "",
+                                    "cef_name": "userPrincipalName",
+                                    "cef_value": "filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.userPrincipalName",
+                                    "container_id": "container:id",
+                                    "contains": "azure user principal name",
+                                    "label": "user",
+                                    "name": "New Azure User",
+                                    "run_automation": "False",
+                                    "source_data_identifier": "filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.id"
+                                },
+                                "has_app": true,
+                                "id": 15,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "phantom",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.cef_dictionary",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "{\"test_key\": \"test_value\"}"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.cef_name",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "*"
+                                        ],
+                                        "data_path": "action_result.parameter.cef_value",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "phantom container id"
+                                        ],
+                                        "data_path": "action_result.parameter.container_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1234
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.contains",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "domain"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.label",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "event"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.name",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Artifact_demo"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.run_automation",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.source_data_identifier",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.existing_artifact_id",
+                                        "data_type": "numeric"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.failed",
+                                        "data_type": "boolean"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            123
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.success",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.artifact_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            12345
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.container_id",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1234
+                                        ]
+                                    },
+                                    {
+                                        "contains": [
+                                            "url"
+                                        ],
+                                        "data_path": "action_result.summary.server",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "https://10.1.1.10"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Artifact id: 12345, Container id: 1234, Server: https://10.1.1.10"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "cef_dictionary": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "CEF JSON",
+                                        "key": "cef_dictionary",
+                                        "order": 6,
+                                        "required": false
+                                    },
+                                    "cef_name": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "CEF Name",
+                                        "key": "cef_name",
+                                        "order": 4,
+                                        "required": false,
+                                        "value_list": [
+                                            "act",
+                                            "app",
+                                            "applicationProtocol",
+                                            "baseEventCount",
+                                            "bytesIn",
+                                            "bytesOut",
+                                            "cat",
+                                            "cn1",
+                                            "cn1Label",
+                                            "cn2",
+                                            "cn2Label",
+                                            "cn3",
+                                            "cn3Label",
+                                            "cnt",
+                                            "cs1",
+                                            "cs1Label",
+                                            "cs2",
+                                            "cs2Label",
+                                            "cs3",
+                                            "cs3Label",
+                                            "cs4",
+                                            "cs4Label",
+                                            "cs5",
+                                            "cs5Label",
+                                            "cs6",
+                                            "cs6Label",
+                                            "destinationAddress",
+                                            "destinationDnsDomain",
+                                            "destinationHostName",
+                                            "destinationMacAddress",
+                                            "destinationNtDomain",
+                                            "destinationPort",
+                                            "destinationProcessName",
+                                            "destinationServiceName",
+                                            "destinationTranslatedAddress",
+                                            "destinationTranslatedPort",
+                                            "destinationUserId",
+                                            "destinationUserName",
+                                            "destinationUserPrivileges",
+                                            "deviceAction",
+                                            "deviceAddress",
+                                            "deviceCustomDate1",
+                                            "deviceCustomDate1Label",
+                                            "deviceCustomDate2",
+                                            "deviceCustomDate2Label",
+                                            "deviceCustomNumber1",
+                                            "deviceCustomNumber1Label",
+                                            "deviceCustomNumber2",
+                                            "deviceCustomNumber2Label",
+                                            "deviceCustomNumber3",
+                                            "deviceCustomNumber3Label",
+                                            "deviceCustomString1",
+                                            "deviceCustomString1Label",
+                                            "deviceCustomString2",
+                                            "deviceCustomString2Label",
+                                            "deviceCustomString3",
+                                            "deviceCustomString3Label",
+                                            "deviceCustomString4",
+                                            "deviceCustomString4Label",
+                                            "deviceCustomString5",
+                                            "deviceCustomString5Label",
+                                            "deviceCustomString6",
+                                            "deviceCustomString6Label",
+                                            "deviceDirection",
+                                            "deviceDnsDomain",
+                                            "deviceEventCategory",
+                                            "deviceExternalId",
+                                            "deviceFacility",
+                                            "deviceHostname",
+                                            "deviceInboundInterface",
+                                            "deviceMacAddress",
+                                            "deviceOutboundInterface",
+                                            "deviceProcessName",
+                                            "deviceTranslatedAddress",
+                                            "dhost",
+                                            "dmac",
+                                            "dntdom",
+                                            "dpriv",
+                                            "dproc",
+                                            "dpt",
+                                            "dst",
+                                            "duid",
+                                            "duser",
+                                            "dvc",
+                                            "dvchost",
+                                            "end",
+                                            "endTime",
+                                            "eventOutcome",
+                                            "externalId",
+                                            "fileCreateTime",
+                                            "fileHash",
+                                            "fileHashMd5",
+                                            "fileHashSha1",
+                                            "fileHashSha256",
+                                            "fileHashSha512",
+                                            "fileId",
+                                            "fileModificationTime",
+                                            "fileName",
+                                            "filePath",
+                                            "filePermission",
+                                            "fileSize",
+                                            "fileType",
+                                            "fname",
+                                            "fsize",
+                                            "in",
+                                            "message",
+                                            "msg",
+                                            "oldfileCreateTime",
+                                            "oldfileHash",
+                                            "oldfileId",
+                                            "oldfileModificationTime",
+                                            "oldfileName",
+                                            "oldfilePath",
+                                            "oldfilePermission",
+                                            "oldfileType",
+                                            "oldfsize",
+                                            "out",
+                                            "outcome",
+                                            "proto",
+                                            "receiptTime",
+                                            "request",
+                                            "requestClientApplication",
+                                            "requestCookies",
+                                            "requestMethod",
+                                            "requestURL",
+                                            "rt",
+                                            "shost",
+                                            "smac",
+                                            "sntdom",
+                                            "sourceAddress",
+                                            "sourceDnsDomain",
+                                            "sourceHostName",
+                                            "sourceMacAddress",
+                                            "sourceNtDomain",
+                                            "sourcePort",
+                                            "sourceServiceName",
+                                            "sourceTranslatedAddress",
+                                            "sourceTranslatedPort",
+                                            "sourceUserId",
+                                            "sourceUserName",
+                                            "sourceUserPrivileges",
+                                            "spriv",
+                                            "spt",
+                                            "src",
+                                            "start",
+                                            "startTime",
+                                            "suid",
+                                            "suser",
+                                            "transportProtocol"
+                                        ]
+                                    },
+                                    "cef_value": {
+                                        "contains": [
+                                            "*"
+                                        ],
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Value",
+                                        "key": "cef_value",
+                                        "order": 5,
+                                        "primary": true,
+                                        "required": false
+                                    },
+                                    "container_id": {
+                                        "contains": [
+                                            "phantom container id"
+                                        ],
+                                        "data_type": "numeric",
+                                        "default": null,
+                                        "description": "Numeric container ID for the new artifact",
+                                        "key": "container_id",
+                                        "order": 1,
+                                        "primary": true,
+                                        "required": false
+                                    },
+                                    "contains": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Data type for each CEF field",
+                                        "key": "contains",
+                                        "order": 7,
+                                        "required": false
+                                    },
+                                    "label": {
+                                        "data_type": "string",
+                                        "default": "event",
+                                        "description": "Artifact label (default: event)",
+                                        "key": "label",
+                                        "order": 2,
+                                        "required": false
+                                    },
+                                    "name": {
+                                        "data_type": "string",
+                                        "default": "User created artifact",
+                                        "description": "Name of the new artifact",
+                                        "key": "name",
+                                        "order": 0,
+                                        "required": false
+                                    },
+                                    "run_automation": {
+                                        "data_type": "boolean",
+                                        "default": true,
+                                        "description": "Run automation on newly created artifact(s) (default: true)",
+                                        "key": "run_automation",
+                                        "order": 8,
+                                        "required": false
+                                    },
+                                    "source_data_identifier": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Source Data Idenitifier",
+                                        "key": "source_data_identifier",
+                                        "order": 3,
+                                        "required": true
+                                    }
+                                },
+                                "product_name": "Phantom",
+                                "product_vendor": "Phantom",
+                                "targets": "15",
+                                "type": "information"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "save user artifacts"
+                            },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Generic"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_generic.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
+                            }
+                        },
+                        "block_code": "def save_user_artifacts(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('save_user_artifacts() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    id_value = container.get('id', None)\n\n    # collect data for 'save_user_artifacts' call\n    filtered_results_data_1 = phantom.collect2(container=container, datapath=[\"filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.userPrincipalName\", \"filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.id\", \"filtered-data:match_users:condition_1:list_users_ms_graph:action_result.parameter.context.artifact_id\"])\n\n    parameters = []\n    \n    # build parameters list for 'save_user_artifacts' call\n    for filtered_results_item_1 in filtered_results_data_1:\n        if filtered_results_item_1[1]:\n            parameters.append({\n                'name': \"New Azure User\",\n                'label': \"user\",\n                'cef_name': \"userPrincipalName\",\n                'contains': \"azure user principal name\",\n                'cef_value': filtered_results_item_1[0],\n                'container_id': id_value,\n                'cef_dictionary': \"\",\n                'run_automation': False,\n                'source_data_identifier': filtered_results_item_1[1],\n                # context (artifact id) is added to associate results with the artifact\n                'context': {'artifact_id': filtered_results_item_1[2]},\n            })\n\n    phantom.act(action=\"add artifact\", parameters=parameters, assets=['phantom'], name=\"save_user_artifacts\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "list users ms graph",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "save user artifacts",
+                        "delay": 0,
+                        "description": "Save the userPrincipalName of each user as an artifact to allow further investigation and remediation",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "96837281-1e66-4b60-b08e-6362b53b120e",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 264,
+                        "line_start": 231,
+                        "message": "Configuring now",
+                        "name": "add artifact",
+                        "notes": "Save the userPrincipalName of each user as an artifact to allow further investigation and remediation",
+                        "number": 1,
+                        "order": 10,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1260,
+                            "y": 220
+                        },
+                        "previous_function": "",
+                        "previous_name": "save_user_artifacts",
+                        "required_params": {
+                            "source_data_identifier": true
+                        },
+                        "reviewer": "",
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Generic",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 106
+                    },
+                    {
+                        "action": "list users",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "filter_string": ""
+                        },
+                        "angle": 0,
+                        "app": "Azure AD Graph",
+                        "appid": "c6d3b801-5c26-4abd-9e89-6d8007e2778f",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "list users",
+                                "actions": [
+                                    "list directory roles",
+                                    "validate group",
+                                    "list group members",
+                                    "get group",
+                                    "list groups",
+                                    "add user",
+                                    "remove user",
+                                    "set user attribute",
+                                    "list user attributes",
+                                    "disable user",
+                                    "enable user",
+                                    "disable tokens",
+                                    "reset password",
+                                    "list users",
+                                    "test connectivity"
+                                ],
+                                "active": true,
+                                "app_name": "Azure AD Graph",
+                                "app_version": "2.0.13",
+                                "appid": "c6d3b801-5c26-4abd-9e89-6d8007e2778f",
+                                "asset_name": "azure_ad_graph",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "filter_string": ""
+                                },
+                                "has_app": true,
+                                "id": 11,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "azure_ad_graph",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.filter_string",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "startswith(displayName,'User')"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.accountEnabled",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.ageGroup",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.assignedLicenses.*.skuId",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "189a915c-fe4f-4ffa-bde4-85b9628d07a0"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.assignedPlans.*.assignedTimestamp",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2017-08-29T02:31:40Z"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.assignedPlans.*.capabilityStatus",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Enabled"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.assignedPlans.*.service",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "OfficeForms"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.assignedPlans.*.servicePlanId",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "e212cbc7-0961-4c40-9825-01117710dcb1"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.city",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Palo Alto"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.companyName",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.consentProvidedForMinor",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.country",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "US"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.createdDateTime",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2019-05-21T22:27:20Z"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.creationType",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.deletionTimestamp",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.department",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Sales"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.dirSyncEnabled",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Display Name",
+                                        "column_order": 0,
+                                        "data_path": "action_result.data.*.displayName",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "User"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.employeeId",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.facsimileTelephoneNumber",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.givenName",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "testuser"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.immutableId",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.isCompromised",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.jobTitle",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Sales Manager"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.lastDirSyncTime",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.legalAgeGroupClassification",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.data.*.mail",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "user@test.onmicrosoft.com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.mailNickname",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "testmail"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.mobile",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "+1 5556378688"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Object ID",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "azure object id"
+                                        ],
+                                        "data_path": "action_result.data.*.objectId",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "e4c722ac-3b83-478d-8f52-c388885dc30f"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.objectType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "User"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.odata.type",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Microsoft.DirectoryServices.User"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.onPremisesDistinguishedName",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.onPremisesSecurityIdentifier",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.data.*.otherMails",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "user.test@outlook.com",
+                                            "user@test.us"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.passwordPolicies",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "None"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.passwordProfile",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.passwordProfile.enforceChangePasswordPolicy",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.passwordProfile.forceChangePasswordNextLogin",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.passwordProfile.password",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.physicalDeliveryOfficeName",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.postalCode",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "94303"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.preferredLanguage",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "en-US"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.provisionedPlans.*.capabilityStatus",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Enabled"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.provisionedPlans.*.provisioningStatus",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Success"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.provisionedPlans.*.service",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "exchange"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.proxyAddresses",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "SMTP:user1@test.onmicrosoft.com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.refreshTokensValidFromDateTime",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2017-09-27T22:54:59Z",
+                                            "2018-01-10T22:18:17Z"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.showInAddressList",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.data.*.sipProxyAddress",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "user@test.onmicrosoft.com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.state",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "CA"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.streetAddress",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2479 E. Bayshore Rd."
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.surname",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Test_surname"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.telephoneNumber",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.thumbnailPhoto@odata.mediaEditLink",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "directoryObjects/6132ca31-7a09-434f-a269-abe836d0c01e/Microsoft.DirectoryServices.User/thumbnailPhoto"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.usageLocation",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "US"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "User Principal Name",
+                                        "column_order": 2,
+                                        "contains": [
+                                            "email",
+                                            "azure user principal name"
+                                        ],
+                                        "data_path": "action_result.data.*.userPrincipalName",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "user@test.onmicrosoft.com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.userState",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.userStateChangedOn",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.userType",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Member"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.num_users",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            8
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.result_found",
+                                        "data_type": "boolean",
+                                        "example_values": [
+                                            true,
+                                            false
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.total_results",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            7
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Successfully listed users"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "filter_string": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Filter string to apply to user listing",
+                                        "key": "filter_string",
+                                        "order": 0,
+                                        "required": false
+                                    }
+                                },
+                                "product_name": "Azure AD Graph",
+                                "product_vendor": "Microsoft",
+                                "targets": "11",
+                                "type": "identity management"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "list users azure ad"
+                            },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
+                            }
+                        },
+                        "block_code": "def list_users_azure_ad(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('list_users_azure_ad() called')\n\n    # collect data for 'list_users_azure_ad' call\n\n    parameters = []\n    \n    # build parameters list for 'list_users_azure_ad' call\n    parameters.append({\n        'filter_string': \"\",\n    })\n\n    phantom.act(action=\"list users\", parameters=parameters, assets=['azure_ad_graph'], callback=join_new_user_filter, name=\"list_users_azure_ad\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "list users azure ad",
+                        "delay": 0,
+                        "description": "List all users in Azure AD",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "cb2793f7-01d5-424e-afc9-c3b8cc75f986",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 38,
+                        "line_start": 22,
+                        "message": "Configuring now",
+                        "name": "list users",
+                        "notes": "List all users in Azure AD",
+                        "number": 1,
+                        "order": 2,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 240,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "list_users_azure_ad",
+                        "required_params": {},
+                        "reviewer": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 107
+                    },
+                    {
+                        "action": "list users",
+                        "action_type": "investigate",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {
+                            "filter": "format_graph_filter:formatted_data.*",
+                            "limit": ""
+                        },
+                        "angle": 0,
+                        "app": "MS Graph for Office 365",
+                        "appid": "0a0a4087-10e8-4c96-9872-b740ff26d8bb",
+                        "approver": "",
+                        "assets": [
+                            {
+                                "action": "list users",
+                                "actions": [
+                                    "get folder id",
+                                    "create folder",
+                                    "run query",
+                                    "get email properties",
+                                    "get email",
+                                    "delete email",
+                                    "move email",
+                                    "copy email",
+                                    "list folders",
+                                    "list groups",
+                                    "list users",
+                                    "list events",
+                                    "oof check",
+                                    "generate token",
+                                    "test connectivity"
+                                ],
+                                "active": true,
+                                "app_name": "MS Graph for Office 365",
+                                "app_version": "2.1.3",
+                                "appid": "0a0a4087-10e8-4c96-9872-b740ff26d8bb",
+                                "asset_name": "ms_graph_o365",
+                                "config_type": "asset",
+                                "count": 0,
+                                "fields": {
+                                    "filter": "format_graph_filter:formatted_data.*",
+                                    "limit": ""
+                                },
+                                "has_app": true,
+                                "id": 12,
+                                "loaded": false,
+                                "missing": false,
+                                "name": "ms_graph_o365",
+                                "output": [
+                                    {
+                                        "data_path": "action_result.status",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "success",
+                                            "failed"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.filter",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "displayName eq 'User Name'"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.parameter.limit",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            20
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.businessPhones",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "2056120271"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Display Name",
+                                        "column_order": 2,
+                                        "data_path": "action_result.data.*.displayName",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Test Admin"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "Given Name",
+                                        "column_order": 3,
+                                        "data_path": "action_result.data.*.givenName",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Test"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "User ID",
+                                        "column_order": 0,
+                                        "contains": [
+                                            "msgoffice365 user id"
+                                        ],
+                                        "data_path": "action_result.data.*.id",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "6132ca31-7a09-434f-a269-abe836d0c01e"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.jobTitle",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "contains": [
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.data.*.mail",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "test@testdomain.onmicrosoft.com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.mobilePhone",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.officeLocation",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "data_path": "action_result.data.*.preferredLanguage",
+                                        "data_type": "string"
+                                    },
+                                    {
+                                        "column_name": "Surname",
+                                        "column_order": 4,
+                                        "data_path": "action_result.data.*.surname",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Globaltest"
+                                        ]
+                                    },
+                                    {
+                                        "column_name": "User Principle Name",
+                                        "column_order": 1,
+                                        "contains": [
+                                            "msgoffice365 user principle name",
+                                            "email"
+                                        ],
+                                        "data_path": "action_result.data.*.userPrincipalName",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "test@testdomain.onmicrosoft.com"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.summary.total_users_returned",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            11
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "action_result.message",
+                                        "data_type": "string",
+                                        "example_values": [
+                                            "Successfully retrieved 11 users"
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    },
+                                    {
+                                        "data_path": "summary.total_objects_successful",
+                                        "data_type": "numeric",
+                                        "example_values": [
+                                            1
+                                        ]
+                                    }
+                                ],
+                                "parameters": {
+                                    "filter": {
+                                        "data_type": "string",
+                                        "default": null,
+                                        "description": "Search for specific results",
+                                        "key": "filter",
+                                        "order": 0,
+                                        "required": false
+                                    },
+                                    "limit": {
+                                        "data_type": "numeric",
+                                        "default": null,
+                                        "description": "Maximum number of users to return",
+                                        "key": "limit",
+                                        "order": 1,
+                                        "required": false
+                                    }
+                                },
+                                "product_name": "Office 365 (MS Graph)",
+                                "product_vendor": "Microsoft",
+                                "targets": "12",
+                                "type": "email"
+                            }
+                        ],
+                        "attrs": {
+                            ".action": {
+                                "text": "list users ms graph"
+                            },
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "Investigate"
+                            },
+                            "g.approver image": {
+                                "opacity": 1
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.icon image": {
+                                "xlink:href": "/inc/coa/img/block_icon_investigate.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            },
+                            "g.timer image": {
+                                "opacity": 1
+                            }
+                        },
+                        "block_code": "def list_users_ms_graph(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('list_users_ms_graph() called')\n        \n    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n    \n    # collect data for 'list_users_ms_graph' call\n    formatted_data_1 = phantom.get_format_data(name='format_graph_filter__as_list')\n\n    parameters = []\n    \n    # build parameters list for 'list_users_ms_graph' call\n    for formatted_part_1 in formatted_data_1:\n        parameters.append({\n            'limit': \"\",\n            'filter': formatted_part_1,\n        })\n\n    phantom.act(action=\"list users\", parameters=parameters, assets=['ms_graph_o365'], callback=match_users, name=\"list_users_ms_graph\")\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "list users azure ad, datetime_modify",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "list users ms graph",
+                        "delay": 0,
+                        "description": "Identify the corresponding user in the Microsoft Graph",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "c6f75c62-d33e-43b8-9ef7-78e6120d5219",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 154,
+                        "line_start": 133,
+                        "message": "Configuring now",
+                        "name": "list users",
+                        "notes": "Identify the corresponding user in the Microsoft Graph",
+                        "number": 3,
+                        "order": 6,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 880,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "list_users_ms_graph",
+                        "required_params": {},
+                        "reviewer": "",
+                        "show_number": true,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "app_action_assets",
+                        "status": "",
+                        "title": "Investigate",
+                        "type": "coa.Action",
+                        "warn": false,
+                        "z": 108
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".format": {
+                                "text": "format note"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.code image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "def format_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_note() called')\n    \n    template = \"\"\"New users:\n\n%%\n| userPrincipalName | {0} |\n|---|---|\n| displayName | {1} |\n| mail | {2} |\n| jobTitle | {3} |\n| officeLocation | {4} |\n| id | {5}\n| createdDateTime | {6} |\n---\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.userPrincipalName\",\n        \"filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.displayName\",\n        \"filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.mail\",\n        \"filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.jobTitle\",\n        \"filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.officeLocation\",\n        \"filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.id\",\n        \"filtered-data:match_users:condition_1:list_users_azure_ad:action_result.data.*.createdDateTime\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_note\")\n\n    add_note_3(container=container)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "list users ms graph",
+                        "connection_type": "action",
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "format note",
+                        "description": "Gather the most important fields to present in a note",
+                        "format": "format",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "61926bc8-2f68-473c-95eb-481e9e295688",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 213,
+                        "line_start": 179,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "Gather the most important fields to present in a note",
+                        "number": 3,
+                        "order": 8,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": "filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.userPrincipalName"
+                            },
+                            {
+                                "position": 1,
+                                "type": "",
+                                "value": "filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.displayName"
+                            },
+                            {
+                                "position": 2,
+                                "type": "",
+                                "value": "filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.mail"
+                            },
+                            {
+                                "position": 3,
+                                "type": "",
+                                "value": "filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.jobTitle"
+                            },
+                            {
+                                "position": 4,
+                                "type": "",
+                                "value": "filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.officeLocation"
+                            },
+                            {
+                                "position": 5,
+                                "type": "",
+                                "value": "filtered-data:match_users:condition_1:list_users_ms_graph:action_result.data.*.id"
+                            },
+                            {
+                                "position": 6,
+                                "type": "",
+                                "value": "filtered-data:match_users:condition_1:list_users_azure_ad:action_result.data.*.createdDateTime"
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 1260,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "format_note",
+                        "show_number": true,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "New users:\n\n%%\n| userPrincipalName | {0} |\n|---|---|\n| displayName | {1} |\n| mail | {2} |\n| jobTitle | {3} |\n| officeLocation | {4} |\n| id | {5}\n| createdDateTime | {6} |\n---\n%%",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 109
+                    }
+                ]
+            },
+            "notes": "This playbook uses the following Apps:\n - Azure AD Graph     (list users) [asset name = azure_ad_graph] - List all users before filtering\n - MS Graph for Office 365 (list users) [asset name = ms_graph_o365] - List users after filter\n - Phantom (add artifact) [asset name = phantom] - Save the usernames to artifacts\nDeployment Notes:\n - adjust the lookback time in \"datetime_modify\" to change the window from 7 days to another range\n - add commonly set fields to check for anomalies to reduce manual analysis of the results"
+        },
+        "python_version": "3",
+        "schema": 4,
+        "version": "4.10.2.47587"
+    },
+    "create_time": "2021-03-24T17:58:34.481754+00:00",
+    "draft_mode": false,
+    "labels": [
+        "azure_new_user_census"
+    ],
+    "tags": []
+}
