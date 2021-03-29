@@ -17,35 +17,6 @@ def on_start(container):
 
     return
 
-def Delete_File(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug('Delete_File() called')
-        
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'Delete_File' call
-    inputs_data_1 = phantom.collect2(container=container, datapath=['Gather_File_Contents:artifact:*.cef.destinationAddress', 'Gather_File_Contents:artifact:*.id'], action_results=results)
-    formatted_data_1 = phantom.get_format_data(name='Format_Del_Command')
-
-    parameters = []
-    
-    # build parameters list for 'Delete_File' call
-    for inputs_item_1 in inputs_data_1:
-        parameters.append({
-            'async': "",
-            'parser': "",
-            'command': formatted_data_1,
-            'shell_id': "",
-            'arguments': "",
-            'command_id': "",
-            'ip_hostname': inputs_item_1[0],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': inputs_item_1[1]},
-        })
-
-    phantom.act(action="run command", parameters=parameters, assets=['winrm','winrm'], name="Delete_File")
-
-    return
-
 def Format_Del_Command(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('Format_Del_Command() called')
     
@@ -90,18 +61,47 @@ def Gather_File_Contents(action=None, success=None, container=None, results=None
     # build parameters list for 'Gather_File_Contents' call
     for container_item in container_data:
         parameters.append({
-            'async': "",
-            'parser': "",
-            'command': formatted_data_1,
-            'shell_id': "",
-            'arguments': "",
-            'command_id': "",
             'ip_hostname': container_item[0],
+            'command': formatted_data_1,
+            'arguments': "",
+            'parser': "",
+            'async': "",
+            'command_id': "",
+            'shell_id': "",
             # context (artifact id) is added to associate results with the artifact
             'context': {'artifact_id': container_item[1]},
         })
 
-    phantom.act(action="run command", parameters=parameters, assets=['winrm','winrm'], callback=Format_Del_Command, name="Gather_File_Contents")
+    phantom.act(action="run command", parameters=parameters, assets=['winrm'], callback=Format_Del_Command, name="Gather_File_Contents")
+
+    return
+
+def Delete_File(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('Delete_File() called')
+        
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'Delete_File' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.id'])
+    formatted_data_1 = phantom.get_format_data(name='Format_Del_Command')
+
+    parameters = []
+    
+    # build parameters list for 'Delete_File' call
+    for container_item in container_data:
+        parameters.append({
+            'ip_hostname': container_item[0],
+            'command': formatted_data_1,
+            'arguments': "",
+            'parser': "",
+            'async': "",
+            'command_id': "",
+            'shell_id': "",
+            # context (artifact id) is added to associate results with the artifact
+            'context': {'artifact_id': container_item[1]},
+        })
+
+    phantom.act(action="run command", parameters=parameters, assets=['winrm'], name="Delete_File")
 
     return
 

@@ -34,6 +34,28 @@ def Format_Splunk_Search(action=None, success=None, container=None, results=None
 
     return
 
+def Terminate_Process(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('Terminate_Process() called')
+
+    # collect data for 'Terminate_Process' call
+    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress', 'artifact:*.cef.process_id', 'artifact:*.id'])
+
+    parameters = []
+    
+    # build parameters list for 'Terminate_Process' call
+    for container_item in container_data:
+        parameters.append({
+            'ip_hostname': container_item[0],
+            'pid': container_item[1],
+            'name': "",
+            # context (artifact id) is added to associate results with the artifact
+            'context': {'artifact_id': container_item[2]},
+        })
+
+    phantom.act(action="terminate process", parameters=parameters, assets=['winrm'], callback=Format_Splunk_Search, name="Terminate_Process")
+
+    return
+
 def Find_Child_Processes(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('Find_Child_Processes() called')
         
@@ -46,13 +68,13 @@ def Find_Child_Processes(action=None, success=None, container=None, results=None
     
     # build parameters list for 'Find_Child_Processes' call
     parameters.append({
-        'query': formatted_data_1,
         'command': "search",
+        'query': formatted_data_1,
         'display': "",
         'parse_only': "",
     })
 
-    phantom.act(action="run query", parameters=parameters, assets=['splunk','splunk'], callback=Terminate_Child_Processes, name="Find_Child_Processes")
+    phantom.act(action="run query", parameters=parameters, assets=['splunk'], callback=Terminate_Child_Processes, name="Find_Child_Processes")
 
     return
 
@@ -71,36 +93,14 @@ def Terminate_Child_Processes(action=None, success=None, container=None, results
     for container_item in container_data:
         for results_item_1 in results_data_1:
             parameters.append({
+                'ip_hostname': container_item[0],
                 'pid': results_item_1[0],
                 'name': "",
-                'ip_hostname': container_item[0],
                 # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[1]},
+                'context': {'artifact_id': container_item[1]},
             })
 
-    phantom.act(action="terminate process", parameters=parameters, assets=['winrm','winrm'], name="Terminate_Child_Processes", parent_action=action)
-
-    return
-
-def Terminate_Process(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug('Terminate_Process() called')
-
-    # collect data for 'Terminate_Process' call
-    container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.process_id', 'artifact:*.cef.destinationAddress', 'artifact:*.id'])
-
-    parameters = []
-    
-    # build parameters list for 'Terminate_Process' call
-    for container_item in container_data:
-        parameters.append({
-            'pid': container_item[0],
-            'name': "",
-            'ip_hostname': container_item[1],
-            # context (artifact id) is added to associate results with the artifact
-            'context': {'artifact_id': container_item[2]},
-        })
-
-    phantom.act(action="terminate process", parameters=parameters, assets=['winrm','winrm'], callback=Format_Splunk_Search, name="Terminate_Process")
+    phantom.act(action="terminate process", parameters=parameters, assets=['winrm'], name="Terminate_Child_Processes", parent_action=action)
 
     return
 
