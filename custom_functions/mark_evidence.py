@@ -42,7 +42,6 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     # and append the action_run_id's to data
     if isinstance(input_object, list) and content_type == 'actionrun':
         for action_result in input_object:
-            phantom.debug(action_result)
             if action_result.get('action_run_id'):
                 data.append({
                     "container_id": container_id,
