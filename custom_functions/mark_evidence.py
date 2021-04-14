@@ -4,13 +4,13 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     
     Args:
         container (CEF type: phantom container id): Container ID or Container Object
-        input_object (CEF type: *): Id or object to be added - artifact id, note id, etc.
+        input_object (CEF type: *): The object to marked as evidence. This could be a vault_id, artifact_id, note_id, or if the previous playbook block is an action then "keyword_argument:results" can be used with the content_type "actionrun".
         content_type (CEF type: *): The content type of the object to add as evidence which must be one of the following:
                         
                         vault_id
                         artifact
                         actionrun
-                        container
+                        container_id
                         note
     
     Returns a JSON-serializable object that implements the configured data paths:
@@ -23,7 +23,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     outputs = []
     container_id = None
     data = []
-    valid_types = ['vault_id','artifact','actionrun','container','note']
+    valid_types = ['vault_id','artifact','actionrun','container_id','note']
     
     # Ensure valid content_type: 
     if content_type.lower() not in valid_types:
@@ -40,7 +40,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     # If content added is type 'action run',
     # then iterate through an input object that is a results object,
     # and append the action_run_id's to data
-    if isinstance(input_object, list) and content_type == 'actionrun':
+    if isinstance(input_object, list) and content_type.lower() == 'actionrun':
         for action_result in input_object:
             if action_result.get('action_run_id'):
                 data.append({
@@ -51,7 +51,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
         # If data is still an empty list after for loop, 
         # it indicates that the input_object was not a valid results object
         if not data:
-            raise TypeError("The input for 'object_id' is not a valid integer or supported object.")
+            raise TypeError("The input for 'input_object' is not a valid integer or supported object.")
             
     # If vault_id was entered, check to see if user already entered a vault integer
     # else if user entered a hash vault_id, attempt to translate to a vault integer            
@@ -70,7 +70,14 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
             "object_id": input_object,
             "content_type": content_type,
             }]
-    
+    # If 'container_id' was entered, the content_type needs to be set to 'container'.
+    # Phantom does not allow a literal input of 'container' so thus 'container_id is used.
+    elif isinstance(input_object, int) and content_type.lower() == 'container_id':
+        data = [{
+            "container_id": container_id,
+            "object_id": input_object,
+            "content_type": 'container',
+            }]  
     # If input_object is an integer, it is assumed that its a valid input_object
     elif isinstance(input_object, int):
         data = [{
