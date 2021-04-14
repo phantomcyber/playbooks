@@ -4,7 +4,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     
     Args:
         container (CEF type: phantom container id): Container ID or Container Object
-        input_object (CEF type: *): The object to mark as evidence. This could be a vault_id, artifact_id, note_id, container_id, or actionrun_id. If the previous playbook block is an action then "keyword_argument:results" can be used for the actionrun_id with the content_type "actionrun".
+        input_object (CEF type: *): The object to mark as evidence. This could be a vault_id, artifact_id, note_id, container_id, or actionrun_id. If the previous playbook block is an action then "keyword_argument:results" can be used for the actionrun_id with the content_type "actionrun". Vault_id can be an ID or a vault hash.
         content_type (CEF type: *): The content type of the object to add as evidence which must be one of the following:
                         
                         vault_id
