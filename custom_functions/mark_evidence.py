@@ -11,7 +11,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
                         artifact_id
                         container_id
                         note_id
-                        actionrun
+                        actionrun_id
     
     Returns a JSON-serializable object that implements the configured data paths:
         *.id (CEF type: *): ID of the evidence item
@@ -23,7 +23,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     outputs = []
     container_id = None
     data = []
-    valid_types = ['vault_id','artifact_id','container_id', 'note_id','actionrun']
+    valid_types = ['vault_id','artifact_id','container_id', 'note_id','actionrun_id']
     
     # Ensure valid content_type: 
     if content_type.lower() not in valid_types:
@@ -40,18 +40,26 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     # If content added is type 'action run',
     # then iterate through an input object that is a results object,
     # and append the action_run_id's to data
-    if isinstance(input_object, list) and content_type.lower() == 'actionrun':
+    if isinstance(input_object, list) and content_type.lower() == 'actionrun_id':
         for action_result in input_object:
             if action_result.get('action_run_id'):
                 data.append({
                     "container_id": container_id,
-                    "object_id": action_result['action_run_id'],
-                    "content_type": content_type,
+                    "object_id": action_result['actionrun_id'],
+                    "content_type": 'actionrun',
                 })
         # If data is still an empty list after for loop, 
         # it indicates that the input_object was not a valid results object
         if not data:
             raise TypeError("The input for 'input_object' is not a valid integer or supported object.")
+    
+    # If 'input_object' is already an action_run_id, no need to translate it.
+    elif isinstance(input_object, int) and content_type.lower() == 'actionrun_id':
+        data = [{
+            "container_id": container_id,
+            "object_id": input_object,
+            "content_type": 'actionrun',
+            }]
             
     # If vault_id was entered, check to see if user already entered a vault integer
     # else if user entered a hash vault_id, attempt to translate to a vault integer            
