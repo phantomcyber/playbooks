@@ -4,14 +4,14 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     
     Args:
         container (CEF type: phantom container id): Container ID or Container Object
-        input_object (CEF type: *): The object to marked as evidence. This could be a vault_id, artifact_id, note_id, or if the previous playbook block is an action then "keyword_argument:results" can be used with the content_type "actionrun".
+        input_object (CEF type: *): The object to mark as evidence. This could be a vault_id, artifact_id, note_id, container_id, or actionrun_id. If the previous playbook block is an action then "keyword_argument:results" can be used for the actionrun_id with the content_type "actionrun".
         content_type (CEF type: *): The content type of the object to add as evidence which must be one of the following:
                         
                         vault_id
-                        artifact
-                        actionrun
+                        artifact_id
                         container_id
-                        note
+                        note_id
+                        actionrun
     
     Returns a JSON-serializable object that implements the configured data paths:
         *.id (CEF type: *): ID of the evidence item
@@ -23,7 +23,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     outputs = []
     container_id = None
     data = []
-    valid_types = ['vault_id','artifact','actionrun','container_id','note']
+    valid_types = ['vault_id','artifact_id','container_id', 'note_id','actionrun']
     
     # Ensure valid content_type: 
     if content_type.lower() not in valid_types:
@@ -70,6 +70,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
             "object_id": input_object,
             "content_type": content_type,
             }]
+        
     # If 'container_id' was entered, the content_type needs to be set to 'container'.
     # Phantom does not allow a literal input of 'container' so thus 'container_id is used.
     elif isinstance(input_object, int) and content_type.lower() == 'container_id':
@@ -77,14 +78,22 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
             "container_id": container_id,
             "object_id": input_object,
             "content_type": 'container',
-            }]  
-    # If input_object is an integer, it is assumed that its a valid input_object
-    elif isinstance(input_object, int):
+            }]
+    
+    # If 'artifact_id' was entered, the content_type needs to be set to 'artifact'
+    elif isinstance(input_object, int) and content_type.lower() == 'artifact_id':
         data = [{
             "container_id": container_id,
             "object_id": input_object,
-            "content_type": content_type,
-            }]    
+            "content_type": 'artifact',
+            }]  
+    # If 'note_id' was entered, the content_type needs to be set to 'note'
+    elif isinstance(input_object, int) and content_type.lower() == 'note_id':
+        data = [{
+            "container_id": container_id,
+            "object_id": input_object,
+            "content_type": 'note',
+            }]  
     else:
         raise TypeError(f"The input_object is not a valid integer or supported object. Type '{type(input_object)}'")
     
