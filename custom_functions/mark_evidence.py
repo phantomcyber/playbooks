@@ -4,14 +4,14 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     
     Args:
         container (CEF type: phantom container id): Container ID or Container Object
-        input_object (CEF type: *): The object to mark as evidence. This could be a vault_id, artifact_id, note_id, container_id, or actionrun_id. If the previous playbook block is an action then "keyword_argument:results" can be used for the actionrun_id with the content_type "actionrun". Vault_id can be an ID or a vault hash.
+        input_object (CEF type: *): The object to mark as evidence. This could be a vault_id, artifact_id, note_id, container_id, or action_run_id. If the previous playbook block is an action then "keyword_argument:results" can be used for the action_run_id with the content_type "action_run_id". Vault_id can be an ID or a vault hash.
         content_type (CEF type: *): The content type of the object to add as evidence which must be one of the following:
                         
                         vault_id
                         artifact_id
                         container_id
                         note_id
-                        actionrun_id
+                        action_run_id
     
     Returns a JSON-serializable object that implements the configured data paths:
         *.id (CEF type: *): ID of the evidence item
@@ -23,7 +23,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     outputs = []
     container_id = None
     data = []
-    valid_types = ['vault_id','artifact_id','container_id', 'note_id','actionrun_id']
+    valid_types = ['vault_id','artifact_id','container_id', 'note_id','action_run_id']
     
     # Ensure valid content_type: 
     if content_type.lower() not in valid_types:
@@ -37,15 +37,15 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     else:
         raise TypeError("The input 'container' is neither a container dictionary nor an int, so it cannot be used")
     
-    # If content added is type 'action run',
+    # If content added is type 'action_run_id',
     # then iterate through an input object that is a results object,
     # and append the action_run_id's to data
-    if isinstance(input_object, list) and content_type.lower() == 'actionrun_id':
+    if isinstance(input_object, list) and content_type.lower() == 'action_run_id':
         for action_result in input_object:
             if action_result.get('action_run_id'):
                 data.append({
                     "container_id": container_id,
-                    "object_id": action_result['actionrun_id'],
+                    "object_id": action_result['action_run_id'],
                     "content_type": 'actionrun',
                 })
         # If data is still an empty list after for loop, 
@@ -54,7 +54,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
             raise TypeError("The input for 'input_object' is not a valid integer or supported object.")
     
     # If 'input_object' is already an action_run_id, no need to translate it.
-    elif isinstance(input_object, int) and content_type.lower() == 'actionrun_id':
+    elif isinstance(input_object, int) and content_type.lower() == 'action_run_id':
         data = [{
             "container_id": container_id,
             "object_id": input_object,
