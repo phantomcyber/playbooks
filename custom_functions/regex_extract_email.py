@@ -8,6 +8,7 @@ def regex_extract_email(input_string=None, **kwargs):
     
     Returns a JSON-serializable object that implements the configured data paths:
         *.email_address (CEF type: email): Parsed email addresses
+        *.domain (CEF type: domain): Domain names of the parsed email addresses (everything after the "@")
     """
     ############################ Custom Code Goes Below This Line #################################
 
@@ -24,8 +25,9 @@ def regex_extract_email(input_string=None, **kwargs):
 
     for email in re.findall(email_regex, input_string, re.IGNORECASE):
         phantom.debug('found email address: {}'.format(email))
-        outputs.append(
-            {'email_address': email}
+        outputs.append({
+            'email_address': email,
+            'domain': email.split('@')[-1]}
         )
 
     # Return a JSON-serializable object
