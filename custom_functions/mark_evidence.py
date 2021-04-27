@@ -32,7 +32,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     # Ensure valid container input
     if isinstance(container, dict) and container.get('id'):
         container_id = container['id']
-    elif isinstance(container, int):
+    elif isinstance(container, int) or (isinstance(container, str) and container.isdigit()):
         container_id = container
     else:
         raise TypeError("The input 'container' is neither a container dictionary nor an int, so it cannot be used")
@@ -54,7 +54,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
             raise TypeError("The input for 'input_object' is not a valid integer or supported object.")
     
     # If 'input_object' is already an action_run_id, no need to translate it.
-    elif isinstance(input_object, int) and content_type.lower() == 'action_run_id':
+    elif (isinstance(input_object, int) or (isinstance(input_object, str) and input_object.isdigit())) and content_type.lower() == 'action_run_id':
         data = [{
             "container_id": container_id,
             "object_id": input_object,
@@ -64,7 +64,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
     # If vault_id was entered, check to see if user already entered a vault integer
     # else if user entered a hash vault_id, attempt to translate to a vault integer            
     elif input_object and content_type.lower() == 'vault_id':
-        if isinstance(input_object, int):
+        if isinstance(input_object, int) or (isinstance(input_object, str) and input_object.isdigit()):
             content_type = "containerattachment"
         else:
             success, message, info = phantom.vault_info(vault_id=input_object)
@@ -81,7 +81,7 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
         
     # If 'container_id' was entered, the content_type needs to be set to 'container'.
     # Phantom does not allow a literal input of 'container' so thus 'container_id is used.
-    elif isinstance(input_object, int) and content_type.lower() == 'container_id':
+    elif (isinstance(input_object, int) or (isinstance(input_object, str) and input_object.isdigit())) and content_type.lower() == 'container_id':
         data = [{
             "container_id": container_id,
             "object_id": input_object,
@@ -89,14 +89,14 @@ def mark_evidence(container=None, input_object=None, content_type=None, **kwargs
             }]
     
     # If 'artifact_id' was entered, the content_type needs to be set to 'artifact'
-    elif isinstance(input_object, int) and content_type.lower() == 'artifact_id':
+    elif (isinstance(input_object, int) or (isinstance(input_object, str) and input_object.isdigit())) and content_type.lower() == 'artifact_id':
         data = [{
             "container_id": container_id,
             "object_id": input_object,
             "content_type": 'artifact',
             }]  
     # If 'note_id' was entered, the content_type needs to be set to 'note'
-    elif isinstance(input_object, int) and content_type.lower() == 'note_id':
+    elif (isinstance(input_object, int) or (isinstance(input_object, str) and input_object.isdigit())) and content_type.lower() == 'note_id':
         data = [{
             "container_id": container_id,
             "object_id": input_object,
