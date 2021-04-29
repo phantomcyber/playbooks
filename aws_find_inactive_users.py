@@ -8,31 +8,11 @@ from datetime import datetime, timedelta
 def on_start(container):
     phantom.debug('on_start() called')
     
-    # call 'list_all_accounts' block
-    list_all_accounts(container=container)
-
     # call 'calculate_start_time' block
     calculate_start_time(container=container)
 
-    return
-
-"""
-List all AWS IAM accounts, which will include the PasswordLastUsed field for us to filter on.
-"""
-def list_all_accounts(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug('list_all_accounts() called')
-
-    # collect data for 'list_all_accounts' call
-
-    parameters = []
-    
-    # build parameters list for 'list_all_accounts' call
-    parameters.append({
-        'user_path': "/",
-        'group_name': "",
-    })
-
-    phantom.act(action="list users", parameters=parameters, assets=['aws_iam'], callback=join_filter_unused_and_not_none, name="list_all_accounts")
+    # call 'list_all_accounts' block
+    list_all_accounts(container=container)
 
     return
 
@@ -110,32 +90,6 @@ def join_filter_unused_and_not_none(action=None, success=None, container=None, r
     return
 
 """
-Use the "get user" action to gather more information about the unused accounts, including group membership and policy assignments.
-"""
-def get_unused_account_info(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug('get_unused_account_info() called')
-        
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'get_unused_account_info' call
-    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:filter_unused_and_not_none:condition_1:list_all_accounts:action_result.data.*.UserName", "filtered-data:filter_unused_and_not_none:condition_1:list_all_accounts:action_result.parameter.context.artifact_id"])
-
-    parameters = []
-    
-    # build parameters list for 'get_unused_account_info' call
-    for filtered_results_item_1 in filtered_results_data_1:
-        if filtered_results_item_1[0]:
-            parameters.append({
-                'username': filtered_results_item_1[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': filtered_results_item_1[1]},
-            })
-
-    phantom.act(action="get user", parameters=parameters, assets=['aws_iam'], callback=save_to_artifacts, name="get_unused_account_info")
-
-    return
-
-"""
 Create an artifact in the parent event for each unused account that was found. The CEF type will allow future automation to detect that these are AWS accounts.
 """
 def save_to_artifacts(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
@@ -166,6 +120,52 @@ def save_to_artifacts(action=None, success=None, container=None, results=None, h
             })
 
     phantom.act(action="add artifact", parameters=parameters, assets=['phantom'], name="save_to_artifacts", parent_action=action)
+
+    return
+
+"""
+List all AWS IAM accounts, which will include the PasswordLastUsed field for us to filter on.
+"""
+def list_all_accounts(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('list_all_accounts() called')
+
+    # collect data for 'list_all_accounts' call
+
+    parameters = []
+    
+    # build parameters list for 'list_all_accounts' call
+    parameters.append({
+        'user_path': "/",
+        'group_name': "",
+    })
+
+    phantom.act(action="list users", parameters=parameters, assets=['aws_iam'], callback=join_filter_unused_and_not_none, name="list_all_accounts")
+
+    return
+
+"""
+Use the "get user" action to gather more information about the unused accounts, including group membership and policy assignments.
+"""
+def get_unused_account_info(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('get_unused_account_info() called')
+        
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'get_unused_account_info' call
+    filtered_results_data_1 = phantom.collect2(container=container, datapath=["filtered-data:filter_unused_and_not_none:condition_1:list_all_accounts:action_result.data.*.UserName", "filtered-data:filter_unused_and_not_none:condition_1:list_all_accounts:action_result.parameter.context.artifact_id"])
+
+    parameters = []
+    
+    # build parameters list for 'get_unused_account_info' call
+    for filtered_results_item_1 in filtered_results_data_1:
+        if filtered_results_item_1[0]:
+            parameters.append({
+                'username': filtered_results_item_1[0],
+                # context (artifact id) is added to associate results with the artifact
+                'context': {'artifact_id': filtered_results_item_1[1]},
+            })
+
+    phantom.act(action="get user", parameters=parameters, assets=['aws_iam'], callback=save_to_artifacts, name="get_unused_account_info")
 
     return
 
