@@ -29,7 +29,7 @@ def on_start(container):
     file_hashs = test_params(container, 'artifact:*.cef.cs6', 'hash')
     #if no file hashes this way, lets see if there is a vault item that has been added manually)
     if not file_hashs:
-        vault_items = phantom.Vault.get_file_info(container_id=container['id'])
+        success, message, vault_items = phantom.vault_info(container_id=container['id'])
         hashes = []
         for vault_item in vault_items:            
             hashes.append({'hash': vault_item['metadata']['sha256']})
@@ -138,7 +138,7 @@ def detonate_file_1(action=None, success=None, container=None, results=None, han
     
     # collect data for 'detonate_file_1' call
     container_data = phantom.collect2(container=container, datapath=['artifact:*.cef.deviceCustomString6', 'artifact:*.id'])
-    vault_items = phantom.Vault.get_file_info(container_id=container['id'])
+    success, message, vault_items = phantom.vault_info(container_id=container['id'])
 
     parameters = []
     
