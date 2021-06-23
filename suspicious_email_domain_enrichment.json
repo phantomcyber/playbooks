@@ -8,7 +8,7 @@
             "clean": true,
             "code_block": "",
             "description": "Extract and enrich domain names in a suspicious email. This operates on domain names automatically extracted at email ingestion as well as domain names extracted within this playbook using the regex_extract_email custom function. Once the domain names are extracted, Cisco Umbrella Investigate is used to gather reputation information, including risk scores, which are presented in a note within the event.",
-            "hash": "d3625aabd9baaca6c2af79b012943d093c8d5d10",
+            "hash": "1041b53b5210959bb13357fb29f97624e0d9a42b",
             "joint": {
                 "cells": [
                     {
@@ -949,7 +949,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_email_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_email_note() called')\n    \n    template = \"\"\"The following domains were extracted from email addresses in the event and queried in Cisco Umbrella Investigate:\n\n| Domain | Status | Risk Score | Category |\n|---|---|---|---|\n%%\n| {0} | {1} | {2} | {3} |\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:extracted_non_malicious:condition_1:email_domain_rep:action_result.parameter.domain\",\n        \"filtered-data:extracted_non_malicious:condition_1:email_domain_rep:action_result.data.*.status_desc\",\n        \"filtered-data:extracted_non_malicious:condition_1:email_domain_rep:action_result.data.*.risk_score\",\n        \"filtered-data:extracted_non_malicious:condition_1:email_domain_rep:action_result.data.*.category\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_email_note\")\n\n    add_email_note(container=container)\n\n    return",
+                        "block_code": "def format_email_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_email_note() called')\n    \n    template = \"\"\"The following domains were extracted from email addresses in the event and queried in Cisco Umbrella Investigate:\n\n| Domain | Status | Risk Score | Category |\n|---|---|---|---|\n%%\n| {0} | {1} | {2} | {3} |\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:extracted_non_malicious:condition_1:email_domain_rep:action_result.parameter.domain\",\n        \"filtered-data:extracted_non_malicious:condition_1:email_domain_rep:action_result.data.*.status_desc\",\n        \"filtered-data:extracted_non_malicious:condition_1:email_domain_rep:action_result.data.*.risk_score\",\n        \"filtered-data:extracted_non_malicious:condition_1:email_domain_rep:action_result.data.*.category\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_email_note\", separator=\", \")\n\n    add_email_note(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -960,6 +960,7 @@
                         "custom_code": "",
                         "custom_join": "",
                         "custom_name": "format email note",
+                        "delimiter": ", ",
                         "description": "Construct a note with the domain reputation results.",
                         "format": "format",
                         "has_custom": false,
@@ -1377,7 +1378,7 @@
                                 "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
                             }
                         },
-                        "block_code": "def format_artifact_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_artifact_note() called')\n    \n    template = \"\"\"The following domains were present in artifacts in the event and queried in Cisco Umbrella Investigate:\n\n| Domain | Status | Risk Score | Category |\n|---|---|---|---|\n%%\n| {0} | {1} | {2} | {3} |\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:artifact_non_malicious:condition_1:artifact_domain_rep:action_result.parameter.domain\",\n        \"filtered-data:artifact_non_malicious:condition_1:artifact_domain_rep:action_result.data.*.status_desc\",\n        \"filtered-data:artifact_non_malicious:condition_1:artifact_domain_rep:action_result.data.*.risk_score\",\n        \"filtered-data:artifact_non_malicious:condition_1:artifact_domain_rep:action_result.data.*.category\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_artifact_note\")\n\n    add_artifact_note(container=container)\n\n    return",
+                        "block_code": "def format_artifact_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_artifact_note() called')\n    \n    template = \"\"\"The following domains were present in artifacts in the event and queried in Cisco Umbrella Investigate:\n\n| Domain | Status | Risk Score | Category |\n|---|---|---|---|\n%%\n| {0} | {1} | {2} | {3} |\n%%\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"filtered-data:artifact_non_malicious:condition_1:artifact_domain_rep:action_result.parameter.domain\",\n        \"filtered-data:artifact_non_malicious:condition_1:artifact_domain_rep:action_result.data.*.status_desc\",\n        \"filtered-data:artifact_non_malicious:condition_1:artifact_domain_rep:action_result.data.*.risk_score\",\n        \"filtered-data:artifact_non_malicious:condition_1:artifact_domain_rep:action_result.data.*.category\",\n    ]\n\n    phantom.format(container=container, template=template, parameters=parameters, name=\"format_artifact_note\", separator=\", \")\n\n    add_artifact_note(container=container)\n\n    return",
                         "callback_code": "",
                         "callback_start": 1,
                         "callsback": false,
@@ -1388,6 +1389,7 @@
                         "custom_code": "",
                         "custom_join": "",
                         "custom_name": "format artifact note",
+                        "delimiter": ", ",
                         "description": "Construct a note with the domain reputation results.",
                         "format": "format",
                         "has_custom": false,
@@ -1849,268 +1851,6 @@
                         "type": "coa.API",
                         "warn": false,
                         "z": 117
-                    },
-                    {
-                        ".scmName/text": "local",
-                        "active": false,
-                        "active_keys": {},
-                        "active_values": {},
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "fill": "#000000",
-                                "stroke": "#5C6773"
-                            },
-                            ".color-band": {
-                                "fill": "#3C444D"
-                            },
-                            ".customFunction": {
-                                "text": "extract email domains"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "opacity": 0,
-                                "ref-x": 5,
-                                "ref-y": 105,
-                                "text": "Configuring now"
-                            },
-                            ".outPorts>.port-out": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out>.port-body": {
-                                "port": {
-                                    "id": "out",
-                                    "type": "out"
-                                }
-                            },
-                            ".scmName": {
-                                "text": "local"
-                            },
-                            ".title": {
-                                "text": "custom function"
-                            },
-                            ".title-info": {
-                                "text": ""
-                            },
-                            "g.branch image": {
-                                "opacity": 1
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
-                            },
-                            "g.notes": {
-                                "display": "block"
-                            },
-                            "g.notes image": {
-                                "opacity": 1,
-                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
-                            }
-                        },
-                        "block_code": "def extract_email_domains(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('extract_email_domains() called')\n    \n    custom_function_result_0 = phantom.collect2(container=container, datapath=['get_full_event_text:custom_function_result.data.*.item'], action_results=results )\n\n    parameters = []\n\n    for item0 in custom_function_result_0:\n        parameters.append({\n            'input_string': item0[0],\n        })\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################    \n\n    # call custom function \"local/regex_extract_email\", returns the custom_function_run_id\n    phantom.custom_function(custom_function='local/regex_extract_email', parameters=parameters, name='extract_email_domains', callback=email_domain_rep)\n\n    return",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": true,
-                        "cfDisplayPath": "local/regex_extract_email",
-                        "cfInputs": {
-                            "input_string": {
-                                "collectionType": "custom_function_result",
-                                "dataPath": "get_full_event_text:custom_function_result.data.*.item",
-                                "paramName": "item0[0]",
-                                "type": "item"
-                            }
-                        },
-                        "color": "",
-                        "connected_to_start": true,
-                        "connection_name": "get full event text",
-                        "connection_type": "action",
-                        "currentVersion": true,
-                        "customCodeEndLineOffset": 7,
-                        "customCodeStartLine": 14,
-                        "customFunction": "local/regex_extract_email",
-                        "customFunctionId": null,
-                        "custom_callback": "",
-                        "custom_code": "",
-                        "custom_join": "",
-                        "custom_name": "extract email domains",
-                        "delay": 0,
-                        "description": "Use a regular expression to extract all email addresses from the full text of the event.",
-                        "draftMode": false,
-                        "existingCF": true,
-                        "functionBlock": "custom function",
-                        "has_custom": false,
-                        "has_custom_block": false,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "988a7d12-458f-4598-8ab7-e51e81fb0462",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "input_string-0": "cf_community_passthrough_1:custom_function_result.data.*.item",
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 48,
-                        "line_start": 22,
-                        "message": "Configuring now",
-                        "name": "regex_extract_email",
-                        "notes": "Use a regular expression to extract all email addresses from the full text of the event.",
-                        "number": 1,
-                        "order": 2,
-                        "outPorts": [
-                            "out"
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 260,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "extract_email_domains",
-                        "selectedCustomFunction": {
-                            "description": "Provide a string with one or more email addresses in it to be extracted.\nCan be helpful with strings from the To or CC fields of an email: \"<other_email@domain.com>, 'Name' <e-mail@domain.com>\"",
-                            "draftMode": false,
-                            "id": 49,
-                            "inputs": [
-                                {
-                                    "_pretty_custom_function": "regex_extract_email",
-                                    "contains_type": [
-                                        "*"
-                                    ],
-                                    "custom_function": 49,
-                                    "description": "String containing email addresses",
-                                    "id": 111,
-                                    "input_type": "item",
-                                    "name": "input_string",
-                                    "placeholder": ""
-                                }
-                            ],
-                            "name": "regex_extract_email",
-                            "outputs": [
-                                {
-                                    "_pretty_custom_function": "regex_extract_email",
-                                    "contains_type": [
-                                        "email"
-                                    ],
-                                    "custom_function": 49,
-                                    "data_path": "*.email_address",
-                                    "description": "Parsed email addresses",
-                                    "id": 143
-                                },
-                                {
-                                    "_pretty_custom_function": "regex_extract_email",
-                                    "contains_type": [
-                                        "domain"
-                                    ],
-                                    "custom_function": 49,
-                                    "data_path": "*.domain",
-                                    "description": "Domain names of the parsed email addresses (everything after the \"@\")",
-                                    "id": 144
-                                }
-                            ],
-                            "playbooks": {
-                                "draft_playbooks": [],
-                                "draft_version_id": null,
-                                "playbooks": [
-                                    {
-                                        "active": false,
-                                        "display_path": "local/regex_extract_email",
-                                        "draft_mode": false,
-                                        "id": 196,
-                                        "name": "regex_extract_email",
-                                        "viewable": true
-                                    },
-                                    {
-                                        "active": false,
-                                        "display_path": "local/suspicious_email_domain_enrichment",
-                                        "draft_mode": false,
-                                        "id": 258,
-                                        "name": "suspicious_email_domain_enrichment",
-                                        "viewable": true
-                                    }
-                                ]
-                            },
-                            "scmId": 2,
-                            "scmName": "local"
-                        },
-                        "show_number": false,
-                        "size": {
-                            "height": 100,
-                            "width": 180
-                        },
-                        "state": "repo",
-                        "status": "",
-                        "title": "custom function",
-                        "type": "coa.CustomFunctionBlock",
-                        "userGeneratedCode": "    # Write your custom code here...",
-                        "warn": false,
-                        "z": 119
                     },
                     {
                         "action": "domain reputation",
@@ -3869,6 +3609,251 @@
                         "userGeneratedCode": "\n    container_url = phantom.build_phantom_rest_url('/container/{}'.format(container['id']))\n    artifact_url = phantom.build_phantom_rest_url('/container/{}/artifacts'.format(container['id']))\n                                                   \n    container_and_artifacts = phantom.requests.get(container_url, verify=False).text + phantom.requests.get(artifact_url, verify=False).text\n    parameters[0]['input_1'] = container_and_artifacts\n\n",
                         "warn": false,
                         "z": 124
+                    },
+                    {
+                        ".scmName/text": "community",
+                        "active": false,
+                        "active_keys": {},
+                        "active_values": {},
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".customFunction": {
+                                "text": "extract email domains"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "ref-x": 5,
+                                "ref-y": 105,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out>.port-body": {
+                                "port": {
+                                    "id": "out",
+                                    "type": "out"
+                                }
+                            },
+                            ".scmName": {
+                                "text": "community"
+                            },
+                            ".title": {
+                                "text": "custom function"
+                            },
+                            ".title-info": {
+                                "text": ""
+                            },
+                            "g.branch image": {
+                                "opacity": 1
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "def extract_email_domains(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('extract_email_domains() called')\n    \n    custom_function_result_0 = phantom.collect2(container=container, datapath=['get_full_event_text:custom_function_result.data.*.item'], action_results=results )\n\n    parameters = []\n\n    for item0 in custom_function_result_0:\n        parameters.append({\n            'input_string': item0[0],\n        })\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################    \n\n    # call custom function \"community/regex_extract_email\", returns the custom_function_run_id\n    phantom.custom_function(custom_function='community/regex_extract_email', parameters=parameters, name='extract_email_domains', callback=email_domain_rep)\n\n    return",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": true,
+                        "cfDisplayPath": "community/regex_extract_email",
+                        "cfInputs": {
+                            "input_string": {
+                                "collectionType": "custom_function_result",
+                                "dataPath": "get_full_event_text:custom_function_result.data.*.item",
+                                "paramName": "item0[0]",
+                                "type": "item"
+                            }
+                        },
+                        "color": "",
+                        "connected_to_start": true,
+                        "connection_name": "get full event text",
+                        "connection_type": "action",
+                        "currentVersion": true,
+                        "customCodeEndLineOffset": 7,
+                        "customCodeStartLine": 14,
+                        "customFunction": "community/regex_extract_email",
+                        "customFunctionId": null,
+                        "custom_callback": "",
+                        "custom_code": "",
+                        "custom_join": "",
+                        "custom_name": "extract email domains",
+                        "delay": 0,
+                        "description": "Use a regular expression to extract all email addresses from the full text of the event.",
+                        "draftMode": false,
+                        "existingCF": true,
+                        "functionBlock": "custom function",
+                        "has_custom": false,
+                        "has_custom_block": false,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "988a7d12-458f-4598-8ab7-e51e81fb0462",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "input_string-0": "get_full_event_text:custom_function_result.data.*.item",
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 48,
+                        "line_start": 22,
+                        "message": "Configuring now",
+                        "name": "regex_extract_email",
+                        "notes": "Use a regular expression to extract all email addresses from the full text of the event.",
+                        "number": 1,
+                        "order": 2,
+                        "outPorts": [
+                            "out"
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 260,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "extract_email_domains",
+                        "selectedCustomFunction": {
+                            "description": "Provide a string with one or more email addresses in it to be extracted.\nCan be helpful with strings from the To or CC fields of an email: \"<other_email@domain.com>, 'Name' <e-mail@domain.com>\"",
+                            "draftMode": false,
+                            "id": 62,
+                            "inputs": [
+                                {
+                                    "_pretty_custom_function": "regex_extract_email",
+                                    "contains_type": [
+                                        "*"
+                                    ],
+                                    "custom_function": 62,
+                                    "description": "String containing email addresses",
+                                    "id": 179,
+                                    "input_type": "item",
+                                    "name": "input_string",
+                                    "placeholder": ""
+                                }
+                            ],
+                            "name": "regex_extract_email",
+                            "outputs": [
+                                {
+                                    "_pretty_custom_function": "regex_extract_email",
+                                    "contains_type": [
+                                        "email"
+                                    ],
+                                    "custom_function": 62,
+                                    "data_path": "*.email_address",
+                                    "description": "Parsed email addresses",
+                                    "id": 161
+                                },
+                                {
+                                    "_pretty_custom_function": "regex_extract_email",
+                                    "contains_type": [
+                                        "domain"
+                                    ],
+                                    "custom_function": 62,
+                                    "data_path": "*.domain",
+                                    "description": "Domain names of the parsed email addresses (everything after the \"@\")",
+                                    "id": 162
+                                }
+                            ],
+                            "playbooks": {
+                                "draft_playbooks": [],
+                                "draft_version_id": null,
+                                "playbooks": []
+                            },
+                            "scmId": 1,
+                            "scmName": "community"
+                        },
+                        "show_number": false,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "repo",
+                        "status": "",
+                        "title": "custom function",
+                        "type": "coa.CustomFunctionBlock",
+                        "userGeneratedCode": "    # Write your custom code here...",
+                        "warn": false,
+                        "z": 125
                     }
                 ]
             },
@@ -3876,9 +3861,9 @@
         },
         "python_version": "3",
         "schema": 4,
-        "version": "4.10.3.51237"
+        "version": "4.10.4.56260"
     },
-    "create_time": "2021-05-13T16:40:48.883370+00:00",
+    "create_time": "2021-06-23T19:55:24.951559+00:00",
     "draft_mode": false,
     "labels": [
         "email"

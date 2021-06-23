@@ -40,8 +40,8 @@ def extract_email_domains(action=None, success=None, container=None, results=Non
     ## Custom Code End
     ################################################################################    
 
-    # call custom function "local/regex_extract_email", returns the custom_function_run_id
-    phantom.custom_function(custom_function='local/regex_extract_email', parameters=parameters, name='extract_email_domains', callback=email_domain_rep)
+    # call custom function "community/regex_extract_email", returns the custom_function_run_id
+    phantom.custom_function(custom_function='community/regex_extract_email', parameters=parameters, name='extract_email_domains', callback=email_domain_rep)
 
     return
 
@@ -195,7 +195,7 @@ def format_email_note(action=None, success=None, container=None, results=None, h
         "filtered-data:extracted_non_malicious:condition_1:email_domain_rep:action_result.data.*.category",
     ]
 
-    phantom.format(container=container, template=template, parameters=parameters, name="format_email_note")
+    phantom.format(container=container, template=template, parameters=parameters, name="format_email_note", separator=", ")
 
     add_email_note(container=container)
 
@@ -244,7 +244,7 @@ def format_artifact_note(action=None, success=None, container=None, results=None
         "filtered-data:artifact_non_malicious:condition_1:artifact_domain_rep:action_result.data.*.category",
     ]
 
-    phantom.format(container=container, template=template, parameters=parameters, name="format_artifact_note")
+    phantom.format(container=container, template=template, parameters=parameters, name="format_artifact_note", separator=", ")
 
     add_artifact_note(container=container)
 
