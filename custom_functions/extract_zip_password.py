@@ -1,4 +1,4 @@
-def extract_zip_password(vault_id=None, container_id=None, pwd=None, **kwargs):
+def extract_zip_password_copy(vault_id=None, container_id=None, pwd=None, **kwargs):
     """
     Args:
         vault_id (CEF type: vault id): Vault ID
@@ -12,26 +12,24 @@ def extract_zip_password(vault_id=None, container_id=None, pwd=None, **kwargs):
     import json
     import phantom.rules as phantom
     import os
-    
+    from pathlib import Path
     import zipfile
+    
     outputs = {}
     success, message, info = phantom.vault_info(
         vault_id=vault_id,
         container_id=container_id
     )
     
-    extract_path = "/opt/phantom/vault/tmp/{}".format(vault_id)
-    if not os.path.exists(extract_path):
-        os.makedirs(extract_path)
+    extract_path = Path("/opt/phantom/vault/tmp/") / vault_id
+    extract_path.mkdir(parents=True, exist_ok=True)
 
+    with zipfile.ZipFile(info[0]["path"]) as f_zip:
+        f_zip.extractall(str(extract_path), pwd=pwd.encode())
 
-    with zipfile.ZipFile(info[0]["path"]) as file:
-        file.extractall(extract_path, pwd=pwd)
-
-    for f in os.listdir(extract_path):
-            if "." in f:
-                phantom.vault_add(container=container_id, file_location=extract_path + "/" + f)
-
+    for p in extract_path.rglob("*"):
+        if p.is_file():
+            phantom.vault_add(container=container_id, file_location=str(p), file_name=p.name)
 
     # Write your custom code here...
     outputs["info"] = info
