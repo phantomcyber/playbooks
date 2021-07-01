@@ -1,4 +1,4 @@
-def extract_zip_password_copy(vault_id=None, container_id=None, pwd=None, **kwargs):
+def extract_zip_password(vault_id=None, container_id=None, pwd=None, **kwargs):
     """
     Args:
         vault_id (CEF type: vault id): Vault ID
@@ -20,6 +20,9 @@ def extract_zip_password_copy(vault_id=None, container_id=None, pwd=None, **kwar
         vault_id=vault_id,
         container_id=container_id
     )
+    
+    if not success:
+        raise Exception("Could not find file in vault")
     
     extract_path = Path("/opt/phantom/vault/tmp/") / vault_id
     extract_path.mkdir(parents=True, exist_ok=True)
