@@ -40,10 +40,25 @@ def container_update(container_input=None, name=None, description=None, label=No
     if owner:
         # If keyword 'current' entered then translate effective_user id to a username
         if owner.lower() == 'current':
-            effective_user_id = phantom.get_effective_user()
-            url = phantom.build_phantom_rest_url('ph_user', effective_user_id)
-            owner = phantom.requests.get(url, verify=False).json().get('username')
-        update_dict['owner_name'] = owner
+            update_dict['owner_id'] = phantom.get_effective_user()
+        else:
+            # Attempt to translate name to owner_id
+            url = phantom.build_phantom_rest_url('ph_user') + f'?_filter_username="{owner}"'
+            data = phantom.requests.get(url, verify=False).json().get('data')
+            if data and len(data) == 1:
+                update_dict['owner_id'] = data[0]['id']
+            elif data and len(data) > 1:
+                phantom.error(f'Multiple matches for owner "{owner}"')
+            else:
+                # Attempt to translate name to role_id
+                url = phantom.build_phantom_rest_url('role') + f'?_filter_name="{owner}"'
+                data = phantom.requests.get(url, verify=False).json().get('data')
+                if data and len(data) == 1:
+                    update_dict['role_id'] = data[0]['id']
+                elif data and len(data) > 1:
+                    phantom.error(f'Multiple matches for role "{owner}"')
+                else:
+                    phantom.error(f'"{owner}" is not a valid username or role')
     if sensitivity:
         update_dict['sensitivity'] = sensitivity
     if severity:
@@ -62,7 +77,7 @@ def container_update(container_input=None, name=None, description=None, label=No
         phantom.debug('Updating container {0} with the following information: "{1}"'.format(container['id'], update_dict))
         phantom.update(container, update_dict)
     else:
-        phantom.debug("Valid container entered but no container changes provided.")
+        phantom.debug("Valid container entered but no valid container changes provided.")
         
     
     # Return a JSON-serializable object
