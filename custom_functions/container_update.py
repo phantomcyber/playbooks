@@ -70,7 +70,7 @@ def container_update(container_input=None, name=None, description=None, label=No
         update_dict['tags'] = tags
     if input_json:
         json_dict = json.loads(input_json)
-        # Merge dictionaries
+        # Merge dictionaries together. The second argument, "**json_dict" will take precedence and overwrite any duplicate parameters.
         update_dict = {**update_dict, **json_dict}
     
     if update_dict:
