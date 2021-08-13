@@ -69,13 +69,13 @@ def artifact_create(container=None, name=None, label=None, severity=None, cef_fi
     
     if input_json:
         # ensure valid input_json
-        if isinstance(input_json):
+        if isinstance(input_json, dict):
             json_dict = input_json
-        elif isinstance(input_json):
+        elif isinstance(input_json, str):
             json_dict = json.loads(input_json)
         else:
             raise ValueError("input_json must be either 'dict' or valid json 'string'")
-    
+            
     if json_dict:
         # Merge dictionaries, using the value from json_dict if there are any conflicting keys
         for json_key in json_dict:
@@ -84,7 +84,7 @@ def artifact_create(container=None, name=None, label=None, severity=None, cef_fi
                 tags = json_dict[json_key]
             else:
                 new_artifact[json_key] = json_dict[json_key]
-    
+                
     # now actually create the artifact
     phantom.debug('creating a new artifact with the following attributes:\n{}'.format(new_artifact))
     success, message, artifact_id = phantom.add_artifact(**new_artifact)
