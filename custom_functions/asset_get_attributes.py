@@ -26,7 +26,8 @@ def asset_get_attributes(asset=None, **kwargs):
     url = phantom.build_phantom_rest_url('asset') 
     
     if isinstance(asset, int):
-        url + '/{}'.format(asset)
+        url += '/{}'.format(asset)
+        
     # Attempt to translate asset_name to asset_id
     elif isinstance(asset, str):
         params = {'_filter_name': '"{}"'.format(asset)}
