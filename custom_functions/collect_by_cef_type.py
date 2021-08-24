@@ -44,7 +44,7 @@ def collect_by_cef_type(container=None, data_types=None, tags=None, scope=None, 
     if isinstance(scope, str) and scope.lower() in ['new', 'all']:
         scope = scope.lower()
     elif not scope:
-        scope = 'new'
+        scope = None
     else:
         raise ValueError("The input 'scope' is not one of 'new' or 'all'")
         
