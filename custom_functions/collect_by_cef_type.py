@@ -1,4 +1,4 @@
-def collect_by_cef_type(container=None, data_types=None, tags=None, **kwargs):
+def collect_by_cef_type(container=None, data_types=None, tags=None, scope=None, **kwargs):
     """
     Collect all artifact values that match the desired CEF data types, such as "ip", "url", "sha1", or "all". Optionally also filter for artifacts that have the specified tags.
     
@@ -6,6 +6,7 @@ def collect_by_cef_type(container=None, data_types=None, tags=None, **kwargs):
         container (CEF type: phantom container id): Container ID or container object.
         data_types: The CEF data type to collect values for. This could be a single string or a comma separated list such as "hash,filehash,file_hash". The special value "all" can also be used to collect all field values from all artifacts.
         tags: If tags are provided, only return fields from artifacts that have all of the provided tags. This could be an individual tag or a comma separated list.
+        scope: Defaults to 'new'. Define custom scope. Advanced Settings Scope is not passed to a custom function. Options are 'all' or 'new'.
     
     Returns a JSON-serializable object that implements the configured data paths:
         *.artifact_value (CEF type: *): The value of the field with the matching CEF data type.
@@ -39,6 +40,14 @@ def collect_by_cef_type(container=None, data_types=None, tags=None, **kwargs):
     else:
         data_types = [data_types]
     
+    # validate scope input
+    if isinstance(scope) and scope.lower() in ['new', 'all']:
+        scope = scope.lower()
+    elif not scope:
+        scope = 'new'
+    else:
+        raise ValueError("The input 'scope' is not one of 'new' or 'all'")
+        
     # split tags if it contains commas or use as-is
     if not tags:
         tags = []
@@ -50,7 +59,7 @@ def collect_by_cef_type(container=None, data_types=None, tags=None, **kwargs):
         tags = [tags]
 
     # collect all values matching the cef type (which was previously called "contains")
-    collected_field_values = phantom.collect_from_contains(container=container_dict, action_results=None, contains=data_types)
+    collected_field_values = phantom.collect_from_contains(container=container_dict, action_results=None, contains=data_types, scope=scope)
     phantom.debug(f'found the following field values: {collected_field_values}')
 
     # collect all the artifacts in the container to get the artifact IDs
