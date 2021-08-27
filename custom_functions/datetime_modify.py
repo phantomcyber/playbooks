@@ -4,10 +4,10 @@ def datetime_modify(input_datetime=None, input_format_string=None, modification_
     
     Args:
         input_datetime: The datetime to modify, which should be provided in a string format determined by input_format_string
-        input_format_string: The format string to use for the input according to the Python's datetime.strptime() formatting rules. If none is provided the default will be '%Y-%m-%dT%H:%M:%S.%fZ'
+        input_format_string: The format string to use for the input according to the Python's datetime.strptime() formatting rules. If none is provided the default will be '%Y-%m-%dT%H:%M:%S.%fZ'. In addition to strptime() formats, the special format "epoch" can be used to accept unix epoch timestamps.
         modification_unit: Choose a unit to modify the date by, which must be either seconds, minutes, hours, or days. If none is provided the default will be 'minutes'
         amount_to_modify: The number of seconds, minutes, hours, or days to add or subtract. Use a negative number such as -1.5 to subtract time. Defaults to zero.
-        output_format_string: The format string to use for the output according to the Python's datetime.strftime() formatting rules. If none is provided the default will be '%Y-%m-%dT%H:%M:%S.%fZ'
+        output_format_string: The format string to use for the output according to the Python's datetime.strftime() formatting rules. If none is provided the default will be '%Y-%m-%dT%H:%M:%S.%fZ'.
     
     Returns a JSON-serializable object that implements the configured data paths:
         datetime_string: The output datetime as formatted by the given output_format_string using Python's datetime.strftime()
@@ -33,7 +33,10 @@ def datetime_modify(input_datetime=None, input_format_string=None, modification_
     if not output_format_string:
         output_format_string = "%Y-%m-%dT%H:%M:%S.%fZ"
     
-    parsed_input = datetime.datetime.strptime(input_datetime, input_format_string)
+    if input_format_string.lower() == 'epoch':
+        parsed_input = datetime.datetime.utcfromtimestamp(int(input_datetime))
+    else:
+        parsed_input = datetime.datetime.strptime(input_datetime, input_format_string)
     phantom.debug("parsed the input datetime as: {}".format(parsed_input))
     
     # validate the modification_unit parameter, which must be a unit of time
