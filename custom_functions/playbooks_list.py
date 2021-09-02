@@ -50,7 +50,7 @@ def playbooks_list(name=None, category=None, tags=None, repo=None, **kwargs):
         params['_filter_scm'] = f'{repo}'
     # Translate string to id
     elif isinstance(repo, str):
-        scm_params = {'_filter_name': f'{repo}'}
+        scm_params = {'_filter_name': f'"{repo}"'}
         response = phantom.requests.get(uri=phantom.build_phantom_rest_url('scm'), params=scm_params, verify=False).json()
         if response['count'] == 1:
             params['_filter_scm'] = '{}'.format(response['data'][0]['id'])
