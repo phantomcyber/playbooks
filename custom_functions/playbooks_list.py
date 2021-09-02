@@ -1,11 +1,12 @@
-def playbooks_list(name=None, category=None, tags=None, **kwargs):
+def playbooks_list(name=None, category=None, tags=None, repo=None, **kwargs):
     """
     List all playbooks matching the provided name, category, and tags. If no filters are provided, list all playbooks.
     
     Args:
         name: Only return playbooks with the provided name.
         category: Only returns playbooks that match the provided category.
-        tags: Only return playbooks with all the provided tags. Must be a comma-separated list.
+        tags: Only return playbooks that contain ALL the provided tags. Multiple tags must be a comma-separated list.
+        repo: Only return playbooks that exist in this repo.
     
     Returns a JSON-serializable object that implements the configured data paths:
         *.id: Playbook ID:
@@ -29,8 +30,9 @@ def playbooks_list(name=None, category=None, tags=None, **kwargs):
     
     outputs = []
     
-    url = phantom.build_phantom_rest_url('playbook') + '?pretty&page_size=0'
-    params = {}
+    url = phantom.build_phantom_rest_url('playbook')
+    params = {'pretty' : True, 'page_size': 0}
+    
     # Add Name
     if name:
         params['_filter_name'] = f'"{name}"'
@@ -42,6 +44,18 @@ def playbooks_list(name=None, category=None, tags=None, **kwargs):
     if tags:
         tags = [item.replace(' ','') for item in tags.split(',')]
         params['_filter_tags__contains'] = f'{json.dumps(tags)}'
+    
+    # Add Repo
+    if isinstance(repo, int):
+        params['_filter_scm'] = f'{repo}'
+    # Translate string to id
+    elif isinstance(repo, str):
+        scm_params = {'_filter_name': f'{repo}'}
+        response = phantom.requests.get(uri=phantom.build_phantom_rest_url('scm'), params=scm_params, verify=False).json()
+        if response['count'] == 1:
+            params['_filter_scm'] = '{}'.format(response['data'][0]['id'])
+        else:
+            raise RuntimeError(f"Invalid repo specified: '{repo}'")       
             
     # Fetch playbook data
     response = phantom.requests.get(uri=url, params=params, verify=False).json()
