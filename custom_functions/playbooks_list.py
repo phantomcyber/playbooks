@@ -1,4 +1,4 @@
-def playbooks_list(name=None, category=None, tags=None, repo=None, **kwargs):
+def playbooks_list(name=None, category=None, tags=None, repo=None, playbook_type=None, **kwargs):
     """
     List all playbooks matching the provided name, category, and tags. If no filters are provided, list all playbooks.
     
@@ -7,6 +7,7 @@ def playbooks_list(name=None, category=None, tags=None, repo=None, **kwargs):
         category: Only returns playbooks that match the provided category.
         tags: Only return playbooks that contain ALL the provided tags. Multiple tags must be a comma-separated list.
         repo: Only return playbooks that exist in this repo.
+        playbook_type: Only return playbooks that match the provided type. Must be type "automation" or type 'data.' Playbook_type 'input' accepted as an alias for 'data.'
     
     Returns a JSON-serializable object that implements the configured data paths:
         *.id: Playbook ID:
@@ -23,6 +24,8 @@ def playbooks_list(name=None, category=None, tags=None, repo=None, **kwargs):
             e.g. True or False
         *.disabled: Playbook enabled / disabled status:
             e.g. True or False
+        *.playbook_type: Playbook type: 'automation' or 'data'
+        *.input_spec: If the playbook type is 'data,' this will be a list of dictionaries for the accepted inputs.
     """
     ############################ Custom Code Goes Below This Line #################################
     import json
@@ -56,7 +59,16 @@ def playbooks_list(name=None, category=None, tags=None, repo=None, **kwargs):
             params['_filter_scm'] = '{}'.format(response['data'][0]['id'])
         else:
             raise RuntimeError(f"Invalid repo specified: '{repo}'")       
-            
+    
+    # Add type
+    if isinstance(playbook_type, str) and playbook_type.lower() in ['automation', 'input', 'data']:
+        # Alias 'input' to 'data'
+        if playbook_type.lower() == 'input':
+            playbook_type = 'data'
+        params['_filter_playbook_type'] = f'"{playbook_type.lower()}"'
+    elif playbook_type:
+        raise TypeError(f"Invalid playbook type specified - '{playbook_type}' - must be one of: 'automation', 'input', 'data'")
+                     
     # Fetch playbook data
     response = phantom.requests.get(uri=url, params=params, verify=False).json()
     # If playbooks were found generate output
@@ -68,7 +80,9 @@ def playbooks_list(name=None, category=None, tags=None, repo=None, **kwargs):
                             'category': data['category'],
                             'tags': data['tags'],
                             'active': data['active'],
-                            'disabled': data['disabled']
+                            'disabled': data['disabled'],
+                            'playbook_type': data['playbook_type'],
+                            'input_spec': data['input_spec']
                            })
     else:
         phantom.debug("No playbook found for supplied filter")
