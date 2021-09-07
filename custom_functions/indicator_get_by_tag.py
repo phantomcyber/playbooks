@@ -117,22 +117,23 @@ def indicator_get_by_tag(tags_or=None, tags_and=None, indicator_timerange=None, 
                         skip_indicator = True
                     
             if container_id and not skip_indicator:
-                url = phantom.build_phantom_rest_url('indicator_common_container')
-                params = {'indicator_ids': i_id}
-                response = phantom.requests.get(url, params=params, verify=False).json()
-                if response:
-                    for container_item in response:
-                        # Only add to outputs if the supplied container_id shows in the common_container results
-                        if container_item['container_id'] == container_id:
-                            outputs.append({'indicator_id': i_id, **indicator_record[i_id]})
-                else:
-                    phantom.debug("No indicators found for provided tags and container")
+                artifact_data_collect = phantom.collect2(container=phantom.get_container(container_id), datapath=["artifact:*.cef"], scope='all')
+                artifact_data = [item[0] for item in artifact_data_collect]
+                in_container = False
+                for artifact in artifact_data:
+                    for value in artifact.values():
+                        if value == i_data['indicator_value']:
+                            in_container = True
+                if in_container:
+                    outputs.append({'indicator_id': i_id, **indicator_record[i_id]})
                     
             elif not skip_indicator:
-                
                 outputs.append({'indicator_id': i_id, **indicator_record[i_id]})
     else:
-        phantom.debug("No indicators found for provided tags")
+        if container_id:
+            phantom.debug("No indicators found for provided tags and container")
+        else:
+            phantom.debug("No indicators found for provided tags")
     
     # Return a JSON-serializable object
     assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
