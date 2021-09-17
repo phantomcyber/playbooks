@@ -7,7 +7,7 @@ def playbooks_list(name=None, category=None, tags=None, repo=None, playbook_type
         category: Only returns playbooks that match the provided category.
         tags: Only return playbooks that contain ALL the provided tags. Multiple tags must be a comma-separated list.
         repo: Only return playbooks that exist in this repo.
-        playbook_type: Only return playbooks that match the provided type. Must be type "automation" or type 'data.' Playbook_type 'input' accepted as an alias for 'data.'
+        playbook_type: Only return playbooks that match the provided type. Accepts 'automation', 'input' or 'data.'
     
     Returns a JSON-serializable object that implements the configured data paths:
         *.id: Playbook ID:
@@ -65,7 +65,7 @@ def playbooks_list(name=None, category=None, tags=None, repo=None, playbook_type
         # Alias 'input' to 'data'
         if playbook_type.lower() == 'input':
             playbook_type = 'data'
-        params['_filter_playbook_type'] = f'"{playbook_type.lower()}"'
+        playbook_type = playbook_type.lower()
     elif playbook_type:
         raise TypeError(f"Invalid playbook type specified - '{playbook_type}' - must be one of: 'automation', 'input', 'data'")
                      
@@ -74,16 +74,29 @@ def playbooks_list(name=None, category=None, tags=None, repo=None, playbook_type
     # If playbooks were found generate output
     if response['count'] > 0:
         for data in response['data']:
-            outputs.append({'id': data['id'],
-                            'full_name': f"{data['_pretty_scm']}/{data['name']}",
-                            'name': data['name'],
-                            'category': data['category'],
-                            'tags': data['tags'],
-                            'active': data['active'],
-                            'disabled': data['disabled'],
-                            'playbook_type': data['playbook_type'],
-                            'input_spec': data['input_spec']
-                           })
+            
+            valid_playbook = False
+            # SOAR < 5.0 does not have playbook_type so providing a playbook type will raise an error
+            if not data.get('playbook_type') and playbook_type:
+                raise TypeError("playbook_type filter not valid on SOAR prior to 5.0")
+            # If no playbook type exists user does not want to filter on playbook types
+            elif not playbook_type:
+                valid_playbook = True
+            # If user provided a playbook type then only output playbooks that match that provided type
+            elif data.get('playbook_type') == playbook_type:
+                valid_playbook = True
+                
+            if valid_playbook:
+                outputs.append({'id': data['id'],
+                                'full_name': f"{data['_pretty_scm']}/{data['name']}",
+                                'name': data['name'],
+                                'category': data['category'],
+                                'tags': data['tags'],
+                                'active': data['active'],
+                                'disabled': data['disabled'],
+                                'playbook_type': data.get('playbook_type'),
+                                'input_spec': data.get('input_spec')
+                               })
     else:
         phantom.debug("No playbook found for supplied filter")
     # Return a JSON-serializable object
