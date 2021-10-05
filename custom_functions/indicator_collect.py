@@ -1,6 +1,6 @@
 def indicator_collect(container=None, **kwargs):
     """
-    Collect all indicators in a container and separate them by data type. Additional output data paths are created for each data type. Artifact scope is ignored. Recently modified artifacts or artifacts older than 30 days may not have correct indicator types because of performance considerations when querying the indicator table.
+    Collect all indicators in a container and separate them by data type. Additional output data paths are created for each data type. Artifact scope is ignored. 
     
     Args:
         container (CEF type: phantom container id): The current container
@@ -65,18 +65,13 @@ def indicator_collect(container=None, **kwargs):
         artifact_id = artifact['id']
         for cef_key in artifact['cef']:
             cef_value = artifact['cef'][cef_key]
-            # filter parameters cannot contain double quotes
-            if '"' in cef_value:
-                phantom.debug('Unable to find indicator type for the following CEF value because it contains quotes: {}'.format(cef_value))
-                data_types = []
-            else:
-                params = {'_filter_value': '"{}"'.format(cef_value), "_special_contains": True, 'page_size': 1}
-                indicator_json = phantom.requests.get(uri=phantom.build_phantom_rest_url('indicator'), params=params, verify=False).json()
-                data_types = []
-                if indicator_json.get('data'):
-                    data_types = indicator_json['data'][0]['_special_contains']
-                    # drop none
-                    data_types = [item for item in data_types if item]
+            params = {'indicator_value': cef_value, "_special_contains": True, 'page_size': 1}
+            indicator_json = phantom.requests.get(uri=phantom.build_phantom_rest_url('indicator_by_value'), params=params, verify=False).json()
+            data_types = []
+            if indicator_json.get('id'):
+                data_types = indicator_json['_special_contains']
+                # drop none
+                data_types = [item for item in data_types if item]
 
             # store the value in all_indicators and a list of values for each data type
             outputs['all_indicators'].append({'cef_key': cef_key, 'cef_value': cef_value, 'artifact_id': artifact_id, 'data_types': data_types})
