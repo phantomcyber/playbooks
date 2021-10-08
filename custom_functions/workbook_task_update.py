@@ -49,7 +49,7 @@ def workbook_task_update(task_name=None, note_title=None, note_content=None, sta
         raise RuntimeError('Unable to update workbook task - The task requires a closing note and a closing title')     
     else:
         # Add Note
-        if note_content and status != 'complete':
+        if note_content:
             success, message, note_id = phantom.add_note(container=container_id, note_type='task',
                                                          task_id=task_id, title=note_title, 
                                                          content=note_content, note_format='markdown')
