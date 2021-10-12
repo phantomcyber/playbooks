@@ -68,6 +68,9 @@ def indicator_tag(indicator=None, tags=None, overwrite=None, **kwargs):
     # if overwrite is set to false, then start with existing tags and append new tags to them
     if not overwrite: 
         tags = existing_tags + tags
+        
+    # deduplicate before POSTing
+    tags = list(set(tags))
             
     data = {"tags": tags}
     response = phantom.requests.post(url, json=data, verify=False).json()
