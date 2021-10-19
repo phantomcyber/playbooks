@@ -195,7 +195,7 @@ def list_response_playbooks(action=None, success=None, container=None, results=N
 
     parameters.append({
         "name": None,
-        "repo": "local",
+        "repo": None,
         "tags": "response_option",
         "category": None,
         "playbook_type": None,
