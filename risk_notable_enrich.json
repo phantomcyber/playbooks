@@ -61,7 +61,7 @@
                     "targetPort": "1_in"
                 }
             ],
-            "hash": "c6a1b87e3ec54b611bdc28acab6d4f9043d280c0",
+            "hash": "3c817304db740ff85ee67d10acad674e21cfb76c",
             "nodes": {
                 "0": {
                     "data": {
@@ -76,7 +76,7 @@
                     "id": "0",
                     "type": "start",
                     "x": 720,
-                    "y": -6.714628852932947e-13
+                    "y": -7.034373084024992e-13
                 },
                 "1": {
                     "customCode": "def on_finish(container, summary):\n    phantom.debug(\"on_finish() called\")\n\t\n    # Added custom code to overcome bug with on_finish trying to call outputs that may not exist\n    process_notes__note_title = phantom.get_run_data(key=\"process_notes:note_title\")\n    process_notes__note_content = phantom.get_run_data(key=\"process_notes:note_content\")\n    if process_notes__note_title:\n        process_notes__note_title = json.loads(process_notes__note_title)\n    if process_notes__note_content:\n        process_notes__note_content = json.loads(process_notes__note_content)\n    output = {\n        \"note_title\": process_notes__note_title,\n        \"note_content\": process_notes__note_content,\n    }\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n    \n    # Error handling in case of playbook not being able to find investigative playbooks\n    list_investigate_playbooks_data = phantom.collect2(container=container, datapath=[\"list_investigate_playbooks:custom_function_result.data.*.full_name\"])\n    list_investigate_playbooks_data___full_name = [item[0] for item in list_investigate_playbooks_data if item[0]]\n    if not list_investigate_playbooks_data___full_name:\n        raise RuntimeError(\"Unable to find investigate type playbooks.\")\n        \n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_playbook_output_data(output=output)\n\n    return",
@@ -211,7 +211,7 @@
                     "errors": {},
                     "id": "22",
                     "type": "utility",
-                    "userCode": "    import time\n    \n    # Introduce time delay since indicator records show up later than artifact records\n    time.sleep(20)\n\n",
+                    "userCode": "\n",
                     "x": 700,
                     "y": 420
                 },
@@ -362,7 +362,7 @@
                     "y": 119.99999999999727
                 }
             },
-            "notes": ""
+            "notes": "For detailed implementation see https://docs.splunk.com/Documentation/ESSOC/latest/user/Useplaybookpack"
         },
         "input_spec": null,
         "output_spec": [
@@ -392,7 +392,7 @@
         "schema": "5.0.3",
         "version": "5.0.1.66250"
     },
-    "create_time": "2021-10-19T14:39:22.859851+00:00",
+    "create_time": "2021-10-19T20:22:49.236079+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"

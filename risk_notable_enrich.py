@@ -149,10 +149,6 @@ def indicator_collect(action=None, success=None, container=None, results=None, h
     ################################################################################
     ## Custom Code Start
     ################################################################################
-    import time
-    
-    # Introduce time delay since indicator records show up later than artifact records
-    time.sleep(20)
 
     ################################################################################
     ## Custom Code End
