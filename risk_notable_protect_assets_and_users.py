@@ -687,9 +687,9 @@ def list_identity_playbooks(action=None, success=None, container=None, results=N
 
     parameters.append({
         "name": None,
-        "category": None,
-        "tags": "identity, protect, risk_notable",
         "repo": "local",
+        "tags": "identity, protect, risk_notable",
+        "category": None,
         "playbook_type": "input",
     })
 

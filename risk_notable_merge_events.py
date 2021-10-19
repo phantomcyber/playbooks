@@ -449,10 +449,10 @@ def merge_all(action=None, success=None, container=None, results=None, handle=No
     parameters = []
 
     parameters.append({
-        "target_container": id_value,
-        "container_list": find_related_events_data___container_id,
         "workbook": None,
+        "container_list": find_related_events_data___container_id,
         "close_containers": True,
+        "target_container": id_value,
     })
 
     ################################################################################
@@ -628,10 +628,10 @@ def merge_selected(action=None, success=None, container=None, results=None, hand
     parameters = []
 
     parameters.append({
-        "target_container": id_value,
-        "container_list": process_responses__container_list,
         "workbook": None,
+        "container_list": process_responses__container_list,
         "close_containers": True,
+        "target_container": id_value,
     })
 
     ################################################################################
