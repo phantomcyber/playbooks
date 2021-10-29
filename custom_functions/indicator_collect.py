@@ -66,7 +66,9 @@ def indicator_collect(container=None, **kwargs):
         for cef_key in artifact['cef']:
             cef_value = artifact['cef'][cef_key]
             params = {'indicator_value': cef_value, "_special_contains": True, 'page_size': 1}
-            indicator_json = phantom.requests.get(uri=phantom.build_phantom_rest_url('indicator_by_value'), params=params, verify=False).json()
+            indicator_data = phantom.requests.get(uri=phantom.build_phantom_rest_url('indicator_by_value'), params=params, verify=False)
+            if indicator_data.status_code == 200:
+                indicator_json = indicator_data.json()
             data_types = []
             if indicator_json.get('id'):
                 data_types = indicator_json['_special_contains']
