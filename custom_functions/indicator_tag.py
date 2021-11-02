@@ -52,7 +52,7 @@ def indicator_tag(indicator=None, tags=None, overwrite=None, **kwargs):
 
     # attempt to translate indicator string value to a indicator id
     elif isinstance(indicator, str):
-        params = {'_filter_value': f'"{indicator}"'}
+        params = {'_filter_value__iexact': f'"{indicator}"'}
         response = phantom.requests.get(url, params=params, verify=False).json()
         if response['count'] == 1:
             indicator_id = response['data'][0]['id']
