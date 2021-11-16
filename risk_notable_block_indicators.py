@@ -123,7 +123,7 @@ def decide_and_launch_playbooks(action=None, success=None, container=None, resul
                 for spec in spec_item:
                     for contains_type in spec['contains']:
                         phantom.debug(f"if '{type_item}' in '{contains_type}'")
-                        if type_item in contains_type:
+                        if type_item and type_item in contains_type:
                             phantom.debug(f"Match found for '{cef_value}' of type '{type_item}' for playbook '{pb_name}' at input '{spec['name']}'")
                             if not pb_inputs:
                                 pb_inputs[spec['name']] = [cef_value]
