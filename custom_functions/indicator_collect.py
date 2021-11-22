@@ -84,6 +84,9 @@ def indicator_collect(container=None, **kwargs):
                     outputs[data_type_escaped] = []
                 outputs[data_type_escaped].append({'cef_key': cef_key, 'cef_value': cef_value, 'artifact_id': artifact_id})
 
+    # sort the all_indicators outputs to make them more consistent
+    outputs['all_indicators'].sort(key=lambda indicator: indicator['cef_value'])
+
     # Return a JSON-serializable object
     assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
     return outputs
