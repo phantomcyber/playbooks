@@ -75,7 +75,7 @@
                     "targetPort": "1_in"
                 }
             ],
-            "hash": "e7b7c5ba4384038fbedfe960d34cefd9a87fdacb",
+            "hash": "75eb82d5a8ba447e780d5fce7569bcacc368b579",
             "nodes": {
                 "0": {
                     "data": {
@@ -89,8 +89,8 @@
                     "errors": {},
                     "id": "0",
                     "type": "start",
-                    "x": 20,
-                    "y": 0
+                    "x": 19.999999999999986,
+                    "y": -4.618527782440651e-14
                 },
                 "1": {
                     "data": {
@@ -106,7 +106,7 @@
                     "id": "1",
                     "type": "end",
                     "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
-                    "x": 20,
+                    "x": 19.999999999999986,
                     "y": 1060
                 },
                 "11": {
@@ -182,7 +182,7 @@
                     "id": "11",
                     "type": "utility",
                     "userCode": "    \n    # overwrite the parameters, extracting the indicator and tag for each result from process_responses\n    parameters = []\n    for item in process_responses__result:\n        parameters.append({\n            \"indicator\": item[0][0]['item'],\n            \"tags\": item[0][1]['item'],\n            \"overwrite\": None\n        })\n\n",
-                    "x": 0,
+                    "x": -1.4210854715202004e-14,
                     "y": 960
                 },
                 "2": {
@@ -275,8 +275,8 @@
                     "errors": {},
                     "id": "2",
                     "type": "utility",
-                    "x": 0,
-                    "y": 100
+                    "x": 1.4210854715202004e-14,
+                    "y": 99.99999999999997
                 },
                 "3": {
                     "data": {
@@ -358,7 +358,7 @@
                     "errors": {},
                     "id": "4",
                     "type": "utility",
-                    "x": 0,
+                    "x": -1.4210854715202004e-14,
                     "y": 340
                 },
                 "5": {
@@ -388,8 +388,8 @@
                     "id": "5",
                     "type": "code",
                     "userCode": "\n    playbooks_launched = []\n    \n    # loop through each playbook with the matching tags\n    for playbook in list_investigate_playbooks_data:\n        playbook_name = playbook[0]\n        input_spec = playbook[1]\n        phantom.debug(playbook_name)\n        inputs_to_provide = []\n        # loop through each input parameter, matching only the \"indicators\" input\n        for param in input_spec:\n            if param['name'] == 'indicators':\n                # loop through each accepted data type\n                for accepted_data_type in param['contains']:\n                    # loop through each indicator in the container and add any indicators with matching data types to the \"inputs_to_provide\" list\n                    for indicator in collect_all_indicators_data_all_indicators:\n                        for indicator_type in indicator[1]:\n                            # if the types match and the indicator value is not already in the inputs_to_provide then add it now \n                            if indicator_type == accepted_data_type and indicator[0] not in inputs_to_provide:\n                                inputs_to_provide.append(indicator[0])\n        # back in the playbook loop, call the playbook if there are any inputs\n        if inputs_to_provide != []:\n            playbook_run_name = playbook_name.split('/')[1].replace(' ','_').lower()\n            playbook_input = {'indicators': inputs_to_provide}\n            phantom.debug('launching playbook {} with input {}'.format(playbook_name, playbook_input))\n            phantom.playbook(playbook=playbook_name, container=container, name=playbook_run_name, inputs=playbook_input, callback=add_notes)\n            playbooks_launched.append(playbook_run_name)\n            \n    launch_investigate_playbooks__playbooks_launched = playbooks_launched\n\n",
-                    "x": 0,
-                    "y": 440
+                    "x": -1.4210854715202004e-14,
+                    "y": 439.99999999999994
                 },
                 "6": {
                     "data": {
@@ -607,7 +607,7 @@
                     "id": "9",
                     "type": "utility",
                     "userCode": "\n    responses = threat_intel_indicator_review_summary_responses[0]\n    indicator_values = collect_all_indicators_data_all_indicators___cef_value\n\n    # lookup table to turn prompt responses into tags to add. \"Do nothing\" is not included, so no tags will be added\n    response_to_tag_map = {\n        \"Tag to block\": \"marked_for_block\",\n        \"Tag as safe\": \"safe\"\n    }\n\n    # overwrite the parameters list with a list of one indicator and one tag per parameter dictionary \n    parameters = []\n    for indicator_index, indicator_value in enumerate(indicator_values):\n        preconfigured_response = responses[indicator_index * 2]\n        freeform_response = responses[indicator_index * 2 + 1]\n        \n        # handle the preconfigured responses\n        if preconfigured_response in response_to_tag_map:\n            phantom.comment(comment=\"Tagging the indicator {} with the preconfigured tag {}\".format(indicator_value, response_to_tag_map[preconfigured_response]))\n            parameters.append({\"input_1\": [indicator_value, response_to_tag_map[preconfigured_response]]})\n        elif preconfigured_response != 'Do nothing':\n            phantom.error('The response {} was chosen for the indicator {}, but that response is not in the set of allowed responses.'.format(preconfigured_response, indicator_value))\n        \n        # handle the freeform responses\n        if freeform_response.lower() not in ['n', 'none', 'na', 'n/a']:\n            freeform_tags = freeform_response.replace(' ','').split(',')\n            for tag in freeform_tags:\n                phantom.comment(comment=\"Tagging the indicator {} with the freeform tag {}\".format(indicator_value, tag))\n                parameters.append({\"input_1\": [indicator_value, tag]})\n\n",
-                    "x": 0,
+                    "x": -1.4210854715202004e-14,
                     "y": 860
                 }
             },
@@ -620,10 +620,10 @@
         "schema": "5.0.4",
         "version": "5.1.0.70187"
     },
-    "create_time": "2021-11-24T21:37:05.201993+00:00",
+    "create_time": "2021-11-30T16:26:33.845191+00:00",
     "draft_mode": false,
     "labels": [
-        "splunk_threat"
+        "events"
     ],
     "tags": []
 }
