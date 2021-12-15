@@ -406,7 +406,7 @@ def quarantine_decision(action=None, success=None, container=None, results=None,
 
     # call connected blocks if condition 3 matched
     if found_match_3:
-        join_block_and_shutdown(action=action, success=success, container=container, results=results, handle=handle)
+        block_and_shutdown(action=action, success=success, container=container, results=results, handle=handle)
         return
 
     # check for 'else' condition 4
@@ -482,28 +482,7 @@ def shutdown(action=None, success=None, container=None, results=None, handle=Non
     ## Custom Code End
     ################################################################################
 
-    phantom.act("execute program", parameters=parameters, name="shutdown", assets=["ssh"], callback=shutdown_callback)
-
-    return
-
-
-def shutdown_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("shutdown_callback() called")
-
-    
-    join_block_and_shutdown(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=filtered_artifacts, filtered_results=filtered_results)
-    join_format_custom_note(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=filtered_artifacts, filtered_results=filtered_results)
-
-
-    return
-
-
-def join_block_and_shutdown(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("join_block_and_shutdown() called")
-
-    if phantom.completed(action_names=["quarantine_prompt", "shutdown"]):
-        # call connected block "block_and_shutdown"
-        block_and_shutdown(container=container, handle=handle)
+    phantom.act("execute program", parameters=parameters, name="shutdown", assets=["ssh"], callback=join_format_custom_note)
 
     return
 
