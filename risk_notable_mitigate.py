@@ -1,5 +1,5 @@
 """
-This playbook checks for the presence of the Risk Response workbook and updates tasks or leaves generic notes. &quot;Risk_notable_verdict&quot; recommends this playbook as a second phase of the investigation. Additionally, this playbook can be used in ad-hoc investigations or incorporated into custom workbooks.
+This playbook allows automatic progression through the Risk Response workbook by starting and updating tasks. &quot;Risk_notable_verdict&quot; recommends this playbook as a second phase of the investigation. 
 """
 
 

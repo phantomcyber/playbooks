@@ -1,5 +1,5 @@
 """
-This playbook checks for the presence of the Risk Investigation workbook and updates tasks or leaves generic notes.
+This playbook allows automatic progression through the Risk Investigation workbook by starting and updating tasks.
 """
 
 
