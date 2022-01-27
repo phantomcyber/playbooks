@@ -212,68 +212,6 @@ def decide_and_launch_playbooks(action=None, success=None, container=None, resul
     return
 
 
-def format_asset_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("format_asset_query() called")
-
-    ################################################################################
-    # Format a Splunk query with host data from the container.
-    ################################################################################
-
-    template = """asset_lookup_by_str | search asset IN (\n%%\n\"{0}\"\n%%\n)\n| eval category=mvjoin(category, \"; \")"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "collect_type_host:custom_function_result.data.*.artifact_value"
-    ]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_asset_query", drop_none=True)
-
-    run_asset_query(container=container)
-
-    return
-
-
-def format_identity_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("format_identity_query() called")
-
-    ################################################################################
-    # Format a Splunk query with user data from the container.
-    ################################################################################
-
-    template = """identity_lookup_expanded | search identity IN (\n%%\n\"{0}\"\n%%\n)\n| eval category=mvjoin(category, \"; \")"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "collect_type_user:custom_function_result.data.*.artifact_value"
-    ]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_identity_query", drop_none=True)
-
-    run_identity_query(container=container)
-
-    return
-
-
 def user_decision(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("user_decision() called")
 
@@ -290,7 +228,7 @@ def user_decision(action=None, success=None, container=None, results=None, handl
 
     # call connected blocks if condition 1 matched
     if found_match_1:
-        format_identity_query(action=action, success=success, container=container, results=results, handle=handle)
+        run_identity_query(action=action, success=success, container=container, results=results, handle=handle)
         return
 
     # check for 'else' condition 2
@@ -304,19 +242,24 @@ def run_identity_query(action=None, success=None, container=None, results=None, 
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
 
+    query_formatted_string = phantom.format(
+        container=container,
+        template="""identity_lookup_expanded | search identity IN (\n%%\n\"{0}\"\n%%\n)\n| eval category=mvjoin(category, \"; \")""",
+        parameters=[
+            "collect_type_user:custom_function_result.data.*.artifact_value"
+        ])
+
     ################################################################################
     # Search for any matches to users in the identity table in Splunk.
     ################################################################################
 
-    format_identity_query = phantom.get_format_data(name="format_identity_query")
-
     parameters = []
 
-    if format_identity_query is not None:
-        parameters.append({
-            "query": format_identity_query,
-            "command": "| inputlookup",
-        })
+    parameters.append({
+        "query": query_formatted_string,
+        "command": "| inputlookup",
+        "undefined": "",
+    })
 
     ################################################################################
     ## Custom Code Start
@@ -349,7 +292,7 @@ def host_decision_1(action=None, success=None, container=None, results=None, han
 
     # call connected blocks if condition 1 matched
     if found_match_1:
-        format_asset_query(action=action, success=success, container=container, results=results, handle=handle)
+        run_asset_query(action=action, success=success, container=container, results=results, handle=handle)
         return
 
     # check for 'else' condition 2
@@ -363,19 +306,24 @@ def run_asset_query(action=None, success=None, container=None, results=None, han
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
 
+    query_formatted_string = phantom.format(
+        container=container,
+        template="""asset_lookup_by_str | search asset IN (\n%%\n\"{0}\"\n%%\n)\n| eval category=mvjoin(category, \"; \")""",
+        parameters=[
+            "collect_type_host:custom_function_result.data.*.artifact_value"
+        ])
+
     ################################################################################
     # Search for any matches to hosts in the asset table in Splunk.
     ################################################################################
 
-    format_asset_query = phantom.get_format_data(name="format_asset_query")
-
     parameters = []
 
-    if format_asset_query is not None:
-        parameters.append({
-            "query": format_asset_query,
-            "command": "| inputlookup",
-        })
+    parameters.append({
+        "query": query_formatted_string,
+        "command": "| inputlookup",
+        "undefined": "",
+    })
 
     ################################################################################
     ## Custom Code Start

@@ -33,10 +33,8 @@ def risk_rule_decision(action=None, success=None, container=None, results=None, 
 
     # call connected blocks if condition 1 matched
     if found_match_1:
+        workbook_add(action=action, success=success, container=container, results=results, handle=handle)
         return
-
-    # check for 'else' condition 2
-    workbook_list(action=action, success=success, container=container, results=results, handle=handle)
 
     return
 
@@ -55,24 +53,7 @@ def risk_notable_import_data(action=None, success=None, container=None, results=
     ################################################################################
 
     # call playbook "community/risk_notable_import_data", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("community/risk_notable_import_data", container=container, name="risk_notable_import_data", callback=note_decision_1)
-
-    return
-
-
-def join_risk_notable_enrich(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("join_risk_notable_enrich() called")
-
-    # if the joined function has already been called, do nothing
-    if phantom.get_run_data(key="join_risk_notable_enrich_called"):
-        return
-
-    if phantom.completed(playbook_names=["risk_notable_import_data"]):
-        # save the state that the joined function has now been called
-        phantom.save_run_data(key="join_risk_notable_enrich_called", value="risk_notable_enrich")
-
-        # call connected block "risk_notable_enrich"
-        risk_notable_enrich(container=container, handle=handle)
+    playbook_run_id = phantom.playbook("community/risk_notable_import_data", container=container, name="risk_notable_import_data", callback=update_preprocess_task)
 
     return
 
@@ -91,52 +72,7 @@ def risk_notable_enrich(action=None, success=None, container=None, results=None,
     ################################################################################
 
     # call playbook "community/risk_notable_enrich", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("community/risk_notable_enrich", container=container, name="risk_notable_enrich", callback=note_decision_2)
-
-    return
-
-
-def workbook_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("workbook_list() called")
-
-    parameters = [{}]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="community/workbook_list", parameters=parameters, name="workbook_list", callback=workbook_decision)
-
-    return
-
-
-def workbook_decision(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("workbook_decision() called")
-
-    ################################################################################
-    # Determine if workbook Risk Investigation exists.
-    ################################################################################
-
-    # check for 'if' condition 1
-    found_match_1 = phantom.decision(
-        container=container,
-        conditions=[
-            ["workbook_list:custom_function_result.data.*.name", "==", "Risk Investigation"]
-        ])
-
-    # call connected blocks if condition 1 matched
-    if found_match_1:
-        workbook_add(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    # check for 'else' condition 2
-    join_risk_notable_preprocess(action=action, success=success, container=container, results=results, handle=handle)
+    playbook_run_id = phantom.playbook("community/risk_notable_enrich", container=container, name="risk_notable_enrich", callback=update_investigate_task)
 
     return
 
@@ -196,47 +132,7 @@ def start_preprocess_task(action=None, success=None, container=None, results=Non
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="community/workbook_task_update", parameters=parameters, name="start_preprocess_task", callback=join_risk_notable_preprocess)
-
-    return
-
-
-def note_decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("note_decision_1() called")
-
-    ################################################################################
-    # Determine if a note was left by the previous playbook and if the Risk Investigation 
-    # workbook should be used.
-    ################################################################################
-
-    # check for 'if' condition 1
-    found_match_1 = phantom.decision(
-        container=container,
-        logical_operator="and",
-        conditions=[
-            ["risk_notable_import_data:playbook_output:note_title", "!=", ""],
-            ["risk_notable_import_data:playbook_output:note_content", "!=", ""],
-            ["workbook_list:custom_function_result.data.*.name", "==", "Risk Investigation"]
-        ])
-
-    # call connected blocks if condition 1 matched
-    if found_match_1:
-        update_preprocess_task(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    # check for 'elif' condition 2
-    found_match_2 = phantom.decision(
-        container=container,
-        logical_operator="and",
-        conditions=[
-            ["risk_notable_import_data:playbook_output:note_title", "!=", ""],
-            ["risk_notable_import_data:playbook_output:note_content", "!=", ""]
-        ])
-
-    # call connected blocks if condition 2 matched
-    if found_match_2:
-        add_import_data_note_1(action=action, success=success, container=container, results=results, handle=handle)
-        return
+    phantom.custom_function(custom_function="community/workbook_task_update", parameters=parameters, name="start_preprocess_task", callback=risk_notable_preprocess)
 
     return
 
@@ -303,47 +199,7 @@ def start_investigate_task(action=None, success=None, container=None, results=No
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="community/workbook_task_update", parameters=parameters, name="start_investigate_task", callback=join_risk_notable_enrich)
-
-    return
-
-
-def note_decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("note_decision_2() called")
-
-    ################################################################################
-    # Determine if a note was left by the previous playbook and if the Risk Investigation 
-    # workbook should be used.
-    ################################################################################
-
-    # check for 'if' condition 1
-    found_match_1 = phantom.decision(
-        container=container,
-        logical_operator="and",
-        conditions=[
-            ["risk_notable_enrich:playbook_output:note_title", "!=", ""],
-            ["risk_notable_enrich:playbook_output:note_content", "!=", ""],
-            ["workbook_list:custom_function_result.data.*.name", "==", "Risk Investigation"]
-        ])
-
-    # call connected blocks if condition 1 matched
-    if found_match_1:
-        update_investigate_task(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    # check for 'elif' condition 2
-    found_match_2 = phantom.decision(
-        container=container,
-        logical_operator="and",
-        conditions=[
-            ["risk_notable_enrich:playbook_output:note_title", "!=", ""],
-            ["risk_notable_enrich:playbook_output:note_content", "!=", ""]
-        ])
-
-    # call connected blocks if condition 2 matched
-    if found_match_2:
-        add_enrich_note_1(action=action, success=success, container=container, results=results, handle=handle)
-        return
+    phantom.custom_function(custom_function="community/workbook_task_update", parameters=parameters, name="start_investigate_task", callback=risk_notable_enrich)
 
     return
 
@@ -394,22 +250,6 @@ def update_investigate_task(action=None, success=None, container=None, results=N
     return
 
 
-def join_risk_notable_preprocess(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("join_risk_notable_preprocess() called")
-
-    # if the joined function has already been called, do nothing
-    if phantom.get_run_data(key="join_risk_notable_preprocess_called"):
-        return
-
-    # save the state that the joined function has now been called
-    phantom.save_run_data(key="join_risk_notable_preprocess_called", value="risk_notable_preprocess")
-
-    # call connected block "risk_notable_preprocess"
-    risk_notable_preprocess(container=container, handle=handle)
-
-    return
-
-
 def risk_notable_preprocess(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("risk_notable_preprocess() called")
 
@@ -425,67 +265,6 @@ def risk_notable_preprocess(action=None, success=None, container=None, results=N
 
     # call playbook "community/risk_notable_preprocess", returns the playbook_run_id
     playbook_run_id = phantom.playbook("community/risk_notable_preprocess", container=container, name="risk_notable_preprocess", callback=risk_notable_import_data)
-
-    return
-
-
-def add_import_data_note_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("add_import_data_note_1() called")
-
-    ################################################################################
-    # Custom code to handle leaving a note with a dynamic title and content when the 
-    # Risk Investigation workbook is not present.
-    ################################################################################
-
-    risk_notable_import_data_output_note_title = phantom.collect2(container=container, datapath=["risk_notable_import_data:playbook_output:note_title"])
-    risk_notable_import_data_output_note_content = phantom.collect2(container=container, datapath=["risk_notable_import_data:playbook_output:note_content"])
-
-    risk_notable_import_data_output_note_title_values = [item[0] for item in risk_notable_import_data_output_note_title]
-    risk_notable_import_data_output_note_content_values = [item[0] for item in risk_notable_import_data_output_note_content]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-	
-    for title, content in zip(risk_notable_import_data_output_note_title_values, risk_notable_import_data_output_note_content_values):
-
-    	phantom.add_note(container=container, content=content, note_format="markdown", note_type="general", title=title)
-
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    join_risk_notable_enrich(container=container)
-
-    return
-
-
-def add_enrich_note_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("add_enrich_note_1() called")
-
-    ################################################################################
-    # Custom code to handle leaving a note with a dynamic title and content when the 
-    # Risk Investigation workbook is not present.
-    ################################################################################
-
-    risk_notable_enrich_output_note_title = phantom.collect2(container=container, datapath=["risk_notable_enrich:playbook_output:note_title"])
-    risk_notable_enrich_output_note_content = phantom.collect2(container=container, datapath=["risk_notable_enrich:playbook_output:note_content"])
-
-    risk_notable_enrich_output_note_title_values = [item[0] for item in risk_notable_enrich_output_note_title]
-    risk_notable_enrich_output_note_content_values = [item[0] for item in risk_notable_enrich_output_note_content]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    for title, content in zip(risk_notable_enrich_output_note_title_values, risk_notable_enrich_output_note_content_values):
-        
-        phantom.add_note(container=container, content=content, note_format="markdown", note_type="general", title=title)
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
 
     return
 

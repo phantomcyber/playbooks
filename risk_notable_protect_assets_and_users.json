@@ -7,44 +7,6 @@
             "description": "This playbook attempts to find assets and users from the notable event and match those with assets and identities from Splunk Enterprise Security. If a match was found and the user has playbooks available to contain entities, the analyst decides which entities to disable or quarantine.\t",
             "edges": [
                 {
-                    "conditions": [
-                        {
-                            "index": 0
-                        }
-                    ],
-                    "id": "port_20_to_port_16",
-                    "sourceNode": "20",
-                    "sourcePort": "20_out",
-                    "targetNode": "16",
-                    "targetPort": "16_in"
-                },
-                {
-                    "id": "port_16_to_port_21",
-                    "sourceNode": "16",
-                    "sourcePort": "16_out",
-                    "targetNode": "21",
-                    "targetPort": "21_in"
-                },
-                {
-                    "conditions": [
-                        {
-                            "index": 0
-                        }
-                    ],
-                    "id": "port_22_to_port_14",
-                    "sourceNode": "22",
-                    "sourcePort": "22_out",
-                    "targetNode": "14",
-                    "targetPort": "14_in"
-                },
-                {
-                    "id": "port_14_to_port_23",
-                    "sourceNode": "14",
-                    "sourcePort": "14_out",
-                    "targetNode": "23",
-                    "targetPort": "23_in"
-                },
-                {
                     "id": "port_23_to_port_24",
                     "sourceNode": "23",
                     "sourcePort": "23_out",
@@ -194,9 +156,33 @@
                     "sourcePort": "49_out",
                     "targetNode": "48",
                     "targetPort": "48_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_20_to_port_21",
+                    "sourceNode": "20",
+                    "sourcePort": "20_out",
+                    "targetNode": "21",
+                    "targetPort": "21_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_22_to_port_23",
+                    "sourceNode": "22",
+                    "sourcePort": "22_out",
+                    "targetNode": "23",
+                    "targetPort": "23_in"
                 }
             ],
-            "hash": "7acc2672b81d95c82981ee3bd36f15ba62747876",
+            "hash": "b0bc4dc93898a02444315b6d3120cc9e077729fd",
             "nodes": {
                 "0": {
                     "data": {
@@ -210,8 +196,8 @@
                     "errors": {},
                     "id": "0",
                     "type": "start",
-                    "x": 120,
-                    "y": -460.0000000000003
+                    "x": 190,
+                    "y": 0
                 },
                 "1": {
                     "data": {
@@ -227,8 +213,8 @@
                     "id": "1",
                     "type": "end",
                     "userCode": "    list_asset_playbooks_data = phantom.collect2(container=container, datapath=[\"list_asset_playbooks:custom_function_result.data.*.full_name\"])\n    list_identity_playbooks_data = phantom.collect2(container=container, datapath=[\"list_identity_playbooks:custom_function_result.data.*.full_name\"])\n    list_asset_playbooks_list = [item[0] for item in list_asset_playbooks_data if item[0]]\n    list_identity_playbooks_list = [item[0] for item in list_identity_playbooks_data if item[0]]\n    \n    if not list_asset_playbooks_list and not list_identity_playbooks_list:\n        raise RuntimeError(\"No playbooks found for provided 'playbooks_list' criteria\")\n    \n    \n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
-                    "x": 120,
-                    "y": 1960
+                    "x": 190,
+                    "y": 3272
                 },
                 "11": {
                     "data": {
@@ -321,8 +307,8 @@
                     "errors": {},
                     "id": "11",
                     "type": "utility",
-                    "x": 100,
-                    "y": -340
+                    "x": 170,
+                    "y": 180
                 },
                 "13": {
                     "data": {
@@ -355,62 +341,8 @@
                     "id": "13",
                     "type": "code",
                     "userCode": "    responses = protect_prompt_summary_responses[0]\n    all_entity_list = json.loads(phantom.get_run_data(key=\"all_entities\"))\n    decide_and_launch_playbooks__output = {'user_playbooks': [], 'user_values': [], 'host_playbooks': [], 'host_values': []}\n    user_list = []\n    device_list = []\n\n    decide_and_launch_playbooks__playbook_names = []\n    decide_and_launch_playbooks__playbook_inputs = []\n    \n    playbook_launch_list = {}\n    for entity,response in zip(all_entity_list,responses):\n        if response.lower() == 'yes':\n            if entity['type'] == 'device':\n                device_list.append(entity['name'])\n            if entity['type'] == 'user':\n                user_list.append(entity['name'])\n    \n    # Iterate through identity playbooks\n    if list_identity_playbooks_data___full_name:\n        for pb_name, pb_spec in zip(list_identity_playbooks_data___full_name, list_identity_playbooks_data___input_spec):\n            pb_inputs = {}\n            for user in user_list:\n                for spec in pb_spec:\n                    if any('user' in list_item for list_item in spec['contains']):\n                        phantom.debug(f\"Match found for user '{user}' in playbook '{pb_name}' at input '{spec['name']}'\")\n                        if not pb_inputs:\n                            pb_inputs[spec['name']] = [user]\n                        else:\n                            if user not in pb_inputs[spec['name']]:\n                                pb_inputs[spec['name']].append(user)\n\n            if pb_inputs:\n                playbook_launch_list[pb_name] = pb_inputs\n\t\n    # Iterate through asset playbooks\n    if list_asset_playbooks_data___full_name:\n        for pb_name, pb_spec in zip(list_asset_playbooks_data___full_name, list_asset_playbooks_data___input_spec):\n            pb_inputs = {}\n            for host in device_list:\n                for spec in pb_spec:\n                    if any('host' in list_item for list_item in spec['contains']):\n                        phantom.debug(f\"Match found for host '{host}' in playbook '{pb_name}' at input '{spec['name']}'\")\n                        if not pb_inputs:\n                            pb_inputs[spec['name']] = [host]\n                        else:\n                            if host not in pb_inputs[spec['name']]:\n                                pb_inputs[spec['name']].append(host)\n\n            if pb_inputs:\n                if pb_name in playbook_launch_list.keys():\n                    playbook_launch_list[pb_name].update(pb_inputs)\n                else:\n                    playbook_launch_list[pb_name] = pb_inputs\n    \n    if playbook_launch_list:\n        for k,v in playbook_launch_list.items():\n            decide_and_launch_playbooks__playbook_names.append(k)\n            decide_and_launch_playbooks__playbook_inputs.append(v)\n            phantom.playbook(playbook=k, container=container, inputs=v)\n    # Raise error if there were no matches found in the two playbook categories\n    else:\n        raise RuntimeError(\"Unable to find match between indicator types and playbook input types\")\n        \n",
-                    "x": 100,
-                    "y": 1500
-                },
-                "14": {
-                    "data": {
-                        "advanced": {
-                            "customName": "format asset query",
-                            "customNameId": 0,
-                            "description": "Format a Splunk query with host data from the container.",
-                            "drop_none": true,
-                            "join": [],
-                            "notRequiredJoins": [
-                                "collect_type_host",
-                                "run_identity_query"
-                            ],
-                            "note": "Format a Splunk query with host data from the container."
-                        },
-                        "functionId": 1,
-                        "functionName": "format_asset_query",
-                        "id": "14",
-                        "parameters": [
-                            "collect_type_host:custom_function_result.data.*.artifact_value"
-                        ],
-                        "template": "asset_lookup_by_str | search asset IN (\n%%\n\"{0}\"\n%%\n)\n| eval category=mvjoin(category, \"; \")",
-                        "type": "format"
-                    },
-                    "errors": {},
-                    "id": "14",
-                    "type": "format",
-                    "x": 100,
-                    "y": 820
-                },
-                "16": {
-                    "data": {
-                        "advanced": {
-                            "customName": "format identity query",
-                            "customNameId": 0,
-                            "description": "Format a Splunk query with user data from the container.",
-                            "drop_none": true,
-                            "join": [],
-                            "note": "Format a Splunk query with user data from the container."
-                        },
-                        "functionId": 2,
-                        "functionName": "format_identity_query",
-                        "id": "16",
-                        "parameters": [
-                            "collect_type_user:custom_function_result.data.*.artifact_value"
-                        ],
-                        "template": "identity_lookup_expanded | search identity IN (\n%%\n\"{0}\"\n%%\n)\n| eval category=mvjoin(category, \"; \")",
-                        "type": "format"
-                    },
-                    "errors": {},
-                    "id": "16",
-                    "type": "format",
-                    "x": 100,
-                    "y": 280
+                    "x": 0,
+                    "y": 2520
                 },
                 "20": {
                     "data": {
@@ -464,8 +396,8 @@
                     "errors": {},
                     "id": "20",
                     "type": "decision",
-                    "x": 180,
-                    "y": 120
+                    "x": 250,
+                    "y": 900
                 },
                 "21": {
                     "data": {
@@ -482,14 +414,20 @@
                         "connectorConfigs": [
                             "splunk"
                         ],
-                        "connectorId": 129,
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
                         "connectorVersion": "v1",
                         "functionId": 1,
                         "functionName": "run_identity_query",
                         "id": "21",
                         "parameters": {
                             "command": "| inputlookup",
-                            "query": "format_identity_query:formatted_data"
+                            "query": {
+                                "functionId": 1,
+                                "parameters": [
+                                    "collect_type_user:custom_function_result.data.*.artifact_value"
+                                ],
+                                "template": "identity_lookup_expanded | search identity IN (\n%%\n\"{0}\"\n%%\n)\n| eval category=mvjoin(category, \"; \")"
+                            }
                         },
                         "requiredParameters": [
                             "query"
@@ -499,8 +437,8 @@
                     "errors": {},
                     "id": "21",
                     "type": "action",
-                    "x": 100,
-                    "y": 420
+                    "x": 80,
+                    "y": 1080
                 },
                 "22": {
                     "data": {
@@ -555,8 +493,8 @@
                     "errors": {},
                     "id": "22",
                     "type": "decision",
-                    "x": 180,
-                    "y": 660
+                    "x": 250,
+                    "y": 1500
                 },
                 "23": {
                     "data": {
@@ -573,14 +511,20 @@
                         "connectorConfigs": [
                             "splunk"
                         ],
-                        "connectorId": 129,
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
                         "connectorVersion": "v1",
                         "functionId": 2,
                         "functionName": "run_asset_query",
                         "id": "23",
                         "parameters": {
                             "command": "| inputlookup",
-                            "query": "format_asset_query:formatted_data"
+                            "query": {
+                                "functionId": 2,
+                                "parameters": [
+                                    "collect_type_host:custom_function_result.data.*.artifact_value"
+                                ],
+                                "template": "asset_lookup_by_str | search asset IN (\n%%\n\"{0}\"\n%%\n)\n| eval category=mvjoin(category, \"; \")"
+                            }
                         },
                         "requiredParameters": [
                             "query"
@@ -590,8 +534,8 @@
                     "errors": {},
                     "id": "23",
                     "type": "action",
-                    "x": 100,
-                    "y": 940
+                    "x": 80,
+                    "y": 1680
                 },
                 "24": {
                     "data": {
@@ -653,8 +597,8 @@
                     "errors": {},
                     "id": "24",
                     "type": "decision",
-                    "x": 180,
-                    "y": 1080
+                    "x": 250,
+                    "y": 1920
                 },
                 "26": {
                     "customCode": "def protect_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, **kwargs):\n    phantom.debug(\"protect_prompt() called\")\n\n    # set user and message variables for phantom.prompt call\n\n    user_id = phantom.get_effective_user()\n    url = phantom.build_phantom_rest_url('ph_user', user_id)\n    response = phantom.requests.get(url, verify=False).json()\n    user = response['username']\n    message = \"\"\"{0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"format_prompt:formatted_data\"\n    ]\n    \n    device_data = phantom.collect2(container=container, datapath=['run_asset_query:action_result.data.*.nt_host'], action_results=results )\n    device_list = [item[0] for item in device_data]\n    user_data = phantom.collect2(container=container, datapath=['run_identity_query:action_result.data.*.email'], action_results=results )\n    user_list = [item[0] for item in user_data]\n    \n    list_asset_playbooks_data = phantom.collect2(container=container, datapath=[\"list_asset_playbooks:custom_function_result.data.*.full_name\"])\n    list_asset_playbooks_list = [item[0] for item in list_asset_playbooks_data if item[0]]\n    list_identity_playbooks_data = phantom.collect2(container=container, datapath=[\"list_identity_playbooks:custom_function_result.data.*.full_name\"])\n    list_identity_playbooks_list = [item[0] for item in list_identity_playbooks_data if item[0]]\n    \n\t#responses:\n    all_entity_list = []\n    response_types = []\n    # only add a response if a device exists and a playbook exists\n    if device_list and list_asset_playbooks_list: \n        for item in device_list:\n            if item:\n                response_types.append({\n                        \"prompt\": \"Launch protect asset playbooks on '{}'?\".format(item),\n                        \"options\": {\n                            \"type\": \"list\",\n                            \"choices\": [\n                                \"Yes\",\n                                \"No\"\n                            ]\n                        },\n                    })\n                all_entity_list.append({'type': 'device', 'name': item})\n    \n    # only add a response if a user exists and a playbook exists\n    if user_list and list_identity_playbooks_list: \n        for item in user_list:\n            if item:\n                response_types.append({\n                        \"prompt\": \"Launch protect identity playbooks on '{}'?\".format(item),\n                        \"options\": {\n                            \"type\": \"list\",\n                            \"choices\": [\n                                \"Yes\",\n                                \"No\"\n                            ]\n                        },\n                    })\n                all_entity_list.append({'type': 'user', 'name': item})\n                \n    phantom.save_run_data(key='all_entities', value=json.dumps(all_entity_list))    \n    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name=\"protect_prompt\", parameters=parameters, response_types=response_types, callback=decide_and_launch_playbooks)\n\n    return",
@@ -679,8 +623,8 @@
                     "errors": {},
                     "id": "26",
                     "type": "prompt",
-                    "x": 180,
-                    "y": 1360
+                    "x": 80,
+                    "y": 2340
                 },
                 "32": {
                     "data": {
@@ -708,8 +652,8 @@
                     "errors": {},
                     "id": "32",
                     "type": "format",
-                    "x": -160,
-                    "y": 1660
+                    "x": 340,
+                    "y": 2792
                 },
                 "36": {
                     "data": {
@@ -750,8 +694,8 @@
                     "errors": {},
                     "id": "36",
                     "type": "format",
-                    "x": 100,
-                    "y": 1220
+                    "x": 0,
+                    "y": 2100
                 },
                 "40": {
                     "data": {
@@ -776,8 +720,8 @@
                     "errors": {},
                     "id": "40",
                     "type": "format",
-                    "x": 100,
-                    "y": 1660
+                    "x": 0,
+                    "y": 2792
                 },
                 "45": {
                     "data": {
@@ -809,8 +753,8 @@
                     "errors": {},
                     "id": "45",
                     "type": "format",
-                    "x": 100,
-                    "y": 1820
+                    "x": 170,
+                    "y": 3032
                 },
                 "48": {
                     "data": {
@@ -852,8 +796,8 @@
                     "errors": {},
                     "id": "48",
                     "type": "decision",
-                    "x": 180,
-                    "y": -140
+                    "x": 250,
+                    "y": 540
                 },
                 "49": {
                     "data": {
@@ -945,8 +889,8 @@
                     "errors": {},
                     "id": "49",
                     "type": "utility",
-                    "x": 100,
-                    "y": -240
+                    "x": 170,
+                    "y": 360
                 },
                 "6": {
                     "data": {
@@ -1033,8 +977,8 @@
                     "errors": {},
                     "id": "6",
                     "type": "utility",
-                    "x": 100,
-                    "y": 20
+                    "x": 170,
+                    "y": 720
                 },
                 "7": {
                     "data": {
@@ -1117,8 +1061,8 @@
                     "errors": {},
                     "id": "7",
                     "type": "utility",
-                    "x": 100,
-                    "y": 560
+                    "x": 170,
+                    "y": 1320
                 }
             },
             "notes": "For detailed implementation see https://docs.splunk.com/Documentation/ESSOC/latest/user/Useplaybookpack"
@@ -1148,10 +1092,10 @@
         ],
         "playbook_type": "automation",
         "python_version": "3",
-        "schema": "5.0.3",
-        "version": "5.0.1.66250"
+        "schema": "5.0.5",
+        "version": "5.2.0.77965"
     },
-    "create_time": "2021-10-19T20:24:15.998858+00:00",
+    "create_time": "2022-01-27T16:00:48.789220+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"

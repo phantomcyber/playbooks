@@ -11,55 +11,10 @@ from datetime import datetime, timedelta
 def on_start(container):
     phantom.debug('on_start() called')
 
-    # call 'workbook_list' block
-    workbook_list(container=container)
+    # call 'workbook_add' block
+    workbook_add(container=container)
 
     return
-
-def workbook_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("workbook_list() called")
-
-    parameters = [{}]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="community/workbook_list", parameters=parameters, name="workbook_list", callback=workbook_decision)
-
-    return
-
-
-def workbook_decision(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("workbook_decision() called")
-
-    ################################################################################
-    # Determines if the workbook Risk Response is present and available for use.
-    ################################################################################
-
-    # check for 'if' condition 1
-    found_match_1 = phantom.decision(
-        container=container,
-        conditions=[
-            ["workbook_list:custom_function_result.data.*.name", "==", "Risk Response"]
-        ])
-
-    # call connected blocks if condition 1 matched
-    if found_match_1:
-        workbook_add(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    # check for 'else' condition 2
-    join_risk_notable_review_indicators(action=action, success=success, container=container, results=results, handle=handle)
-
-    return
-
 
 def workbook_add(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("workbook_add() called")
@@ -116,23 +71,7 @@ def workbook_start_task(action=None, success=None, container=None, results=None,
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="community/workbook_task_update", parameters=parameters, name="workbook_start_task", callback=join_risk_notable_review_indicators)
-
-    return
-
-
-def join_risk_notable_review_indicators(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("join_risk_notable_review_indicators() called")
-
-    # if the joined function has already been called, do nothing
-    if phantom.get_run_data(key="join_risk_notable_review_indicators_called"):
-        return
-
-    # save the state that the joined function has now been called
-    phantom.save_run_data(key="join_risk_notable_review_indicators_called", value="risk_notable_review_indicators")
-
-    # call connected block "risk_notable_review_indicators"
-    risk_notable_review_indicators(container=container, handle=handle)
+    phantom.custom_function(custom_function="community/workbook_task_update", parameters=parameters, name="workbook_start_task", callback=risk_notable_review_indicators)
 
     return
 
@@ -170,7 +109,7 @@ def risk_notable_block_indicators(action=None, success=None, container=None, res
     ################################################################################
 
     # call playbook "community/risk_notable_block_indicators", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("community/risk_notable_block_indicators", container=container, name="risk_notable_block_indicators", callback=note_decision_1)
+    playbook_run_id = phantom.playbook("community/risk_notable_block_indicators", container=container, name="risk_notable_block_indicators", callback=update_block_task)
 
     return
 
@@ -205,47 +144,7 @@ def risk_notable_protect_assets_and_users(action=None, success=None, container=N
     ################################################################################
 
     # call playbook "community/risk_notable_protect_assets_and_users", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("community/risk_notable_protect_assets_and_users", container=container, name="risk_notable_protect_assets_and_users", callback=note_decision_2)
-
-    return
-
-
-def note_decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("note_decision_1() called")
-
-    ################################################################################
-    # Determine if a note was left by the previous playbook and if the Risk Mitigate 
-    # workbook should be used.
-    ################################################################################
-
-    # check for 'if' condition 1
-    found_match_1 = phantom.decision(
-        container=container,
-        logical_operator="and",
-        conditions=[
-            ["risk_notable_block_indicators:playbook_output:note_title", "!=", ""],
-            ["risk_notable_block_indicators:playbook_output:note_content", "!=", ""],
-            ["workbook_list:custom_function_result.data.*.name", "==", "Risk Mitigate"]
-        ])
-
-    # call connected blocks if condition 1 matched
-    if found_match_1:
-        update_block_task(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    # check for 'elif' condition 2
-    found_match_2 = phantom.decision(
-        container=container,
-        logical_operator="and",
-        conditions=[
-            ["risk_notable_block_indicators:playbook_output:note_title", "!=", ""],
-            ["risk_notable_block_indicators:playbook_output:note_content", "!=", ""]
-        ])
-
-    # call connected blocks if condition 2 matched
-    if found_match_2:
-        add_block_note(action=action, success=success, container=container, results=results, handle=handle)
-        return
+    playbook_run_id = phantom.playbook("community/risk_notable_protect_assets_and_users", container=container, name="risk_notable_protect_assets_and_users", callback=update_protect_task)
 
     return
 
@@ -317,78 +216,6 @@ def start_protect_task(action=None, success=None, container=None, results=None, 
     return
 
 
-def add_block_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("add_block_note() called")
-
-    ################################################################################
-    # Custom code to handle leaving a note with a dynamic title and content when the 
-    # Risk Mitigate workbook is not present.
-    ################################################################################
-
-    risk_notable_block_indicators_output_note_title = phantom.collect2(container=container, datapath=["risk_notable_block_indicators:playbook_output:note_title"])
-    risk_notable_block_indicators_output_note_content = phantom.collect2(container=container, datapath=["risk_notable_block_indicators:playbook_output:note_content"])
-
-    risk_notable_block_indicators_output_note_title_values = [item[0] for item in risk_notable_block_indicators_output_note_title]
-    risk_notable_block_indicators_output_note_content_values = [item[0] for item in risk_notable_block_indicators_output_note_content]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    note_title = risk_notable_block_indicators_output_note_title_values
-    note_content = risk_notable_block_indicators_output_note_content_values
-    for title, content in zip(note_title, note_content):
-        phantom.add_note(container=container, title=title, content=content, note_type="general", note_format="markdown")
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    join_risk_notable_protect_assets_and_users(container=container)
-
-    return
-
-
-def note_decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("note_decision_2() called")
-
-    ################################################################################
-    # Determine if a note was left by the previous playbook and if the Risk Mitigate 
-    # workbook should be used.
-    ################################################################################
-
-    # check for 'if' condition 1
-    found_match_1 = phantom.decision(
-        container=container,
-        logical_operator="and",
-        conditions=[
-            ["risk_notable_protect_assets_and_users:playbook_output:note_title", "!=", ""],
-            ["risk_notable_protect_assets_and_users:playbook_output:note_content", "!=", ""],
-            ["workbook_list:custom_function_result.data.*.name", "==", "Risk Mitigate"]
-        ])
-
-    # call connected blocks if condition 1 matched
-    if found_match_1:
-        update_protect_task(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    # check for 'elif' condition 2
-    found_match_2 = phantom.decision(
-        container=container,
-        logical_operator="and",
-        conditions=[
-            ["risk_notable_protect_assets_and_users:playbook_output:note_title", "!=", ""],
-            ["risk_notable_protect_assets_and_users:playbook_output:note_content", "!=", ""]
-        ])
-
-    # call connected blocks if condition 2 matched
-    if found_match_2:
-        add_protect_note(action=action, success=success, container=container, results=results, handle=handle)
-        return
-
-    return
-
-
 def update_protect_task(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("update_protect_task() called")
 
@@ -421,36 +248,6 @@ def update_protect_task(action=None, success=None, container=None, results=None,
     ################################################################################
 
     phantom.custom_function(custom_function="community/workbook_task_update", parameters=parameters, name="update_protect_task")
-
-    return
-
-
-def add_protect_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("add_protect_note() called")
-
-    ################################################################################
-    # Custom code to handle leaving a note with a dynamic title and content when the 
-    # Risk Mitigate workbook is not present.
-    ################################################################################
-
-    risk_notable_protect_assets_and_users_output_note_title = phantom.collect2(container=container, datapath=["risk_notable_protect_assets_and_users:playbook_output:note_title"])
-    risk_notable_protect_assets_and_users_output_note_content = phantom.collect2(container=container, datapath=["risk_notable_protect_assets_and_users:playbook_output:note_content"])
-
-    risk_notable_protect_assets_and_users_output_note_title_values = [item[0] for item in risk_notable_protect_assets_and_users_output_note_title]
-    risk_notable_protect_assets_and_users_output_note_content_values = [item[0] for item in risk_notable_protect_assets_and_users_output_note_content]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    note_title = risk_notable_protect_assets_and_users_output_note_title_values
-    note_content = risk_notable_protect_assets_and_users_output_note_content_values
-    for title, content in zip(note_title, note_content):
-        phantom.add_note(container=container, title=title, content=content, note_type="general", note_format="markdown")
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
 
     return
 

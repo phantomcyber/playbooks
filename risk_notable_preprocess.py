@@ -58,7 +58,7 @@ def event_id_filter(action=None, success=None, container=None, results=None, han
 def artifact_update_notable(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("artifact_update_notable() called")
 
-    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_2:artifact:*.id"], scope="all")
+    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_2:artifact:*.id","filtered-data:event_id_filter:condition_2:artifact:*.id"], scope="all")
 
     parameters = []
 
@@ -95,7 +95,7 @@ def mark_evidence_artifact(action=None, success=None, container=None, results=No
     phantom.debug("mark_evidence_artifact() called")
 
     id_value = container.get("id", None)
-    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.id"], scope="all")
+    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.id","filtered-data:event_id_filter:condition_1:artifact:*.id"], scope="all")
 
     parameters = []
 
@@ -151,8 +151,8 @@ def asset_get_splunk_callback(action=None, success=None, container=None, results
 
     
     format_es_url(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=filtered_artifacts, filtered_results=filtered_results)
-    format_es_note(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=filtered_artifacts, filtered_results=filtered_results)
     format_event_name(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=filtered_artifacts, filtered_results=filtered_results)
+    update_notable(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=filtered_artifacts, filtered_results=filtered_results)
 
 
     return
@@ -218,60 +218,36 @@ def pin_es_url(action=None, success=None, container=None, results=None, handle=N
     return
 
 
-def format_es_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("format_es_note() called")
-
-    ################################################################################
-    # Format a note with the current event information.
-    ################################################################################
-
-    template = """SOAR event created: {0}\nComplete details can be found here: {1}/summary/evidence"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "container:id",
-        "container:url"
-    ]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_es_note", scope="all")
-
-    update_notable(container=container)
-
-    return
-
-
 def update_notable(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("update_notable() called")
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
 
+    comment_formatted_string = phantom.format(
+        container=container,
+        template="""SOAR event created: {0}\nComplete details can be found here: {1}/summary/evidence""",
+        parameters=[
+            "container:id",
+            "container:url"
+        ])
+
     ################################################################################
     # Update the notable event  in Enterprise Security with a link back to this container
     ################################################################################
 
-    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id"], scope="all")
-    format_es_note = phantom.get_format_data(name="format_es_note")
+    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id","filtered-data:event_id_filter:condition_1:artifact:*.id"], scope="all")
 
     parameters = []
 
     # build parameters list for 'update_notable' call
     for filtered_artifact_0_item_event_id_filter in filtered_artifact_0_data_event_id_filter:
-        if filtered_artifact_0_item_event_id_filter[0] is not None:
-            parameters.append({
-                "status": "in progress",
-                "comment": format_es_note,
-                "event_ids": filtered_artifact_0_item_event_id_filter[0],
-            })
+        parameters.append({
+            "status": "in progress",
+            "comment": comment_formatted_string,
+            "event_ids": filtered_artifact_0_item_event_id_filter[0],
+            "undefined": "",
+            "context": {'artifact_id': filtered_artifact_0_item_event_id_filter[1]},
+        })
 
     ################################################################################
     ## Custom Code Start
@@ -324,7 +300,7 @@ def container_update_info(action=None, success=None, container=None, results=Non
     phantom.debug("container_update_info() called")
 
     id_value = container.get("id", None)
-    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.cef.urgency","filtered-data:event_id_filter:condition_1:artifact:*.cef.source"], scope="all")
+    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.cef.urgency","filtered-data:event_id_filter:condition_1:artifact:*.cef.source","filtered-data:event_id_filter:condition_1:artifact:*.id"], scope="all")
     format_event_name = phantom.get_format_data(name="format_event_name")
 
     parameters = []
@@ -362,7 +338,7 @@ def container_update_info(action=None, success=None, container=None, results=Non
 def artifact_update_severity(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("artifact_update_severity() called")
 
-    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.cef.urgency","filtered-data:event_id_filter:condition_1:artifact:*.id"], scope="all")
+    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.cef.urgency","filtered-data:event_id_filter:condition_1:artifact:*.id","filtered-data:event_id_filter:condition_1:artifact:*.id"], scope="all")
 
     parameters = []
 

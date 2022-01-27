@@ -58,42 +58,7 @@ def event_id_filter(action=None, success=None, container=None, results=None, han
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        format_risk_query(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
-
-def format_risk_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("format_risk_query() called")
-
-    ################################################################################
-    # Formats a query to reach back into the risk index to pull out all the detections 
-    # that led up to the notable triggering. The time tokens contain the earliest 
-    # and latest times found in info_min_time and info_max_time
-    ################################################################################
-
-    template = """index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
-        "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
-        "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time"
-    ]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_risk_query", scope="all")
-
-    run_risk_rule_query(container=container)
+        run_risk_rule_query(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -103,21 +68,28 @@ def run_risk_rule_query(action=None, success=None, container=None, results=None,
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
 
+    query_formatted_string = phantom.format(
+        container=container,
+        template="""index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type""",
+        parameters=[
+            "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
+            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
+            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time"
+        ])
+
     ################################################################################
     # Reaches back into the risk index to pull out all the detections that led up 
     # to the notable firing.
     ################################################################################
 
-    format_risk_query = phantom.get_format_data(name="format_risk_query")
-
     parameters = []
 
-    if format_risk_query is not None:
-        parameters.append({
-            "query": format_risk_query,
-            "command": "search",
-            "parse_only": True,
-        })
+    parameters.append({
+        "query": query_formatted_string,
+        "command": "search",
+        "parse_only": True,
+        "undefined": "",
+    })
 
     ################################################################################
     ## Custom Code Start
@@ -211,7 +183,7 @@ def mark_artifact_evidence(action=None, success=None, container=None, results=No
     phantom.debug("mark_artifact_evidence() called")
 
     id_value = container.get("id", None)
-    filtered_artifact_0_data_filter_artifact_score = phantom.collect2(container=container, datapath=["filtered-data:filter_artifact_score:condition_1:artifact:*.cef.event_id"], scope="all")
+    filtered_artifact_0_data_filter_artifact_score = phantom.collect2(container=container, datapath=["filtered-data:filter_artifact_score:condition_1:artifact:*.cef.event_id","filtered-data:filter_artifact_score:condition_1:artifact:*.id"], scope="all")
 
     parameters = []
 
@@ -351,7 +323,7 @@ def format_summary_note(action=None, success=None, container=None, results=None,
     # Format a summary note with all of the information gathered up to this point.
     ################################################################################
 
-    template = """#### Splunk Enterprise Security has detected that {0} '**{1}**' generated {2} points of risk.\n\nFull statistics and timeline on this user's risk behavior can be found [here](https://{3}/en-US/app/SplunkEnterpriseSecuritySuite/risk_analysis?earliest={4}&latest={5}&form.risk_object_type_raw={0}&form.risk_object_raw={1})\n\n| _time | event |\n| --- | --- |\n%%\n| **{7}** | `{8}` |\n%%\n\n![](https://attack.mitre.org/theme/images/mitrelogowhiteontrans.gif)\n\n{6}"""
+    template = """#### [Splunk Enterprise Security](https://{3}/en-US/app/SplunkEnterpriseSecuritySuite/incident_review?earliest={10}&latest=now&search=event_id%3D{9}) has detected that {0} '**{1}**' generated {2} points of risk.\n\nFull statistics and timeline on this user's risk behavior can be found [here](https://{3}/en-US/app/SplunkEnterpriseSecuritySuite/risk_analysis?earliest={4}&latest={5}&form.risk_object_type_raw={0}&form.risk_object_raw={1})\n\n| _time | event |\n| --- | --- |\n%%\n| **{7}** | `{8}` |\n%%\n\n![](https://attack.mitre.org/theme/images/mitrelogowhiteontrans.gif)\n\n{6}\n"""
 
     # parameter list for template variable replacement
     parameters = [
@@ -363,7 +335,9 @@ def format_summary_note(action=None, success=None, container=None, results=None,
         "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time",
         "mitre_format:custom_function:output",
         "run_risk_rule_query:action_result.data.*._time",
-        "run_risk_rule_query:action_result.data.*.risk_message"
+        "run_risk_rule_query:action_result.data.*.risk_message",
+        "filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id",
+        "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time"
     ]
 
     ################################################################################

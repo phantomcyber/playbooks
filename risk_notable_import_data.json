@@ -14,13 +14,6 @@
                     "targetPort": "7_in"
                 },
                 {
-                    "id": "port_8_to_port_11",
-                    "sourceNode": "8",
-                    "sourcePort": "8_out",
-                    "targetNode": "11",
-                    "targetPort": "11_in"
-                },
-                {
                     "id": "port_15_to_port_16",
                     "sourceNode": "15",
                     "sourcePort": "15_out",
@@ -45,18 +38,6 @@
                     "sourcePort": "18_out",
                     "targetNode": "19",
                     "targetPort": "19_in"
-                },
-                {
-                    "conditions": [
-                        {
-                            "index": 0
-                        }
-                    ],
-                    "id": "port_7_to_port_8",
-                    "sourceNode": "7",
-                    "sourcePort": "7_out",
-                    "targetNode": "8",
-                    "targetPort": "8_in"
                 },
                 {
                     "id": "port_33_to_port_15",
@@ -104,9 +85,21 @@
                     "sourcePort": "19_out",
                     "targetNode": "1",
                     "targetPort": "1_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_7_to_port_11",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "11",
+                    "targetPort": "11_in"
                 }
             ],
-            "hash": "ab7a6a505a05ce38a01f94104475c55ce339ef12",
+            "hash": "749c2571292506580edcdd7d30dbc97c84faa260",
             "nodes": {
                 "0": {
                     "data": {
@@ -121,7 +114,7 @@
                     "id": "0",
                     "type": "start",
                     "x": 1000,
-                    "y": 520
+                    "y": 540
                 },
                 "1": {
                     "data": {
@@ -155,7 +148,7 @@
                         "connectorConfigs": [
                             "splunk"
                         ],
-                        "connectorId": 129,
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
                         "connectorVersion": "v1",
                         "functionId": 2,
                         "functionName": "run_risk_rule_query",
@@ -163,7 +156,15 @@
                         "parameters": {
                             "command": "search",
                             "parse_only": true,
-                            "query": "format_risk_query:formatted_data"
+                            "query": {
+                                "functionId": 2,
+                                "parameters": [
+                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
+                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
+                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time"
+                                ],
+                                "template": "index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type"
+                            }
                         },
                         "requiredParameters": [
                             "query"
@@ -491,9 +492,11 @@
                             "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time",
                             "mitre_format:custom_function:output",
                             "run_risk_rule_query:action_result.data.*._time",
-                            "run_risk_rule_query:action_result.data.*.risk_message"
+                            "run_risk_rule_query:action_result.data.*.risk_message",
+                            "filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id",
+                            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time"
                         ],
-                        "template": "#### Splunk Enterprise Security has detected that {0} '**{1}**' generated {2} points of risk.\n\nFull statistics and timeline on this user's risk behavior can be found [here](https://{3}/en-US/app/SplunkEnterpriseSecuritySuite/risk_analysis?earliest={4}&latest={5}&form.risk_object_type_raw={0}&form.risk_object_raw={1})\n\n| _time | event |\n| --- | --- |\n%%\n| **{7}** | `{8}` |\n%%\n\n![](https://attack.mitre.org/theme/images/mitrelogowhiteontrans.gif)\n\n{6}",
+                        "template": "#### [Splunk Enterprise Security](https://{3}/en-US/app/SplunkEnterpriseSecuritySuite/incident_review?earliest={10}&latest=now&search=event_id%3D{9}) has detected that {0} '**{1}**' generated {2} points of risk.\n\nFull statistics and timeline on this user's risk behavior can be found [here](https://{3}/en-US/app/SplunkEnterpriseSecuritySuite/risk_analysis?earliest={4}&latest={5}&form.risk_object_type_raw={0}&form.risk_object_raw={1})\n\n| _time | event |\n| --- | --- |\n%%\n| **{7}** | `{8}` |\n%%\n\n![](https://attack.mitre.org/theme/images/mitrelogowhiteontrans.gif)\n\n{6}\n",
                         "type": "format"
                     },
                     "errors": {},
@@ -759,7 +762,7 @@
                     "id": "6",
                     "type": "utility",
                     "x": 980,
-                    "y": 640
+                    "y": 680
                 },
                 "7": {
                     "data": {
@@ -795,34 +798,7 @@
                     "id": "7",
                     "type": "filter",
                     "x": 1040,
-                    "y": 740
-                },
-                "8": {
-                    "data": {
-                        "advanced": {
-                            "customName": "format risk query",
-                            "customNameId": 0,
-                            "description": "Formats a query to reach back into the risk index to pull out all the detections that led up to the notable triggering. The time tokens contain the earliest and latest times found in info_min_time and info_max_time",
-                            "join": [],
-                            "note": "Formats a query to reach back into the risk index to pull out all the detections that led up to the notable triggering. The time tokens contain the earliest and latest times found in info_min_time and info_max_time",
-                            "scope": "all"
-                        },
-                        "functionId": 1,
-                        "functionName": "format_risk_query",
-                        "id": "8",
-                        "parameters": [
-                            "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
-                            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
-                            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time"
-                        ],
-                        "template": "index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type",
-                        "type": "format"
-                    },
-                    "errors": {},
-                    "id": "8",
-                    "type": "format",
-                    "x": 980,
-                    "y": 880
+                    "y": 840
                 }
             },
             "notes": "For detailed implementation see https://docs.splunk.com/Documentation/ESSOC/latest/user/Useplaybookpack"
@@ -852,10 +828,10 @@
         ],
         "playbook_type": "automation",
         "python_version": "3",
-        "schema": "5.0.3",
-        "version": "5.0.1.66250"
+        "schema": "5.0.5",
+        "version": "5.2.0.77965"
     },
-    "create_time": "2021-10-19T20:23:02.160676+00:00",
+    "create_time": "2022-01-27T15:55:36.723437+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"
