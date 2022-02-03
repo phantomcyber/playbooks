@@ -47,13 +47,6 @@
                     "targetPort": "15_in"
                 },
                 {
-                    "id": "port_11_to_port_34",
-                    "sourceNode": "11",
-                    "sourcePort": "11_out",
-                    "targetNode": "34",
-                    "targetPort": "34_in"
-                },
-                {
                     "conditions": [
                         {
                             "index": 0
@@ -92,14 +85,21 @@
                             "index": 0
                         }
                     ],
-                    "id": "port_7_to_port_11",
+                    "id": "port_7_to_port_35",
                     "sourceNode": "7",
                     "sourcePort": "7_out",
-                    "targetNode": "11",
-                    "targetPort": "11_in"
+                    "targetNode": "35",
+                    "targetPort": "35_in"
+                },
+                {
+                    "id": "port_35_to_port_34",
+                    "sourceNode": "35",
+                    "sourcePort": "35_out",
+                    "targetNode": "34",
+                    "targetPort": "34_in"
                 }
             ],
-            "hash": "749c2571292506580edcdd7d30dbc97c84faa260",
+            "hash": "a80771f9b3d703fffb96c479746ed9ed024f0e03",
             "nodes": {
                 "0": {
                     "data": {
@@ -132,50 +132,6 @@
                     "userCode": "\t\n    # Error handling in case of playbook not being able to import data properly\n    if not format_summary_note:\n        raise RuntimeError(\"Error occured during import data and summary note is missing\")\n    \n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
                     "x": 960,
                     "y": 1800
-                },
-                "11": {
-                    "data": {
-                        "action": "run query",
-                        "actionType": "investigate",
-                        "advanced": {
-                            "customName": "run risk rule query",
-                            "customNameId": 0,
-                            "description": "Reaches back into the risk index to pull out all the detections that led up to the notable firing.",
-                            "join": [],
-                            "note": "Reaches back into the risk index to pull out all the detections that led up to the notable firing."
-                        },
-                        "connector": "Splunk",
-                        "connectorConfigs": [
-                            "splunk"
-                        ],
-                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
-                        "connectorVersion": "v1",
-                        "functionId": 2,
-                        "functionName": "run_risk_rule_query",
-                        "id": "11",
-                        "parameters": {
-                            "command": "search",
-                            "parse_only": true,
-                            "query": {
-                                "functionId": 2,
-                                "parameters": [
-                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
-                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
-                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time"
-                                ],
-                                "template": "index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type"
-                            }
-                        },
-                        "requiredParameters": [
-                            "query"
-                        ],
-                        "type": "action"
-                    },
-                    "errors": {},
-                    "id": "11",
-                    "type": "action",
-                    "x": 980,
-                    "y": 1000
                 },
                 "15": {
                     "data": {
@@ -709,6 +665,54 @@
                     "x": 1060,
                     "y": 1140
                 },
+                "35": {
+                    "data": {
+                        "action": "run query",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "Splunk",
+                        "connectorConfigs": [
+                            "splunk"
+                        ],
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "run_query_1",
+                        "id": "35",
+                        "parameters": {
+                            "command": "search",
+                            "parse_only": true,
+                            "query": {
+                                "functionId": 1,
+                                "parameters": [
+                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
+                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
+                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time"
+                                ],
+                                "template": "index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type\n"
+                            }
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "query"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "search",
+                                "field": "command"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "35",
+                    "type": "action",
+                    "x": 980,
+                    "y": 1024.5
+                },
                 "6": {
                     "data": {
                         "advanced": {
@@ -831,7 +835,7 @@
         "schema": "5.0.5",
         "version": "5.2.0.77965"
     },
-    "create_time": "2022-01-27T15:55:36.723437+00:00",
+    "create_time": "2022-02-03T17:19:04.253985+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"

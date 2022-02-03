@@ -58,50 +58,7 @@ def event_id_filter(action=None, success=None, container=None, results=None, han
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        run_risk_rule_query(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
-
-def run_risk_rule_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("run_risk_rule_query() called")
-
-    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-
-    query_formatted_string = phantom.format(
-        container=container,
-        template="""index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type""",
-        parameters=[
-            "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
-            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
-            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time"
-        ])
-
-    ################################################################################
-    # Reaches back into the risk index to pull out all the detections that led up 
-    # to the notable firing.
-    ################################################################################
-
-    parameters = []
-
-    parameters.append({
-        "query": query_formatted_string,
-        "command": "search",
-        "parse_only": True,
-        "undefined": "",
-    })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.act("run query", parameters=parameters, name="run_risk_rule_query", assets=["splunk"], callback=results_decision)
+        run_query_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -533,6 +490,44 @@ def results_decision(action=None, success=None, container=None, results=None, ha
     if found_match_1:
         parse_risk_results_1(action=action, success=success, container=container, results=results, handle=handle)
         return
+
+    return
+
+
+def run_query_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("run_query_1() called")
+
+    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+
+    query_formatted_string = phantom.format(
+        container=container,
+        template="""index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type\n""",
+        parameters=[
+            "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
+            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
+            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time"
+        ])
+
+    parameters = []
+
+    if query_formatted_string is not None:
+        parameters.append({
+            "command": "search",
+            "query": query_formatted_string,
+            "parse_only": True,
+        })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.act("run query", parameters=parameters, name="run_query_1", assets=["splunk"], callback=results_decision)
 
     return
 

@@ -33,8 +33,10 @@ def risk_rule_decision(action=None, success=None, container=None, results=None, 
 
     # call connected blocks if condition 1 matched
     if found_match_1:
-        workbook_add(action=action, success=success, container=container, results=results, handle=handle)
         return
+
+    # check for 'else' condition 2
+    workbook_add(action=action, success=success, container=container, results=results, handle=handle)
 
     return
 
