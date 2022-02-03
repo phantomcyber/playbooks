@@ -346,14 +346,21 @@
                             "index": 0
                         }
                     ],
-                    "id": "port_24_to_port_25",
+                    "id": "port_24_to_port_40",
                     "sourceNode": "24",
                     "sourcePort": "24_out",
-                    "targetNode": "25",
-                    "targetPort": "25_in"
+                    "targetNode": "40",
+                    "targetPort": "40_in"
+                },
+                {
+                    "id": "port_40_to_port_1",
+                    "sourceNode": "40",
+                    "sourcePort": "40_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
                 }
             ],
-            "hash": "3abd68fb464e626e5b1bafff9b8cff1cb58605b2",
+            "hash": "9539e7bec972bcf9b116d2f3122e7f735f7c75b0",
             "nodes": {
                 "0": {
                     "data": {
@@ -368,7 +375,7 @@
                     "id": "0",
                     "type": "start",
                     "x": 1350,
-                    "y": 0
+                    "y": -4.263256414560601e-14
                 },
                 "1": {
                     "data": {
@@ -1258,7 +1265,7 @@
                     "errors": {},
                     "id": "23",
                     "type": "utility",
-                    "x": 0,
+                    "x": -1.4210854715202004e-14,
                     "y": 2760
                 },
                 "24": {
@@ -1300,54 +1307,6 @@
                     "type": "filter",
                     "x": 60,
                     "y": 2970
-                },
-                "25": {
-                    "data": {
-                        "action": "update event",
-                        "actionType": "generic",
-                        "advanced": {
-                            "customName": "update event",
-                            "customNameId": 0,
-                            "description": "Update all notables with a link back to the parent case.",
-                            "join": [],
-                            "notRequiredJoins": [
-                                "merge_all",
-                                "merge_selected"
-                            ],
-                            "note": "Update all notables with a link back to the parent case.",
-                            "scope": "all"
-                        },
-                        "connector": "Splunk",
-                        "connectorConfigs": [
-                            "splunk"
-                        ],
-                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
-                        "connectorVersion": "v1",
-                        "functionId": 1,
-                        "functionName": "update_event",
-                        "id": "25",
-                        "parameters": {
-                            "comment": {
-                                "functionId": 1,
-                                "parameters": [
-                                    "container:id",
-                                    "container:name",
-                                    "container:url"
-                                ],
-                                "template": "Case created: {0}\n\nName: {1}\n\nURL: {2}/summary"
-                            },
-                            "event_ids": "filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id"
-                        },
-                        "requiredParameters": [
-                            "event_ids"
-                        ],
-                        "type": "action"
-                    },
-                    "errors": {},
-                    "id": "25",
-                    "type": "action",
-                    "x": 0,
-                    "y": 3180
                 },
                 "29": {
                     "data": {
@@ -2092,6 +2051,52 @@
                     "x": 1330,
                     "y": 600
                 },
+                "40": {
+                    "data": {
+                        "action": "update event",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "update notable",
+                            "customNameId": 0,
+                            "description": "Update all Splunk Notables with a link to merged container. ",
+                            "join": [],
+                            "note": "Update all Splunk Notables with a link to merged container. "
+                        },
+                        "connector": "Splunk",
+                        "connectorConfigs": [
+                            "splunk"
+                        ],
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "update_notable",
+                        "id": "40",
+                        "parameters": {
+                            "comment": {
+                                "functionId": 2,
+                                "parameters": [
+                                    "container:id",
+                                    "container:name",
+                                    "container:url"
+                                ],
+                                "template": "Case created: {0}\n\nName: {1}\n\nURL: {2}/summary"
+                            },
+                            "event_ids": "filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "event_ids"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "40",
+                    "type": "action",
+                    "x": 0,
+                    "y": 3160
+                },
                 "6": {
                     "data": {
                         "advanced": {
@@ -2504,7 +2509,7 @@
         "schema": "5.0.5",
         "version": "5.2.0.77965"
     },
-    "create_time": "2022-01-27T15:58:39.231104+00:00",
+    "create_time": "2022-02-03T17:41:58.724342+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"

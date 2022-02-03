@@ -87,13 +87,6 @@
                     "targetPort": "1_in"
                 },
                 {
-                    "id": "port_13_to_port_1",
-                    "sourceNode": "13",
-                    "sourcePort": "13_out",
-                    "targetNode": "1",
-                    "targetPort": "1_in"
-                },
-                {
                     "id": "port_0_to_port_3",
                     "sourceNode": "0",
                     "sourcePort": "0_out",
@@ -101,14 +94,21 @@
                     "targetPort": "3_in"
                 },
                 {
-                    "id": "port_7_to_port_13",
+                    "id": "port_7_to_port_17",
                     "sourceNode": "7",
                     "sourcePort": "7_out",
-                    "targetNode": "13",
-                    "targetPort": "13_in"
+                    "targetNode": "17",
+                    "targetPort": "17_in"
+                },
+                {
+                    "id": "port_17_to_port_1",
+                    "sourceNode": "17",
+                    "sourcePort": "17_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
                 }
             ],
-            "hash": "b8bfdd40e8dcc003ddbda6d18d91173d2433f601",
+            "hash": "caf127e11d2c2469e88be11751a1fd6687e1b3b0",
             "nodes": {
                 "0": {
                     "data": {
@@ -123,7 +123,7 @@
                     "id": "0",
                     "type": "start",
                     "x": 200,
-                    "y": 179.9999999999997
+                    "y": 179.99999999999963
                 },
                 "1": {
                     "data": {
@@ -257,51 +257,7 @@
                     "id": "10",
                     "type": "utility",
                     "x": 340,
-                    "y": 840
-                },
-                "13": {
-                    "data": {
-                        "action": "update event",
-                        "actionType": "generic",
-                        "advanced": {
-                            "customName": "update notable",
-                            "customNameId": 0,
-                            "description": "Update the notable event  in Enterprise Security with a link back to this container",
-                            "join": [],
-                            "note": "Update the notable event in Enterprise Security with a link back to this container",
-                            "scope": "all"
-                        },
-                        "connector": "Splunk",
-                        "connectorConfigs": [
-                            "splunk"
-                        ],
-                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
-                        "connectorVersion": "v1",
-                        "functionId": 1,
-                        "functionName": "update_notable",
-                        "id": "13",
-                        "parameters": {
-                            "comment": {
-                                "functionId": 1,
-                                "parameters": [
-                                    "container:id",
-                                    "container:url"
-                                ],
-                                "template": "SOAR event created: {0}\nComplete details can be found here: {1}/summary/evidence"
-                            },
-                            "event_ids": "filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id",
-                            "status": "in progress"
-                        },
-                        "requiredParameters": [
-                            "event_ids"
-                        ],
-                        "type": "action"
-                    },
-                    "errors": {},
-                    "id": "13",
-                    "type": "action",
-                    "x": 0,
-                    "y": 840
+                    "y": 920
                 },
                 "14": {
                     "data": {
@@ -624,6 +580,52 @@
                     "id": "16",
                     "type": "utility",
                     "x": 680,
+                    "y": 940
+                },
+                "17": {
+                    "data": {
+                        "action": "update event",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "update notable",
+                            "customNameId": 0,
+                            "description": "Update notable with a link to new SOAR event",
+                            "join": [],
+                            "note": "Update notable with a link to new SOAR event"
+                        },
+                        "connector": "Splunk",
+                        "connectorConfigs": [
+                            "splunk"
+                        ],
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "update_notable",
+                        "id": "17",
+                        "parameters": {
+                            "comment": {
+                                "functionId": 2,
+                                "parameters": [
+                                    "container:id",
+                                    "container:url"
+                                ],
+                                "template": "SOAR event created: {0}\nComplete details can be found here: {1}/summary/evidence"
+                            },
+                            "event_ids": "filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id",
+                            "status": "in progress"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "event_ids"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "17",
+                    "type": "action",
+                    "x": 40,
                     "y": 940
                 },
                 "3": {
@@ -980,7 +982,7 @@
                     "id": "8",
                     "type": "format",
                     "x": 340,
-                    "y": 700
+                    "y": 780
                 }
             },
             "notes": "For detailed implementation see https://docs.splunk.com/Documentation/ESSOC/latest/user/Useplaybookpack"
@@ -992,7 +994,7 @@
         "schema": "5.0.5",
         "version": "5.2.0.77965"
     },
-    "create_time": "2022-01-27T16:15:50.372722+00:00",
+    "create_time": "2022-02-03T17:38:19.137941+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"

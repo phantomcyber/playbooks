@@ -678,53 +678,7 @@ def event_id_filter(action=None, success=None, container=None, results=None, han
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        update_event(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
-
-def update_event(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("update_event() called")
-
-    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-
-    comment_formatted_string = phantom.format(
-        container=container,
-        template="""Case created: {0}\n\nName: {1}\n\nURL: {2}/summary""",
-        parameters=[
-            "container:id",
-            "container:name",
-            "container:url"
-        ])
-
-    ################################################################################
-    # Update all notables with a link back to the parent case.
-    ################################################################################
-
-    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id","filtered-data:event_id_filter:condition_1:artifact:*.id"], scope="all")
-
-    parameters = []
-
-    # build parameters list for 'update_event' call
-    for filtered_artifact_0_item_event_id_filter in filtered_artifact_0_data_event_id_filter:
-        parameters.append({
-            "comment": comment_formatted_string,
-            "event_ids": filtered_artifact_0_item_event_id_filter[0],
-            "undefined": "",
-            "context": {'artifact_id': filtered_artifact_0_item_event_id_filter[1]},
-        })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.act("update event", parameters=parameters, name="update_event", assets=["splunk"])
+        update_notable(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -1023,6 +977,52 @@ def decision_7(action=None, success=None, container=None, results=None, handle=N
     if found_match_1:
         workbook_list(action=action, success=success, container=container, results=results, handle=handle)
         return
+
+    return
+
+
+def update_notable(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("update_notable() called")
+
+    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+
+    comment_formatted_string = phantom.format(
+        container=container,
+        template="""Case created: {0}\n\nName: {1}\n\nURL: {2}/summary""",
+        parameters=[
+            "container:id",
+            "container:name",
+            "container:url"
+        ])
+
+    ################################################################################
+    # Update all Splunk Notables with a link to merged container. 
+    ################################################################################
+
+    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id","filtered-data:event_id_filter:condition_1:artifact:*.id"])
+
+    parameters = []
+
+    # build parameters list for 'update_notable' call
+    for filtered_artifact_0_item_event_id_filter in filtered_artifact_0_data_event_id_filter:
+        if filtered_artifact_0_item_event_id_filter[0] is not None:
+            parameters.append({
+                "comment": comment_formatted_string,
+                "event_ids": filtered_artifact_0_item_event_id_filter[0],
+                "context": {'artifact_id': filtered_artifact_0_item_event_id_filter[1]},
+            })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.act("update event", parameters=parameters, name="update_notable", assets=["splunk"])
 
     return
 

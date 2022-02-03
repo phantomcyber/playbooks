@@ -218,52 +218,6 @@ def pin_es_url(action=None, success=None, container=None, results=None, handle=N
     return
 
 
-def update_notable(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("update_notable() called")
-
-    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-
-    comment_formatted_string = phantom.format(
-        container=container,
-        template="""SOAR event created: {0}\nComplete details can be found here: {1}/summary/evidence""",
-        parameters=[
-            "container:id",
-            "container:url"
-        ])
-
-    ################################################################################
-    # Update the notable event  in Enterprise Security with a link back to this container
-    ################################################################################
-
-    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id","filtered-data:event_id_filter:condition_1:artifact:*.id"], scope="all")
-
-    parameters = []
-
-    # build parameters list for 'update_notable' call
-    for filtered_artifact_0_item_event_id_filter in filtered_artifact_0_data_event_id_filter:
-        parameters.append({
-            "status": "in progress",
-            "comment": comment_formatted_string,
-            "event_ids": filtered_artifact_0_item_event_id_filter[0],
-            "undefined": "",
-            "context": {'artifact_id': filtered_artifact_0_item_event_id_filter[1]},
-        })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.act("update event", parameters=parameters, name="update_notable", assets=["splunk"])
-
-    return
-
-
 def format_event_name(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("format_event_name() called")
 
@@ -367,6 +321,52 @@ def artifact_update_severity(action=None, success=None, container=None, results=
     ################################################################################
 
     phantom.custom_function(custom_function="community/artifact_update", parameters=parameters, name="artifact_update_severity")
+
+    return
+
+
+def update_notable(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("update_notable() called")
+
+    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+
+    comment_formatted_string = phantom.format(
+        container=container,
+        template="""SOAR event created: {0}\nComplete details can be found here: {1}/summary/evidence""",
+        parameters=[
+            "container:id",
+            "container:url"
+        ])
+
+    ################################################################################
+    # Update notable with a link to new SOAR event
+    ################################################################################
+
+    filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id","filtered-data:event_id_filter:condition_1:artifact:*.id"])
+
+    parameters = []
+
+    # build parameters list for 'update_notable' call
+    for filtered_artifact_0_item_event_id_filter in filtered_artifact_0_data_event_id_filter:
+        if filtered_artifact_0_item_event_id_filter[0] is not None:
+            parameters.append({
+                "status": "in progress",
+                "comment": comment_formatted_string,
+                "event_ids": filtered_artifact_0_item_event_id_filter[0],
+                "context": {'artifact_id': filtered_artifact_0_item_event_id_filter[1]},
+            })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.act("update event", parameters=parameters, name="update_notable", assets=["splunk"])
 
     return
 
