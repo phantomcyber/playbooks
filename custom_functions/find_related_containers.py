@@ -132,10 +132,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
         if response_data:
             # Quit early if no related containers were found
             if len(response_data) == 1 and response_data[0].get('container_id') == current_container:
-                phantom.debug(f"No related containers found for provided values: '{value_list}'")
-                assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
-                return outputs
-            
+                pass
             indicator_id_dictionary[str(indicator_id)] = []
             for item in response_data:
                 # Append all related containers except for current container
