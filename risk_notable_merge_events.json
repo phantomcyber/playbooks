@@ -145,25 +145,6 @@
                     "targetPort": "24_in"
                 },
                 {
-                    "conditions": [
-                        {
-                            "index": 0
-                        }
-                    ],
-                    "id": "port_24_to_port_26",
-                    "sourceNode": "24",
-                    "sourcePort": "24_out",
-                    "targetNode": "26",
-                    "targetPort": "26_in"
-                },
-                {
-                    "id": "port_26_to_port_25",
-                    "sourceNode": "26",
-                    "sourcePort": "26_out",
-                    "targetNode": "25",
-                    "targetPort": "25_in"
-                },
-                {
                     "id": "port_6_to_port_7",
                     "sourceNode": "6",
                     "sourcePort": "6_out",
@@ -358,9 +339,28 @@
                     "sourcePort": "39_out",
                     "targetNode": "4",
                     "targetPort": "4_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_24_to_port_40",
+                    "sourceNode": "24",
+                    "sourcePort": "24_out",
+                    "targetNode": "40",
+                    "targetPort": "40_in"
+                },
+                {
+                    "id": "port_40_to_port_1",
+                    "sourceNode": "40",
+                    "sourcePort": "40_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
                 }
             ],
-            "hash": "79e220c893f1e954c7aa0908ef497492be64f168",
+            "hash": "447c0f928e0f44f87f80491ebb039e254a45dd94",
             "nodes": {
                 "0": {
                     "data": {
@@ -374,8 +374,8 @@
                     "errors": {},
                     "id": "0",
                     "type": "start",
-                    "x": 1000,
-                    "y": 279.9999999999996
+                    "x": 1350,
+                    "y": -8.526512829121202e-14
                 },
                 "1": {
                     "data": {
@@ -391,8 +391,8 @@
                     "id": "1",
                     "type": "end",
                     "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
-                    "x": 740,
-                    "y": 2660
+                    "x": 670,
+                    "y": 3600
                 },
                 "10": {
                     "data": {
@@ -496,7 +496,7 @@
                         "values": {
                             "workbook_task_update": {
                                 "container": "container:id",
-                                "note_content": "No Related Events Found",
+                                "note_content": "No related events based on input fields and minimum threshold.",
                                 "note_title": "[Auto-Generated] Find Related Events Summary",
                                 "owner": null,
                                 "status": null,
@@ -507,8 +507,8 @@
                     "errors": {},
                     "id": "10",
                     "type": "utility",
-                    "x": 980,
-                    "y": 1140
+                    "x": 1330,
+                    "y": 1350
                 },
                 "11": {
                     "data": {
@@ -605,7 +605,7 @@
                                     "task_id",
                                     "trace"
                                 ],
-                                "content": "No Related Events Found",
+                                "content": "No related events based on input fields and minimum threshold.",
                                 "note_format": "markdown",
                                 "note_type": "general",
                                 "title": "[Auto-Generated] Find Related Events Summary"
@@ -615,8 +615,8 @@
                     "errors": {},
                     "id": "11",
                     "type": "utility",
-                    "x": 1320,
-                    "y": 1080
+                    "x": 1670,
+                    "y": 1320
                 },
                 "12": {
                     "customCode": "def related_events(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug(\"related_events() called\")\n\n    ################################################################################\n    # Prompt the user with a list of related events and allow them to select the merge \n    # option.\n    ################################################################################\n\n    # set user and message variables for phantom.prompt call\n\n    user = json.loads(phantom.get_run_data(key='get_effective_user:username'))\n    message = \"\"\"Please review related events in the table below and then select an option.\\n\\n{0}\\n\\n### The merge process will:\\n\\n- Mark the current event as the parent case. If the Risk Notable workbook is present it will be added, otherwise, it will add the system default workbook.\\n- Copy events, artifacts, and notes to the parent case.\\n- Close the related events with a link to the parent case.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"format_prompt:formatted_data\"\n    ]\n\n    # responses\n    response_types = [\n        {\n            \"prompt\": \"Merge Response\",\n            \"options\": {\n                \"type\": \"list\",\n                \"choices\": [\n                    \"Merge All\",\n                    \"Merge Individually\",\n                    \"Do Nothing\"\n                ],\n            },\n        }\n    ]\n\n    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name=\"related_events\", parameters=parameters, response_types=response_types, callback=decision_2)\n\n    return",
@@ -653,8 +653,8 @@
                     "errors": {},
                     "id": "12",
                     "type": "prompt",
-                    "x": 700,
-                    "y": 1220
+                    "x": 1070,
+                    "y": 1560
                 },
                 "14": {
                     "data": {
@@ -681,8 +681,8 @@
                     "id": "14",
                     "type": "code",
                     "userCode": "    \n    process_responses__should_merge = \"false\"\n    responses = event_details_summary_responses[0]\n    # Grab run_key and convert to list\n    container_list = json.loads(phantom.get_run_data(key='container_list'))\n    if 'Merge Into Case' in responses:\n        process_responses__container_list = []\n        for container_id, response in zip(container_list, responses):\n            if response.lower() == 'merge into case':\n                process_responses__container_list.append(container_id)\n                process_responses__should_merge = \"true\"\n\n",
-                    "x": 740,
-                    "y": 1760
+                    "x": 0,
+                    "y": 2340
                 },
                 "15": {
                     "data": {
@@ -744,8 +744,8 @@
                     "errors": {},
                     "id": "15",
                     "type": "decision",
-                    "x": 700,
-                    "y": 1360
+                    "x": 1070,
+                    "y": 1740
                 },
                 "16": {
                     "data": {
@@ -773,8 +773,8 @@
                     "id": "16",
                     "type": "code",
                     "userCode": "\n    # Define base format - customize as needed\n    custom_format__output = \"\"\"Please review the following events and their associated indicators. Consider merging the related events into the current investigation.\n    \nThe merge process will:\n - Mark the current event as the parent case. If no workbook has been added, it will use the default workbook.\n - Copy events, artifacts, and notes to the parent case.\n - Close the related events with a link to the parent case.\n \n \"\"\"\n    \n    # Build phantom url for use later \n    base_url = phantom.get_base_url()\n    url = phantom.build_phantom_rest_url('indicator')\n    \n    # Iterate through all inputs and append to base format\n    for item1,item2,item3 in zip(find_related_events_data___container_id,find_related_events_data___indicator_ids,find_related_events_data___container_name):\n        custom_format__output += \"#### [Event {0}: {1}]({2}/mission/{0}/summary/evidence)\\n\\n\".format(item1, item3, base_url)\n        custom_format__output += \"| Field Names | Values |\\n\"\n        custom_format__output += \"| --- | --- |\\n\"\n        \n        indicator_dict = {}\n\n        # Find_related_containers only returns an indicator id, this converts the indicator id to an actual value\n        # Only iterate through 10 indicators for easier readability\n        for indicator in item2[0:10]:\n            response = phantom.requests.get(uri = url + \"/{}?_special_fields=true\".format(indicator), verify=False).json()              \n            value = response['value']\n            fields = response.get('_special_fields')\n            \n            # Remove null items and join\n            if isinstance(fields, list):\n                fields = [item for item in fields if item]\n                fields = sorted(fields)\n                fields = \", \".join(fields)\n                \n            indicator_dict[value] = fields\n            \n        # sort dictionary alphabetically by value\n        for k,v in sorted(indicator_dict.items(), key = lambda kv:(kv[1], kv[0])):\n            if len(k) > 250:\n                custom_format__output += \"| {0} | ```{1}``` ***...truncated...*** | \\n\".format(v, k[:250])\n            else:\n                custom_format__output += \"| {0} | ```{1}``` | \\n\".format(v, k)\n            \n        # If there were more than 10 indicators, add a note at the end letting the analyst know they can find more by following the event link    \n        if len(item2) > 10:\n            custom_format__output += \"- ***+{0} additional related artifacts***\".format(len(item2) - 10)\n            \n        custom_format__output += \"\\n---\\n\\n\"\n\n",
-                    "x": 740,
-                    "y": 1520
+                    "x": 0,
+                    "y": 1920
                 },
                 "17": {
                     "data": {
@@ -857,8 +857,8 @@
                     "errors": {},
                     "id": "17",
                     "type": "utility",
-                    "x": 340,
-                    "y": 1520
+                    "x": 960,
+                    "y": 2760
                 },
                 "18": {
                     "data": {
@@ -973,8 +973,8 @@
                     "errors": {},
                     "id": "18",
                     "type": "utility",
-                    "x": 1020,
-                    "y": 1780
+                    "x": 1840,
+                    "y": 3420
                 },
                 "19": {
                     "data": {
@@ -997,8 +997,8 @@
                     "errors": {},
                     "id": "19",
                     "type": "format",
-                    "x": 1180,
-                    "y": 1520
+                    "x": 1640,
+                    "y": 2940
                 },
                 "20": {
                     "data": {
@@ -1047,8 +1047,8 @@
                     "errors": {},
                     "id": "20",
                     "type": "decision",
-                    "x": 1260,
-                    "y": 1640
+                    "x": 1720,
+                    "y": 3210
                 },
                 "21": {
                     "data": {
@@ -1153,8 +1153,8 @@
                     "errors": {},
                     "id": "21",
                     "type": "utility",
-                    "x": 1320,
-                    "y": 1780
+                    "x": 1500,
+                    "y": 3420
                 },
                 "22": {
                     "customCode": "def event_details(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug(\"event_details() called\")\n\n    ################################################################################\n    # A dynamic prompt to list out details for each container so that the user can \n    # decide which to merge.\n    ################################################################################\n\n    # set user and message variables for phantom.prompt call\n    effective_user_id = phantom.get_effective_user()\n    url = phantom.build_phantom_rest_url('ph_user', effective_user_id)\n    response = phantom.requests.get(url, verify=False).json()\n    user = response.get('username')\n    message = \"\"\"{0}\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"custom_format:custom_function:output\",\n    ]\n    \n    # fetch data for dynamic response\n    container_data = phantom.collect2(container=container, datapath=['find_related_events:custom_function_result.data.*.container_id', 'find_related_events:custom_function_result.data.*.container_name'], action_results=results)\n    container_id_list = [item[0] for item in container_data]\n    container_name_list = [item[1] for item in container_data]\n    \n    #Dynamic Responses:\n    response_types = []\n    for container_id, container_name in zip(container_id_list, container_name_list):\n        response_types.append({\n                \"prompt\": \"Event {0}: {1}\".format(container_id, container_name),\n                \"options\": {\n                    \"type\": \"list\",\n                    \"choices\": [\n                        \"Merge Into Case\",\n                        \"Ignore\",\n                    ]\n                },\n            })\n        \n    phantom.save_run_data(value=json.dumps(container_id_list), key=\"container_list\", auto=True)\n\n    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name=\"event_details\", parameters=parameters, response_types=response_types, callback=process_responses)\n\n    return",
@@ -1181,8 +1181,8 @@
                     "errors": {},
                     "id": "22",
                     "type": "prompt",
-                    "x": 820,
-                    "y": 1640
+                    "x": 80,
+                    "y": 2160
                 },
                 "23": {
                     "data": {
@@ -1265,8 +1265,8 @@
                     "errors": {},
                     "id": "23",
                     "type": "utility",
-                    "x": 740,
-                    "y": 2020
+                    "x": -1.4210854715202004e-14,
+                    "y": 2760
                 },
                 "24": {
                     "data": {
@@ -1305,79 +1305,8 @@
                     "errors": {},
                     "id": "24",
                     "type": "filter",
-                    "x": 980,
-                    "y": 2120
-                },
-                "25": {
-                    "data": {
-                        "action": "update event",
-                        "actionType": "generic",
-                        "advanced": {
-                            "customName": "update event",
-                            "customNameId": 0,
-                            "description": "Update all notables with a link back to the parent case.",
-                            "join": [],
-                            "notRequiredJoins": [
-                                "merge_all",
-                                "merge_selected"
-                            ],
-                            "note": "Update all notables with a link back to the parent case.",
-                            "scope": "all"
-                        },
-                        "connector": "Splunk",
-                        "connectorConfigs": [
-                            "splunk"
-                        ],
-                        "connectorId": 167,
-                        "connectorVersion": "v1",
-                        "functionId": 1,
-                        "functionName": "update_event",
-                        "id": "25",
-                        "parameters": {
-                            "comment": "es_format:formatted_data",
-                            "event_ids": "filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id"
-                        },
-                        "requiredParameters": [
-                            "event_ids"
-                        ],
-                        "type": "action"
-                    },
-                    "errors": {},
-                    "id": "25",
-                    "type": "action",
-                    "x": 920,
-                    "y": 2380
-                },
-                "26": {
-                    "data": {
-                        "advanced": {
-                            "customName": "es format",
-                            "customNameId": 0,
-                            "description": "Format a note with a link to the parent case.",
-                            "join": [],
-                            "notRequiredJoins": [
-                                "merge_all",
-                                "merge_selected"
-                            ],
-                            "note": "Format a note with a link to the parent case.",
-                            "scope": "all"
-                        },
-                        "functionId": 3,
-                        "functionName": "es_format",
-                        "id": "26",
-                        "parameters": [
-                            "container:id",
-                            "container:name",
-                            "container:url"
-                        ],
-                        "template": "Case created: {0}\n\nName: {1}\n\nURL: {2}/summary",
-                        "type": "format"
-                    },
-                    "errors": {},
-                    "id": "26",
-                    "type": "format",
-                    "x": 920,
-                    "y": 2260
+                    "x": 60,
+                    "y": 2970
                 },
                 "29": {
                     "data": {
@@ -1426,8 +1355,8 @@
                     "errors": {},
                     "id": "29",
                     "type": "decision",
-                    "x": 420,
-                    "y": 1740
+                    "x": 1040,
+                    "y": 3210
                 },
                 "30": {
                     "data": {
@@ -1542,8 +1471,8 @@
                     "errors": {},
                     "id": "30",
                     "type": "utility",
-                    "x": 200,
-                    "y": 1880
+                    "x": 820,
+                    "y": 3420
                 },
                 "31": {
                     "data": {
@@ -1567,8 +1496,8 @@
                     "errors": {},
                     "id": "31",
                     "type": "format",
-                    "x": 340,
-                    "y": 1620
+                    "x": 960,
+                    "y": 2970
                 },
                 "32": {
                     "data": {
@@ -1673,8 +1602,8 @@
                     "errors": {},
                     "id": "32",
                     "type": "utility",
-                    "x": 460,
-                    "y": 1880
+                    "x": 1160,
+                    "y": 3420
                 },
                 "33": {
                     "data": {
@@ -1723,8 +1652,8 @@
                     "errors": {},
                     "id": "33",
                     "type": "decision",
-                    "x": 720,
-                    "y": 2300
+                    "x": 360,
+                    "y": 3210
                 },
                 "34": {
                     "data": {
@@ -1839,8 +1768,8 @@
                     "errors": {},
                     "id": "34",
                     "type": "utility",
-                    "x": 460,
-                    "y": 2500
+                    "x": 140,
+                    "y": 3420
                 },
                 "35": {
                     "data": {
@@ -1945,8 +1874,8 @@
                     "errors": {},
                     "id": "35",
                     "type": "utility",
-                    "x": 800,
-                    "y": 2500
+                    "x": 480,
+                    "y": 3420
                 },
                 "36": {
                     "data": {
@@ -1972,8 +1901,8 @@
                     "id": "36",
                     "type": "format",
                     "userCode": "\n    # Write your custom code here...\n\n",
-                    "x": 640,
-                    "y": 2140
+                    "x": 280,
+                    "y": 2940
                 },
                 "37": {
                     "data": {
@@ -2024,8 +1953,8 @@
                     "errors": {},
                     "id": "37",
                     "type": "decision",
-                    "x": 820,
-                    "y": 1880
+                    "x": 80,
+                    "y": 2580
                 },
                 "38": {
                     "data": {
@@ -2050,8 +1979,8 @@
                     "id": "38",
                     "type": "code",
                     "userCode": "\n    effective_user_id = phantom.get_effective_user()\n    url = phantom.build_phantom_rest_url('ph_user', effective_user_id)\n    response_json = phantom.requests.get(url, verify=False).json()\n\n    get_effective_user__username = response_json['username']\n    get_effective_user__user_type = response_json['type']\n\n",
-                    "x": 980,
-                    "y": 380
+                    "x": 1330,
+                    "y": 180
                 },
                 "39": {
                     "data": {
@@ -2083,8 +2012,8 @@
                     "errors": {},
                     "id": "39",
                     "type": "decision",
-                    "x": 1060,
-                    "y": 500
+                    "x": 1410,
+                    "y": 420
                 },
                 "4": {
                     "data": {
@@ -2119,8 +2048,54 @@
                     "errors": {},
                     "id": "4",
                     "type": "utility",
-                    "x": 980,
-                    "y": 660
+                    "x": 1330,
+                    "y": 600
+                },
+                "40": {
+                    "data": {
+                        "action": "update event",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "update notable",
+                            "customNameId": 0,
+                            "description": "Update all Splunk Notables with a link to merged container. ",
+                            "join": [],
+                            "note": "Update all Splunk Notables with a link to merged container. "
+                        },
+                        "connector": "Splunk",
+                        "connectorConfigs": [
+                            "splunk"
+                        ],
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "update_notable",
+                        "id": "40",
+                        "parameters": {
+                            "comment": {
+                                "functionId": 2,
+                                "parameters": [
+                                    "container:id",
+                                    "container:name",
+                                    "container:url"
+                                ],
+                                "template": "Case created: {0}\n\nName: {1}\n\nURL: {2}/summary"
+                            },
+                            "event_ids": "filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "event_ids"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "40",
+                    "type": "action",
+                    "x": 0,
+                    "y": 3160
                 },
                 "6": {
                     "data": {
@@ -2288,8 +2263,8 @@
                     "errors": {},
                     "id": "6",
                     "type": "utility",
-                    "x": 980,
-                    "y": 760
+                    "x": 1330,
+                    "y": 780
                 },
                 "7": {
                     "data": {
@@ -2420,8 +2395,8 @@
                     "errors": {},
                     "id": "7",
                     "type": "utility",
-                    "x": 980,
-                    "y": 860
+                    "x": 1330,
+                    "y": 960
                 },
                 "8": {
                     "data": {
@@ -2491,8 +2466,8 @@
                     "errors": {},
                     "id": "8",
                     "type": "decision",
-                    "x": 1060,
-                    "y": 960
+                    "x": 1410,
+                    "y": 1140
                 },
                 "9": {
                     "data": {
@@ -2521,8 +2496,8 @@
                     "errors": {},
                     "id": "9",
                     "type": "format",
-                    "x": 620,
-                    "y": 1080
+                    "x": 990,
+                    "y": 1320
                 }
             },
             "notes": "For detailed implementation see https://docs.splunk.com/Documentation/ESSOC/latest/user/Useplaybookpack"
@@ -2531,10 +2506,10 @@
         "output_spec": null,
         "playbook_type": "automation",
         "python_version": "3",
-        "schema": "5.0.3",
-        "version": "5.0.1.66250"
+        "schema": "5.0.5",
+        "version": "5.2.1.78411"
     },
-    "create_time": "2021-10-19T20:23:28.780241+00:00",
+    "create_time": "2022-02-15T20:36:21.002040+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"
