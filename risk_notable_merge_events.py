@@ -351,7 +351,7 @@ def decision_2(action=None, success=None, container=None, results=None, handle=N
         return
 
     # check for 'else' condition 3
-    format_end_note(action=action, success=success, container=container, results=results, handle=handle)
+    join_format_end_note(action=action, success=success, container=container, results=results, handle=handle)
 
     return
 
@@ -498,6 +498,22 @@ def workbook_task_update_2(action=None, success=None, container=None, results=No
     ################################################################################
 
     phantom.custom_function(custom_function="community/workbook_task_update", parameters=parameters, name="workbook_task_update_2")
+
+    return
+
+
+def join_format_end_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("join_format_end_note() called")
+
+    # if the joined function has already been called, do nothing
+    if phantom.get_run_data(key="join_format_end_note_called"):
+        return
+
+    # save the state that the joined function has now been called
+    phantom.save_run_data(key="join_format_end_note_called", value="format_end_note")
+
+    # call connected block "format_end_note"
+    format_end_note(container=container, handle=handle)
 
     return
 
@@ -654,7 +670,7 @@ def merge_selected_callback(action=None, success=None, container=None, results=N
 
     
     event_id_filter(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=filtered_artifacts, filtered_results=filtered_results)
-    join_merge_individual_format(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=filtered_artifacts, filtered_results=filtered_results)
+    merge_individual_format(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=filtered_artifacts, filtered_results=filtered_results)
 
 
     return
@@ -862,16 +878,6 @@ def add_note_4(action=None, success=None, container=None, results=None, handle=N
     return
 
 
-def join_merge_individual_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("join_merge_individual_format() called")
-
-    if phantom.completed(custom_function_names=["merge_selected"], action_names=["event_details"]):
-        # call connected block "merge_individual_format"
-        merge_individual_format(container=container, handle=handle)
-
-    return
-
-
 def merge_individual_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("merge_individual_format() called")
 
@@ -925,7 +931,7 @@ def merge_any_decision(action=None, success=None, container=None, results=None, 
         return
 
     # check for 'else' condition 2
-    join_merge_individual_format(action=action, success=success, container=container, results=results, handle=handle)
+    join_format_end_note(action=action, success=success, container=container, results=results, handle=handle)
 
     return
 
