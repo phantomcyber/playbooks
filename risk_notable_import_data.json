@@ -14,13 +14,6 @@
                     "targetPort": "7_in"
                 },
                 {
-                    "id": "port_8_to_port_11",
-                    "sourceNode": "8",
-                    "sourcePort": "8_out",
-                    "targetNode": "11",
-                    "targetPort": "11_in"
-                },
-                {
                     "id": "port_15_to_port_16",
                     "sourceNode": "15",
                     "sourcePort": "15_out",
@@ -47,42 +40,11 @@
                     "targetPort": "19_in"
                 },
                 {
-                    "conditions": [
-                        {
-                            "index": 0
-                        }
-                    ],
-                    "id": "port_7_to_port_8",
-                    "sourceNode": "7",
-                    "sourcePort": "7_out",
-                    "targetNode": "8",
-                    "targetPort": "8_in"
-                },
-                {
-                    "id": "port_33_to_port_15",
-                    "sourceNode": "33",
-                    "sourcePort": "33_out",
-                    "targetNode": "15",
-                    "targetPort": "15_in"
-                },
-                {
                     "id": "port_11_to_port_34",
                     "sourceNode": "11",
                     "sourcePort": "11_out",
                     "targetNode": "34",
                     "targetPort": "34_in"
-                },
-                {
-                    "conditions": [
-                        {
-                            "index": 0
-                        }
-                    ],
-                    "id": "port_34_to_port_33",
-                    "sourceNode": "34",
-                    "sourcePort": "34_out",
-                    "targetNode": "33",
-                    "targetPort": "33_in"
                 },
                 {
                     "id": "port_15_to_port_18",
@@ -104,9 +66,40 @@
                     "sourcePort": "19_out",
                     "targetNode": "1",
                     "targetPort": "1_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_34_to_port_33",
+                    "sourceNode": "34",
+                    "sourcePort": "34_out",
+                    "targetNode": "33",
+                    "targetPort": "33_in"
+                },
+                {
+                    "id": "port_33_to_port_15",
+                    "sourceNode": "33",
+                    "sourcePort": "33_out",
+                    "targetNode": "15",
+                    "targetPort": "15_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_7_to_port_11",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "11",
+                    "targetPort": "11_in"
                 }
             ],
-            "hash": "ab7a6a505a05ce38a01f94104475c55ce339ef12",
+            "hash": "db92859965e8cef424991ec0be443826919cc6e7",
             "nodes": {
                 "0": {
                     "data": {
@@ -155,18 +148,33 @@
                         "connectorConfigs": [
                             "splunk"
                         ],
-                        "connectorId": 129,
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
                         "connectorVersion": "v1",
                         "functionId": 2,
                         "functionName": "run_risk_rule_query",
                         "id": "11",
                         "parameters": {
                             "command": "search",
-                            "parse_only": true,
-                            "query": "format_risk_query:formatted_data"
+                            "query": {
+                                "functionId": 2,
+                                "parameters": [
+                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
+                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
+                                    "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time"
+                                ],
+                                "template": "index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type"
+                            }
                         },
                         "requiredParameters": [
-                            "query"
+                            {
+                                "data_type": "string",
+                                "field": "query"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "search",
+                                "field": "command"
+                            }
                         ],
                         "type": "action"
                     },
@@ -328,7 +336,7 @@
                     "id": "15",
                     "type": "utility",
                     "x": 1140,
-                    "y": 1380
+                    "y": 1400
                 },
                 "16": {
                     "data": {
@@ -364,7 +372,7 @@
                     "id": "16",
                     "type": "filter",
                     "x": 1200,
-                    "y": 1500
+                    "y": 1540
                 },
                 "17": {
                     "data": {
@@ -434,15 +442,15 @@
                             "mark_evidence": {
                                 "container": "container:id",
                                 "content_type": "artifact_id",
-                                "input_object": "filtered-data:filter_artifact_score:condition_1:artifact:*.cef.event_id"
+                                "input_object": "filtered-data:filter_artifact_score:condition_1:artifact:*.id"
                             }
                         }
                     },
                     "errors": {},
                     "id": "17",
                     "type": "utility",
-                    "x": 1580,
-                    "y": 1640
+                    "x": 1320,
+                    "y": 1680
                 },
                 "18": {
                     "data": {
@@ -667,7 +675,7 @@
                     "errors": {},
                     "id": "33",
                     "type": "utility",
-                    "userCode": "    from dateutil.parser import parse\n    from django.utils.dateparse import parse_datetime\n    import re\n    \n    search_json = run_risk_rule_query_result_item_0[0]\n    \n    # overwrite parameters\n    parameters = []\n\n    # Helper recursive function to flatten nested lists\n    def flatten(input_list):\n        if not input_list:\n            return input_list\n        if isinstance(input_list[0], list):\n            return flatten(input_list[0]) + flatten(input_list[1:])\n        return input_list[:1] + flatten(input_list[1:])\n    \n    # Declare dictionary for cim to cef translation\n    # adjust as needed\n    cim_cef = {\n        \"action\": \"act\", \n        \"action_name\": \"act\", \n        \"app\": \"app\", \n        \"bytes_in\": \"bytesIn\", \n        \"bytes_out\": \"bytesOut\", \n        \"category\": \"cat\",\n        \"dest\": \"destinationAddress\", \n        \"dest_ip\": \"destinationAddress\", \n        \"dest_mac\": \"destinationMacAddress\", \n        \"dest_nt_domain\": \"destinationNtDomain\", \n        \"dest_port\": \"destinationPort\", \n        \"dest_translated_ip\": \"destinationTranslatedAddress\", \n        \"dest_translated_port\": \"destinationTranslatedPort\", \n        \"direction\": \"deviceDirection\",\n        \"dns\": \"destinationDnsDomain\", \n        \"dvc\": \"dvc\", \n        \"dvc_ip\": \"deviceAddress\", \n        \"dvc_mac\": \"deviceMacAddress\", \n        \"file_create_time\": \"fileCreateTime\", \n        \"file_hash\": \"fileHash\", \n        \"file_modify_time\": \"fileModificationTime\", \n        \"file_name\": \"fileName\", \n        \"file_path\": \"filePath\", \n        \"file_size\": \"fileSize\", \n        \"message\": \"message\", \n        \"protocol\": \"transportProtocol\", \n        \"request_payload\": \"request\", \n        \"request_payload_type\": \"requestMethod\", \n        \"src\": \"sourceAddress\", \n        \"src_dns\": \"sourceDnsDomain\", \n        \"src_ip\": \"sourceAddress\", \n        \"src_mac\": \"sourceMacAddress\", \n        \"src_nt_domain\": \"sourceNtDomain\", \n        \"src_port\": \"sourcePort\", \n        \"src_translated_ip\": \"sourceTranslatedAddress\", \n        \"src_translated_port\": \"sourceTranslatedPort\", \n        \"src_user\": \"sourceUserId\", \n        \"transport\": \"transportProtocol\", \n        \"url\": \"requestURL\", \n        \"user\": \"destinationUserName\", \n        \"user_id\": \"destinationUserId\", \n    }\n    \n    \n    # Iterate through Splunk search results\n    for index, artifact_json in enumerate(search_json):\n        field_mapping = {}\n        \n        for k,v in artifact_json.items():\n            tags = []\n            # Swap CIM for CEF values\n            if k.lower() in cim_cef.keys():\n                if k.lower() == 'dest':\n                    # if 'dest' matches an IP, use 'dest', otherwise use 'destinationHostName'\n                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', k):\n                        artifact_json[cim_cef[k]] = artifact_json.pop(k)\n                    else:\n                        artifact_json['destinationHostName'] = artifact_json.pop(k)\n                elif k.lower() == 'src':\n                    # if 'src' matches an IP, use 'src', otherwise use 'sourceHostName'\n                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', k):\n                        artifact_json[cim_cef[k]] = artifact_json.pop(k)\n                    else:\n                        artifact_json['sourceHostName'] = artifact_json.pop(k)\n                else:\n                    artifact_json[cim_cef[k.lower()]] = artifact_json.pop(k)\n                    \n        for k,v in artifact_json.items():\n            if type(v) == list:\n                artifact_json[k] = \", \".join(flatten(v))\n                \n        # Swap risk_message for description\n        if 'risk_message' in artifact_json.keys():\n            artifact_json['description'] = artifact_json.pop('risk_message')\n\n        # Make _time easier to read\n        if '_time' in artifact_json.keys():\n            timestring = parse(artifact_json['_time'])\n            artifact_json['_time'] = \"{} {}\".format(timestring.date(), timestring.time())\n\n        # Add threat_object_type to threat_object field_mapping\n        if 'threat_object' in artifact_json.keys() and 'threat_object_type' in artifact_json.keys():\n            field_mapping['threat_object'] = [artifact_json['threat_object_type']]                  \n\n        # Set the underlying data type in field mapping based on the risk_object_type     \n        if 'risk_object' in artifact_json.keys() and 'risk_object_type' in artifact_json.keys():\n            if 'user' in artifact_json['risk_object_type']:\n                field_mapping['risk_object'] = [\"user name\"]\n            elif artifact_json['risk_object_type'] == 'system':\n                field_mapping['risk_object'] = [\"host name\", \"hostname\"]\n            else:\n                field_mapping['risk_object'] = artifact_json['risk_object_type']\n            \n        # Extract tags\n        if 'rule_attack_tactic_technique' in artifact_json.keys():\n            for match in re.findall('(^|\\|)(\\w+)\\s+',artifact_json['rule_attack_tactic_technique']):\n                tags.append(match[1])\n            tags=list(set(tags))\n\n        # Final setp is to build the output. This is reliant on the source field existing which should be present in all Splunk search results\n        if 'source' in artifact_json.keys():\n            if index < len(search_json[0]) - 1:\n                name = artifact_json.pop('source')\n                parameters.append({'input_1': json.dumps({'cef_data': artifact_json, 'tags': tags, 'name': name, 'field_mapping': field_mapping, 'run_automation': False})})\n            else:\n                name = artifact_json.pop('source')\n                parameters.append({'input_1': json.dumps({'cef_data': artifact_json, 'tags': tags, 'name': name, 'field_mapping': field_mapping, 'run_automation': True})})\n\t\n\n\n",
+                    "userCode": "    from dateutil.parser import parse\n    from django.utils.dateparse import parse_datetime\n    import re\n    \n    search_json = run_risk_rule_query_result_item_0[0]\n\n    # overwrite parameters\n    parameters = []\n\n    # Helper recursive function to flatten nested lists\n    def flatten(input_list):\n        if not input_list:\n            return input_list\n        if isinstance(input_list[0], list):\n            return flatten(input_list[0]) + flatten(input_list[1:])\n        return input_list[:1] + flatten(input_list[1:])\n    \n    cef_metadata_url = phantom.build_phantom_rest_url('cef_metadata')\n    global_cef_mapping = phantom.requests.get(cef_metadata_url, verify=False).json()['cef']\n        \n    \n    # Declare dictionary for cim to cef translation\n    # adjust as needed\n    cim_cef = {\n        \"action\": \"act\", \n        \"action_name\": \"act\", \n        \"app\": \"app\", \n        \"bytes_in\": \"bytesIn\", \n        \"bytes_out\": \"bytesOut\", \n        \"category\": \"cat\",\n        \"dest\": \"destinationAddress\", \n        \"dest_ip\": \"destinationAddress\", \n        \"dest_mac\": \"destinationMacAddress\", \n        \"dest_nt_domain\": \"destinationNtDomain\", \n        \"dest_port\": \"destinationPort\", \n        \"dest_translated_ip\": \"destinationTranslatedAddress\", \n        \"dest_translated_port\": \"destinationTranslatedPort\", \n        \"direction\": \"deviceDirection\",\n        \"dns\": \"destinationDnsDomain\", \n        \"dvc\": \"dvc\", \n        \"dvc_ip\": \"deviceAddress\", \n        \"dvc_mac\": \"deviceMacAddress\", \n        \"file_create_time\": \"fileCreateTime\", \n        \"file_hash\": \"fileHash\", \n        \"file_modify_time\": \"fileModificationTime\", \n        \"file_name\": \"fileName\", \n        \"file_path\": \"filePath\", \n        \"file_size\": \"fileSize\", \n        \"message\": \"message\", \n        \"protocol\": \"transportProtocol\", \n        \"request_payload\": \"request\", \n        \"request_payload_type\": \"requestMethod\", \n        \"src\": \"sourceAddress\", \n        \"src_dns\": \"sourceDnsDomain\", \n        \"src_ip\": \"sourceAddress\", \n        \"src_mac\": \"sourceMacAddress\", \n        \"src_nt_domain\": \"sourceNtDomain\", \n        \"src_port\": \"sourcePort\", \n        \"src_translated_ip\": \"sourceTranslatedAddress\", \n        \"src_translated_port\": \"sourceTranslatedPort\", \n        \"src_user\": \"sourceUserId\", \n        \"transport\": \"transportProtocol\", \n        \"url\": \"requestURL\", \n        \"user\": \"destinationUserName\", \n        \"user_id\": \"destinationUserId\", \n    }\n    \n    \n    # Iterate through Splunk search results\n    for index, artifact_json in enumerate(search_json):\n        field_mapping = {}\n        \n        for k,v in artifact_json.items():\n            tags = []\n            # Swap CIM for CEF values\n            if cim_cef.get(k.lower()):\n                if k.lower() == 'dest':\n                    # if 'dest' matches an IP, use 'dest', otherwise use 'destinationHostName'\n                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', k):\n                        artifact_json[cim_cef[k]] = artifact_json.pop(k)\n                    else:\n                        artifact_json['destinationHostName'] = artifact_json.pop(k)\n                elif k.lower() == 'src':\n                    # if 'src' matches an IP, use 'src', otherwise use 'sourceHostName'\n                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', k):\n                        artifact_json[cim_cef[k]] = artifact_json.pop(k)\n                    else:\n                        artifact_json['sourceHostName'] = artifact_json.pop(k)\n                else:\n                    artifact_json[cim_cef[k.lower()]] = artifact_json.pop(k)\n        \n        temp_dictionary = artifact_json.copy()\n        for k,v in temp_dictionary.items():\n            if isinstance(v, list):\n                if global_cef_mapping.get(k) and global_cef_mapping[k]['contains']:\n                    sub_dictionary = {}\n                    for idx, item in enumerate(v):\n                        sub_dictionary[f'{k}_{idx + 1}'] = item\n                        field_mapping[f'{k}_{idx + 1}'] = global_cef_mapping[k]['contains']\n                    artifact_json.pop(k)\n                    artifact_json.update(sub_dictionary)\n                else:\n                    artifact_json[k] = \", \".join(flatten(v))\n                    \n                \n        # Swap risk_message for description\n        if artifact_json.get('risk_message') and not artifact_json.get('description'):\n            artifact_json['description'] = artifact_json.pop('risk_message')\n\n        # Make _time easier to read\n        if artifact_json.get('_time'):\n            timestring = parse(artifact_json['_time'])\n            artifact_json['_time'] = \"{} {}\".format(timestring.date(), timestring.time())\n\n        # Add threat_object_type to threat_object field_mapping\n        if artifact_json.get('threat_object') and artifact_json.get('threat_object_type'):\n            # remove unknown threat_objects\n            if artifact_json['threat_object'] == 'unknown':\n                artifact_json.pop('threat_object')\n                artifact_json.pop('threat_object_type')\n            else:\n                field_mapping['threat_object'] = [artifact_json['threat_object_type']]                  \n\n        # Set the underlying data type in field mapping based on the risk_object_type     \n        if artifact_json.get('risk_object') and artifact_json.get('risk_object_type'):\n            if 'user' in artifact_json['risk_object_type']:\n                field_mapping['risk_object'] = [\"user name\"]\n            elif artifact_json['risk_object_type'] == 'system':\n                field_mapping['risk_object'] = [\"host name\", \"hostname\"]\n            else:\n                field_mapping['risk_object'] = artifact_json['risk_object_type']\n            \n        # Extract tags\n        if artifact_json.get('rule_attack_tactic_technique'):\n            for match in re.findall('(^|\\|)(\\w+)\\s+',artifact_json['rule_attack_tactic_technique']):\n                tags.append(match[1])\n            tags=list(set(tags))\n\n        # Final setp is to build the output. This is reliant on the source field existing which should be present in all Splunk search results\n        if artifact_json.get('source'):\n            if index < len(search_json[0]) - 1:\n                name = artifact_json.pop('source')\n                parameters.append({'input_1': json.dumps({'cef_data': artifact_json, 'tags': tags, 'name': name, 'field_mapping': field_mapping, 'run_automation': False})})\n            else:\n                name = artifact_json.pop('source')\n                parameters.append({'input_1': json.dumps({'cef_data': artifact_json, 'tags': tags, 'name': name, 'field_mapping': field_mapping, 'run_automation': True})})\n\t\n\n",
                     "x": 1140,
                     "y": 1280
                 },
@@ -795,34 +803,7 @@
                     "id": "7",
                     "type": "filter",
                     "x": 1040,
-                    "y": 740
-                },
-                "8": {
-                    "data": {
-                        "advanced": {
-                            "customName": "format risk query",
-                            "customNameId": 0,
-                            "description": "Formats a query to reach back into the risk index to pull out all the detections that led up to the notable triggering. The time tokens contain the earliest and latest times found in info_min_time and info_max_time",
-                            "join": [],
-                            "note": "Formats a query to reach back into the risk index to pull out all the detections that led up to the notable triggering. The time tokens contain the earliest and latest times found in info_min_time and info_max_time",
-                            "scope": "all"
-                        },
-                        "functionId": 1,
-                        "functionName": "format_risk_query",
-                        "id": "8",
-                        "parameters": [
-                            "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
-                            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
-                            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time"
-                        ],
-                        "template": "index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type",
-                        "type": "format"
-                    },
-                    "errors": {},
-                    "id": "8",
-                    "type": "format",
-                    "x": 980,
-                    "y": 880
+                    "y": 800
                 }
             },
             "notes": "For detailed implementation see https://docs.splunk.com/Documentation/ESSOC/latest/user/Useplaybookpack"
@@ -852,10 +833,10 @@
         ],
         "playbook_type": "automation",
         "python_version": "3",
-        "schema": "5.0.3",
-        "version": "5.0.1.66250"
+        "schema": "5.0.5",
+        "version": "5.2.1.78411"
     },
-    "create_time": "2021-10-19T20:23:02.160676+00:00",
+    "create_time": "2022-02-16T14:40:17.341331+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"
