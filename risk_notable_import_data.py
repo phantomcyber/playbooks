@@ -505,7 +505,7 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
             if 'user' in artifact_json['risk_object_type']:
                 field_mapping['risk_object'] = ["user name"]
             elif artifact_json['risk_object_type'] == 'system':
-                field_mapping['risk_object'] = ["host name", "hostname"]
+                field_mapping['risk_object'] = ["host name"]
             else:
                 field_mapping['risk_object'] = artifact_json['risk_object_type']
             
