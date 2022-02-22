@@ -70,7 +70,7 @@ def run_risk_rule_query(action=None, success=None, container=None, results=None,
 
     query_formatted_string = phantom.format(
         container=container,
-        template="""index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* date_* orig_* info_* search_* splunk_* tag* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type""",
+        template="""index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type""",
         parameters=[
             "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
             "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
@@ -452,7 +452,7 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
         for k,v in artifact_json.items():
             tags = []
             # Swap CIM for CEF values
-            if k.lower() in cim_cef.keys():
+            if cim_cef.get(k.lower()):
                 if k.lower() == 'dest':
                     # if 'dest' matches an IP, use 'dest', otherwise use 'destinationHostName'
                     if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', k):
@@ -471,12 +471,11 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
         temp_dictionary = artifact_json.copy()
         for k,v in temp_dictionary.items():
             if isinstance(v, list):
-                if global_cef_mapping.get(k):
+                if global_cef_mapping.get(k) and global_cef_mapping[k]['contains']:
                     sub_dictionary = {}
                     for idx, item in enumerate(v):
                         sub_dictionary[f'{k}_{idx + 1}'] = item
-                        if global_cef_mapping.get(k) and global_cef_mapping[k]['contains']:
-                            field_mapping[f'{k}_{idx + 1}'] = global_cef_mapping[k]['contains']
+                        field_mapping[f'{k}_{idx + 1}'] = global_cef_mapping[k]['contains']
                     artifact_json.pop(k)
                     artifact_json.update(sub_dictionary)
                 else:
@@ -484,11 +483,11 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
                     
                 
         # Swap risk_message for description
-        if 'risk_message' in artifact_json.keys():
+        if artifact_json.get('risk_message') and not artifact_json.get('description'):
             artifact_json['description'] = artifact_json.pop('risk_message')
 
         # Make _time easier to read
-        if '_time' in artifact_json.keys():
+        if artifact_json.get('_time'):
             timestring = parse(artifact_json['_time'])
             artifact_json['_time'] = "{} {}".format(timestring.date(), timestring.time())
 
@@ -511,13 +510,13 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
                 field_mapping['risk_object'] = artifact_json['risk_object_type']
             
         # Extract tags
-        if 'rule_attack_tactic_technique' in artifact_json.keys():
+        if artifact_json.get('rule_attack_tactic_technique'):
             for match in re.findall('(^|\|)(\w+)\s+',artifact_json['rule_attack_tactic_technique']):
                 tags.append(match[1])
             tags=list(set(tags))
 
         # Final setp is to build the output. This is reliant on the source field existing which should be present in all Splunk search results
-        if 'source' in artifact_json.keys():
+        if artifact_json.get('source'):
             if index < len(search_json[0]) - 1:
                 name = artifact_json.pop('source')
                 parameters.append({'input_1': json.dumps({'cef_data': artifact_json, 'tags': tags, 'name': name, 'field_mapping': field_mapping, 'run_automation': False})})
