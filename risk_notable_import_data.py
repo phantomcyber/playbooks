@@ -242,7 +242,7 @@ def mitre_format(action=None, success=None, container=None, results=None, handle
             'artifact:*.cef.mitre_tactic', 
             'artifact:*.cef.mitre_technique', 
             'artifact:*.cef.mitre_technique_id', 
-            'artifact:*.cef.description'
+            'artifact:*.description'
         ], 
         scope='all'
     )
@@ -480,11 +480,6 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
                     artifact_json.update(sub_dictionary)
                 else:
                     artifact_json[k] = ", ".join(flatten(v))
-                    
-                
-        # Swap risk_message for description
-        if artifact_json.get('risk_message') and not artifact_json.get('description'):
-            artifact_json['description'] = artifact_json.pop('risk_message')
 
         # Make _time easier to read
         if artifact_json.get('_time'):
@@ -516,13 +511,21 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
             tags=list(set(tags))
 
         # Final setp is to build the output. This is reliant on the source field existing which should be present in all Splunk search results
-        if artifact_json.get('source'):
+        if artifact_json.get('source'):  
+            # populate artifact description
+            if artifact_json.get('risk_message') and not artifact_json.get('description'):
+                description = artifact_json['risk_message']
+            elif artifact_json.get('description'):
+                description = artifact_json.pop('description')
+            else:
+                description = None
+                
             if index < len(search_json[0]) - 1:
                 name = artifact_json.pop('source')
-                parameters.append({'input_1': json.dumps({'cef_data': artifact_json, 'tags': tags, 'name': name, 'field_mapping': field_mapping, 'run_automation': False})})
+                parameters.append({'input_1': json.dumps({'cef_data': artifact_json, 'tags': tags, 'name': name, 'description': description, 'field_mapping': field_mapping, 'run_automation': False})})
             else:
                 name = artifact_json.pop('source')
-                parameters.append({'input_1': json.dumps({'cef_data': artifact_json, 'tags': tags, 'name': name, 'field_mapping': field_mapping, 'run_automation': True})})
+                parameters.append({'input_1': json.dumps({'cef_data': artifact_json, 'tags': tags, 'name': name, 'description': description, 'field_mapping': field_mapping, 'run_automation': True})})
 	
 
     ################################################################################
