@@ -385,14 +385,6 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
 
     # overwrite parameters
     parameters = []
-
-    # Helper recursive function to flatten nested lists
-    def flatten(input_list):
-        if not input_list:
-            return input_list
-        if isinstance(input_list[0], list):
-            return flatten(input_list[0]) + flatten(input_list[1:])
-        return input_list[:1] + flatten(input_list[1:])
     
     cef_metadata_url = phantom.build_phantom_rest_url('cef_metadata')
     global_cef_mapping = phantom.requests.get(cef_metadata_url, verify=False).json()['cef']
@@ -471,15 +463,21 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
         temp_dictionary = artifact_json.copy()
         for k,v in temp_dictionary.items():
             if isinstance(v, list):
-                if global_cef_mapping.get(k) and global_cef_mapping[k]['contains']:
                     sub_dictionary = {}
-                    for idx, item in enumerate(v):
-                        sub_dictionary[f'{k}_{idx + 1}'] = item
-                        field_mapping[f'{k}_{idx + 1}'] = global_cef_mapping[k]['contains']
+                    # enumerate contains types up to 50 and non contains types up to 10
+                    if global_cef_mapping.get(k) and global_cef_mapping[k]['contains']:
+                        for idx, item in enumerate(v[:25]):
+                            sub_dictionary[f'{k}_{idx + 1}'] = item
+                            field_mapping[f'{k}_{idx + 1}'] = global_cef_mapping[k]['contains']
+                        if len(v) > 25:
+                            phantom.debug("Limiting number of subfields with contains types to 25")
+                    else:
+                        for idx, item in enumerate(v[:10]):
+                            sub_dictionary[f'{k}_{idx + 1}'] = item
+                        if len(v) > 10:
+                            phantom.debug("Limiting number of subfields without contains types to 10")
                     artifact_json.pop(k)
                     artifact_json.update(sub_dictionary)
-                else:
-                    artifact_json[k] = ", ".join(flatten(v))
 
         # Make _time easier to read
         if artifact_json.get('_time'):
