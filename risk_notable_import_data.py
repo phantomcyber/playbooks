@@ -70,7 +70,7 @@ def run_risk_rule_query(action=None, success=None, container=None, results=None,
 
     query_formatted_string = phantom.format(
         container=container,
-        template="""| from datamodel:Risk \n| search risk_object=\"{0}\" \n| where _time>={1} AND _time<={2}  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats count as event_count sum(calculated_risk_score) as total_risk_score earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type""",
+        template=""" datamodel:Risk \n| search risk_object=\"{0}\" \n| where _time>={1} AND _time<={2}  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats count as event_count sum(calculated_risk_score) as total_risk_score earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type""",
         parameters=[
             "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
             "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
@@ -87,7 +87,7 @@ def run_risk_rule_query(action=None, success=None, container=None, results=None,
     if query_formatted_string is not None:
         parameters.append({
             "query": query_formatted_string,
-            "command": "search",
+            "command": "| from ",
         })
 
     ################################################################################
@@ -464,20 +464,23 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
         for k,v in temp_dictionary.items():
             if isinstance(v, list):
                     sub_dictionary = {}
-                    # enumerate contains types up to 50 and non contains types up to 10
+                    # Enumerate items in the globval cef mapping.
+                    # Up to 25 for contains types up to 10 for non contains types.
                     if global_cef_mapping.get(k) and global_cef_mapping[k]['contains']:
                         for idx, item in enumerate(v[:25]):
                             sub_dictionary[f'{k}_{idx + 1}'] = item
                             field_mapping[f'{k}_{idx + 1}'] = global_cef_mapping[k]['contains']
                         if len(v) > 25:
                             phantom.debug("Limiting number of subfields with contains types to 25")
-                    else:
+                        artifact_json.pop(k)
+                        artifact_json.update(sub_dictionary)
+                    elif global_cef_mapping.get(k):
                         for idx, item in enumerate(v[:10]):
                             sub_dictionary[f'{k}_{idx + 1}'] = item
                         if len(v) > 10:
                             phantom.debug("Limiting number of subfields without contains types to 10")
-                    artifact_json.pop(k)
-                    artifact_json.update(sub_dictionary)
+                        artifact_json.pop(k)
+                        artifact_json.update(sub_dictionary)
 
         # Make _time easier to read
         if artifact_json.get('_time'):
