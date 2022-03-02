@@ -1,11 +1,10 @@
-def artifact_update(artifact_id=None, name=None, description=None, label=None, severity=None, cef_field=None, cef_value=None, cef_data_type=None, tags=None, input_json=None, **kwargs):
+def artifact_update(artifact_id=None, name=None, label=None, severity=None, cef_field=None, cef_value=None, cef_data_type=None, tags=None, input_json=None, **kwargs):
     """
     Update an artifact with the specified attributes. All parameters are optional, except that cef_field and cef_value must both be provided if one is provided. Supports all fields available in /rest/artifact. Add any unlisted inputs as dictionary keys in input_json. Unsupported keys will automatically be dropped.
     
     Args:
         artifact_id (CEF type: phantom artifact id): ID of the artifact to update, which is required.
         name: Change the name of the artifact.
-        description: Change the description of the artifact
         label: Change the label of the artifact.
         severity: Change the severity of the artifact. Typically this is either "High", "Medium", or "Low".
         cef_field: The name of the CEF field to populate in the artifact, such as "destinationAddress" or "sourceDnsDomain". Required only if cef_value is provided.
@@ -21,19 +20,30 @@ def artifact_update(artifact_id=None, name=None, description=None, label=None, s
     import json
     import phantom.rules as phantom
     
-    updated_artifact = {}
     outputs = {}
-    
+    json_dict = None
+    valid_keys = [
+        'artifact_type', 'cef', 'cef_data', 'cef_types', 'field_mapping', 
+        'data', 'end_time', 'has_note', 'label', 'name', 'owner_id', 
+        'raw_data', 'run_automation', 'severity','start_time', 'tags', 'type'
+    ]
     if not isinstance(artifact_id, int):
         raise TypeError("artifact_id is required")
     
     rest_artifact = phantom.build_phantom_rest_url('artifact', artifact_id)
-    
-    updated_artifact['name'] = name if name else 'artifact'
-    updated_artifact['label'] = label if label else 'events'
-    updated_artifact['severity'] = severity if severity else 'Medium'
-    updated_artifact['tags'] = tags.replace(" ", "").split(",") if tags else None
-    updated_artifact['description'] = description if description else None
+    updated_artifact = phantom.requests.get(rest_artifact, verify=False).json()
+    if updated_artifact.get('failed'):
+        raise RuntimeError(f"GET /rest/artifact/{artifact_id} failed, {updated_artifact.get('message')}")
+        
+    if name:
+        updated_artifact['name'] = name
+    if label:
+        updated_artifact['label'] = label
+    if severity:
+        updated_artifact['severity'] = severity 
+    if tags:
+        updated_artifact['tags'] = updated_artifact['tags'] + tags.replace(" ", "").split(",")
+        updated_artifact['tags'] = list(set(updated_artifact['tags']))
 
     # validate that if cef_field or cef_value is provided, the other is also provided
     if (cef_field and not cef_value) or (cef_value and not cef_field):
@@ -41,9 +51,9 @@ def artifact_update(artifact_id=None, name=None, description=None, label=None, s
 
     # cef_data should be formatted {cef_field: cef_value}
     if cef_field:
-        updated_artifact['cef'] = {cef_field: cef_value}
+        updated_artifact['cef'].update({cef_field: cef_value})
         if cef_data_type and isinstance(cef_data_type, str):
-            updated_artifact['cef_types'] = {cef_field: [cef_data_type]}
+            updated_artifact['cef_types'].update({cef_field: [cef_data_type]})
     
     if input_json:
         # ensure valid input_json
@@ -57,21 +67,24 @@ def artifact_update(artifact_id=None, name=None, description=None, label=None, s
     if json_dict:
         # Merge dictionaries, using the value from json_dict if there are any conflicting keys
         for json_key in json_dict:
-            # translate keys supported in phantom.add_artifact() to their corresponding values in /rest/artifact
-            if json_key == 'container':
-                updated_artifact['container_id'] = json_dict[json_key]
-            elif json_key == 'raw_data':
-                updated_artifact['data'] = json_dict[json_key]
-            elif json_key == 'cef_data':
-                updated_artifact['cef'] = json_dict[json_key]
-            elif json_key == 'identifier':
-                updated_artifact['source_data_identifier'] = json_dict[json_key]      
-            elif json_key == 'artifact_type':
-                updated_artifact['type'] = json_dict[json_key]
-            elif json_key == 'field_mapping':
-                updated_artifact['cef_types'] = json_dict[json_key]
-            elif json_key != 'trace':
-                updated_artifact[json_key] = json_dict[json_key]
+            if json_key in valid_keys:
+                # translate keys supported in phantom.add_artifact() to their corresponding values in /rest/artifact
+                if json_key == 'raw_data':
+                    updated_artifact['data'].update(json_dict[json_key])
+                elif json_key == 'cef_data':
+                    updated_artifact['cef'].update(json_dict[json_key])
+                elif json_key == 'artifact_type':
+                    updated_artifact['type'] = json_dict[json_key]
+                elif json_key == 'field_mapping':
+                    updated_artifact['cef_types'].update(json_dict[json_key])
+                else:
+                    if isinstance(updated_artifact[json_key], dict):
+                        updated_artifact[json_key].update(json_dict[json_key])
+                    elif isinstance(updated_artifact[json_key], list):
+                        updated_artifact[json_key] = updated_artifact[json_key] + json_dict[json_key]
+                        updated_artifact[json_key] = list(set(updated_artifact[json_key]))
+                    else:
+                        updated_artifact[json_key] = json_dict[json_key]
             else:
                 phantom.debug(f"Unsupported key: '{json_key}'")
     
@@ -81,6 +94,7 @@ def artifact_update(artifact_id=None, name=None, description=None, label=None, s
     if not response_json.get('success'):
         raise RuntimeError("POST /rest/artifact failed")
     else:
+        phantom.debug(response_json)
         outputs['artifact_id'] = response_json['id']
 
     # Return a JSON-serializable object
