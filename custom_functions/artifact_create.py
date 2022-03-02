@@ -21,6 +21,13 @@ def artifact_create(container=None, name=None, label=None, severity=None, cef_fi
     import json
     import phantom.rules as phantom
     
+    valid_keys = [
+        'artifact_type', 'cef', 'cef_data', 'cef_types', 'container', 'container_id',  
+        'field_mapping', 'data', 'description', 'end_time', 'has_note', 'identifier', 
+        'ingest_app', 'ingest_app_id', 'kill_chain', 'label', 'name', 'owner_id', 
+        'parent_container', 'parent_artifact', 'raw_data', 'run_automation', 'severity',
+        'source_data_identifier', 'start_time', 'tags', 'type'
+    ]
     new_artifact = {}
     json_dict = None
     rest_artifact = phantom.build_phantom_rest_url('artifact')
@@ -73,21 +80,24 @@ def artifact_create(container=None, name=None, label=None, severity=None, cef_fi
     if json_dict:
         # Merge dictionaries, using the value from json_dict if there are any conflicting keys
         for json_key in json_dict:
-            # translate keys supported in phantom.add_artifact() to their corresponding values in /rest/artifact
-            if json_key == 'container':
-                new_artifact['container_id'] = json_dict[json_key]
-            elif json_key == 'raw_data':
-                new_artifact['data'] = json_dict[json_key]
-            elif json_key == 'cef_data':
-                new_artifact['cef'] = json_dict[json_key]
-            elif json_key == 'identifier':
-                new_artifact['source_data_identifier'] = json_dict[json_key]      
-            elif json_key == 'artifact_type':
-                new_artifact['type'] = json_dict[json_key]
-            elif json_key == 'field_mapping':
-                new_artifact['cef_types'] = json_dict[json_key]
-            elif json_key != 'trace':
-                new_artifact[json_key] = json_dict[json_key]
+            if json_key in valid_keys:
+                # translate keys supported in phantom.add_artifact() to their corresponding values in /rest/artifact
+                if json_key == 'container':
+                    new_artifact['container_id'] = json_dict[json_key]
+                elif json_key == 'raw_data':
+                    new_artifact['data'] = json_dict[json_key]
+                elif json_key == 'cef_data':
+                    new_artifact['cef'] = json_dict[json_key]
+                elif json_key == 'identifier':
+                    new_artifact['source_data_identifier'] = json_dict[json_key]
+                elif json_key == 'ingest_app':
+                    new_artifact['ingest_app_id'] = json_dict[json_key]
+                elif json_key == 'artifact_type':
+                    new_artifact['type'] = json_dict[json_key]
+                elif json_key == 'field_mapping':
+                    new_artifact['cef_types'] = json_dict[json_key]
+                else:
+                    new_artifact[json_key] = json_dict[json_key]
             else:
                 phantom.debug(f"Unsupported key: '{json_key}'")
                 
