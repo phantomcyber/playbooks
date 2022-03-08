@@ -24,7 +24,7 @@ def artifact_update(artifact_id=None, name=None, label=None, severity=None, cef_
     json_dict = None
     valid_keys = [
         'artifact_type', 'cef', 'cef_data', 'cef_types', 'field_mapping', 
-        'data', 'end_time', 'has_note', 'label', 'name', 'owner_id', 
+        'data', 'end_time', 'label', 'name', 'owner_id', 
         'raw_data', 'run_automation', 'severity','start_time', 'tags', 'type'
     ]
     if not isinstance(artifact_id, int):
