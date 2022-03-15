@@ -93,16 +93,16 @@ def indicator_collect(container=None, artifact_ids_include=None, indicator_types
             artifact_ids_include = json.loads(artifact_ids_include)
         elif isinstance(artifact_ids_include, str):
             artifact_ids_include = artifact_ids_include.replace(' ','').split(',')
+        elif isinstance(artifact_ids_include, int):
+            artifact_ids_include = [artifact_ids_include]
         
         # Check validity of list
-        if not isinstance(artifact_ids_include, list) and not isinstance(artifact_ids_include, int):
-            raise TypeError(
-                f"Invalid artifact_ids_include entered: '{artifact_ids_include}'. Must be one of: json seriablize, comma separated, or an integer."
-            )
-        elif isinstance(artifact_ids_include, list) and not check_numeric_list(artifact_ids_include):
+        if isinstance(artifact_ids_include, list) and not check_numeric_list(artifact_ids_include):
             raise ValueError(
                 f"Invalid artifact_ids_include entered: '{artifact_ids_include}'. Must be a list of integers."
             )
+            
+        artifact_ids_include = [int(art_id) for art_id in artifact_ids_include]
         
     
     # fetch all artifacts in the container
