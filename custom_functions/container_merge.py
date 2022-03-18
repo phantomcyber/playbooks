@@ -37,7 +37,7 @@ def container_merge(target_container=None, container_list=None, workbook=None, c
     
     # Check if container_list input is a list of IDs
     if isinstance(container_list, str):
-        container_list = container_list.replace('[','').replace(']','').split(',')
+        container_list = container_list.replace('[','').replace(']','').replace(' ','').split(',')
         if not check_numeric_list(container_list):
             raise TypeError(f"container_list '{container_list}' is not a list of integers")
     elif isinstance(container_list, list):
