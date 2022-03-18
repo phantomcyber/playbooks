@@ -25,13 +25,24 @@ def indicator_collect(container=None, artifact_ids_include=None, indicator_types
     ############################ Custom Code Goes Below This Line #################################
     import json
     import phantom.rules as phantom
-
+    from hashlib import sha256
+    
     outputs = {'all_indicators': []}
     
-    def get_indicator_json(value):
-        params = {'indicator_value': value, "_special_contains": True, 'page_size': 1}
-        indicator_data = phantom.requests.get(uri=phantom.build_phantom_rest_url('indicator_by_value'), params=params, verify=False)
-        return indicator_data.json() if indicator_data.status_code == 200 else {}
+    def grouper(seq, size):
+        return (seq[pos:pos + size] for pos in range(0, len(seq), size))
+    
+    def get_indicator_json(value_list):
+        indicator_url = phantom.build_phantom_rest_url('indicator') + '?page_size=0&timerange=all'
+        hashed_list = [sha256(item.encode('utf-8')).hexdigest() for item in value_list]
+        indicator_dictionary = {}
+        for group in grouper(hashed_list, 100):
+            query_url = indicator_url + f'&_filter_value_hash__in={group}'
+            indicator_response = phantom.requests.get(query_url, verify=False)
+            indicator_json = indicator_response.json() if indicator_response.status_code == 200 else {}
+            for data in indicator_json.get('data', []):
+                indicator_dictionary[data['value_hash']] = data
+        return indicator_dictionary
     
     def check_numeric_list(input_list):
         return (all(isinstance(x, int) for x in input_list) or all(x.isnumeric() for x in input_list))
@@ -61,16 +72,14 @@ def indicator_collect(container=None, artifact_ids_include=None, indicator_types
         raise TypeError("The input 'container' is neither a container dictionary nor a valid container id, so it cannot be used")
 
     if indicator_types_include:
-        indicator_types_include = [item.strip() for item in indicator_types_include.split(',')]
+        indicator_types_include = [item.strip(' ') for item in indicator_types_include.split(',')]
     if indicator_types_exclude:
-        indicator_types_exclude = [item.strip() for item in indicator_types_exclude.split(',')]
+        indicator_types_exclude = [item.strip(' ') for item in indicator_types_exclude.split(',')]
     if indicator_tags_include:
-        indicator_tags_include = [item.strip() for item in indicator_tags_include.split(',')]
+        indicator_tags_include = [item.strip(' ').replace(' ', '_') for item in indicator_tags_include.split(',')]
     if indicator_tags_exclude:
-        indicator_tags_exclude = [item.strip() for item in indicator_tags_exclude.split(',')]
-        
-    global_cef_mapping = phantom.requests.get(uri=phantom.build_phantom_rest_url('cef_metadata'), verify=False).json()['cef']
-    
+        indicator_tags_exclude = [item.strip(' ').replace(' ', '_') for item in indicator_tags_exclude.split(',')]
+
     if artifact_ids_include:
         # Try to convert to a valid list
         if isinstance(artifact_ids_include, str) and artifact_ids_include.startswith('[') and artifact_ids_include.endswith('['):
@@ -88,9 +97,11 @@ def indicator_collect(container=None, artifact_ids_include=None, indicator_types
             
         artifact_ids_include = [int(art_id) for art_id in artifact_ids_include]
         
-    
+    indicator_list = []
     # fetch all artifacts in the container
-    artifacts = phantom.requests.get(uri=phantom.build_phantom_rest_url('container', container_id, 'artifacts'), params={'page_size': 0}, verify=False).json()['data']
+    container_artifact_url = phantom.build_phantom_rest_url('artifact')
+    container_artifact_url += f'?_filter_container={container_id}&page_size=0&include_all_cef_types'
+    artifacts = phantom.requests.get(container_artifact_url, verify=False).json()['data']
     
     for artifact in artifacts:
         artifact_id = artifact['id']
@@ -98,26 +109,30 @@ def indicator_collect(container=None, artifact_ids_include=None, indicator_types
             
             for cef_key in artifact['cef']:
                 cef_value = artifact['cef'][cef_key]
-                data_types = []
-                if artifact['cef_types'].get(cef_key):
-                    data_types += artifact['cef_types'][cef_key]
-                elif global_cef_mapping.get(cef_key):
-                    data_types += global_cef_mapping[cef_key]['contains']
+                data_types = artifact['cef_types'].get(cef_key, [])
 
                 # get indicator details if valid type    
                 if (
                     is_valid_indicator(indicator_types_exclude, data_types, check_type='exclude')
                     and is_valid_indicator(indicator_types_include, data_types, check_type='include')
                 ):
-                    indicator_json = get_indicator_json(cef_value)
-                    tags = [item for item in indicator_json.get('tags', []) if item]
+                    indicator_list.append(cef_value)
+    
+    indicator_dictionary = get_indicator_json(indicator_list)
+    for artifact in artifacts:
+        artifact_id = artifact['id']
+        if (artifact_ids_include and artifact_id in artifact_ids_include) or not artifact_ids_include:
+            for cef_key in artifact['cef']:
 
-                    # send to output if also valid tags
+                cef_value = artifact['cef'][cef_key]
+                cef_value_hash = sha256(str(cef_value).encode('utf-8')).hexdigest()
+                data_types = artifact['cef_types'].get(cef_key, [])
+                if indicator_dictionary.get(cef_value_hash):
+                    tags = indicator_dictionary[cef_value_hash]['tags']
                     if (
                         is_valid_indicator(indicator_tags_exclude, tags, check_type='exclude')
                         and is_valid_indicator(indicator_tags_include, tags, check_type='include')
                     ):
-                        # store the value in all_indicators and a list of values for each data type
                         outputs['all_indicators'].append({
                             'cef_key': cef_key, 
                             'cef_value': cef_value, 
@@ -133,7 +148,7 @@ def indicator_collect(container=None, artifact_ids_include=None, indicator_types
                             outputs[data_type_escaped].append(
                                 {'cef_key': cef_key, 'cef_value': cef_value, 'artifact_id': artifact_id, 'tags': tags}
                             )
-                                
+                                        
     if outputs.get('all_indicators'):                        
         # sort the all_indicators outputs to make them more consistent
         outputs['all_indicators'].sort(key=lambda indicator: str(indicator['cef_value']))
