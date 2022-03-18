@@ -4,7 +4,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
     
     Args:
         value_list (CEF type: *): An indicator value to search on, such as a file hash or IP address. To search on all indicator values in the container, use "*".
-        minimum_match_count (CEF type: *): The minimum number of values from the value_list parameter that must match with related containers. Supports an integer or the string 'all'. Adding 'all' will set the minimum_match_count to the length of the provided value_list. If no match count provided, this will default to 1.
+        minimum_match_count (CEF type: *): The minimum number of values from the value_list parameter that must match with related containers. Supports an integer or the string 'all'. Adding 'all' will set the minimum_match_count to the length of the number of unique values in the value_list. If no match count provided, this will default to 1.
         container (CEF type: phantom container id): The container to run indicator analysis against. Supports container object or container_id. This container will also be excluded from the results for related_containers.
         earliest_time: Optional modifier to only consider related containers within a time window. Default is -30d.  Supports year (y), month (m), day (d), hour (h), or minute (m)  Custom function will always set the earliest container window based on the input container "create_time".
         filter_status: Optional comma-separated list of statuses to filter on. Only containers that have statuses matching an item in this list will be included.
@@ -228,7 +228,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
             filter_in_case=filter_in_case
         )
     else:
-        phantom.debug(f"No related containers found found for provided values: '{value_list}'")
+        phantom.debug(f"No related containers found for '{minimum_match_count}' minimum matches out of the provided values: '{value_list}'")
         
     # Return a JSON-serializable object
     assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
