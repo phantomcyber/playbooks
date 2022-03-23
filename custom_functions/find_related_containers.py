@@ -171,13 +171,17 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
         response_data = phantom.requests.get(uri=url, verify=False).json()
         for data in response_data.get('data', []):
             for k,v in data['cef'].items():
-                new_value_list.add(str(v))
+                if isinstance(v, str) or isinstance(v, bool) or isinstance(v, int) or isinstance(v, float):
+                     new_value_list.add(str(v))
         value_list = list(new_value_list)
     elif isinstance(value_list, list):
-        # dedup value_list
-        value_list = list(set(value_list))
-    elif isinstance(value_list, str):
-        value_list = [value_list]
+        value_set = set()
+        for item in value_list:
+            if isinstance(item, str) or isinstance(item, bool) or isinstance(item, int) or isinstance(item, float):
+                value_set.add(str(item))
+        value_list = list(value_set)
+    elif isinstance(item, str) or isinstance(item, bool) or isinstance(item, int) or isinstance(item, float):
+        value_list = [str(value_list)]
     else:
         raise TypeError(f"Invalid input for value_list: '{value_list}'")
     
