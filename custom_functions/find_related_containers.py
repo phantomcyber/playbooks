@@ -119,15 +119,16 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
                 indicator_dictionary[indicator_hash]['container_ids'].append(container_object['container_id'])
         return indicator_dictionary
     
-    def match_indicator_per_container(indicator_dictionary) -> dict:
+    def match_indicator_per_container(indicator_dictionary, exclude_container) -> dict:
         # Create a new dictionary filled with container_ids as keys and the set of related indicators as values
         container_dictionary = {}
         for dict_object in indicator_dictionary.values():
             for container_id in dict_object['container_ids']:
-                if not container_dictionary.get(str(container_id)):
-                    container_dictionary[str(container_id)] = {'indicator_ids': {dict_object['indicator_id']}}
-                else:
-                    container_dictionary[str(container_id)]['indicator_ids'].add(dict_object['indicator_id'])
+                if container_id != exclude_container:
+                    if not container_dictionary.get(str(container_id)):
+                        container_dictionary[str(container_id)] = {'indicator_ids': {dict_object['indicator_id']}}
+                    else:
+                        container_dictionary[str(container_id)]['indicator_ids'].add(dict_object['indicator_id'])
         return container_dictionary
     
     def test_minimum_match(minimum_match_count, value_list) -> None:
@@ -139,6 +140,10 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
             )
         return
     
+    
+    ## Start Input Checking ##
+    ## -------------------- ##
+    
     # Ensure valid time modifier
     if earliest_time:
         # convert user-provided input to seconds
@@ -148,7 +153,9 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
             integer, char = (re.findall(pattern, earliest_time)[0])
             time_in_seconds = int(integer) * char_lookup[char.lower()]
         else:
-            raise RuntimeError(f'earliest_time string "{earliest_time}" is incorrectly formatted. Format is -<int><time> where <int> is an integer and <time> is y, mon, w, d, h, or m. Example: "-1h"')
+            raise RuntimeError(
+                f"earliest_time string '{earliest_time}' is incorrectly formatted. "
+                f"Format is -<int><time> where <int> is an integer and <time> is y, mon, w, d, h, or m. Example: '-1h'")
     else:
         # default 30 days in seconds
         time_in_seconds = 2592000
@@ -161,14 +168,11 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
     else:
         raise TypeError("The input 'container' is neither a container dictionary nor an int, so it cannot be used")
     
-    ## Start Input Checking ##
-    ## -------------------- ##
-
     # If value list is equal to * then proceed to grab all indicator records for the current container
     if value_list and ((isinstance(value_list, list) and "*" in value_list) or (isinstance(value_list, str) and value_list == "*")):
         new_value_list = set()
         url = phantom.build_phantom_rest_url('container', current_container, 'artifacts') + '?page_size=0'
-        response_data = phantom.requests.get(uri=url, verify=False).json()
+        response_data = phantom.requests.get(url, verify=False).json()
         for data in response_data.get('data', []):
             for k,v in data['cef'].items():
                 if isinstance(v, str) or isinstance(v, bool) or isinstance(v, int) or isinstance(v, float):
@@ -217,7 +221,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
         return outputs
     
     add_common_containers(indicator_dictionary)
-    container_dict = match_indicator_per_container(indicator_dictionary)
+    container_dict = match_indicator_per_container(indicator_dictionary, current_container)
     for container_id in list(container_dict.keys()):
         if len(container_dict[container_id]['indicator_ids'].intersection(indicator_id_set)) < minimum_match_count:
             del(container_dict[container_id])
