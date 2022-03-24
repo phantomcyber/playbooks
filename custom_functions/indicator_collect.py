@@ -83,7 +83,7 @@ def indicator_collect(container=None, artifact_ids_include=None, indicator_types
 
     if artifact_ids_include:
         # Try to convert to a valid list
-        if isinstance(artifact_ids_include, str) and artifact_ids_include.startswith('[') and artifact_ids_include.endswith('['):
+        if isinstance(artifact_ids_include, str) and artifact_ids_include.startswith('[') and artifact_ids_include.endswith(']'):
             artifact_ids_include = json.loads(artifact_ids_include)
         elif isinstance(artifact_ids_include, str):
             artifact_ids_include = artifact_ids_include.replace(' ','').split(',')
