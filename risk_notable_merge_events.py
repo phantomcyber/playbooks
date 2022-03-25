@@ -39,11 +39,12 @@ def workbook_list(action=None, success=None, container=None, results=None, handl
 def combine_related_fields(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("combine_related_fields() called")
 
-    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.risk_object","artifact:*.cef.threat_object","artifact:*.cef.description","artifact:*.id"], scope="all")
+    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.risk_object","artifact:*.cef.threat_object","artifact:*.cef.description","artifact:*.data.*.threat_object","artifact:*.id"], scope="all")
 
     container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
     container_artifact_cef_item_1 = [item[1] for item in container_artifact_data]
     container_artifact_cef_item_2 = [item[2] for item in container_artifact_data]
+    container_artifact_header_item_3 = [item[3] for item in container_artifact_data]
 
     parameters = []
 
@@ -51,7 +52,7 @@ def combine_related_fields(action=None, success=None, container=None, results=No
         "input_1": container_artifact_cef_item_0,
         "input_2": container_artifact_cef_item_1,
         "input_3": container_artifact_cef_item_2,
-        "input_4": None,
+        "input_4": container_artifact_header_item_3,
         "input_5": None,
         "input_6": None,
         "input_7": None,
@@ -86,14 +87,14 @@ def find_related_events(action=None, success=None, container=None, results=None,
     parameters = []
 
     parameters.append({
-        "container": id_value,
         "value_list": combine_related_fields_data___item,
-        "filter_label": None,
+        "minimum_match_count": 3,
+        "container": id_value,
         "earliest_time": "-30d",
         "filter_status": None,
-        "filter_in_case": None,
+        "filter_label": None,
         "filter_severity": None,
-        "minimum_match_count": 3,
+        "filter_in_case": None,
     })
 
     ################################################################################
