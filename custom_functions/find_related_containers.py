@@ -184,7 +184,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
             if isinstance(item, str) or isinstance(item, bool) or isinstance(item, int) or isinstance(item, float):
                 value_set.add(str(item))
         value_list = list(value_set)
-    elif isinstance(item, str) or isinstance(item, bool) or isinstance(item, int) or isinstance(item, float):
+    elif isinstance(value_list, str) or isinstance(value_list, bool) or isinstance(value_list, int) or isinstance(value_list, float):
         value_list = [str(value_list)]
     else:
         raise TypeError(f"Invalid input for value_list: '{value_list}'")
