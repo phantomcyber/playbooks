@@ -70,7 +70,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
                 if k == 'filter_severity':
                     container_url += f'&_filter_severity__in={v}'
                 if k == 'filter_in_case':
-                    container_url += f'&_filter_in_case="{v.lower()}"'
+                    container_url += f'&_filter_in_case="{str(v).lower()}"'
                     
                     
         container_id_list = list(container_dict.keys())
