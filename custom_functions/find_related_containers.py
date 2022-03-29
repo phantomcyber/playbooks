@@ -131,10 +131,10 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
         return container_dictionary
     
     def test_minimum_match(minimum_match_count, value_list) -> None:
-        # Fail early if minimum_match_count excees the number of provided values
+        # Fail early if minimum_match_count exceeds the number of provided values
         if isinstance(minimum_match_count, int) and minimum_match_count > len(value_list):
             raise RuntimeError(
-                f"The provided minimum_match_count '{minimum_match_count}' excees the number of unique values from the event - '{len(value_list)}'. "
+                f"The provided minimum_match_count '{minimum_match_count}' exceeds the number of unique values from the event - '{len(value_list)}'. "
                 f"Try providing additional values in the value_list, decreasing the minimum_match_count, or entering 'all' in minimum_match_count."
             )
         return
