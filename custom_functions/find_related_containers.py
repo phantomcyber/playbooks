@@ -70,8 +70,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
                 if k == 'filter_severity':
                     container_url += f'&_filter_severity__in={v}'
                 if k == 'filter_in_case':
-                    container_url += f'&_filter_in_case="{str(v).lower()}"'
-                    
+                    container_url += f'&_filter_in_case="{str(v).lower()}"'              
                     
         container_id_list = list(container_dict.keys())
         for group in grouper(container_id_list, 100):
@@ -209,8 +208,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
         filter_in_case = False
     
     ## ------------------- ##
-    ## End Endput Checking ##
-
+    ## End Input Checking ##
 
     indicator_dictionary, indicator_id_set = fetch_indicators(value_list)
 
