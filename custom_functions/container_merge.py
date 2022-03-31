@@ -43,6 +43,8 @@ def container_merge(target_container=None, container_list=None, workbook=None, c
     elif isinstance(container_list, list):
         if not check_numeric_list(container_list):
             raise TypeError(f"container_list '{container_list}' is not a list of integers")
+    elif isinstance(container_list, int):
+        container_list = [container_list]
     else:
         raise TypeError(f"container_list '{container_list}' is not a list of integers")
         
@@ -93,11 +95,11 @@ def container_merge(target_container=None, container_list=None, workbook=None, c
             raise RuntimeError(f"Error occurred during workbook add for workbook '{workbook_name}'")
             
     ## Check if current phase is set. If not, set the current phase to the first available phase to avoid artifact merge error ##
-    if not container.get('current_phase_id'):
+    if not container.get('current_phase_id') and not container.get('current_phase'):
         phantom.debug("No current phase - setting first available phase to current")
         workbook_phase_url = phantom.build_phantom_rest_url('workbook_phase') + "?_filter_container={}".format(container['id'])
         request_json = phantom.requests.get(workbook_phase_url, verify=False).json()
-        update_data = {'current_phase_id': request_json['data'][0]['id']}
+        update_data = {'current_phase': request_json['data'][0]['id']}
         phantom.update(container, update_data)
     
     child_container_list = []
