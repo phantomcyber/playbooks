@@ -11,7 +11,7 @@ def artifact_update(artifact_id=None, name=None, label=None, severity=None, cef_
         cef_value (CEF type: *): The value of the CEF field to populate in the artifact, such as the IP address, domain name, or file hash. Required only if cef_field is provided.
         cef_data_type: The CEF data type of the data in cef_value. For example, this could be "ip", "hash", or "domain". Optional, but only operational if cef_field is provided.
         tags: A comma-separated list of tags to apply to the artifact, which is optional.
-        overwrite_tags: Optional input. Either "true" or "false" with default as "false". If set to "true", existing tags on the indicator record will be replaced by the provided input. If set to "false", the new tags will be appended to the existing indicator tags.
+        overwrite_tags: Optional input. Either True or False with default as False. If set to True, existing tags on the indicator record will be replaced by the provided input. If set to False, the new tags will be appended to the existing indicator tags.
         input_json: Optional parameter to modify any extra attributes of the artifact. Input_json will be merged with other inputs. In the event of a conflict, input_json will take precedence.
     
     Returns a JSON-serializable object that implements the configured data paths:
