@@ -31,7 +31,23 @@ def workbook_list(action=None, success=None, container=None, results=None, handl
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="community/workbook_list", parameters=parameters, name="workbook_list", callback=combine_related_fields)
+    phantom.custom_function(custom_function="community/workbook_list", parameters=parameters, name="workbook_list", callback=join_combine_related_fields)
+
+    return
+
+
+def join_combine_related_fields(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("join_combine_related_fields() called")
+
+    # if the joined function has already been called, do nothing
+    if phantom.get_run_data(key="join_combine_related_fields_called"):
+        return
+
+    # save the state that the joined function has now been called
+    phantom.save_run_data(key="join_combine_related_fields_called", value="combine_related_fields")
+
+    # call connected block "combine_related_fields"
+    combine_related_fields(container=container, handle=handle)
 
     return
 
@@ -39,12 +55,13 @@ def workbook_list(action=None, success=None, container=None, results=None, handl
 def combine_related_fields(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("combine_related_fields() called")
 
-    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.risk_object","artifact:*.cef.threat_object","artifact:*.cef.description","artifact:*.data.*.threat_object","artifact:*.id"], scope="all")
+    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.risk_object","artifact:*.cef.threat_object","artifact:*.cef.description","artifact:*.id"], scope="all")
+    deduplicate_threat_objects_data = phantom.collect2(container=container, datapath=["deduplicate_threat_objects:custom_function_result.data.*.item"], scope="all")
 
     container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
     container_artifact_cef_item_1 = [item[1] for item in container_artifact_data]
     container_artifact_cef_item_2 = [item[2] for item in container_artifact_data]
-    container_artifact_header_item_3 = [item[3] for item in container_artifact_data]
+    deduplicate_threat_objects_data___item = [item[0] for item in deduplicate_threat_objects_data]
 
     parameters = []
 
@@ -52,7 +69,7 @@ def combine_related_fields(action=None, success=None, container=None, results=No
         "input_1": container_artifact_cef_item_0,
         "input_2": container_artifact_cef_item_1,
         "input_3": container_artifact_cef_item_2,
-        "input_4": container_artifact_header_item_3,
+        "input_4": deduplicate_threat_objects_data___item,
         "input_5": None,
         "input_6": None,
         "input_7": None,
@@ -64,9 +81,7 @@ def combine_related_fields(action=None, success=None, container=None, results=No
     ################################################################################
     ## Custom Code Start
     ################################################################################
-
-    # Write your custom code here...
-
+    
     ################################################################################
     ## Custom Code End
     ################################################################################
@@ -87,14 +102,14 @@ def find_related_events(action=None, success=None, container=None, results=None,
     parameters = []
 
     parameters.append({
-        "value_list": combine_related_fields_data___item,
-        "minimum_match_count": 3,
         "container": id_value,
+        "value_list": combine_related_fields_data___item,
+        "filter_label": None,
         "earliest_time": "-30d",
         "filter_status": None,
-        "filter_label": None,
-        "filter_severity": None,
         "filter_in_case": None,
+        "filter_severity": None,
+        "minimum_match_count": 3,
     })
 
     ################################################################################
@@ -301,7 +316,7 @@ def process_responses(action=None, success=None, container=None, results=None, h
     ## Custom Code Start
     ################################################################################
     
-    process_responses__should_merge = "false"
+    process_responses__should_merge = False
     responses = event_details_summary_responses[0]
     # Grab run_key and convert to list
     container_list = json.loads(phantom.get_run_data(key='container_list'))
@@ -310,7 +325,7 @@ def process_responses(action=None, success=None, container=None, results=None, h
         for container_id, response in zip(container_list, responses):
             if response.lower() == 'merge into case':
                 process_responses__container_list.append(container_id)
-                process_responses__should_merge = "true"
+                process_responses__should_merge = True
 
     ################################################################################
     ## Custom Code End
@@ -923,7 +938,7 @@ def merge_any_decision(action=None, success=None, container=None, results=None, 
     found_match_1 = phantom.decision(
         container=container,
         conditions=[
-            ["process_responses:custom_function:should_merge", "==", "true"]
+            ["process_responses:custom_function:should_merge", "==", True]
         ])
 
     # call connected blocks if condition 1 matched
@@ -983,6 +998,7 @@ def decision_7(action=None, success=None, container=None, results=None, handle=N
     # call connected blocks if condition 1 matched
     if found_match_1:
         workbook_list(action=action, success=success, container=container, results=results, handle=handle)
+        deduplicate_threat_objects(action=action, success=success, container=container, results=results, handle=handle)
         return
 
     return
@@ -1030,6 +1046,34 @@ def update_notable(action=None, success=None, container=None, results=None, hand
     ################################################################################
 
     phantom.act("update event", parameters=parameters, name="update_notable", assets=["splunk"])
+
+    return
+
+
+def deduplicate_threat_objects(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("deduplicate_threat_objects() called")
+
+    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.data.*.threat_object","artifact:*.id"])
+
+    container_artifact_header_item_0 = [item[0] for item in container_artifact_data]
+
+    parameters = []
+
+    parameters.append({
+        "input_list": container_artifact_header_item_0,
+    })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/list_deduplicate", parameters=parameters, name="deduplicate_threat_objects", callback=join_combine_related_fields)
 
     return
 
