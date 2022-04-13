@@ -58,42 +58,7 @@ def event_id_filter(action=None, success=None, container=None, results=None, han
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        format_risk_query(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
-
-    return
-
-
-def format_risk_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("format_risk_query() called")
-
-    ################################################################################
-    # Formats a query to reach back into the risk index to pull out all the detections 
-    # that led up to the notable triggering. The time tokens contain the earliest 
-    # and latest times found in info_min_time and info_max_time
-    ################################################################################
-
-    template = """index=risk risk_object=\"{0}\"\nearliest=\"{1}\"\nlatest=\"{2}\"  | rex field=source \".*-\\s(?<source>.*)\\s+-\\s+\\w+\\s+-\\s+Rule\" \n| eval risk_message=coalesce(risk_message,source), threat_object=coalesce(threat_object, \"unknown\"), threat_object_type=coalesce(threat_object_type, \"unknown\") \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| stats earliest(_time) as earliest_time latest(_time) as latest_time values(*) as * by source threat_zip risk_message \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" | rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique | fields - annotations* risk_object_* date_* orig_* user_* src_user_* src_* dest_* dest_user_* info_* search_* splunk_* tag* risk_modifier* risk_rule* sourcetype timestamp index next_cron_time timeendpos timestartpos testmode linecount threat_zip | sort + latest_time | `uitime(earliest_time)` \n| `uitime(latest_time)` \n| eval _time=latest_time\n| dedup earliest_time latest_time source threat_object threat_object_type"""
-
-    # parameter list for template variable replacement
-    parameters = [
-        "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
-        "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
-        "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time"
-    ]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.format(container=container, template=template, parameters=parameters, name="format_risk_query", scope="all")
-
-    run_risk_rule_query(container=container)
+        run_risk_rule_query(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -103,20 +68,27 @@ def run_risk_rule_query(action=None, success=None, container=None, results=None,
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
 
+    query_formatted_string = phantom.format(
+        container=container,
+        template=""" datamodel:Risk \n| search risk_object=\"{0}\" risk_object_type=\"{3}\" \n| where _time>={1} AND _time<={2}  | eval risk_event_id = if(isnull(risk_event_id), index + \"_\" + _cd + \"_\" + splunk_server, risk_event_id) | eventstats count by risk_event_id | where count < 2 \n| eval risk_message=coalesce(risk_message,source) \n| eval threat_zip = mvzip(threat_object, threat_object_type) \n| rename annotations.mitre_attack.mitre_technique_id as mitre_technique_id annotations.mitre_attack.mitre_tactic as mitre_tactic annotations.mitre_attack.mitre_technique as mitre_technique \n| fields - annotations* orig_sid orig_rid risk_factor* splunk_server host sourcetype tag threat_object* \n| stats list(risk_event_id) as risk_event_ids list(_time) as original_timestamps count as _event_count sum(calculated_risk_score) as _total_risk_score earliest(_time) as earliest latest(_time) as latest values(*) as * by search_name risk_message \n| where NOT (match(source, \"Splunk\\sSOAR\") AND _total_risk_score<=0) \n| fields mitre* _event_count _total_risk_score original_timestamps threat_zip risk_event_ids threat_object\n    [| rest /services/datamodel/model \n    | search eai:acl.app IN (Splunk_SA_CIM, SA-IdentityManagement, SA-NetworkProtection, SA-ThreatIntelligence, DA-ESS-ThreatIntelligence) \n    | fields description \n    | spath input=description path=objects{{}}.fields{{}}.fieldName \n    | spath input=description path=objects{{}}.calculations{{}}.outputFields{{}}.fieldName \n    | eval fieldNames=mvappend('objects{{}}.fields{{}}.fieldName', 'objects{{}}.calculations{{}}.outputFields{{}}.fieldName') \n    | stats values(fieldNames) as fieldNames \n    | mvexpand fieldNames \n    | regex fieldNames=\"^[_a-z]+$\" \n    | stats values(fieldNames) as search] \n| sort + latest \n| `uitime(earliest)` \n| `uitime(latest)` \n| eval _time=latest \n| rex field=threat_zip \"(?<threat_object>.*)\\,(?<threat_object_type>.*)\" \n| fields - threat_zip""",
+        parameters=[
+            "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object",
+            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_min_time",
+            "filtered-data:event_id_filter:condition_1:artifact:*.cef.info_max_time",
+            "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_object_type"
+        ])
+
     ################################################################################
     # Reaches back into the risk index to pull out all the detections that led up 
     # to the notable firing.
     ################################################################################
 
-    format_risk_query = phantom.get_format_data(name="format_risk_query")
-
     parameters = []
 
-    if format_risk_query is not None:
+    if query_formatted_string is not None:
         parameters.append({
-            "query": format_risk_query,
-            "command": "search",
-            "parse_only": True,
+            "query": query_formatted_string,
+            "command": "| from ",
         })
 
     ################################################################################
@@ -195,14 +167,14 @@ def filter_artifact_score(action=None, success=None, container=None, results=Non
     matched_artifacts_1, matched_results_1 = phantom.condition(
         container=container,
         conditions=[
-            ["artifact:*.cef.risk_score", ">=", 50]
+            ["artifact:*.cef.calculated_risk_score", ">=", 70]
         ],
         name="filter_artifact_score:condition_1",
         scope="all")
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        mark_artifact_evidence(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        artifact_update_1(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -211,7 +183,7 @@ def mark_artifact_evidence(action=None, success=None, container=None, results=No
     phantom.debug("mark_artifact_evidence() called")
 
     id_value = container.get("id", None)
-    filtered_artifact_0_data_filter_artifact_score = phantom.collect2(container=container, datapath=["filtered-data:filter_artifact_score:condition_1:artifact:*.cef.event_id"], scope="all")
+    filtered_artifact_0_data_filter_artifact_score = phantom.collect2(container=container, datapath=["filtered-data:filter_artifact_score:condition_1:artifact:*.id","filtered-data:filter_artifact_score:condition_1:artifact:*.id"], scope="all")
 
     parameters = []
 
@@ -255,13 +227,15 @@ def mitre_format(action=None, success=None, container=None, results=None, handle
     from operator import getitem 
     
     def mitre_sorter(item):
-        tactic_list = ['reconnaissance', 'resource-development', 'initial-access', 'execution', 
-                       'persistence', 'privilege-escalation', 'defense-evasion', 'credential-access', 
-                       'discovery', 'lateral-movement', 'collection', 'command-and-control', 'exfiltration', 'impact']
+        tactic_list = [
+            'reconnaissance', 'resource-development', 'initial-access', 'execution', 
+            'persistence', 'privilege-escalation', 'defense-evasion', 'credential-access', 
+            'discovery', 'lateral-movement', 'collection', 'command-and-control', 
+            'exfiltration', 'impact'
+        ]
         index_map = {v: i for i, v in enumerate(tactic_list)}
         if ',' in item[0]:
             first_item = item[0].split(', ')[1]
-            #first_item = json.loads(item[0])[1]
             return index_map[first_item]
         else:
             return index_map[item[0]]
@@ -271,15 +245,24 @@ def mitre_format(action=None, success=None, container=None, results=None, handle
             'artifact:*.cef.mitre_tactic', 
             'artifact:*.cef.mitre_technique', 
             'artifact:*.cef.mitre_technique_id', 
-            'artifact:*.cef.description'
+            'artifact:*.description'
         ], 
         scope='all'
     )
+    
+    def replace_all(text):
+        char_list = ['[', ']', '"', "'"]
+        for char in char_list:
+            text = text.replace(char, '')
+        return text
 
     mitre_dictionary = {}
     for mitre_tactic, mitre_technique, mitre_technique_id, risk_message in artifact_data:
-        if isinstance(mitre_tactic, list):
-            mitre_tactic = json.dumps(mitre_tactic)
+        
+        mitre_tactic = replace_all(json.dumps(mitre_tactic)) if mitre_tactic else None
+        mitre_technique = replace_all(json.dumps(mitre_technique)) if mitre_technique else None
+        mitre_technique_id = replace_all(json.dumps(mitre_technique_id)) if mitre_technique_id else None
+        
         if mitre_tactic and mitre_tactic not in mitre_dictionary.keys():
             mitre_dictionary[mitre_tactic] = {mitre_technique: {'id': mitre_technique_id, 'risk_message': [risk_message]}}
         elif mitre_tactic and mitre_tactic in mitre_dictionary.keys():
@@ -411,17 +394,13 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
     import re
     
     search_json = run_risk_rule_query_result_item_0[0]
-    
+
     # overwrite parameters
     parameters = []
-
-    # Helper recursive function to flatten nested lists
-    def flatten(input_list):
-        if not input_list:
-            return input_list
-        if isinstance(input_list[0], list):
-            return flatten(input_list[0]) + flatten(input_list[1:])
-        return input_list[:1] + flatten(input_list[1:])
+    
+    cef_metadata_url = phantom.build_phantom_rest_url('cef_metadata')
+    global_cef_mapping = phantom.requests.get(cef_metadata_url, verify=False).json()['cef']
+        
     
     # Declare dictionary for cim to cef translation
     # adjust as needed
@@ -473,68 +452,135 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
     # Iterate through Splunk search results
     for index, artifact_json in enumerate(search_json):
         field_mapping = {}
-        
-        for k,v in artifact_json.items():
+        data = []
+        for key in list(artifact_json.keys()):
             tags = []
             # Swap CIM for CEF values
-            if k.lower() in cim_cef.keys():
-                if k.lower() == 'dest':
+            if cim_cef.get(key.lower()):
+                if key.lower() == 'dest':
                     # if 'dest' matches an IP, use 'dest', otherwise use 'destinationHostName'
-                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', k):
-                        artifact_json[cim_cef[k]] = artifact_json.pop(k)
+                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', key):
+                        artifact_json[cim_cef[key]] = artifact_json.pop(key)
                     else:
-                        artifact_json['destinationHostName'] = artifact_json.pop(k)
-                elif k.lower() == 'src':
+                        artifact_json['destinationHostName'] = artifact_json.pop(key)
+                elif key.lower() == 'src':
                     # if 'src' matches an IP, use 'src', otherwise use 'sourceHostName'
-                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', k):
-                        artifact_json[cim_cef[k]] = artifact_json.pop(k)
+                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', key):
+                        artifact_json[cim_cef[key]] = artifact_json.pop(key)
                     else:
-                        artifact_json['sourceHostName'] = artifact_json.pop(k)
+                        artifact_json['sourceHostName'] = artifact_json.pop(key)
                 else:
-                    artifact_json[cim_cef[k.lower()]] = artifact_json.pop(k)
-                    
-        for k,v in artifact_json.items():
-            if type(v) == list:
-                artifact_json[k] = ", ".join(flatten(v))
-                
-        # Swap risk_message for description
-        if 'risk_message' in artifact_json.keys():
-            artifact_json['description'] = artifact_json.pop('risk_message')
-
+                    artifact_json[cim_cef[key.lower()]] = artifact_json.pop(key)
+        
+        
+        temp_dictionary = artifact_json.copy()
+        for k,v in temp_dictionary.items():
+            if isinstance(v, list) and k not in ['threat_object', 'threat_object_type', 'risk_event_ids', 'original_timestamps']:
+                sub_dictionary = {}
+                # Enumerate items in the globval cef mapping.
+                # Up to 25 for contains types up to 10 for non contains types.
+                if global_cef_mapping.get(k) and global_cef_mapping[k]['contains']:
+                    for idx, item in enumerate(v[:25]):
+                        sub_dictionary[f'{k}_{idx + 1}'] = item
+                        field_mapping[f'{k}_{idx + 1}'] = global_cef_mapping[k]['contains']
+                    if len(v) > 25:
+                        phantom.debug("Limiting number of subfields with contains types to 25")
+                    artifact_json.pop(k)
+                    artifact_json.update(sub_dictionary)
+                elif global_cef_mapping.get(k):
+                    for idx, item in enumerate(v[:10]):
+                        sub_dictionary[f'{k}_{idx + 1}'] = item
+                    if len(v) > 10:
+                        phantom.debug("Limiting number of subfields without contains types to 10")
+                    artifact_json.pop(k)
+                    artifact_json.update(sub_dictionary)
+                else:
+                    artifact_json[k] = str(v)
+        
+        # Add extra data to data attribute of artifact
+        if isinstance(artifact_json.get('threat_object'), list):
+            data.extend([{'threat_object': item} for item in artifact_json.get('threat_object', [])])
+        elif artifact_json.get('threat_object'):
+            data.append({'threat_object': artifact_json['threat_object']})
+        if artifact_json.get('risk_event_ids') and artifact_json.get('original_timestamps'):
+            risk_event_ids = artifact_json['risk_event_ids']
+            original_timestamps = artifact_json['original_timestamps']
+            # Both should be lists so only checking one.
+            # If both aren't lists, something went wrong with the search.
+            # Since risk_event_ids and original timestamps are optional for resetting risk scores, 
+            # this will not error out at this time.
+            if isinstance(risk_event_ids, list) and isinstance(original_timestamps, list):
+                for event_id, timestamp in zip(risk_event_ids, original_timestamps):
+                    data.append({'risk_event': {'id': event_id, 'timestamp': timestamp}})
+                artifact_json.pop('risk_event_ids')
+                artifact_json.pop('original_timestamps')
+            else:
+                data.append({'risk_event': {'id': risk_event_ids, 'timestamp': original_timestamps}})
+            
         # Make _time easier to read
-        if '_time' in artifact_json.keys():
+        if artifact_json.get('_time'):
             timestring = parse(artifact_json['_time'])
             artifact_json['_time'] = "{} {}".format(timestring.date(), timestring.time())
 
         # Add threat_object_type to threat_object field_mapping
-        if 'threat_object' in artifact_json.keys() and 'threat_object_type' in artifact_json.keys():
-            field_mapping['threat_object'] = [artifact_json['threat_object_type']]                  
+        if artifact_json.get('threat_object') and artifact_json.get('threat_object_type'):
+            if isinstance(artifact_json['threat_object'], list) and isinstance(artifact_json['threat_object_type'], list):
+                sub_dictionary = {}
+                for idx, (threat_object, threat_object_type) in enumerate(zip(artifact_json['threat_object'], artifact_json['threat_object_type'])):
+                    # remove unknown threat_objects
+                    if threat_object != 'unknown':
+                        sub_dictionary[f'threat_object_{idx + 1}'] = threat_object
+                        sub_dictionary[f'threat_object_{idx + 1}_type'] = threat_object_type
+                        field_mapping[f'threat_object_{idx + 1}'] = [threat_object_type]
+                
+                artifact_json.pop('threat_object')
+                artifact_json.pop('threat_object_type')
+                artifact_json.update(sub_dictionary)                              
+            else:
+                field_mapping['threat_object'] = [artifact_json['threat_object_type']]
+            
 
         # Set the underlying data type in field mapping based on the risk_object_type     
-        if 'risk_object' in artifact_json.keys() and 'risk_object_type' in artifact_json.keys():
+        if artifact_json.get('risk_object') and artifact_json.get('risk_object_type'):
             if 'user' in artifact_json['risk_object_type']:
                 field_mapping['risk_object'] = ["user name"]
             elif artifact_json['risk_object_type'] == 'system':
-                field_mapping['risk_object'] = ["host name", "hostname"]
+                field_mapping['risk_object'] = ["host name"]
             else:
-                field_mapping['risk_object'] = artifact_json['risk_object_type']
+                field_mapping['risk_object'] = [artifact_json['risk_object_type']]
             
         # Extract tags
-        if 'rule_attack_tactic_technique' in artifact_json.keys():
+        if artifact_json.get('rule_attack_tactic_technique'):
             for match in re.findall('(^|\|)(\w+)\s+',artifact_json['rule_attack_tactic_technique']):
                 tags.append(match[1])
             tags=list(set(tags))
 
         # Final setp is to build the output. This is reliant on the source field existing which should be present in all Splunk search results
-        if 'source' in artifact_json.keys():
-            if index < len(search_json[0]) - 1:
-                name = artifact_json.pop('source')
-                parameters.append({'input_1': json.dumps({'cef_data': artifact_json, 'tags': tags, 'name': name, 'field_mapping': field_mapping, 'run_automation': False})})
+        if artifact_json.get('search_name'):  
+            # populate artifact description
+            if artifact_json.get('risk_message'):
+                description = artifact_json['risk_message']
+            elif artifact_json.get('description'):
+                description = artifact_json.pop('description')
             else:
-                name = artifact_json.pop('source')
-                parameters.append({'input_1': json.dumps({'cef_data': artifact_json, 'tags': tags, 'name': name, 'field_mapping': field_mapping, 'run_automation': True})})
-	
-
+                description = None
+                
+            name = artifact_json.pop('search_name')
+            parameters.append(
+                {
+                    'input_1': json.dumps(
+                        {
+                            'cef_data': artifact_json, 
+                            'data': data,
+                            'tags': tags, 
+                            'name': name, 
+                            'description': description, 
+                            'field_mapping': field_mapping, 
+                            'run_automation': False if index < len(search_json[0]) - 1 else True
+                        }
+                    )
+                }
+            )
 
     ################################################################################
     ## Custom Code End
@@ -559,6 +605,42 @@ def results_decision(action=None, success=None, container=None, results=None, ha
     if found_match_1:
         parse_risk_results_1(action=action, success=success, container=container, results=results, handle=handle)
         return
+
+    return
+
+
+def artifact_update_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("artifact_update_1() called")
+
+    filtered_artifact_0_data_filter_artifact_score = phantom.collect2(container=container, datapath=["filtered-data:filter_artifact_score:condition_1:artifact:*.id","filtered-data:filter_artifact_score:condition_1:artifact:*.id"], scope="all")
+
+    parameters = []
+
+    # build parameters list for 'artifact_update_1' call
+    for filtered_artifact_0_item_filter_artifact_score in filtered_artifact_0_data_filter_artifact_score:
+        parameters.append({
+            "name": None,
+            "tags": "high_risk_score",
+            "label": None,
+            "severity": None,
+            "cef_field": None,
+            "cef_value": None,
+            "input_json": None,
+            "artifact_id": filtered_artifact_0_item_filter_artifact_score[0],
+            "cef_data_type": None,
+        })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="local/artifact_update", parameters=parameters, name="artifact_update_1", callback=mark_artifact_evidence)
 
     return
 
