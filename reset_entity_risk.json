@@ -1,0 +1,563 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Risk Notable",
+    "coa": {
+        "data": {
+            "description": "This playbook grabs all of the contributing risk_rules in the event that haven't had a risk score reset. It then posts negating risk scores to Splunk after prompting the user for a reason. If no risk rules are present, a comment will be left.",
+            "edges": [
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_3_to_port_5",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
+                },
+                {
+                    "id": "port_0_to_port_6",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_6_to_port_7",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "id": "port_7_to_port_3",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "id": "port_9_to_port_1",
+                    "sourceNode": "9",
+                    "sourcePort": "9_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_5_to_port_8",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 1
+                        }
+                    ],
+                    "id": "port_6_to_port_11",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "11",
+                    "targetPort": "11_in"
+                },
+                {
+                    "id": "port_8_to_port_9",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "9",
+                    "targetPort": "9_in"
+                },
+                {
+                    "id": "port_11_to_port_1",
+                    "sourceNode": "11",
+                    "sourcePort": "11_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "d3c939b0b2d6cbd6946a36eeee0ca929e096d7b8",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "x": 190,
+                    "y": 0
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
+                    "x": 190,
+                    "y": 1178
+                },
+                "11": {
+                    "data": {
+                        "advanced": {
+                            "customName": "add not found comment",
+                            "customNameId": 0,
+                            "description": "Adds a comment that let's the user know that this playbook terminated due to criteria not met.",
+                            "join": [],
+                            "note": "Adds a comment that let's the user know that this playbook terminated due to criteria not met."
+                        },
+                        "functionId": 2,
+                        "functionName": "add_not_found_comment",
+                        "id": "11",
+                        "selectMore": false,
+                        "tab": "apis",
+                        "type": "utility",
+                        "utilities": {
+                            "comment": {
+                                "description": "",
+                                "fields": [
+                                    {
+                                        "description": "",
+                                        "label": "comment",
+                                        "name": "comment",
+                                        "placeholder": "Enter a comment",
+                                        "renderType": "datapath",
+                                        "required": true
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "container",
+                                        "required": false
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "author",
+                                        "required": false
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "trace",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "add comment",
+                                "name": "comment"
+                            }
+                        },
+                        "utilityType": "api",
+                        "values": {
+                            "comment": {
+                                "_internal": [
+                                    "container",
+                                    "author",
+                                    "trace"
+                                ],
+                                "comment": "Risk score already reset for the provided artifacts"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "11",
+                    "type": "utility",
+                    "x": 340,
+                    "y": 1030
+                },
+                "3": {
+                    "data": {
+                        "advanced": {
+                            "customName": "risk rule filter",
+                            "customNameId": 0,
+                            "description": "Grab the available risk rules without a risk score and send them to custom format.",
+                            "join": [],
+                            "note": "Grab the available risk rules without a risk score and send them to custom format.",
+                            "scope": "default"
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "artifact:*.label",
+                                        "value": "risk_rule"
+                                    },
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "artifact:*.cef._risk_score_reset",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "risk rule exists",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "risk_rule_filter",
+                        "id": "3",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "filter",
+                    "x": 60,
+                    "y": 508
+                },
+                "5": {
+                    "data": {
+                        "advanced": {
+                            "customName": "custom format",
+                            "customNameId": 0,
+                            "description": "Generate new Splunk events with the correct timestamp and negative risk score.",
+                            "join": [],
+                            "note": "Generate new Splunk events with the correct timestamp and negative risk score."
+                        },
+                        "functionId": 1,
+                        "functionName": "custom_format",
+                        "id": "5",
+                        "inputParameters": [
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.name",
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.description",
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.data",
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.cef",
+                            "container:id",
+                            "container:name",
+                            "reset_prompt:action_result.data.*.user",
+                            "reset_prompt:action_result.summary.responses.0"
+                        ],
+                        "outputVariables": [
+                            "splunk_event",
+                            "current_time"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "code",
+                    "userCode": "    from datetime import datetime\n    custom_format__current_time = str(datetime.now())\n    custom_format__splunk_event = []\n\n    for name, description, artifact_cef, artifact_data in zip(filtered_artifact_0__name, filtered_artifact_0__description, filtered_artifact_0__cef, filtered_artifact_0__data):\n        # Check for the necessary keys:\n        if (\n            artifact_cef.keys() >= {'_total_risk_score', 'risk_object', 'risk_object_type'}\n            and artifact_data.keys() >= {'original_timestamps', 'risk_event_ids'}\n        ):\n            timestamps = artifact_data['original_timestamps']\n            risk_event_ids = artifact_data['risk_event_ids']\n            for risk_event_id, timestamp in zip(risk_event_ids, timestamps):\n                close_reason = reset_prompt_summary_responses_0[0]\n                risk_score = (float(artifact_cef['_total_risk_score']) / int(artifact_cef['_event_count'])) * -1\n                risk_object = artifact_cef['risk_object']\n                risk_object_type = artifact_cef['risk_object_type']\n                owner_name_value = reset_prompt_result_item_0[0]\n                log_template = (\n                    f'{timestamp}, risk_score=\"{risk_score}\", risk_event_id=\"{risk_event_id}\", '\n                    f' risk_object=\"{risk_object}\", risk_object_type=\"{risk_object_type}\",'\n                    f' close_reason=\"{close_reason}\", close_action_owner=\"{owner_name_value}\", close_time=\"{custom_format__current_time}\", '\n                    f' search_name=\"{name}\", risk_message=\"{description}\", soar_event_id=\"{id_value}\", soar_event_name=\"{name_value}\"'\n                )\n                custom_format__splunk_event.append(log_template)\n    \n    custom_format__splunk_event = '\\r\\n'.join(custom_format__splunk_event)\n\n",
+                    "x": 0,
+                    "y": 688
+                },
+                "6": {
+                    "data": {
+                        "advanced": {
+                            "customName": "risk rule decision",
+                            "customNameId": 0,
+                            "description": "Determine if at least one risk_rule exists that hasn't been risk score reset.",
+                            "join": [],
+                            "note": "Determine if at least one risk_rule exists that hasn't been risk score reset."
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "artifact:*.label",
+                                        "value": "risk_rule"
+                                    },
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "artifact:*.cef._risk_score_reset",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "risk rule exists",
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 1,
+                                        "op": "==",
+                                        "param": "",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 1,
+                                "customName": "no risk rules exist",
+                                "display": "Else",
+                                "logic": "and",
+                                "type": "else"
+                            }
+                        ],
+                        "functionId": 2,
+                        "functionName": "risk_rule_decision",
+                        "id": "6",
+                        "type": "decision"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "decision",
+                    "x": 250,
+                    "y": 148
+                },
+                "7": {
+                    "customCode": "def reset_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug(\"reset_prompt() called\")\n\n    ################################################################################\n    # Prompt the user for required information about the reason for close. This will \n    # be used for the message in the raw event.\n    ################################################################################\n\n    # set user and message variables for phantom.prompt call\n\n    user_id = phantom.get_effective_user()\n    url = phantom.build_phantom_rest_url('ph_user', user_id)\n    response = phantom.requests.get(url, verify=False).json()\n    user = response['username']\n    message = \"\"\"Enter a reason for resetting risk.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = []\n\n    # responses\n    response_types = [\n        {\n            \"prompt\": \"Reason\",\n            \"options\": {\n                \"type\": \"message\",\n            },\n        }\n    ]\n\n    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name=\"reset_prompt\", parameters=parameters, response_types=response_types, callback=risk_rule_filter)\n\n    return",
+                    "data": {
+                        "advanced": {
+                            "customName": "reset prompt",
+                            "customNameId": 0,
+                            "description": "Prompt the user for required information about the reason for close. This will be used for the message in the raw event.",
+                            "join": [],
+                            "note": "Prompt the user for required information about the reason for close. This will be used for the message in the raw event."
+                        },
+                        "approver": "admin",
+                        "functionId": 1,
+                        "functionName": "reset_prompt",
+                        "id": "7",
+                        "message": "Enter a reason for resetting risk.",
+                        "parameters": [],
+                        "responseTime": 30,
+                        "responses": [
+                            {
+                                "responsePrompt": "Reason",
+                                "responseType": "message"
+                            }
+                        ],
+                        "type": "prompt"
+                    },
+                    "errors": {},
+                    "id": "7",
+                    "type": "prompt",
+                    "x": 80,
+                    "y": 328
+                },
+                "8": {
+                    "data": {
+                        "action": "post data",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "post negative risk event",
+                            "customNameId": 0,
+                            "description": "Post all of the negative risk events as one block into the risk index that is new line separated.",
+                            "join": [],
+                            "note": "Post all of the negative risk events as one block into the risk index that is new line separated."
+                        },
+                        "connector": "Splunk",
+                        "connectorConfigs": [
+                            "splunk"
+                        ],
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "post_negative_risk_event",
+                        "id": "8",
+                        "parameters": {
+                            "data": "custom_format:custom_function:splunk_event",
+                            "index": "risk",
+                            "source": "Splunk SOAR",
+                            "source_type": "stash"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "data"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "Phantom",
+                                "field": "source"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "Automation/Orchestration Platform",
+                                "field": "source_type"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "action",
+                    "userCode": "\n\n",
+                    "x": 0,
+                    "y": 866
+                },
+                "9": {
+                    "data": {
+                        "advanced": {
+                            "customName": "artifact add reset field",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "artifact_update",
+                            "repoName": "local"
+                        },
+                        "functionId": 1,
+                        "functionName": "artifact_add_reset_field",
+                        "id": "9",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "artifact_update": {
+                                "description": "Update an artifact with the specified attributes. All parameters are optional, except that cef_field and cef_value must both be provided if one is provided. Supports all fields available in /rest/artifact. Add any unlisted inputs as dictionary keys in input_json. Unsupported keys will automatically be dropped.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "phantom artifact id"
+                                        ],
+                                        "description": "ID of the artifact to update, which is required.",
+                                        "inputType": "item",
+                                        "label": "artifact_id",
+                                        "name": "artifact_id",
+                                        "placeholder": "1234",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Change the name of the artifact.",
+                                        "inputType": "item",
+                                        "label": "name",
+                                        "name": "name",
+                                        "placeholder": "artifact",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            ""
+                                        ],
+                                        "description": "Change the label of the artifact.",
+                                        "inputType": "item",
+                                        "label": "label",
+                                        "name": "label",
+                                        "placeholder": "events",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Change the severity of the artifact. Typically this is either \"High\", \"Medium\", or \"Low\".",
+                                        "inputType": "item",
+                                        "label": "severity",
+                                        "name": "severity",
+                                        "placeholder": "Medium",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The name of the CEF field to populate in the artifact, such as \"destinationAddress\" or \"sourceDnsDomain\". Required only if cef_value is provided.",
+                                        "inputType": "item",
+                                        "label": "cef_field",
+                                        "name": "cef_field",
+                                        "placeholder": "destinationAddress",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "The value of the CEF field to populate in the artifact, such as the IP address, domain name, or file hash. Required only if cef_field is provided.",
+                                        "inputType": "item",
+                                        "label": "cef_value",
+                                        "name": "cef_value",
+                                        "placeholder": "192.0.2.192",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The CEF data type of the data in cef_value. For example, this could be \"ip\", \"hash\", or \"domain\". Optional, but only operational if cef_field is provided.",
+                                        "inputType": "item",
+                                        "label": "cef_data_type",
+                                        "name": "cef_data_type",
+                                        "placeholder": "ip",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "A comma-separated list of tags to apply to the artifact, which is optional.",
+                                        "inputType": "item",
+                                        "label": "tags",
+                                        "name": "tags",
+                                        "placeholder": "tag1, tag2, tag3",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to modify any extra attributes of the artifact. Input_json will be merged with other inputs. In the event of a conflict, input_json will take precedence.",
+                                        "inputType": "item",
+                                        "label": "input_json",
+                                        "name": "input_json",
+                                        "placeholder": "{\"source_data_identifier\": \"1234\", \"data\": \"5678\"}",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "artifact_update",
+                                "name": "artifact_update"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "artifact_update": {
+                                "artifact_id": "filtered-data:risk_rule_filter:condition_1:artifact:*.id",
+                                "cef_data_type": null,
+                                "cef_field": "_risk_score_reset",
+                                "cef_value": "custom_format:custom_function:current_time",
+                                "input_json": null,
+                                "label": null,
+                                "name": null,
+                                "severity": null,
+                                "tags": null
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "9",
+                    "type": "utility",
+                    "x": -1.4210854715202004e-14,
+                    "y": 1030
+                }
+            },
+            "notes": "This is designed to work in tandem with risk_notable_import_data for pulling risk events into SOAR.  It requires the following CEF keys be available: '_total_risk_score', 'risk_object', 'risk_object_type' and the following data keys: 'original_timestamps', 'risk_event_ids'. It is recommended that playbook scope remain default and not overridden in any blocks."
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_type": "automation",
+        "python_version": "3",
+        "schema": "5.0.6",
+        "version": "5.3.0.84310"
+    },
+    "create_time": "2022-04-14T20:04:49.870497+00:00",
+    "draft_mode": false,
+    "labels": [
+        "risk_notable"
+    ],
+    "tags": []
+}
