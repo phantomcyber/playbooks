@@ -222,23 +222,48 @@ def process_outputs(action=None, success=None, container=None, results=None, han
     ################################################################################
     ## Custom Code Start
     ################################################################################
-    process_outputs__data = {'playbook_run_id_list': [], 'playbook_id_list': []}
+    process_outputs__data = {
+        'playbook_run_id_list': [], 
+        'playbook_id_list': [], 
+        'playbook_name_list': [], 
+        'verdict': [],
+        'note_content': [],
+        'sub_playbook_outputs': [],
+        'sub_playbook_inputs': []
+    }
     
     # Iterate through playbook_ids, collecting outputs and merging them into this playbook's output key.
     for run_id in dispatch_playbooks__ids:
+        # Get playbook run details
         playbook_run_json = phantom.requests.get(phantom.build_phantom_rest_url('playbook_run', run_id), verify=False).json()
         process_outputs__data['playbook_run_id_list'].append(playbook_run_json['id'])
-        process_outputs__data['playbook_id_list'].append(playbook_run_json['playbook'])
+        playbook_id = playbook_run_json['playbook']
+        process_outputs__data['playbook_id_list'].append(playbook_id)
+        # Get playbook name
+        playbook_json = phantom.requests.get(phantom.build_phantom_rest_url('playbook', playbook_id), verify=False).json()
+        playbook_name = playbook_json['name']
+        process_outputs__data['playbook_name_list'].append(playbook_name)
+        
         if playbook_run_json.get('outputs'):
-
+            sub_playbook_output_dict = {'playbook_name': playbook_name}
             for output in playbook_run_json['outputs']:
                 output_dict = json.loads(output)
                 for k,v in output_dict.items():
-                    if k in process_outputs__data:
-                        # if key exists output will be appended, not deduplicated.
-                        process_outputs__data[k].append(v)
-                    else:
-                        process_outputs__data[k] = [v]
+                    # Populate basic outputs for certain keys
+                    if k.lower() in ['verdict', 'note_content']:
+                        process_outputs__data[k.lower()].append(v)
+                    # Populate sub_playbook outputs
+                    sub_playbook_output_dict[k] = v
+            process_outputs__data['sub_playbook_outputs'].append(sub_playbook_output_dict)
+        
+        if playbook_run_json.get('inputs'):
+            sub_playbook_input_dict = {'playbook_name': playbook_name}
+            for input_entry in playbook_run_json['inputs']:
+                input_dict = json.loads(input_entry)
+                for k,v in input_dict.items():
+                    sub_playbook_input_dict[k] = v
+            process_outputs__data['sub_playbook_inputs'].append(sub_playbook_input_dict)
+                
                         
     phantom.debug(f"Final Output:\n{process_outputs__data}")                  
     ################################################################################
@@ -291,23 +316,23 @@ def collect_indicator(action=None, success=None, container=None, results=None, h
 
     id_value = container.get("id", None)
     playbook_input_artifact_ids_include = phantom.collect2(container=container, datapath=["playbook_input:artifact_ids_include"])
-    playbook_input_indicator_tags_include = phantom.collect2(container=container, datapath=["playbook_input:indicator_tags_include"])
     playbook_input_indicator_tags_exclude = phantom.collect2(container=container, datapath=["playbook_input:indicator_tags_exclude"])
+    playbook_input_indicator_tags_include = phantom.collect2(container=container, datapath=["playbook_input:indicator_tags_include"])
     find_supported_indicator_types__list = json.loads(phantom.get_run_data(key="find_supported_indicator_types:list"))
 
     playbook_input_artifact_ids_include_values = [item[0] for item in playbook_input_artifact_ids_include]
-    playbook_input_indicator_tags_include_values = [item[0] for item in playbook_input_indicator_tags_include]
     playbook_input_indicator_tags_exclude_values = [item[0] for item in playbook_input_indicator_tags_exclude]
+    playbook_input_indicator_tags_include_values = [item[0] for item in playbook_input_indicator_tags_include]
 
     parameters = []
 
     parameters.append({
         "container": id_value,
         "artifact_ids_include": playbook_input_artifact_ids_include_values,
-        "indicator_types_include": find_supported_indicator_types__list,
-        "indicator_types_exclude": None,
-        "indicator_tags_include": playbook_input_indicator_tags_include_values,
         "indicator_tags_exclude": playbook_input_indicator_tags_exclude_values,
+        "indicator_tags_include": playbook_input_indicator_tags_include_values,
+        "indicator_types_exclude": None,
+        "indicator_types_include": find_supported_indicator_types__list,
     })
 
     ################################################################################
@@ -332,7 +357,7 @@ def collect_indicator(action=None, success=None, container=None, results=None, h
         "indicator_types_exclude": None,
         "indicator_tags_include": ', '.join([item[0] for item in indicator_tags_include if item]),
         "indicator_tags_exclude": ', '.join([item[0] for item in indicator_tags_exclude if item]),
-        "artifact_ids_include": playbook_input_artifact_ids_include_values,
+        "artifact_ids_include": ', '.join([item[0] for item in playbook_input_artifact_ids_include_values if item]),
     })
 
     ################################################################################
@@ -379,8 +404,10 @@ def on_finish(container, summary):
     phantom.debug("on_finish() called")
 
     output = {
-        "note": "",
+        "note_content": "",
         "verdict": "",
+        "sub_playbook_outputs": "",
+        "sub_playbook_inputs": "",
     }
 
     ################################################################################
