@@ -11,8 +11,8 @@ from datetime import datetime, timedelta
 def on_start(container):
     phantom.debug('on_start() called')
 
-    # call 'raise_error_if_community' block
-    raise_error_if_community(container=container)
+    # call 'check_valid_inputs' block
+    check_valid_inputs(container=container)
 
     return
 
@@ -40,12 +40,19 @@ def find_matching_playbooks(action=None, success=None, container=None, results=N
     ################################################################################
     # overwrite parameters
     parameters = []
-
-    # control iteration through playbook inputs to match what custom function is expecting
-    for playbook_input_playbook_repo_item in playbook_input_playbook_repo:
+    
+    # Check valid playbook input for repo. Otherwise default to local.
+    if not any(item[0] for item in playbook_input_playbook_repo):
+        phantom.debug("No repo provided, defaulting to local")
+        playbook_repo_list = ["local"]
+    else:
+        playbook_repo_list = [item[0] for item in playbook_input_playbook_repo if item[0]]
+    
+    # Control iteration through playbook inputs to match what custom function is expecting
+    for repo in playbook_repo_list:
         parameters.append({
             "name": None,
-            "repo": playbook_input_playbook_repo_item[0],
+            "repo": repo,
             "tags": ', '.join([item[0] for item in playbook_input_playbook_tags]),
             "category": None,
             "playbook_type": "input",
@@ -369,27 +376,34 @@ def collect_indicator(action=None, success=None, container=None, results=None, h
     return
 
 
-def raise_error_if_community(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("raise_error_if_community() called")
+def check_valid_inputs(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("check_valid_inputs() called")
 
     ################################################################################
-    # Checks for presence of "community" as one of the provided repos as launching 
-    # input playbooks from "community" could lead to unintended behavior.
+    # Check playbook inputs and produce associated errors
     ################################################################################
 
     playbook_input_playbook_repo = phantom.collect2(container=container, datapath=["playbook_input:playbook_repo"])
+    playbook_input_playbook_tags = phantom.collect2(container=container, datapath=["playbook_input:playbook_tags"])
 
     playbook_input_playbook_repo_values = [item[0] for item in playbook_input_playbook_repo]
+    playbook_input_playbook_tags_values = [item[0] for item in playbook_input_playbook_tags]
 
     ################################################################################
     ## Custom Code Start
     ################################################################################
-
+    
+    # Checks for presence of "community" as one of the provided repos 
+    # as launching input playbooks from "community" could lead to unintended behavior.
     if "community" in playbook_input_playbook_repo_values:
         raise ValueError(
             "Invalid value provided in playbook_input:playbook_repo: 'community'. "
             "Dispatching playbooks from the 'community' repo is not allowed."
         )
+    
+    # Check for at least 1 playbook_tag
+    if not playbook_input_playbook_tags_values or not any(playbook_input_playbook_tags_values):
+        raise ValueError("Must provide at least 1 playbook tag value to find available playbooks")
         
     ################################################################################
     ## Custom Code End
