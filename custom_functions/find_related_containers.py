@@ -1,6 +1,6 @@
 def find_related_containers(field_list=None, value_list=None, minimum_match_count=None, container=None, earliest_time=None, filter_status=None, filter_label=None, filter_severity=None, filter_in_case=None, **kwargs):
     """
-    Takes a provided list of indicator values to search for and finds all related containers. It will produce a list of the related container details.
+    Takes a list of indicator values or field names that may appear in other containers on the system. If any related containers are found, it will produce a list of the related container details.
     
     Args:
         field_list (CEF type: *): A field  to search on, such as destinationAddress or risk_object. Not compatible with value_list. Only containers that share the exact value in the exact fields will be considered related.
