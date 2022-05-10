@@ -1,0 +1,614 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Utility",
+    "coa": {
+        "data": {
+            "description": "An alternative to the included playbook block that collects indicator type data from the container and routes it to available input playbooks based on provided criteria. It will pair indicator data with the playbook's inputs based on the data type.",
+            "edges": [
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_13_to_port_11",
+                    "sourceNode": "13",
+                    "sourcePort": "13_out",
+                    "targetNode": "11",
+                    "targetPort": "11_in"
+                },
+                {
+                    "id": "port_11_to_port_12",
+                    "sourceNode": "11",
+                    "sourcePort": "11_out",
+                    "targetNode": "12",
+                    "targetPort": "12_in"
+                },
+                {
+                    "id": "port_12_to_port_15",
+                    "sourceNode": "12",
+                    "sourcePort": "12_out",
+                    "targetNode": "15",
+                    "targetPort": "15_in"
+                },
+                {
+                    "id": "port_15_to_port_1",
+                    "sourceNode": "15",
+                    "sourcePort": "15_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_3_to_port_16",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "16",
+                    "targetPort": "16_in"
+                },
+                {
+                    "id": "port_16_to_port_17",
+                    "sourceNode": "16",
+                    "sourcePort": "16_out",
+                    "targetNode": "17",
+                    "targetPort": "17_in"
+                },
+                {
+                    "id": "port_17_to_port_13",
+                    "sourceNode": "17",
+                    "sourcePort": "17_out",
+                    "targetNode": "13",
+                    "targetPort": "13_in"
+                },
+                {
+                    "id": "port_0_to_port_18",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "18",
+                    "targetPort": "18_in"
+                },
+                {
+                    "id": "port_18_to_port_2",
+                    "sourceNode": "18",
+                    "sourcePort": "18_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "id": "port_2_to_port_3",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                }
+            ],
+            "hash": "2c56b46862b5839e59ffca4e619d95d2de84e42a",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "x": 19.999999999999986,
+                    "y": -1.2789769243681803e-13
+                },
+                "1": {
+                    "customCode": null,
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "userCode": "    \n    # If certain outputs should appear, put those into the End block, but do not \n    # populate them. The process_outputs block will handle passing those outputs \n    # forward if they exist in the child playbooks.\n    \n    # Overwrite output with outputs generated in process_outputs.\n    process_outputs__data = phantom.get_run_data(key=\"process_outputs:data\")\n    \n    if process_outputs__data: \n        output = json.loads(process_outputs__data)\n    \n",
+                    "x": 19.999999999999986,
+                    "y": 1710
+                },
+                "11": {
+                    "data": {
+                        "advanced": {
+                            "customName": "dispatch playbooks",
+                            "customNameId": 0,
+                            "description": "Dynamically routes indicator types to playbook inputs based on  playbook input_spec and generates a list of playbook IDs and names to check downstream.",
+                            "join": [],
+                            "note": "Dynamically routes indicator types to playbook inputs based on  playbook input_spec and generates a list of playbook IDs and names to check downstream."
+                        },
+                        "functionId": 2,
+                        "functionName": "dispatch_playbooks",
+                        "id": "11",
+                        "inputParameters": [
+                            "find_matching_playbooks:custom_function_result.data.*.full_name",
+                            "find_matching_playbooks:custom_function_result.data.*.input_spec",
+                            "collect_indicator:custom_function_result.data.all_indicators.*.cef_value",
+                            "collect_indicator:custom_function_result.data.all_indicators.*.data_types"
+                        ],
+                        "outputVariables": [
+                            "names",
+                            "ids"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "11",
+                    "type": "code",
+                    "userCode": "\n    playbook_name = [item for item in find_matching_playbooks_data___full_name if item]\n    playbook_spec = [item for item in find_matching_playbooks_data___input_spec if item]\n    indicator_cef_value_list = collect_indicator_data_all_indicators___cef_value\n    indicator_cef_type_list = collect_indicator_data_all_indicators___data_types\n\n    playbook_launch_list = {}\n    dispatch_playbooks__names = []\n    dispatch_playbooks__ids = []\n\n\n    for pb_name, spec_item in zip(playbook_name, playbook_spec):\n        pb_inputs = {}\n        for cef_value, cef_type in zip(indicator_cef_value_list, indicator_cef_type_list):\n            for type_item in cef_type:\n                # check if any of the investigate type playbooks have inputs that accept this data type\n                for spec in spec_item:\n                    for contains_type in spec['contains']:\n                        if type_item == contains_type:\n                            # build playbook inputs\n                            if not pb_inputs:\n                                pb_inputs[spec['name']] = [cef_value]\n                            else:\n                                if cef_value not in pb_inputs[spec['name']]:\n                                    pb_inputs[spec['name']].append(cef_value)\n        # only launch playbooks that have inputs\n        if pb_inputs:\n            playbook_launch_list[pb_name] = pb_inputs\n\n    if playbook_launch_list:\n        for k,v in playbook_launch_list.items():\n            name = 'playbook_{}'.format(k.split('/')[1].replace(' ','_').lower())\n            dispatch_playbooks__names.append(name)\n            phantom.debug(f\"Launching playbook '{k}' with inputs '{v}'\")\n            dispatch_playbooks__ids.append(phantom.playbook(playbook=k, container=container, inputs=v, name=name, callback=wait_for_playbooks))\n            \n    else:\n        raise RuntimeError(f\"\"\"Unable to find any match between indicator types and playbook input types.\nEnsure you have a input type playbook that handles at least one of the following data types from the event:\n'{[item[0] for item in indicator_cef_type_list if item]}'\"\"\")\n        \n",
+                    "x": 0,
+                    "y": 1176
+                },
+                "12": {
+                    "customCode": null,
+                    "data": {
+                        "advanced": {
+                            "customName": "wait for playbooks",
+                            "customNameId": 0,
+                            "description": "Waits for all of the playbooks from the preceding block to finish.",
+                            "join": [],
+                            "note": "Waits for all of the playbooks from the preceding block to finish."
+                        },
+                        "functionId": 3,
+                        "functionName": "wait_for_playbooks",
+                        "id": "12",
+                        "inputParameters": [
+                            "dispatch_playbooks:custom_function:names"
+                        ],
+                        "outputVariables": [],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "12",
+                    "type": "code",
+                    "userCode": "\n    if phantom.completed(playbook_names=dispatch_playbooks__names):\n        process_outputs(container=container)\n    # return early to avoid moving to next block\n    return    \n\n",
+                    "x": 0,
+                    "y": 1354
+                },
+                "13": {
+                    "data": {
+                        "advanced": {
+                            "customName": "indicator decision",
+                            "customNameId": 0,
+                            "description": "Determines if the indicator types that are present in the container are also in the supported indicator types from the playbooks.",
+                            "join": [],
+                            "note": "Determines if the indicator types that are present in the container are also in the supported indicator types from the playbooks."
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "in",
+                                        "param": "collect_indicator:custom_function_result.data.all_indicators.*.data_types",
+                                        "value": "find_supported_indicator_types:custom_function:list"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "indicator match found",
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "functionId": 2,
+                        "functionName": "indicator_decision",
+                        "id": "13",
+                        "type": "decision"
+                    },
+                    "errors": {},
+                    "id": "13",
+                    "type": "decision",
+                    "x": 80,
+                    "y": 996
+                },
+                "15": {
+                    "data": {
+                        "advanced": {
+                            "customName": "process outputs",
+                            "customNameId": 0,
+                            "description": "Collects playbook outputs from the finished playbooks and merges them to a format that is compatible with the end block.",
+                            "join": [],
+                            "note": "Collects playbook outputs from the finished playbooks and merges them to a format that is compatible with the end block."
+                        },
+                        "functionId": 4,
+                        "functionName": "process_outputs",
+                        "id": "15",
+                        "inputParameters": [
+                            "dispatch_playbooks:custom_function:ids"
+                        ],
+                        "outputVariables": [
+                            "data"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "15",
+                    "type": "code",
+                    "userCode": "    process_outputs__data = {\n        'playbook_run_id_list': [], \n        'playbook_id_list': [], \n        'playbook_name_list': [], \n        'verdict': [],\n        'note_content': [],\n        'sub_playbook_outputs': [],\n        'sub_playbook_inputs': []\n    }\n    \n    # Iterate through playbook_ids, collecting outputs and merging them into this playbook's output key.\n    for run_id in dispatch_playbooks__ids:\n        # Get playbook run details\n        playbook_run_json = phantom.requests.get(phantom.build_phantom_rest_url('playbook_run', run_id), verify=False).json()\n        process_outputs__data['playbook_run_id_list'].append(playbook_run_json['id'])\n        playbook_id = playbook_run_json['playbook']\n        process_outputs__data['playbook_id_list'].append(playbook_id)\n        # Get playbook name\n        playbook_json = phantom.requests.get(phantom.build_phantom_rest_url('playbook', playbook_id), verify=False).json()\n        playbook_name = playbook_json['name']\n        process_outputs__data['playbook_name_list'].append(playbook_name)\n        \n        if playbook_run_json.get('outputs'):\n            sub_playbook_output_dict = {'playbook_name': playbook_name}\n            for output in playbook_run_json['outputs']:\n                output_dict = json.loads(output)\n                for k,v in output_dict.items():\n                    # Populate basic outputs for certain keys\n                    if k.lower() in ['verdict', 'note_content']:\n                        process_outputs__data[k.lower()].append(v)\n                    # Populate sub_playbook outputs\n                    sub_playbook_output_dict[k] = v\n            process_outputs__data['sub_playbook_outputs'].append(sub_playbook_output_dict)\n        \n        if playbook_run_json.get('inputs'):\n            sub_playbook_input_dict = {'playbook_name': playbook_name}\n            for input_entry in playbook_run_json['inputs']:\n                input_dict = json.loads(input_entry)\n                for k,v in input_dict.items():\n                    sub_playbook_input_dict[k] = v\n            process_outputs__data['sub_playbook_inputs'].append(sub_playbook_input_dict)\n                \n                        \n    phantom.debug(f\"Final Output:\\n{process_outputs__data}\")                  \n",
+                    "x": 0,
+                    "y": 1532
+                },
+                "16": {
+                    "data": {
+                        "advanced": {
+                            "customName": "find supported indicator types",
+                            "customNameId": 0,
+                            "description": "Generates a deduplicated list of supported indicator types from matching playbooks.",
+                            "join": [],
+                            "note": "Generates a deduplicated list of supported indicator types from matching playbooks."
+                        },
+                        "functionId": 5,
+                        "functionName": "find_supported_indicator_types",
+                        "id": "16",
+                        "inputParameters": [
+                            "find_matching_playbooks:custom_function_result.data.*.input_spec"
+                        ],
+                        "outputVariables": [
+                            "list"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "16",
+                    "type": "code",
+                    "userCode": "    find_supported_indicator_types__list = []\n    \n    for spec_item in find_matching_playbooks_data___input_spec:\n        if spec_item:\n            for spec in spec_item:\n                for contains_type in spec['contains']:\n                    find_supported_indicator_types__list.append(contains_type)\n                    \n    find_supported_indicator_types__list = list(set(find_supported_indicator_types__list))\n",
+                    "x": 0,
+                    "y": 654
+                },
+                "17": {
+                    "data": {
+                        "advanced": {
+                            "customName": "collect indicator",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "indicator_collect",
+                            "repoName": "community"
+                        },
+                        "functionId": 2,
+                        "functionName": "collect_indicator",
+                        "id": "17",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "indicator_collect": {
+                                "description": "Collect all indicators in a container and separate them by data type. Additional output data paths are created for each data type. Artifact scope is ignored.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "phantom container id"
+                                        ],
+                                        "description": "The current container",
+                                        "inputType": "item",
+                                        "label": "container",
+                                        "name": "container",
+                                        "placeholder": "container:id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "phantom artifact id"
+                                        ],
+                                        "description": "Optional parameter to only look for indicator values that occur in the artifacts with these IDs. Must be one of: json serializable list, comma separated integers, or a single integer.",
+                                        "inputType": "list",
+                                        "label": "artifact_ids_include",
+                                        "name": "artifact_ids_include",
+                                        "placeholder": "artifact:*.id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to only include indicators with at least one of the provided types in the output. If left empty, all indicator types will be included except those that are explicitly excluded. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_types_include",
+                                        "name": "indicator_types_include",
+                                        "placeholder": "ip, domain",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to exclude indicators with any of the provided types from the output. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_types_exclude",
+                                        "name": "indicator_types_exclude",
+                                        "placeholder": "ip, domain",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to only include indicators with at least one of the provided tags in the output. If left empty, tags will be ignored except when they are excluded. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_tags_include",
+                                        "name": "indicator_tags_include",
+                                        "placeholder": "not_contained, malware",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to exclude indicators with any of the provided tags from the output. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_tags_exclude",
+                                        "name": "indicator_tags_exclude",
+                                        "placeholder": "contained, not_malware",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "indicator_collect",
+                                "name": "indicator_collect"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "indicator_collect": {
+                                "artifact_ids_include": "playbook_input:artifact_ids_include",
+                                "container": "container:id",
+                                "indicator_tags_exclude": "playbook_input:indicator_tags_exclude",
+                                "indicator_tags_include": "playbook_input:indicator_tags_include",
+                                "indicator_types_exclude": null,
+                                "indicator_types_include": "find_supported_indicator_types:custom_function:list"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "17",
+                    "type": "utility",
+                    "userCode": "\n    from itertools import zip_longest\n\n    # overwrite parameters\n    parameters = []\n    indicator_tags_include = []\n    indicator_tags_exclude = []\n    #itertools.zip_longest(playbook_input_indicator_types_include, playbook_input_indicator_types_exclude, playbook_input_indicator_tags_include, playbook_input_indicator_tags_exclude)\n    for indicator_set in zip_longest(playbook_input_indicator_tags_include, playbook_input_indicator_tags_exclude):\n        indicator_tags_include.append(indicator_set[0])\n        indicator_tags_exclude.append(indicator_set[1])\n            \n    # build parameters list for as a connected group\n    parameters.append({\n        \"container\": id_value,\n        \"indicator_types_include\": ', '.join([item for item in find_supported_indicator_types__list if item]),\n        \"indicator_types_exclude\": None,\n        \"indicator_tags_include\": ', '.join([item[0] for item in indicator_tags_include if item]),\n        \"indicator_tags_exclude\": ', '.join([item[0] for item in indicator_tags_exclude if item]),\n        \"artifact_ids_include\": ', '.join([item[0] for item in playbook_input_artifact_ids_include_values if item]),\n    })\n\n",
+                    "x": 0,
+                    "y": 848
+                },
+                "18": {
+                    "data": {
+                        "advanced": {
+                            "customName": "check valid inputs",
+                            "customNameId": 0,
+                            "description": "Check playbook inputs and produce associated errors",
+                            "join": [],
+                            "note": "Check playbook inputs and produce associated errors"
+                        },
+                        "functionId": 1,
+                        "functionName": "check_valid_inputs",
+                        "id": "18",
+                        "inputParameters": [
+                            "playbook_input:playbook_repo",
+                            "playbook_input:playbook_tags"
+                        ],
+                        "outputVariables": [],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "18",
+                    "type": "code",
+                    "userCode": "    \n    # Checks for presence of \"community\" as one of the provided repos \n    # as launching input playbooks from \"community\" could lead to unintended behavior.\n    if \"community\" in playbook_input_playbook_repo_values:\n        raise ValueError(\n            \"Invalid value provided in playbook_input:playbook_repo: 'community'. \"\n            \"Dispatching playbooks from the 'community' repo is not allowed.\"\n        )\n    \n    # Check for at least 1 playbook_tag\n    if not playbook_input_playbook_tags_values or not any(playbook_input_playbook_tags_values):\n        raise ValueError(\"Must provide at least 1 playbook tag value to find available playbooks\")\n        \n",
+                    "x": 0,
+                    "y": 148
+                },
+                "2": {
+                    "data": {
+                        "advanced": {
+                            "customName": "find matching playbooks",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "playbooks_list",
+                            "repoName": "community"
+                        },
+                        "functionId": 1,
+                        "functionName": "find_matching_playbooks",
+                        "id": "2",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "playbooks_list": {
+                                "description": "List all playbooks matching the provided name, category, and tags. If no filters are provided, list all playbooks.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Only return playbooks with the provided name.",
+                                        "inputType": "item",
+                                        "label": "name",
+                                        "name": "name",
+                                        "placeholder": "Playbook Name",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Only returns playbooks that match the provided category.",
+                                        "inputType": "item",
+                                        "label": "category",
+                                        "name": "category",
+                                        "placeholder": "Playbook Category",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Only return playbooks that contain ALL the provided tags. Multiple tags must be a comma-separated list.",
+                                        "inputType": "item",
+                                        "label": "tags",
+                                        "name": "tags",
+                                        "placeholder": "tag1,tag2,tag3",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Only return playbooks that exist in this repo.",
+                                        "inputType": "item",
+                                        "label": "repo",
+                                        "name": "repo",
+                                        "placeholder": "local",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Only return playbooks that match the provided type. Accepts 'automation', 'input' or 'data.'",
+                                        "inputType": "item",
+                                        "label": "playbook_type",
+                                        "name": "playbook_type",
+                                        "placeholder": "automation",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "playbooks_list",
+                                "name": "playbooks_list"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "playbooks_list": {
+                                "category": null,
+                                "name": null,
+                                "playbook_type": "input",
+                                "repo": "playbook_input:playbook_repo",
+                                "tags": "playbook_input:playbook_tags"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "utility",
+                    "userCode": "    # overwrite parameters\n    parameters = []\n    \n    # Check valid playbook input for repo. Otherwise default to local.\n    if not any(item[0] for item in playbook_input_playbook_repo):\n        phantom.debug(\"No repo provided, defaulting to local\")\n        playbook_repo_list = [\"local\"]\n    else:\n        playbook_repo_list = [item[0] for item in playbook_input_playbook_repo if item[0]]\n    \n    # Control iteration through playbook inputs to match what custom function is expecting\n    for repo in playbook_repo_list:\n        parameters.append({\n            \"name\": None,\n            \"repo\": repo,\n            \"tags\": ', '.join([item[0] for item in playbook_input_playbook_tags]),\n            \"category\": None,\n            \"playbook_type\": \"input\",\n        })\n\n",
+                    "x": 0,
+                    "y": 326
+                },
+                "3": {
+                    "data": {
+                        "advanced": {
+                            "customName": "playbooks decision",
+                            "customNameId": 0,
+                            "description": "Determines if any matching playbooks were found based in the playbook list utility.",
+                            "join": [],
+                            "note": "Determines if any matching playbooks were found based in the playbook list utility."
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "find_matching_playbooks:custom_function_result.data.*.full_name",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "playbooks found",
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "playbooks_decision",
+                        "id": "3",
+                        "type": "decision"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "decision",
+                    "x": 80,
+                    "y": 474
+                }
+            },
+            "notes": "- Must have at least one input style playbook in whichever repo you choose for this utility to work.\n- Playbook will error out if community repo is provided to ensure that users do not accidentally launch community input playbooks that have not been configured.\n- Artifact scope will be ignored and playbook will always run with \"all\" scope. If certain artifacts are desired, pass those artifacts in to 'artifact_ids_include.'"
+        },
+        "input_spec": [
+            {
+                "contains": [],
+                "description": "Only execute playbooks that contain ALL of the provided tags. Must provide at least 1 tag.",
+                "name": "playbook_tags"
+            },
+            {
+                "contains": [],
+                "description": "Only execute playbooks that exist in this repo. Defaults to local. Community repo not allowed.",
+                "name": "playbook_repo"
+            },
+            {
+                "contains": [],
+                "description": "Indicator records with these tags will be included",
+                "name": "indicator_tags_include"
+            },
+            {
+                "contains": [],
+                "description": "Indicator records with these tags will be excluded",
+                "name": "indicator_tags_exclude"
+            },
+            {
+                "contains": [],
+                "description": "Only indicator records in these artifacts will be included.",
+                "name": "artifact_ids_include"
+            }
+        ],
+        "output_spec": [
+            {
+                "contains": [],
+                "datapaths": [],
+                "deduplicate": true,
+                "description": "Contains content that can be used for a note",
+                "metadata": {},
+                "name": "note_content"
+            },
+            {
+                "contains": [],
+                "datapaths": [],
+                "deduplicate": false,
+                "description": "Contains a playbook verdict that can be used to make a decision.",
+                "metadata": {},
+                "name": "verdict"
+            },
+            {
+                "contains": [],
+                "datapaths": [],
+                "deduplicate": false,
+                "description": "Contains all of the sub playbook outputs per playbook that was launched",
+                "metadata": {},
+                "name": "sub_playbook_outputs"
+            },
+            {
+                "contains": [],
+                "datapaths": [],
+                "deduplicate": false,
+                "description": "Contains all of the sub playbook inputs per playbook that was launched",
+                "metadata": {},
+                "name": "sub_playbook_inputs"
+            }
+        ],
+        "playbook_type": "data",
+        "python_version": "3",
+        "schema": "5.0.6",
+        "version": "5.3.0.84310"
+    },
+    "create_time": "2022-05-03T14:16:57.254821+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": []
+}
