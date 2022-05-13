@@ -355,16 +355,18 @@ def collect_indicator(action=None, success=None, container=None, results=None, h
     #itertools.zip_longest(playbook_input_indicator_types_include, playbook_input_indicator_types_exclude, playbook_input_indicator_tags_include, playbook_input_indicator_tags_exclude)
     for indicator_set in zip_longest(playbook_input_indicator_tags_include, playbook_input_indicator_tags_exclude):
         indicator_tags_include.append(indicator_set[0])
-        indicator_tags_exclude.append(indicator_set[1])
-            
-    # build parameters list for as a connected group
+        indicator_tags_exclude.append(indicator_set[1]) 
+    if isinstance(playbook_input_artifact_ids_include_values[0], list):
+        artifact_ids_include = [item[0] for item in playbook_input_artifact_ids_include_values if item]
+    else:
+        artifact_ids_include = [item for item in playbook_input_artifact_ids_include_values if item]
     parameters.append({
         "container": id_value,
         "indicator_types_include": ', '.join([item for item in find_supported_indicator_types__list if item]),
         "indicator_types_exclude": None,
         "indicator_tags_include": ', '.join([item[0] for item in indicator_tags_include if item]),
         "indicator_tags_exclude": ', '.join([item[0] for item in indicator_tags_exclude if item]),
-        "artifact_ids_include": ', '.join([item[0] for item in playbook_input_artifact_ids_include_values if item]),
+        "artifact_ids_include": ', '.join(artifact_ids_include),
     })
 
     ################################################################################

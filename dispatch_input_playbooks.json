@@ -87,7 +87,7 @@
                     "targetPort": "3_in"
                 }
             ],
-            "hash": "2c56b46862b5839e59ffca4e619d95d2de84e42a",
+            "hash": "743dbcb10dd9e1602e2bd146c0990e4eabeece9d",
             "nodes": {
                 "0": {
                     "data": {
@@ -102,7 +102,7 @@
                     "id": "0",
                     "type": "start",
                     "x": 19.999999999999986,
-                    "y": -1.2789769243681803e-13
+                    "y": -1.9184653865522705e-13
                 },
                 "1": {
                     "customCode": null,
@@ -375,7 +375,7 @@
                     "errors": {},
                     "id": "17",
                     "type": "utility",
-                    "userCode": "\n    from itertools import zip_longest\n\n    # overwrite parameters\n    parameters = []\n    indicator_tags_include = []\n    indicator_tags_exclude = []\n    #itertools.zip_longest(playbook_input_indicator_types_include, playbook_input_indicator_types_exclude, playbook_input_indicator_tags_include, playbook_input_indicator_tags_exclude)\n    for indicator_set in zip_longest(playbook_input_indicator_tags_include, playbook_input_indicator_tags_exclude):\n        indicator_tags_include.append(indicator_set[0])\n        indicator_tags_exclude.append(indicator_set[1])\n            \n    # build parameters list for as a connected group\n    parameters.append({\n        \"container\": id_value,\n        \"indicator_types_include\": ', '.join([item for item in find_supported_indicator_types__list if item]),\n        \"indicator_types_exclude\": None,\n        \"indicator_tags_include\": ', '.join([item[0] for item in indicator_tags_include if item]),\n        \"indicator_tags_exclude\": ', '.join([item[0] for item in indicator_tags_exclude if item]),\n        \"artifact_ids_include\": ', '.join([item[0] for item in playbook_input_artifact_ids_include_values if item]),\n    })\n\n",
+                    "userCode": "\n    from itertools import zip_longest\n\n    # overwrite parameters\n    parameters = []\n    indicator_tags_include = []\n    indicator_tags_exclude = []\n    #itertools.zip_longest(playbook_input_indicator_types_include, playbook_input_indicator_types_exclude, playbook_input_indicator_tags_include, playbook_input_indicator_tags_exclude)\n    for indicator_set in zip_longest(playbook_input_indicator_tags_include, playbook_input_indicator_tags_exclude):\n        indicator_tags_include.append(indicator_set[0])\n        indicator_tags_exclude.append(indicator_set[1]) \n    if isinstance(playbook_input_artifact_ids_include_values[0], list):\n        artifact_ids_include = [item[0] for item in playbook_input_artifact_ids_include_values if item]\n    else:\n        artifact_ids_include = [item for item in playbook_input_artifact_ids_include_values if item]\n    parameters.append({\n        \"container\": id_value,\n        \"indicator_types_include\": ', '.join([item for item in find_supported_indicator_types__list if item]),\n        \"indicator_types_exclude\": None,\n        \"indicator_tags_include\": ', '.join([item[0] for item in indicator_tags_include if item]),\n        \"indicator_tags_exclude\": ', '.join([item[0] for item in indicator_tags_exclude if item]),\n        \"artifact_ids_include\": ', '.join(artifact_ids_include),\n    })\n\n",
                     "x": 0,
                     "y": 848
                 },
@@ -605,7 +605,7 @@
         "schema": "5.0.6",
         "version": "5.3.0.84310"
     },
-    "create_time": "2022-05-03T14:16:57.254821+00:00",
+    "create_time": "2022-05-13T15:28:40.116396+00:00",
     "draft_mode": false,
     "labels": [
         "*"
