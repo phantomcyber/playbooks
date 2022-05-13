@@ -113,7 +113,7 @@
                     "targetPort": "1_in"
                 }
             ],
-            "hash": "4ec551e7fcedc364318db44b89f960a3314c86cd",
+            "hash": "f6a9859a370a3b3c9b75464c129319434969f2ff",
             "nodes": {
                 "0": {
                     "data": {
@@ -128,7 +128,7 @@
                     "id": "0",
                     "type": "start",
                     "x": 190,
-                    "y": -2.984279490192421e-13
+                    "y": -3.623767952376511e-13
                 },
                 "1": {
                     "data": {
@@ -489,7 +489,7 @@
                     "id": "18",
                     "type": "code",
                     "userCode": "    from collections import OrderedDict \n    from operator import getitem \n    \n    def mitre_sorter(item):\n        tactic_list = [\n            'reconnaissance', 'resource-development', 'initial-access', 'execution', \n            'persistence', 'privilege-escalation', 'defense-evasion', 'credential-access', \n            'discovery', 'lateral-movement', 'collection', 'command-and-control', \n            'exfiltration', 'impact'\n        ]\n        index_map = {v: i for i, v in enumerate(tactic_list)}\n        if ',' in item[0]:\n            first_item = item[0].split(', ')[1]\n            return index_map[first_item]\n        else:\n            return index_map[item[0]]\n\n    artifact_data = phantom.collect2(\n        container=container, datapath=[\n            'artifact:*.cef.mitre_tactic', \n            'artifact:*.cef.mitre_technique', \n            'artifact:*.cef.mitre_technique_id', \n            'artifact:*.description'\n        ], \n        scope='all'\n    )\n    \n    def replace_all(text):\n        char_list = ['[', ']', '\"', \"'\"]\n        for char in char_list:\n            text = text.replace(char, '')\n        return text\n\n    mitre_dictionary = {}\n    for mitre_tactic, mitre_technique, mitre_technique_id, risk_message in artifact_data:\n        \n        mitre_tactic = replace_all(json.dumps(mitre_tactic)) if mitre_tactic else None\n        mitre_technique = replace_all(json.dumps(mitre_technique)) if mitre_technique else None\n        mitre_technique_id = replace_all(json.dumps(mitre_technique_id)) if mitre_technique_id else None\n        \n        if mitre_tactic and mitre_tactic not in mitre_dictionary.keys():\n            mitre_dictionary[mitre_tactic] = {mitre_technique: {'id': mitre_technique_id, 'risk_message': [risk_message]}}\n        elif mitre_tactic and mitre_tactic in mitre_dictionary.keys():\n            if mitre_technique and mitre_technique not in mitre_dictionary[mitre_tactic].keys():\n                mitre_dictionary[mitre_tactic][mitre_technique] = {'id': mitre_technique_id, 'risk_message': [risk_message]}\n            elif mitre_technique and mitre_technique in mitre_dictionary[mitre_tactic].keys():\n                if risk_message not in mitre_dictionary[mitre_tactic][mitre_technique]['risk_message']:\n                    mitre_dictionary[mitre_tactic][mitre_technique]['risk_message'].append(risk_message)\n    \n    mitre_copy = mitre_dictionary.copy()\n    for k,v in mitre_copy.items():\n        sorted_techniques = OrderedDict(sorted(v.items(),\n                                               key = lambda x: getitem(x[1], 'id')\n                                              )\n                                       ) \n        for a,b in sorted_techniques.items():\n            sorted_techniques[a] = b['risk_message']\n        mitre_copy[k] = sorted_techniques\n\n    final_dictionary = sorted(mitre_copy.items(), key=mitre_sorter)\n    final_format = \"\"\n    for tactics in final_dictionary:\n        if ',' in tactics[0]:\n            tactic_list = tactics[0].split(', ')\n            final_format += \"\\n ## \"\n            for tactic in tactic_list[:-1]:\n                split_tactic = tactic.split('-')\n                for item in split_tactic[:-1]:\n                    final_format += \"{} \".format(item.capitalize())\n                final_format += \"{}, \".format(split_tactic[-1].capitalize())\n            split_tactic = tactic_list[-1].split('-')\n            for item in split_tactic[:-1]:\n                final_format += \"{} \".format(item.capitalize())\n            final_format += \"{}\".format(split_tactic[-1].capitalize())\n        else:\n            tactic_list = tactics[0].split('-')\n            final_format += \"\\n ## \"\n            for tactic in tactic_list[:-1]:\n                final_format += \"{} \".format(tactic.capitalize())\n            final_format += \"{}\".format(tactic_list[-1].capitalize())\n        for k,v in tactics[1].items():\n            final_format += \"\\n - #### {}: {}\".format(k, mitre_dictionary[tactics[0]][k]['id'])\n            for risk_message in v:\n                final_format += \"\\n   - ```{}```\".format(risk_message)\n        final_format += \"\\n\"\n    \n\n    if final_format:\n    \tmitre_format__output = final_format\n    else:\n        mitre_format__output = \"No Tactics / Techniques available in contributing risk events.\"\n\t\n\n",
-                    "x": -1.4210854715202004e-14,
+                    "x": 0,
                     "y": 1532
                 },
                 "19": {
@@ -516,13 +516,13 @@
                             "run_risk_rule_query:action_result.data.*._time",
                             "run_risk_rule_query:action_result.data.*.risk_message"
                         ],
-                        "template": "#### Splunk Enterprise Security has detected that {0} '**{1}**' generated {2} points of risk.\n\nFull statistics and timeline on this user's risk behavior can be found [here](https://{3}/en-US/app/SplunkEnterpriseSecuritySuite/risk_analysis?earliest={4}&latest={5}&form.risk_object_type_raw={0}&form.risk_object_raw={1})\n\n| _time | event |\n| --- | --- |\n%%\n| **{7}** | `{8}` |\n%%\n\n![](https://attack.mitre.org/theme/images/mitrelogowhiteontrans.gif)\n\n{6}",
+                        "template": "### Splunk Enterprise Security has detected that {0} '**{1}**' generated {2} points of risk.\n\n### Full statistics and timeline on this user's risk behavior can be found [here](https://{3}/en-US/app/SplunkEnterpriseSecuritySuite/risk_analysis?earliest={4}&latest={5}&form.risk_object_type_raw={0}&form.risk_object_raw={1})\n\n| _time | event |\n| --- | --- |\n%%\n| **{7}** | `{8}` |\n%%\n\n&nbsp;\n\n# MITRE ATT&CK\u00ae\nSplunk SOAR has aggregated and aligned the following risk rules to ATT&CK Tactics and Techniques.\n\n{6}",
                         "type": "format"
                     },
                     "errors": {},
                     "id": "19",
                     "type": "format",
-                    "x": -1.4210854715202004e-14,
+                    "x": 0,
                     "y": 1772
                 },
                 "33": {
@@ -924,7 +924,7 @@
                     "id": "6",
                     "type": "utility",
                     "x": 170,
-                    "y": 179.99999999999986
+                    "y": 179.99999999999983
                 },
                 "7": {
                     "data": {
@@ -990,10 +990,10 @@
         ],
         "playbook_type": "automation",
         "python_version": "3",
-        "schema": "5.0.5",
-        "version": "5.2.1.78411"
+        "schema": "5.0.6",
+        "version": "5.3.0.84310"
     },
-    "create_time": "2022-03-25T17:38:02.464803+00:00",
+    "create_time": "2022-05-13T16:23:47.381116+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"
