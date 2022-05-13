@@ -359,7 +359,7 @@ def collect_indicator(action=None, success=None, container=None, results=None, h
     if isinstance(playbook_input_artifact_ids_include_values[0], list):
         artifact_ids_include = [item[0] for item in playbook_input_artifact_ids_include_values if item]
     else:
-        artifact_ids_include = [item for item in playbook_input_artifact_ids_include_values if item]
+        artifact_ids_include = [str(item) for item in playbook_input_artifact_ids_include_values if item]
     parameters.append({
         "container": id_value,
         "indicator_types_include": ', '.join([item for item in find_supported_indicator_types__list if item]),
