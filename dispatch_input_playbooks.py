@@ -356,10 +356,13 @@ def collect_indicator(action=None, success=None, container=None, results=None, h
     for indicator_set in zip_longest(playbook_input_indicator_tags_include, playbook_input_indicator_tags_exclude):
         indicator_tags_include.append(indicator_set[0])
         indicator_tags_exclude.append(indicator_set[1]) 
-    if isinstance(playbook_input_artifact_ids_include_values[0], list):
+    
+    if playbook_input_artifact_ids_include_values and len(playbook_input_artifact_ids_include_values) > 0 and isinstance(playbook_input_artifact_ids_include_values[0], list):
         artifact_ids_include = [item[0] for item in playbook_input_artifact_ids_include_values if item]
-    else:
+    elif isinstance(playbook_input_artifact_ids_include_values, list):
         artifact_ids_include = [str(item) for item in playbook_input_artifact_ids_include_values if item]
+    else:
+        artifact_ids_include = []
     parameters.append({
         "container": id_value,
         "indicator_types_include": ', '.join([item for item in find_supported_indicator_types__list if item]),
