@@ -8,7 +8,7 @@ def indicator_remove_tag(indicator=None, tags=None, **kwargs):
     
     Returns a JSON-serializable object that implements the configured data paths:
         indicator_id: The indicator id that was changed.
-        indicator_tags: The new tags for the indicator
+        indicator_tags: The remaining tags on the indicator after the modification.
     """
     ############################ Custom Code Goes Below This Line #################################
     import json
@@ -56,7 +56,7 @@ def indicator_remove_tag(indicator=None, tags=None, **kwargs):
     data = {"tags": new_tags}
     response = phantom.requests.post(url, json=data, verify=False).json()
     if response.get('success'):
-        outputs = {'indicator_id': indicator_id, 'indicator_tags': tags}
+        outputs = {'indicator_id': indicator_id, 'indicator_tags': new_tags}
     else:
         raise RuntimeError(f"Failed to update tags for indicator with id: {indicator_id}")
 
