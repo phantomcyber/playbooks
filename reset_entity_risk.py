@@ -68,16 +68,16 @@ def custom_format(action=None, success=None, container=None, results=None, handl
     from datetime import datetime
     custom_format__current_time = str(datetime.now())
     custom_format__splunk_event = []
-
+    
     for name, description, artifact_cef, artifact_data in zip(filtered_artifact_0__name, filtered_artifact_0__description, filtered_artifact_0__cef, filtered_artifact_0__data):
-        # Check for the necessary keys:
+        risk_event_data = [item['risk_event'] for item in artifact_data if item.get('risk_event')] 
         if (
             artifact_cef.keys() >= {'_total_risk_score', 'risk_object', 'risk_object_type'}
-            and artifact_data.keys() >= {'original_timestamps', 'risk_event_ids'}
+            and risk_event_data
         ):
-            timestamps = artifact_data['original_timestamps']
-            risk_event_ids = artifact_data['risk_event_ids']
-            for risk_event_id, timestamp in zip(risk_event_ids, timestamps):
+            for risk_event in risk_event_data:
+                risk_event_id = risk_event['id']
+                timestamp = risk_event['timestamp']
                 close_reason = reset_prompt_summary_responses_0[0]
                 risk_score = (float(artifact_cef['_total_risk_score']) / int(artifact_cef['_event_count'])) * -1
                 risk_object = artifact_cef['risk_object']

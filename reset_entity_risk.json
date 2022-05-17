@@ -52,13 +52,6 @@
                     "targetPort": "1_in"
                 },
                 {
-                    "id": "port_5_to_port_8",
-                    "sourceNode": "5",
-                    "sourcePort": "5_out",
-                    "targetNode": "8",
-                    "targetPort": "8_in"
-                },
-                {
                     "conditions": [
                         {
                             "index": 1
@@ -83,9 +76,16 @@
                     "sourcePort": "11_out",
                     "targetNode": "1",
                     "targetPort": "1_in"
+                },
+                {
+                    "id": "port_5_to_port_8",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
                 }
             ],
-            "hash": "d3c939b0b2d6cbd6946a36eeee0ca929e096d7b8",
+            "hash": "edddd2c7b00cf7da757dc2d63115eeba664d5aa0",
             "nodes": {
                 "0": {
                     "data": {
@@ -100,7 +100,7 @@
                     "id": "0",
                     "type": "start",
                     "x": 190,
-                    "y": 0
+                    "y": -6.394884621840902e-14
                 },
                 "1": {
                     "data": {
@@ -257,9 +257,9 @@
                     "errors": {},
                     "id": "5",
                     "type": "code",
-                    "userCode": "    from datetime import datetime\n    custom_format__current_time = str(datetime.now())\n    custom_format__splunk_event = []\n\n    for name, description, artifact_cef, artifact_data in zip(filtered_artifact_0__name, filtered_artifact_0__description, filtered_artifact_0__cef, filtered_artifact_0__data):\n        # Check for the necessary keys:\n        if (\n            artifact_cef.keys() >= {'_total_risk_score', 'risk_object', 'risk_object_type'}\n            and artifact_data.keys() >= {'original_timestamps', 'risk_event_ids'}\n        ):\n            timestamps = artifact_data['original_timestamps']\n            risk_event_ids = artifact_data['risk_event_ids']\n            for risk_event_id, timestamp in zip(risk_event_ids, timestamps):\n                close_reason = reset_prompt_summary_responses_0[0]\n                risk_score = (float(artifact_cef['_total_risk_score']) / int(artifact_cef['_event_count'])) * -1\n                risk_object = artifact_cef['risk_object']\n                risk_object_type = artifact_cef['risk_object_type']\n                owner_name_value = reset_prompt_result_item_0[0]\n                log_template = (\n                    f'{timestamp}, risk_score=\"{risk_score}\", risk_event_id=\"{risk_event_id}\", '\n                    f' risk_object=\"{risk_object}\", risk_object_type=\"{risk_object_type}\",'\n                    f' close_reason=\"{close_reason}\", close_action_owner=\"{owner_name_value}\", close_time=\"{custom_format__current_time}\", '\n                    f' search_name=\"{name}\", risk_message=\"{description}\", soar_event_id=\"{id_value}\", soar_event_name=\"{name_value}\"'\n                )\n                custom_format__splunk_event.append(log_template)\n    \n    custom_format__splunk_event = '\\r\\n'.join(custom_format__splunk_event)\n\n",
+                    "userCode": "    from datetime import datetime\n    custom_format__current_time = str(datetime.now())\n    custom_format__splunk_event = []\n    \n    for name, description, artifact_cef, artifact_data in zip(filtered_artifact_0__name, filtered_artifact_0__description, filtered_artifact_0__cef, filtered_artifact_0__data):\n        risk_event_data = [item['risk_event'] for item in artifact_data if item.get('risk_event')] \n        if (\n            artifact_cef.keys() >= {'_total_risk_score', 'risk_object', 'risk_object_type'}\n            and risk_event_data\n        ):\n            for risk_event in risk_event_data:\n                risk_event_id = risk_event['id']\n                timestamp = risk_event['timestamp']\n                close_reason = reset_prompt_summary_responses_0[0]\n                risk_score = (float(artifact_cef['_total_risk_score']) / int(artifact_cef['_event_count'])) * -1\n                risk_object = artifact_cef['risk_object']\n                risk_object_type = artifact_cef['risk_object_type']\n                owner_name_value = reset_prompt_result_item_0[0]\n                log_template = (\n                    f'{timestamp}, risk_score=\"{risk_score}\", risk_event_id=\"{risk_event_id}\", '\n                    f' risk_object=\"{risk_object}\", risk_object_type=\"{risk_object_type}\",'\n                    f' close_reason=\"{close_reason}\", close_action_owner=\"{owner_name_value}\", close_time=\"{custom_format__current_time}\", '\n                    f' search_name=\"{name}\", risk_message=\"{description}\", soar_event_id=\"{id_value}\", soar_event_name=\"{name_value}\"'\n                )\n                custom_format__splunk_event.append(log_template)\n    \n    custom_format__splunk_event = '\\r\\n'.join(custom_format__splunk_event)\n\n",
                     "x": 0,
-                    "y": 688
+                    "y": 680
                 },
                 "6": {
                     "data": {
@@ -554,7 +554,7 @@
         "schema": "5.0.6",
         "version": "5.3.0.84310"
     },
-    "create_time": "2022-04-14T20:04:49.870497+00:00",
+    "create_time": "2022-05-17T20:23:39.170181+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"
