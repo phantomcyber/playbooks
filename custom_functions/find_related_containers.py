@@ -111,12 +111,18 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
         # deduplicate and return
         return list({str(i):i for i in pairing_list}.values())
         
-    def find_common_containers_by_field(pairing_list, current_container) -> dict:
+    def find_common_containers_by_field(pairing_list, current_container, seconds) -> dict:
         container_dictionary = {}
         artifact_url = phantom.build_phantom_rest_url('artifact')
+        offset_time = format_offset_time(seconds)
         for pairing in pairing_list:
             for k,v in pairing.items():
-                params = {f'_filter_cef__{k}': f'"{v}"', 'page_size': 0, '_exclude_container': current_container}
+                params = {
+                    '_filter_create_time__gt': f'"{offset_time}"',
+                    f'_filter_cef__{k}': f'"{v}"', 
+                    'page_size': 0, 
+                    '_exclude_container': current_container
+                }
                 related_artifacts = phantom.requests.get(artifact_url, params=params, verify=False).json()
                 if related_artifacts['data']:
                     container_id_set = set([item['container'] for item in related_artifacts['data']])
@@ -195,6 +201,7 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
                 f"earliest_time string '{earliest_time}' is incorrectly formatted. "
                 f"Format is -<int><time> where <int> is an integer and <time> is y, mon, w, d, h, or m. Example: '-1h'")
     else:
+        earliest_time = "-30d"
         # default 30 days in seconds
         time_in_seconds = 2592000
 
@@ -276,7 +283,7 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
         pairings_list = get_field_dictionary(field_list,  current_container)
         if not pairings_list:
             raise RuntimeError(f"No matches found for provided field_list: {field_list}")
-        container_dict = find_common_containers_by_field(pairings_list, current_container)
+        container_dict = find_common_containers_by_field(pairings_list, current_container, time_in_seconds)
         for container_id in list(container_dict.keys()):
             if len(container_dict[container_id]['field_list']) < minimum_match_count:
                 del(container_dict[container_id])
@@ -290,10 +297,17 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
             filter_severity=filter_severity, 
             filter_in_case=filter_in_case
         )
+        phantom.debug(
+            f"{len(outputs)} containers found for '{minimum_match_count}' "
+            f"minimum matches out of the provided input, '{field_list if field_list else value_list}', "
+            f"in the past '{earliest_time}'"
+        )
     else:
         phantom.debug(
             f"No related containers found for '{minimum_match_count}' "
-            f"minimum matches out of the provided input: '{field_list if field_list else value_list}'")
+            f"minimum matches out of the provided input, '{field_list if field_list else value_list}', "
+            f"in the past '{earliest_time}'"
+        )
             
     # Return a JSON-serializable object
     assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
