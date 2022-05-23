@@ -3,15 +3,15 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
     Takes a list of indicator values or field names that may appear in other containers on the system. If any related containers are found, it will produce a list of the related container details.
     
     Args:
-        field_list (CEF type: *): A field  to search on, such as destinationAddress or risk_object. Not compatible with value_list. Only containers that share the exact value in the exact fields will be considered related.
-        value_list (CEF type: *): An indicator value to search on, such as a file hash or IP address. To search on all indicator values in the container, use "*". Not compatible with field_list.
+        field_list (CEF type: *): A comma separated list of fields to search on. Do not use data paths, only field names. Not compatible with value_list. Field/value combinations are OR'd together. Only containers that share the exact value(s) contained in the exact field(s) will contribute to minimum_match_count. 
+        value_list (CEF type: *): A list of indicator values to search on, such as a file hash or IP address. Values are OR'd together. To search on all indicator values in the container, use "*". Not compatible with field_list.
         minimum_match_count: The minimum number of values from the value_list parameter or the fields from the field_list that must match with related containers. Supports an integer or the string 'all'. Adding 'all' will set the minimum_match_count to the length of the number of unique values in the value_list or the number of unique fields in the field_list. If no match count provided, this will default to 1.
         container (CEF type: phantom container id): The container to run indicator analysis against. Supports container object or container_id. This container will also be excluded from the results for related_containers.
         earliest_time: Optional modifier to only consider related containers within a time window. Default is -30d.  Supports year (y), month (m), day (d), hour (h), or minute (m)  Custom function will always set the earliest container window based on the input container "create_time".
         filter_status: Optional comma-separated list of statuses to filter on. Only containers that have statuses matching an item in this list will be included.
         filter_label (CEF type: phantom container label): Optional comma-separated list of labels to filter on. Only containers that have labels matching an item in this list will be included.
         filter_severity: Optional comma-separated list of severities to filter on. Only containers that have severities matching an item in this list will be included.
-        filter_in_case: Optional parameter to filter containers that are in a case or not.
+        filter_in_case: Optional parameter to filter containers that are in a case or not. True for only containers in cases, False for only containers not in cases. Default is all containers.
     
     Returns a JSON-serializable object that implements the configured data paths:
         *.container_id (CEF type: *): The unique id of the related container
@@ -124,7 +124,7 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
                     '_exclude_container': current_container
                 }
                 related_artifacts = phantom.requests.get(artifact_url, params=params, verify=False).json()
-                if related_artifacts['data']:
+                if related_artifacts.get('data'):
                     container_id_set = set([item['container'] for item in related_artifacts['data']])
                     for container_id in container_id_set:
                         if not container_dictionary.get(str(container_id)):
@@ -219,7 +219,11 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
     # If it exists, ensures field list is always a list
     if field_list:
         if isinstance(field_list, str):
-            field_list = [field_list]  
+            field_list = [item.strip(' ') for item in field_list.split(',')]
+        elif isinstance(field_list, list):
+            field_list = [item for item in field_list if isinstance(item, str)]
+        else:
+            raise TypeError(f"Invalid input for field_list: '{field_list}'. Must be str or list.")
 
     # If value list is equal to * then proceed to grab all indicator records for the current container
     elif value_list and ((isinstance(value_list, list) and "*" in value_list) or (isinstance(value_list, str) and value_list == "*")):

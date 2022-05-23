@@ -1,5 +1,5 @@
 {
-    "create_time": "2022-05-19T13:26:50.353804+00:00",
+    "create_time": "2022-05-23T15:03:39.500211+00:00",
     "custom_function_id": "5781e3d5a4773b2c48afd429768fd81b5e733e54",
     "description": "Takes a list of indicator values or field names that may appear in other containers on the system. If any related containers are found, it will produce a list of the related container details.",
     "draft_mode": false,
@@ -8,19 +8,19 @@
             "contains_type": [
                 "*"
             ],
-            "description": "A field  to search on, such as destinationAddress or risk_object. Not compatible with value_list. Only containers that share the exact value in the exact fields will be considered related.",
+            "description": "A comma separated list of fields to search on. Do not use data paths, only field names. Not compatible with value_list. Field/value combinations are OR'd together. Only containers that share the exact value(s) contained in the exact field(s) will contribute to minimum_match_count. ",
             "input_type": "list",
             "name": "field_list",
-            "placeholder": ""
+            "placeholder": "destionationAddress, requestURL"
         },
         {
             "contains_type": [
                 "*"
             ],
-            "description": "An indicator value to search on, such as a file hash or IP address. To search on all indicator values in the container, use \"*\". Not compatible with field_list.",
+            "description": "A list of indicator values to search on, such as a file hash or IP address. Values are OR'd together. To search on all indicator values in the container, use \"*\". Not compatible with field_list.",
             "input_type": "list",
             "name": "value_list",
-            "placeholder": "*"
+            "placeholder": "artifact:*.cef.destinationAddress"
         },
         {
             "contains_type": [],
@@ -72,7 +72,7 @@
         },
         {
             "contains_type": [],
-            "description": "Optional parameter to filter containers that are in a case or not.",
+            "description": "Optional parameter to filter containers that are in a case or not. True for only containers in cases, False for only containers not in cases. Default is all containers.",
             "input_type": "item",
             "name": "filter_in_case",
             "placeholder": "True or False"
