@@ -1,26 +1,28 @@
-def find_related_containers(value_list=None, minimum_match_count=None, container=None, earliest_time=None, filter_status=None, filter_label=None, filter_severity=None, filter_in_case=None, **kwargs):
+def find_related_containers(field_list=None, value_list=None, minimum_match_count=None, container=None, earliest_time=None, filter_status=None, filter_label=None, filter_severity=None, filter_in_case=None, **kwargs):
     """
-    Takes a provided list of indicator values to search for and finds all related containers. It will produce a list of the related container details.
+    Takes a list of indicator values or field names that may appear in other containers on the system. If any related containers are found, it will produce a list of the related container details.
     
     Args:
-        value_list (CEF type: *): An indicator value to search on, such as a file hash or IP address. To search on all indicator values in the container, use "*".
-        minimum_match_count (CEF type: *): The minimum number of values from the value_list parameter that must match with related containers. Supports an integer or the string 'all'. Adding 'all' will set the minimum_match_count to the length of the number of unique values in the value_list. If no match count provided, this will default to 1.
+        field_list (CEF type: *): A comma separated list of fields to search on. Do not use data paths, only field names. Not compatible with value_list. Field/value combinations are OR'd together. Only containers that share the exact value(s) contained in the exact field(s) will contribute to minimum_match_count. 
+        value_list (CEF type: *): A list of indicator values to search on, such as a file hash or IP address. Values are OR'd together. To search on all indicator values in the container, use "*". Not compatible with field_list.
+        minimum_match_count: The minimum number of values from the value_list parameter or the fields from the field_list that must match with related containers. Supports an integer or the string 'all'. Adding 'all' will set the minimum_match_count to the length of the number of unique values in the value_list or the number of unique fields in the field_list. If no match count provided, this will default to 1.
         container (CEF type: phantom container id): The container to run indicator analysis against. Supports container object or container_id. This container will also be excluded from the results for related_containers.
         earliest_time: Optional modifier to only consider related containers within a time window. Default is -30d.  Supports year (y), month (m), day (d), hour (h), or minute (m)  Custom function will always set the earliest container window based on the input container "create_time".
         filter_status: Optional comma-separated list of statuses to filter on. Only containers that have statuses matching an item in this list will be included.
-        filter_label: Optional comma-separated list of labels to filter on. Only containers that have labels matching an item in this list will be included.
+        filter_label (CEF type: phantom container label): Optional comma-separated list of labels to filter on. Only containers that have labels matching an item in this list will be included.
         filter_severity: Optional comma-separated list of severities to filter on. Only containers that have severities matching an item in this list will be included.
-        filter_in_case: Optional parameter to filter containers that are in a case or not.
+        filter_in_case: Optional parameter to filter containers that are in a case or not. True for only containers in cases, False for only containers not in cases. Default is all containers.
     
     Returns a JSON-serializable object that implements the configured data paths:
         *.container_id (CEF type: *): The unique id of the related container
-        *.container_indicator_match_count: The number of indicators matched to the related container
+        *.container_indicator_match_count: The number of indicators matched to the related container if value_list provided
         *.container_status: The status of the related container e.g. new, open, closed
         *.container_type: The type of the related container, e.g. default or case
         *.container_name: The name of the related container
         *.in_case: True or False if the related container is already included in a case
-        *.indicator_ids: Indicator ID that matched
+        *.indicator_ids: Indicator ID that matched if value list provided
         *.container_url (CEF type: url): Link to container
+        *.container_field_list: List of fields that matched if field_list provided.
     """
     ############################ Custom Code Goes Below This Line #################################
     import json
@@ -77,22 +79,63 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
             query_url = container_url + f'&_filter_id__in={group}'
             container_response = phantom.requests.get(query_url, verify=False).json()
             for container_data in container_response.get('data', []):
-                indicator_ids = list(container_dict[str(container_data['id'])]['indicator_ids'])
-                match_count = len(indicator_ids)              
-                output_list.append(
-                    {
-                        'container_id': container_data['id'],
-                        'container_indicator_match_count': match_count,
-                        'container_status': container_data['status'],
-                        'container_type': container_data['container_type'],
-                        'container_name': container_data['name'],
-                        'container_url': base_url.rstrip('/') + f"/mission/{container_data['id']}",
-                        'in_case': container_data['in_case'],
-                        'indicator_ids': indicator_ids
-                    }
-                )
+                temp_dict = {
+                    'container_id': container_data['id'],
+                    'container_status': container_data['status'],
+                    'container_type': container_data['container_type'],
+                    'container_name': container_data['name'],
+                    'container_url': base_url.rstrip('/') + f"/mission/{container_data['id']}",
+                    'in_case': container_data['in_case']
+                }
+                if container_dict[str(container_data['id'])].get('indicator_ids'):
+                    indicator_ids = list(container_dict[str(container_data['id'])]['indicator_ids'])
+                    match_count = len(indicator_ids) 
+                    temp_dict['container_indicator_match_count'] = match_count
+                    temp_dict['indicator_ids'] = indicator_ids
+                if container_dict[str(container_data['id'])].get('field_list'):
+                    field_list = container_dict[str(container_data['id'])]['field_list']
+                    temp_dict['container_field_list'] = field_list
+                output_list.append(temp_dict)
         return output_list
     
+    def get_field_dictionary(field_list,  current_container) -> list:
+        pairing_list = []
+        artifact_url = phantom.build_phantom_rest_url('container', current_container, 'artifacts')
+        artifact_list = phantom.requests.get(artifact_url, verify=False).json()['data']
+        if not artifact_list:
+            raise RuntimeError(f"No artifacts found for {current_container}")
+        for artifact in artifact_list:
+            for field in field_list:
+                if artifact['cef'].get(field):
+                    pairing_list.append({field: artifact['cef'][field]})
+        # deduplicate and return
+        return list({str(i):i for i in pairing_list}.values())
+        
+    def find_common_containers_by_field(pairing_list, current_container, seconds) -> dict:
+        container_dictionary = {}
+        artifact_url = phantom.build_phantom_rest_url('artifact')
+        offset_time = format_offset_time(seconds)
+        for pairing in pairing_list:
+            for k,v in pairing.items():
+                params = {
+                    '_filter_create_time__gt': f'"{offset_time}"',
+                    f'_filter_cef__{k}': f'"{v}"', 
+                    'page_size': 0, 
+                    '_exclude_container': current_container
+                }
+                related_artifacts = phantom.requests.get(artifact_url, params=params, verify=False).json()
+                if related_artifacts.get('data'):
+                    container_id_set = set([item['container'] for item in related_artifacts['data']])
+                    for container_id in container_id_set:
+                        if not container_dictionary.get(str(container_id)):
+                            container_dictionary[str(container_id)] = {'field_list': [{k: v}]}
+                        else: 
+                            container_dictionary[str(container_id)]['field_list'].append({k: v})
+        for key in list(container_dictionary.keys()):   
+            field_list = container_dictionary[key]['field_list']
+            container_dictionary[key]['field_list'] = list({str(i):i for i in field_list}.values())
+        return container_dictionary
+                
     def fetch_indicators(value_list) -> Tuple[dict, set]:
         # Creats a dictionary with the value_hash as the key with a sub dictionary of indicator ids
         indicator_dictionary = {}
@@ -130,12 +173,14 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
                         container_dictionary[str(container_id)]['indicator_ids'].add(dict_object['indicator_id'])
         return container_dictionary
     
-    def test_minimum_match(minimum_match_count, value_list) -> None:
+    def test_minimum_match(minimum_match_count, input_list) -> None:
         # Fail early if minimum_match_count exceeds the number of provided values
-        if isinstance(minimum_match_count, int) and minimum_match_count > len(value_list):
+        if isinstance(minimum_match_count, int) and minimum_match_count > len(input_list):
             raise RuntimeError(
-                f"The provided minimum_match_count '{minimum_match_count}' exceeds the number of unique values from the event - '{len(value_list)}'. "
-                f"Try providing additional values in the value_list, decreasing the minimum_match_count, or entering 'all' in minimum_match_count."
+                f"The provided minimum_match_count '{minimum_match_count}' "
+                f"exceeds the number of unique fields or values given: '{len(input_list)}'. "
+                f"Try providing additional values in the value_list, additional fields in the field_list, "
+                f"decreasing the minimum_match_count, or entering 'all' in minimum_match_count."
             )
         return
     
@@ -156,6 +201,7 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
                 f"earliest_time string '{earliest_time}' is incorrectly formatted. "
                 f"Format is -<int><time> where <int> is an integer and <time> is y, mon, w, d, h, or m. Example: '-1h'")
     else:
+        earliest_time = "-30d"
         # default 30 days in seconds
         time_in_seconds = 2592000
 
@@ -167,8 +213,20 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
     else:
         raise TypeError("The input 'container' is neither a container dictionary nor an int, so it cannot be used")
     
+    # Check for conflicting inputs
+    if field_list and value_list:
+        raise ValueError("Cannot provide both field_list and value_list")
+    # If it exists, ensures field list is always a list
+    if field_list:
+        if isinstance(field_list, str):
+            field_list = [item.strip(' ') for item in field_list.split(',')]
+        elif isinstance(field_list, list):
+            field_list = [item for item in field_list if isinstance(item, str)]
+        else:
+            raise TypeError(f"Invalid input for field_list: '{field_list}'. Must be str or list.")
+
     # If value list is equal to * then proceed to grab all indicator records for the current container
-    if value_list and ((isinstance(value_list, list) and "*" in value_list) or (isinstance(value_list, str) and value_list == "*")):
+    elif value_list and ((isinstance(value_list, list) and "*" in value_list) or (isinstance(value_list, str) and value_list == "*")):
         new_value_list = set()
         url = phantom.build_phantom_rest_url('container', current_container, 'artifacts') + '?page_size=0'
         response_data = phantom.requests.get(url, verify=False).json()
@@ -192,10 +250,10 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
     if minimum_match_count and not isinstance(minimum_match_count, int) and not isinstance(minimum_match_count, str):
         raise TypeError(f"Invalid type for 'minimum_match_count', {type(minimum_match_count)}, must be 'int' or the string 'all'")
     elif isinstance(minimum_match_count, str) and minimum_match_count.lower() == 'all':
-        minimum_match_count = len(value_list)
+        minimum_match_count = len(field_list if field_list else value_list)
     elif not minimum_match_count:
         minimum_match_count = 1
-    test_minimum_match(minimum_match_count, value_list)
+    test_minimum_match(minimum_match_count, field_list if field_list else value_list)
     
     # Put filters in list form
     if isinstance(filter_status, str):
@@ -209,21 +267,31 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
     
     ## ------------------- ##
     ## End Input Checking ##
+    if value_list:
+        indicator_dictionary, indicator_id_set = fetch_indicators(value_list)
 
-    indicator_dictionary, indicator_id_set = fetch_indicators(value_list)
+        # Quit early if no indicator_ids were found
+        if not indicator_dictionary:
+            phantom.debug(f"No indicators IDs found for provided values: '{value_list}'")
+            assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
+            return outputs
 
-    # Quit early if no indicator_ids were found
-    if not indicator_dictionary:
-        phantom.debug(f"No indicators IDs found for provided values: '{value_list}'")
-        assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
-        return outputs
-    
-    add_common_containers(indicator_dictionary)
-    container_dict = match_indicator_per_container(indicator_dictionary, current_container)
-    for container_id in list(container_dict.keys()):
-        if len(container_dict[container_id]['indicator_ids'].intersection(indicator_id_set)) < minimum_match_count:
-            del(container_dict[container_id])
-    
+        add_common_containers(indicator_dictionary)
+        container_dict = match_indicator_per_container(indicator_dictionary, current_container)
+        for container_id in list(container_dict.keys()):
+            if len(container_dict[container_id]['indicator_ids'].intersection(indicator_id_set)) < minimum_match_count:
+                del(container_dict[container_id])
+
+            
+    elif field_list:
+        pairings_list = get_field_dictionary(field_list,  current_container)
+        if not pairings_list:
+            raise RuntimeError(f"No matches found for provided field_list: {field_list}")
+        container_dict = find_common_containers_by_field(pairings_list, current_container, time_in_seconds)
+        for container_id in list(container_dict.keys()):
+            if len(container_dict[container_id]['field_list']) < minimum_match_count:
+                del(container_dict[container_id])
+                
     if container_dict:
         outputs = build_outputs(
             container_dict,
@@ -233,9 +301,18 @@ def find_related_containers(value_list=None, minimum_match_count=None, container
             filter_severity=filter_severity, 
             filter_in_case=filter_in_case
         )
+        phantom.debug(
+            f"{len(outputs)} containers found for '{minimum_match_count}' "
+            f"minimum matches out of the provided input, '{field_list if field_list else value_list}', "
+            f"in the past '{earliest_time}'"
+        )
     else:
-        phantom.debug(f"No related containers found for '{minimum_match_count}' minimum matches out of the provided values: '{value_list}'")
-        
+        phantom.debug(
+            f"No related containers found for '{minimum_match_count}' "
+            f"minimum matches out of the provided input, '{field_list if field_list else value_list}', "
+            f"in the past '{earliest_time}'"
+        )
+            
     # Return a JSON-serializable object
     assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
     return outputs
