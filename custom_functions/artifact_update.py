@@ -1,9 +1,9 @@
 def artifact_update(artifact_id=None, name=None, label=None, severity=None, cef_field=None, cef_value=None, cef_data_type=None, tags=None, overwrite_tags=None, input_json=None, **kwargs):
     """
-    Update an artifact with the specified attributes. All parameters are optional, except that cef_field and cef_value must both be provided if one is provided. Supports all fields available in /rest/artifact. Add any unlisted inputs as dictionary keys in input_json. Unsupported keys will automatically be dropped.
+    Update an artifact with the specified attributes. All parameters are optional, except that an artifact_id must be provided and if one of cef_field or cef_value is provided then they must both be provided. Supports all fields available in /rest/artifact. Add any unlisted inputs as dictionary keys in input_json. Unsupported keys will automatically be dropped.
     
     Args:
-        artifact_id (CEF type: phantom artifact id): ID of the artifact to update, which is required.
+        artifact_id (CEF type: phantom artifact id): ID of the artifact to update, which is required unless artifact_id is a key within input_json
         name: Change the name of the artifact.
         label: Change the label of the artifact.
         severity: Change the severity of the artifact. Typically this is either "High", "Medium", or "Low".
@@ -24,10 +24,23 @@ def artifact_update(artifact_id=None, name=None, label=None, severity=None, cef_
     outputs = {}
     json_dict = None
     valid_keys = [
-        'artifact_type', 'cef', 'cef_data', 'cef_types', 'field_mapping', 
+        'artifact_id', 'artifact_type', 'cef', 'cef_data', 'cef_types', 'field_mapping', 
         'data', 'end_time', 'label', 'name', 'owner_id', 
         'raw_data', 'run_automation', 'severity','start_time', 'tags', 'type'
     ]
+    
+    # check the input_json first, because it might have an artifact_id in it
+    if input_json:
+        # ensure valid input_json
+        if isinstance(input_json, dict):
+            json_dict = input_json
+        elif isinstance(input_json, str):
+            json_dict = json.loads(input_json)
+        else:
+            raise ValueError("input_json must be either 'dict' or valid json 'string'")
+        if 'artifact_id' in json_dict:
+            artifact_id = int(json_dict['artifact_id'])
+    
     if not isinstance(artifact_id, int):
         raise TypeError("artifact_id is required")
     
@@ -61,19 +74,12 @@ def artifact_update(artifact_id=None, name=None, label=None, severity=None, cef_
         updated_artifact['cef'].update({cef_field: cef_value})
         if cef_data_type and isinstance(cef_data_type, str):
             updated_artifact['cef_types'].update({cef_field: [cef_data_type]})
-    
-    if input_json:
-        # ensure valid input_json
-        if isinstance(input_json, dict):
-            json_dict = input_json
-        elif isinstance(input_json, str):
-            json_dict = json.loads(input_json)
-        else:
-            raise ValueError("input_json must be either 'dict' or valid json 'string'")
             
     if json_dict:
         # Merge dictionaries, using the value from json_dict if there are any conflicting keys
         for json_key in json_dict:
+            if json_key == 'artifact_id':
+                continue
             if json_key in valid_keys:
                 # translate keys supported in phantom.add_artifact() to their corresponding values in /rest/artifact
                 if json_key == 'raw_data':
