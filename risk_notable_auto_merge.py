@@ -416,15 +416,15 @@ def find_related_events(action=None, success=None, container=None, results=None,
     parameters = []
 
     parameters.append({
+        "container": id_value,
         "field_list": "risk_object",
         "value_list": None,
-        "minimum_match_count": "all",
-        "container": id_value,
-        "earliest_time": "-30d",
-        "filter_status": "new, open",
         "filter_label": "risk_notable",
-        "filter_severity": None,
+        "earliest_time": "-24h",
+        "filter_status": "new, open",
         "filter_in_case": None,
+        "filter_severity": None,
+        "minimum_match_count": "all",
     })
 
     ################################################################################
