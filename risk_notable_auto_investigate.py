@@ -324,17 +324,17 @@ def update_notable(action=None, success=None, container=None, results=None, hand
     # Update Splunk with any enrichment from the previous block
     ################################################################################
 
-    risk_notable_enrich_output_note_content = phantom.collect2(container=container, datapath=["risk_notable_enrich:playbook_output:note_content"], scope="all")
+    dispatch_investigate_playbooks_output_sub_playbook_outputs = phantom.collect2(container=container, datapath=["dispatch_investigate_playbooks:playbook_output:sub_playbook_outputs"], scope="all")
     filtered_artifact_0_data_event_id_filter = phantom.collect2(container=container, datapath=["filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id","filtered-data:event_id_filter:condition_1:artifact:*.id"], scope="all")
 
     parameters = []
 
     # build parameters list for 'update_notable' call
-    for risk_notable_enrich_output_note_content_item in risk_notable_enrich_output_note_content:
+    for dispatch_investigate_playbooks_output_sub_playbook_outputs_item in dispatch_investigate_playbooks_output_sub_playbook_outputs:
         for filtered_artifact_0_item_event_id_filter in filtered_artifact_0_data_event_id_filter:
             if filtered_artifact_0_item_event_id_filter[0] is not None:
                 parameters.append({
-                    "comment": risk_notable_enrich_output_note_content_item[0],
+                    "comment": dispatch_investigate_playbooks_output_sub_playbook_outputs_item[0],
                     "event_ids": filtered_artifact_0_item_event_id_filter[0],
                     "context": {'artifact_id': filtered_artifact_0_item_event_id_filter[1]},
                 })
