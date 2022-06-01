@@ -1,5 +1,5 @@
 """
-Collects possible user and system data types and checks Splunk Enterprise Security for asset and identity data. If there is a match, it will tag the indicator record with &quot;asset&quot; or &quot;identity.&quot;
+Collects possible user and system data types and checks Splunk Enterprise Security for asset and identity data. If there is a match, it will tag the indicator record with &quot;known asset&quot; or &quot;known identity.&quot;
 """
 
 
@@ -125,10 +125,10 @@ def filter_matching_identities(action=None, success=None, container=None, result
     # in "Find Identities"
     ################################################################################
 
-    collect_users_data = phantom.collect2(container=container, datapath=["collect_users:custom_function_result.data.*.artifact_value"])
+    dedup_users_data = phantom.collect2(container=container, datapath=["dedup_users:custom_function_result.data.*.item"])
     find_identities_result_data = phantom.collect2(container=container, datapath=["find_identities:action_result.data.*.identity"], action_results=results)
 
-    collect_users_data___artifact_value = [item[0] for item in collect_users_data]
+    dedup_users_data___item = [item[0] for item in dedup_users_data]
     find_identities_result_item_0 = [item[0] for item in find_identities_result_data]
 
     filter_matching_identities__identities = None
@@ -137,7 +137,7 @@ def filter_matching_identities(action=None, success=None, container=None, result
     ## Custom Code Start
     ################################################################################
     filter_matching_identities__identities = []
-    for user in collect_users_data___artifact_value:
+    for user in dedup_users_data___item:
         for identity_result in find_identities_result_item_0:
             if user in identity_result:
                 filter_matching_identities__identities.append(user)
@@ -205,7 +205,7 @@ def collect_hostnames(action=None, success=None, container=None, results=None, h
         "tags": None,
         "scope": "all",
         "container": id_value,
-        "data_types": "host, host name, hostname, host_name",
+        "data_types": "host, host name, hostname, host_name, ip",
     })
 
     ################################################################################
@@ -270,10 +270,10 @@ def filter_matching_assets(action=None, success=None, container=None, results=No
     # value in "find assets"
     ################################################################################
 
-    collect_hostnames_data = phantom.collect2(container=container, datapath=["collect_hostnames:custom_function_result.data.*.artifact_value"])
+    dedup_hosts_data = phantom.collect2(container=container, datapath=["dedup_hosts:custom_function_result.data.*.item"])
     find_assets_result_data = phantom.collect2(container=container, datapath=["find_assets:action_result.data.*.asset"], action_results=results)
 
-    collect_hostnames_data___artifact_value = [item[0] for item in collect_hostnames_data]
+    dedup_hosts_data___item = [item[0] for item in dedup_hosts_data]
     find_assets_result_item_0 = [item[0] for item in find_assets_result_data]
 
     filter_matching_assets__assets = None
@@ -282,7 +282,7 @@ def filter_matching_assets(action=None, success=None, container=None, results=No
     ## Custom Code Start
     ################################################################################
     filter_matching_assets__assets = []
-    for asset in collect_hostnames_data___artifact_value:
+    for asset in dedup_hosts_data___item:
         for asset_result in find_assets_result_item_0:
             if asset in asset_result:
                 filter_matching_assets__assets.append(asset)

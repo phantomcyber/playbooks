@@ -4,7 +4,7 @@
     "category": "Utility",
     "coa": {
         "data": {
-            "description": "Collects possible user and system data types and checks Splunk Enterprise Security for asset and identity data. If there is a match, it will tag the indicator record with \"asset\" or \"identity.\"",
+            "description": "Collects possible user and system data types and checks Splunk Enterprise Security for asset and identity data. If there is a match, it will tag the indicator record with \"known asset\" or \"known identity.\"",
             "edges": [
                 {
                     "id": "port_0_to_port_3",
@@ -180,7 +180,7 @@
                     "targetPort": "1_in"
                 }
             ],
-            "hash": "2eb56e78e5912c424e41fc23f055b78899f12372",
+            "hash": "8d1f39867cd46b38d7d0bc91539fe1a28c6f5725",
             "nodes": {
                 "0": {
                     "data": {
@@ -195,7 +195,7 @@
                     "id": "0",
                     "type": "start",
                     "x": 200,
-                    "y": -1.8474111129762605e-13
+                    "y": -2.4868995751603507e-13
                 },
                 "1": {
                     "data": {
@@ -227,7 +227,7 @@
                         "functionName": "filter_matching_assets",
                         "id": "10",
                         "inputParameters": [
-                            "collect_hostnames:custom_function_result.data.*.artifact_value",
+                            "dedup_hosts:custom_function_result.data.*.item",
                             "find_assets:action_result.data.*.asset"
                         ],
                         "outputVariables": [
@@ -238,7 +238,7 @@
                     "errors": {},
                     "id": "10",
                     "type": "code",
-                    "userCode": "    filter_matching_assets__assets = []\n    for asset in collect_hostnames_data___artifact_value:\n        for asset_result in find_assets_result_item_0:\n            if asset in asset_result:\n                filter_matching_assets__assets.append(asset)\n    phantom.debug(f'Matching assets: {filter_matching_assets__assets}')\n",
+                    "userCode": "    filter_matching_assets__assets = []\n    for asset in dedup_hosts_data___item:\n        for asset_result in find_assets_result_item_0:\n            if asset in asset_result:\n                filter_matching_assets__assets.append(asset)\n    phantom.debug(f'Matching assets: {filter_matching_assets__assets}')\n",
                     "x": 0,
                     "y": 2180
                 },
@@ -789,7 +789,7 @@
                         "functionName": "filter_matching_identities",
                         "id": "6",
                         "inputParameters": [
-                            "collect_users:custom_function_result.data.*.artifact_value",
+                            "dedup_users:custom_function_result.data.*.item",
                             "find_identities:action_result.data.*.identity"
                         ],
                         "outputVariables": [
@@ -800,7 +800,7 @@
                     "errors": {},
                     "id": "6",
                     "type": "code",
-                    "userCode": "    filter_matching_identities__identities = []\n    for user in collect_users_data___artifact_value:\n        for identity_result in find_identities_result_item_0:\n            if user in identity_result:\n                filter_matching_identities__identities.append(user)\n    phantom.debug(f'Matching identities: {filter_matching_identities__identities}')\n",
+                    "userCode": "    filter_matching_identities__identities = []\n    for user in dedup_users_data___item:\n        for identity_result in find_identities_result_item_0:\n            if user in identity_result:\n                filter_matching_identities__identities.append(user)\n    phantom.debug(f'Matching identities: {filter_matching_identities__identities}')\n",
                     "x": 0,
                     "y": 996
                 },
@@ -933,7 +933,7 @@
                         "values": {
                             "collect_by_cef_type": {
                                 "container": "container:id",
-                                "data_types": "host, host name, hostname, host_name",
+                                "data_types": "host, host name, hostname, host_name, ip",
                                 "scope": "all",
                                 "tags": null
                             }
@@ -1002,9 +1002,9 @@
         "playbook_type": "automation",
         "python_version": "3",
         "schema": "5.0.6",
-        "version": "5.3.0.84310"
+        "version": "5.3.1.84890"
     },
-    "create_time": "2022-05-26T17:48:52.316648+00:00",
+    "create_time": "2022-06-01T17:54:55.019836+00:00",
     "draft_mode": false,
     "labels": [
         "*"
