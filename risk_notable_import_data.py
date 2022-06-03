@@ -166,8 +166,10 @@ def filter_artifact_score(action=None, success=None, container=None, results=Non
     # collect filtered artifact ids and results for 'if' condition 1
     matched_artifacts_1, matched_results_1 = phantom.condition(
         container=container,
+        logical_operator="or",
         conditions=[
-            ["artifact:*.cef.calculated_risk_score", ">=", 70]
+            ["artifact:*.cef.calculated_risk_score", ">=", 70],
+            ["artifact:*.cef.risk_score", ">=", 250]
         ],
         name="filter_artifact_score:condition_1",
         scope="all")
