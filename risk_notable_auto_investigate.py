@@ -365,7 +365,7 @@ def risk_threshold_decision(action=None, success=None, container=None, results=N
     found_match_1 = phantom.decision(
         container=container,
         conditions=[
-            ["filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_score", ">=", 250]
+            ["dedup_risk_events:custom_function:total_score", ">=", 250]
         ])
 
     # call connected blocks if condition 1 matched
@@ -481,13 +481,14 @@ def render_verdict_note(action=None, success=None, container=None, results=None,
     # Format a note to explain why auto-containment was invoked.
     ################################################################################
 
-    template = """## SOAR has invoked Auto-Containment\n## This Risk Notable has *{0}* points of risk which exceeds the user-defined critical threshold of *250* points\n\n## These detections contributed to auto-containment.\n| Detection Source | Detection Message |\n| --- | --- |\n%%\n| {1} | ```{2}```|\n%%\n"""
+    template = """## SOAR has invoked Auto-Containment\n## The risk rule artifacts have a deduplicated *{0}* points of risk which exceeds the user-defined critical threshold of *250* points\n\n## These detections contributed to auto-containment.\n| Score | Detection Source | Detection Message |\n| --- | --- | --- |\n%%\n| {1} | {2} | ```{3}```|\n%%\n"""
 
     # parameter list for template variable replacement
     parameters = [
-        "filtered-data:event_id_filter:condition_1:artifact:*.cef.risk_score",
-        "filtered-data:risk_rule_filter:condition_1:artifact:*.name",
-        "filtered-data:risk_rule_filter:condition_1:artifact:*.description"
+        "dedup_risk_events:custom_function:total_score",
+        "dedup_risk_events:custom_function:individual_scores",
+        "dedup_risk_events:custom_function:names",
+        "dedup_risk_events:custom_function:descriptions"
     ]
 
     ################################################################################
@@ -535,29 +536,6 @@ def close_render_verdict(action=None, success=None, container=None, results=None
     ################################################################################
 
     phantom.custom_function(custom_function="community/workbook_task_update", parameters=parameters, name="close_render_verdict", callback=risk_notable_auto_containment)
-
-    return
-
-
-def risk_rule_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("risk_rule_filter() called")
-
-    ################################################################################
-    # Isolate the risk rule artifacts
-    ################################################################################
-
-    # collect filtered artifact ids and results for 'if' condition 1
-    matched_artifacts_1, matched_results_1 = phantom.condition(
-        container=container,
-        conditions=[
-            ["artifact:*.label", "==", "risk_rule"]
-        ],
-        name="risk_rule_filter:condition_1",
-        scope="all")
-
-    # call connected blocks if filtered artifacts or results
-    if matched_artifacts_1 or matched_results_1:
-        render_verdict_note(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
@@ -641,7 +619,7 @@ def mark_close_investigate_evidence(action=None, success=None, container=None, r
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="community/mark_evidence", parameters=parameters, name="mark_close_investigate_evidence", callback=risk_rule_filter)
+    phantom.custom_function(custom_function="community/mark_evidence", parameters=parameters, name="mark_close_investigate_evidence", callback=render_verdict_note)
 
     return
 
@@ -713,8 +691,93 @@ def merge_result_decision(action=None, success=None, container=None, results=Non
 
     # call connected blocks if condition 1 matched
     if found_match_1:
-        risk_threshold_decision(action=action, success=success, container=container, results=results, handle=handle)
+        risk_rule_filter(action=action, success=success, container=container, results=results, handle=handle)
         return
+
+    return
+
+
+def dedup_risk_events(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("dedup_risk_events() called")
+
+    ################################################################################
+    # Calculate a risk score based on all of the unique risk events
+    ################################################################################
+
+    filtered_artifact_0_data_risk_rule_filter = phantom.collect2(container=container, datapath=["filtered-data:risk_rule_filter:condition_1:artifact:*.cef.calculated_risk_score","filtered-data:risk_rule_filter:condition_1:artifact:*.data","filtered-data:risk_rule_filter:condition_1:artifact:*.name","filtered-data:risk_rule_filter:condition_1:artifact:*.description"], scope="all")
+
+    filtered_artifact_0__cef_calculated_risk_score = [item[0] for item in filtered_artifact_0_data_risk_rule_filter]
+    filtered_artifact_0__data = [item[1] for item in filtered_artifact_0_data_risk_rule_filter]
+    filtered_artifact_0__name = [item[2] for item in filtered_artifact_0_data_risk_rule_filter]
+    filtered_artifact_0__description = [item[3] for item in filtered_artifact_0_data_risk_rule_filter]
+
+    dedup_risk_events__total_score = None
+    dedup_risk_events__individual_scores = None
+    dedup_risk_events__names = None
+    dedup_risk_events__descriptions = None
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+    event_id_list = []
+    for item in filtered_artifact_0__data:
+        for sub_item in item:
+            if sub_item.get('risk_event'):
+                event_id_list.append(sub_item['risk_event']['id'])
+    event_id_dict = {}
+    for event_id, risk_score, name, description in zip(
+        event_id_list, 
+        filtered_artifact_0__cef_calculated_risk_score,
+        filtered_artifact_0__name,
+        filtered_artifact_0__description
+    ):
+        # Get the calculated risk score per unique event_id.
+        # Putting in a dictionary ensures only one entry per event_id.
+        if event_id:
+            event_id_dict[event_id] = {'score': risk_score, 'name': name, 'description': description}
+    dedup_risk_events__total_score = 0
+    dedup_risk_events__individual_scores = []
+    dedup_risk_events__names = []
+    dedup_risk_events__descriptions = []
+    for key in event_id_dict:
+        dedup_risk_events__total_score += int(event_id_dict[key]['score'])
+        dedup_risk_events__individual_scores.append(event_id_dict[key]['score'])
+        dedup_risk_events__names.append(event_id_dict[key]['name'])
+        dedup_risk_events__descriptions.append(event_id_dict[key]['description'])
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.save_run_data(key="dedup_risk_events:total_score", value=json.dumps(dedup_risk_events__total_score))
+    phantom.save_run_data(key="dedup_risk_events:individual_scores", value=json.dumps(dedup_risk_events__individual_scores))
+    phantom.save_run_data(key="dedup_risk_events:names", value=json.dumps(dedup_risk_events__names))
+    phantom.save_run_data(key="dedup_risk_events:descriptions", value=json.dumps(dedup_risk_events__descriptions))
+
+    risk_threshold_decision(container=container)
+
+    return
+
+
+def risk_rule_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("risk_rule_filter() called")
+
+    ################################################################################
+    # Get all risk rule artifacts
+    ################################################################################
+
+    # collect filtered artifact ids and results for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        conditions=[
+            ["artifact:*.label", "==", "risk_rule"]
+        ],
+        name="risk_rule_filter:condition_1",
+        scope="all")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        dedup_risk_events(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
