@@ -392,6 +392,7 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
     from dateutil.parser import parse
     from django.utils.dateparse import parse_datetime
     import re
+    from hashlib import sha256
     
     search_json = run_risk_rule_query_result_item_0[0]
 
@@ -453,6 +454,7 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
     for index, artifact_json in enumerate(search_json):
         field_mapping = {}
         data = []
+        risk_event_set = set()
         for key in list(artifact_json.keys()):
             tags = []
             # Swap CIM for CEF values
@@ -512,9 +514,11 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
             if isinstance(risk_event_ids, list) and isinstance(original_timestamps, list):
                 for event_id, timestamp in zip(risk_event_ids, original_timestamps):
                     data.append({'risk_event': {'id': event_id, 'timestamp': timestamp}})
+                    risk_event_set.add(event_id)
                 artifact_json.pop('risk_event_ids')
                 artifact_json.pop('original_timestamps')
             else:
+                risk_event_set.add(risk_event_ids)
                 data.append({'risk_event': {'id': risk_event_ids, 'timestamp': original_timestamps}})
             
         # Make _time easier to read
@@ -566,6 +570,10 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
                 description = None
                 
             name = artifact_json.pop('search_name')
+            if risk_event_set:
+                data_id = sha256(''.join(risk_event_set).encode('utf-8')).hexdigest()
+            else:
+                data_id = None
             parameters.append(
                 {
                     'input_1': json.dumps(
@@ -574,6 +582,7 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
                             'data': data,
                             'tags': tags, 
                             'name': name, 
+                            'source_data_identifier': data_id,
                             'description': description, 
                             'field_mapping': field_mapping, 
                             'run_automation': False if index < len(search_json[0]) - 1 else True
