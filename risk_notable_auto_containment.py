@@ -187,11 +187,11 @@ def dispatch_identity_containment_playbooks(action=None, success=None, container
     playbook_tags_combined_value = phantom.concatenate("identity", "containment")
 
     inputs = {
-        "playbook_repo": "local",
         "playbook_tags": playbook_tags_combined_value,
-        "artifact_ids_include": filtered_artifact_0__id,
-        "indicator_tags_exclude": "contained",
+        "playbook_repo": "local",
         "indicator_tags_include": "known_identity",
+        "indicator_tags_exclude": "contained",
+        "artifact_ids_include": filtered_artifact_0__id,
     }
 
     ################################################################################
@@ -204,8 +204,8 @@ def dispatch_identity_containment_playbooks(action=None, success=None, container
     ## Custom Code End
     ################################################################################
 
-    # call playbook "local/dispatch_input_playbooks", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/dispatch_input_playbooks", container=container, name="dispatch_identity_containment_playbooks", callback=join_get_not_contained_indicators, inputs=inputs)
+    # call playbook "community/dispatch_input_playbooks", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_identity_containment_playbooks", callback=join_get_not_contained_indicators, inputs=inputs)
 
     return
 
@@ -220,11 +220,11 @@ def dispatch_asset_containment_playbooks(action=None, success=None, container=No
     playbook_tags_combined_value = phantom.concatenate("asset", "containment")
 
     inputs = {
-        "playbook_repo": "local",
         "playbook_tags": playbook_tags_combined_value,
-        "artifact_ids_include": filtered_artifact_0__id,
-        "indicator_tags_exclude": "contained",
+        "playbook_repo": "local",
         "indicator_tags_include": "known_asset",
+        "indicator_tags_exclude": "contained",
+        "artifact_ids_include": filtered_artifact_0__id,
     }
 
     ################################################################################
@@ -237,8 +237,8 @@ def dispatch_asset_containment_playbooks(action=None, success=None, container=No
     ## Custom Code End
     ################################################################################
 
-    # call playbook "local/dispatch_input_playbooks", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/dispatch_input_playbooks", container=container, name="dispatch_asset_containment_playbooks", callback=join_get_not_contained_indicators, inputs=inputs)
+    # call playbook "community/dispatch_input_playbooks", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_asset_containment_playbooks", callback=join_get_not_contained_indicators, inputs=inputs)
 
     return
 
