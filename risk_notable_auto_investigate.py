@@ -66,11 +66,11 @@ def dispatch_investigate_playbooks(action=None, success=None, container=None, re
     playbook_tags_combined_value = phantom.concatenate("investigate", "risk_notable")
 
     inputs = {
-        "playbook_repo": "local",
         "playbook_tags": playbook_tags_combined_value,
-        "artifact_ids_include": "",
-        "indicator_tags_exclude": "",
+        "playbook_repo": "local",
         "indicator_tags_include": "",
+        "indicator_tags_exclude": "",
+        "artifact_ids_include": "",
     }
 
     ################################################################################
@@ -83,8 +83,8 @@ def dispatch_investigate_playbooks(action=None, success=None, container=None, re
     ## Custom Code End
     ################################################################################
 
-    # call playbook "local/dispatch_input_playbooks", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/dispatch_input_playbooks", container=container, name="dispatch_investigate_playbooks", callback=dispatch_investigate_playbooks_callback, inputs=inputs)
+    # call playbook "community/dispatch_input_playbooks", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_investigate_playbooks", callback=dispatch_investigate_playbooks_callback, inputs=inputs)
 
     return
 
