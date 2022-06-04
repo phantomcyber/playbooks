@@ -187,11 +187,11 @@ def dispatch_identity_containment_playbooks(action=None, success=None, container
     playbook_tags_combined_value = phantom.concatenate("identity", "containment")
 
     inputs = {
-        "playbook_tags": playbook_tags_combined_value,
         "playbook_repo": "local",
-        "indicator_tags_include": "known_identity",
-        "indicator_tags_exclude": "contained",
+        "playbook_tags": playbook_tags_combined_value,
         "artifact_ids_include": filtered_artifact_0__id,
+        "indicator_tags_exclude": "contained",
+        "indicator_tags_include": "known_identity",
     }
 
     ################################################################################
@@ -220,11 +220,11 @@ def dispatch_asset_containment_playbooks(action=None, success=None, container=No
     playbook_tags_combined_value = phantom.concatenate("asset", "containment")
 
     inputs = {
-        "playbook_tags": playbook_tags_combined_value,
         "playbook_repo": "local",
-        "indicator_tags_include": "known_asset",
-        "indicator_tags_exclude": "contained",
+        "playbook_tags": playbook_tags_combined_value,
         "artifact_ids_include": filtered_artifact_0__id,
+        "indicator_tags_exclude": "contained",
+        "indicator_tags_include": "known_asset",
     }
 
     ################################################################################
@@ -373,6 +373,7 @@ def format_containment_note(action=None, success=None, container=None, results=N
     phantom.save_run_data(key="format_containment_note:note_content", value=json.dumps(format_containment_note__note_content))
 
     close_protect_task(container=container)
+    notable_artifact_filter(container=container)
 
     return
 
@@ -543,6 +544,73 @@ def get_contained_indicators(action=None, success=None, container=None, results=
     ################################################################################
 
     phantom.custom_function(custom_function="community/indicator_get_by_tag", parameters=parameters, name="get_contained_indicators", callback=join_format_containment_note)
+
+    return
+
+
+def notable_artifact_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("notable_artifact_filter() called")
+
+    ################################################################################
+    # Finds artifacts with a notable event_id
+    ################################################################################
+
+    # collect filtered artifact ids and results for 'if' condition 1
+    matched_artifacts_1, matched_results_1 = phantom.condition(
+        container=container,
+        conditions=[
+            ["artifact:*.cef.event_id", "!=", ""]
+        ],
+        name="notable_artifact_filter:condition_1")
+
+    # call connected blocks if filtered artifacts or results
+    if matched_artifacts_1 or matched_results_1:
+        update_splunk(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+
+    return
+
+
+def update_splunk(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("update_splunk() called")
+
+    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+
+    comment_formatted_string = phantom.format(
+        container=container,
+        template="""From event: {0}\n\n{1}""",
+        parameters=[
+            "container:url",
+            "format_containment_note:custom_function:note_content"
+        ])
+
+    ################################################################################
+    # Updates Splunk Enterprise Security with a containment action note.
+    ################################################################################
+
+    filtered_artifact_0_data_notable_artifact_filter = phantom.collect2(container=container, datapath=["filtered-data:notable_artifact_filter:condition_1:artifact:*.cef.event_id","filtered-data:notable_artifact_filter:condition_1:artifact:*.id"])
+
+    parameters = []
+
+    # build parameters list for 'update_splunk' call
+    for filtered_artifact_0_item_notable_artifact_filter in filtered_artifact_0_data_notable_artifact_filter:
+        if filtered_artifact_0_item_notable_artifact_filter[0] is not None:
+            parameters.append({
+                "comment": comment_formatted_string,
+                "event_ids": filtered_artifact_0_item_notable_artifact_filter[0],
+                "context": {'artifact_id': filtered_artifact_0_item_notable_artifact_filter[1]},
+            })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.act("update event", parameters=parameters, name="update_splunk", assets=["splunk"])
 
     return
 

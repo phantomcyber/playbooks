@@ -141,9 +141,28 @@
                     "sourcePort": "6_out",
                     "targetNode": "9",
                     "targetPort": "9_in"
+                },
+                {
+                    "id": "port_10_to_port_16",
+                    "sourceNode": "10",
+                    "sourcePort": "10_out",
+                    "targetNode": "16",
+                    "targetPort": "16_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_16_to_port_17",
+                    "sourceNode": "16",
+                    "sourcePort": "16_out",
+                    "targetNode": "17",
+                    "targetPort": "17_in"
                 }
             ],
-            "hash": "d80f07bdcce5b75deb60726a45286a6d41f7a597",
+            "hash": "032b41e97345a418f43a037e99836d060f9368f8",
             "nodes": {
                 "0": {
                     "data": {
@@ -157,8 +176,8 @@
                     "errors": {},
                     "id": "0",
                     "type": "start",
-                    "x": 180,
-                    "y": -240.00000000000006
+                    "x": 360,
+                    "y": 0
                 },
                 "1": {
                     "data": {
@@ -175,7 +194,7 @@
                     "type": "end",
                     "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
                     "x": 190,
-                    "y": 1638
+                    "y": 1684
                 },
                 "10": {
                     "data": {
@@ -207,7 +226,7 @@
                     "id": "10",
                     "type": "code",
                     "userCode": "    from itertools import zip_longest\n    \n    format_containment_note__note_title = \"\"\n    format_containment_note__note_content = \"\"\n    \n    def playbook_report(pb_run_id):\n        pb_run_url = phantom.build_phantom_rest_url('playbook_run', pb_run_id)\n        response = phantom.requests.get(pb_run_url, verify=False).json()\n        if response.get('id'):\n            message = json.loads(response['message'])\n            formatted_content = f\"\\n#### Playbook Executed - {message['playbook']}\\n\"\n            formatted_content += (\n                \"| status | action | app | parameters |\\n\"\n                \"| --- | --- | --- | --- |\\n\"\n            )\n            for result_item in message['result']:\n                app_dict = {}\n                for item in result_item['app_runs']:\n                    param = item['parameter']\n                    param.pop('context', None)\n                    if item['app'] not in app_dict.keys():\n                        app_dict[item['app']] = {'success': [], 'failed': []}\n                    if item['status'] == 'success':\n                        app_dict[item['app']]['success'].append(param)\n                    if item['status'] == 'failed':\n                        app_dict[item['app']]['failed'].append(param)\n                for app, params in app_dict.items():\n                    if params['success']:\n                        formatted_content += f\"| success | {result_item['action']} | {app} | ```{params['success']}``` |\\n\"\n                    if params['failed']:\n                        formatted_content += f\"| failed | {result_item['action']} | {app} | ```{params['failed']}``` |\\n\"\n            return formatted_content + \"\\n&nbsp;\\n\\n&nbsp;\\n\"\n    \n    asset_list = []\n    asset_contained_list = []\n    identity_list = []\n    identity_contained_list = []\n    misc_not_contained_list = []\n    \n    for i_value, i_tag in zip(get_not_contained_indicators_data___indicator_value, get_not_contained_indicators_data___indicator_tags):\n        if i_tag:\n            if 'known_asset' in i_tag:\n                asset_list.append(i_value.lower())\n                if 'contained' in i_tag:\n                    asset_contained_list.append(i_value.lower())\n            if 'known_identity' in i_tag:\n                identity_list.append(i_value.lower())\n                if 'contained' in i_tag:\n                    identity_contained_list.append(i_value.lower())\n    \n    for value in collect_hosts_and_users_data___artifact_value:\n        if value.lower() not in asset_list and value.lower() not in identity_list:\n            misc_not_contained_list.append(value)\n                \n    if dispatch_asset_containment_playbooks_output_playbook_run_id_list_values:\n        format_containment_note__note_content += (\n            \"## Asset Containment Report\\n\\n\"\n            \"| Known Assets from event | Known Assets contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(asset_list, asset_contained_list, fillvalue=\" \"):\n            format_containment_note__note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_asset_containment_playbooks_output_playbook_run_id_list_values:\n            format_containment_note__note_content += playbook_report(run_id)\n\n    if dispatch_identity_containment_playbooks_output_playbook_run_id_list_values:\n        format_containment_note__note_content += (\n            \"## Identity Containment Report\\n\\n\"\n            \"| Known Identities from event | Known Identities contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(identity_list, identity_contained_list, fillvalue=\" \"):\n            format_containment_note__note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_identity_containment_playbooks_output_playbook_run_id_list_values:\n            format_containment_note__note_content += playbook_report(run_id)\n    \n    if misc_not_contained_list:\n        misc_not_contained_list = set(misc_not_contained_list)\n        format_containment_note__note_content += f\"## Unidentified Entities Not Contained \\n\"\n        for item in misc_not_contained_list:\n            format_containment_note__note_content += f\"- {item}\\n\"\n        format_containment_note__note_content += \"(Manual action may be required)\"\n                \n    if format_containment_note__note_content:\n        format_containment_note__note_title = \"[Auto-Generated] Containment Summary\"\n\n",
-                    "x": 170,
+                    "x": 340,
                     "y": 1148
                 },
                 "11": {
@@ -293,8 +312,8 @@
                     "errors": {},
                     "id": "11",
                     "type": "utility",
-                    "x": -1.4210854715202004e-14,
-                    "y": 1474
+                    "x": 0,
+                    "y": 1513
                 },
                 "12": {
                     "data": {
@@ -371,7 +390,7 @@
                     "id": "12",
                     "type": "utility",
                     "x": 340,
-                    "y": 1474
+                    "y": 1513
                 },
                 "13": {
                     "data": {
@@ -463,7 +482,7 @@
                     "errors": {},
                     "id": "13",
                     "type": "utility",
-                    "x": 170,
+                    "x": 340,
                     "y": 820
                 },
                 "14": {
@@ -547,7 +566,7 @@
                     "errors": {},
                     "id": "14",
                     "type": "utility",
-                    "x": 0,
+                    "x": 510,
                     "y": 992
                 },
                 "15": {
@@ -640,8 +659,88 @@
                     "errors": {},
                     "id": "15",
                     "type": "utility",
-                    "x": 340,
+                    "x": 170,
                     "y": 984
+                },
+                "16": {
+                    "data": {
+                        "advanced": {
+                            "customName": "notable artifact filter",
+                            "customNameId": 0,
+                            "description": "Finds artifacts with a notable event_id",
+                            "join": [],
+                            "note": "Finds artifacts with a notable event_id"
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "artifact:*.cef.event_id",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "notable artifact",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 2,
+                        "functionName": "notable_artifact_filter",
+                        "id": "16",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "16",
+                    "type": "filter",
+                    "x": 740,
+                    "y": 1326
+                },
+                "17": {
+                    "data": {
+                        "action": "update event",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "update splunk",
+                            "customNameId": 0,
+                            "description": "Updates Splunk Enterprise Security with a containment action note.",
+                            "join": [],
+                            "note": "Updates Splunk Enterprise Security with a containment action note."
+                        },
+                        "connector": "Splunk",
+                        "connectorConfigs": [
+                            "splunk"
+                        ],
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "update_splunk",
+                        "id": "17",
+                        "parameters": {
+                            "comment": {
+                                "functionId": 1,
+                                "parameters": [
+                                    "container:url",
+                                    "format_containment_note:custom_function:note_content"
+                                ],
+                                "template": "From event: {0}\n\n{1}"
+                            },
+                            "event_ids": "filtered-data:notable_artifact_filter:condition_1:artifact:*.cef.event_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "event_ids"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "17",
+                    "type": "action",
+                    "x": 680,
+                    "y": 1506
                 },
                 "2": {
                     "data": {
@@ -756,8 +855,8 @@
                     "errors": {},
                     "id": "2",
                     "type": "utility",
-                    "x": 340,
-                    "y": 180
+                    "x": 510,
+                    "y": 320
                 },
                 "3": {
                     "data": {
@@ -842,8 +941,8 @@
                     "errors": {},
                     "id": "3",
                     "type": "utility",
-                    "x": 360,
-                    "y": -40.000000000000036
+                    "x": 510,
+                    "y": 148
                 },
                 "4": {
                     "data": {
@@ -959,7 +1058,7 @@
                     "id": "4",
                     "type": "utility",
                     "x": 170,
-                    "y": 1326
+                    "y": 1342
                 },
                 "5": {
                     "data": {
@@ -982,8 +1081,8 @@
                     "errors": {},
                     "id": "5",
                     "type": "playbook",
-                    "x": -1.4210854715202004e-14,
-                    "y": 119.99999999999997
+                    "x": 170,
+                    "y": 312
                 },
                 "6": {
                     "data": {
@@ -1024,8 +1123,8 @@
                     "errors": {},
                     "id": "6",
                     "type": "filter",
-                    "x": 240,
-                    "y": 480
+                    "x": 400,
+                    "y": 476
                 },
                 "7": {
                     "data": {
@@ -1081,8 +1180,8 @@
                     "errors": {},
                     "id": "7",
                     "type": "playbook",
-                    "x": 360,
-                    "y": 660
+                    "x": 170,
+                    "y": 656
                 },
                 "9": {
                     "data": {
@@ -1138,8 +1237,8 @@
                     "errors": {},
                     "id": "9",
                     "type": "playbook",
-                    "x": -80.00000000000001,
-                    "y": 660
+                    "x": 510,
+                    "y": 656
                 }
             },
             "notes": "- Change \"high_risk_artifact_filter\" as needed to control which artifacts are sent to containment\n- For detailed implementation see https://docs.splunk.com/Documentation/ESSOC/latest/user/Useplaybookpack"
@@ -1151,7 +1250,7 @@
         "schema": "5.0.6",
         "version": "5.3.1.84890"
     },
-    "create_time": "2022-06-04T11:24:22.096874+00:00",
+    "create_time": "2022-06-04T11:43:15.659320+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"
