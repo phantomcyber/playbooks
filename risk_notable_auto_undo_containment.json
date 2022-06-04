@@ -1,0 +1,762 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Risk Notable",
+    "coa": {
+        "data": {
+            "description": "This playbook gathers contained assets and identities from the container and sends them playbooks with \"undo_containment\" as well as \"asset\" or \"identity\" tags.",
+            "edges": [
+                {
+                    "id": "port_10_to_port_7",
+                    "sourceNode": "10",
+                    "sourcePort": "10_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "id": "port_7_to_port_11",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "11",
+                    "targetPort": "11_in"
+                },
+                {
+                    "id": "port_11_to_port_1",
+                    "sourceNode": "11",
+                    "sourcePort": "11_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_12_to_port_10",
+                    "sourceNode": "12",
+                    "sourcePort": "12_out",
+                    "targetNode": "10",
+                    "targetPort": "10_in"
+                },
+                {
+                    "id": "port_0_to_port_8",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                },
+                {
+                    "id": "port_0_to_port_6",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_6_to_port_12",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "12",
+                    "targetPort": "12_in"
+                },
+                {
+                    "id": "port_4_to_port_12",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "12",
+                    "targetPort": "12_in"
+                },
+                {
+                    "id": "port_0_to_port_4",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "id": "port_8_to_port_14",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "14",
+                    "targetPort": "14_in"
+                },
+                {
+                    "id": "port_14_to_port_12",
+                    "sourceNode": "14",
+                    "sourcePort": "14_out",
+                    "targetNode": "12",
+                    "targetPort": "12_in"
+                }
+            ],
+            "hash": "467fcab4f1ef832294e1b847630545d2ea8d27e6",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "x": 360,
+                    "y": 0
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
+                    "x": 360,
+                    "y": 1146
+                },
+                "10": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format playbook note",
+                            "customNameId": 0,
+                            "description": "Formats a custom note based on dispatch outputs.",
+                            "join": [],
+                            "note": "Formats a custom note based on dispatch outputs."
+                        },
+                        "functionId": 1,
+                        "functionName": "format_playbook_note",
+                        "id": "10",
+                        "inputParameters": [
+                            "dispatch_identity_undo_containment_playbooks:playbook_output:playbook_run_id_list",
+                            "dispatch_asset_undo_containment_playbooks:playbook_output:playbook_run_id_list",
+                            "get_contained_indicators:custom_function_result.data.*.indicator_value",
+                            "get_contained_indicators:custom_function_result.data.*.indicator_tags"
+                        ],
+                        "outputVariables": [
+                            "note_title",
+                            "note_content"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "10",
+                    "type": "code",
+                    "userCode": "    from itertools import zip_longest\n\n    format_playbook_note__note_title = \"\"\n    format_playbook_note__note_content = \"\"\n    \n    def playbook_report(pb_run_id):\n        pb_run_url = phantom.build_phantom_rest_url('playbook_run', pb_run_id)\n        response = phantom.requests.get(pb_run_url, verify=False).json()\n        if response.get('id'):\n            message = json.loads(response['message'])\n            formatted_content = f\"\\n#### Playbook Executed - {message['playbook']}\\n\"\n            formatted_content += (\n                \"| status | action | app | parameters |\\n\"\n                \"| --- | --- | --- | --- |\\n\"\n            )\n            for result_item in message['result']:\n                app_dict = {}\n                for item in result_item['app_runs']:\n                    param = item['parameter']\n                    param.pop('context', None)\n                    if item['app'] not in app_dict.keys():\n                        app_dict[item['app']] = {'success': [], 'failed': []}\n                    if item['status'] == 'success':\n                        app_dict[item['app']]['success'].append(param)\n                    if item['status'] == 'failed':\n                        app_dict[item['app']]['failed'].append(param)\n                for app, params in app_dict.items():\n                    if params['success']:\n                        formatted_content += f\"| success | {result_item['action']} | {app} | ```{params['success']}``` |\\n\"\n                    if params['failed']:\n                        formatted_content += f\"| failed | {result_item['action']} | {app} | ```{params['failed']}``` |\\n\"\n            return formatted_content + \"\\n&nbsp;\\n\\n&nbsp;\\n\\n\"\n    \n    asset_list = []\n    asset_contained_list = []\n    identity_list = []\n    identity_contained_list = []\n    misc_contained_list = []\n    \n    for i_value, i_tag in zip(get_contained_indicators_data___indicator_value, get_contained_indicators_data___indicator_tags):\n        if i_tag:\n            if 'known_asset' in i_tag:\n                asset_list.append(i_value.lower())\n            if 'known_identity' in i_tag:\n                identity_list.append(i_value.lower())\n            if 'known_asset' in i_tag and 'contained' in i_tag:\n                asset_contained_list.append(i_value.lower())\n            elif 'known_identity' in i_tag and 'contained' in i_tag:\n                identity_contained_list.append(i_value.lower())\n            elif 'contained' in i_tag:\n                 misc_contained_list.append(i_value.lower())\n            \n                \n    if dispatch_asset_undo_containment_playbooks_output_playbook_run_id_list_values:\n        format_playbook_note__note_content += (\n            \"## Asset Undo Containment Report\\n\\n\"\n            \"| Assets from event | Assets from event still marked as contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(asset_list, asset_contained_list, fillvalue=\" \"):\n            format_playbook_note__note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_asset_undo_containment_playbooks_output_playbook_run_id_list_values:\n            format_playbook_note__note_content += playbook_report(run_id)\n\n    if dispatch_identity_undo_containment_playbooks_output_playbook_run_id_list_values:\n        format_playbook_note__note_content += (\n            \"## Identity Undo Containment Report\\n\\n\"\n            \"| Identities from event | Identities from event still marked as contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(identity_list, identity_contained_list, fillvalue=\" \"):\n            format_playbook_note__note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_identity_undo_containment_playbooks_output_playbook_run_id_list_values:\n            format_playbook_note__note_content += playbook_report(run_id)\n    \n    if misc_contained_list:\n        format_playbook_note__note_content += \"## Unidentified Entities Still Contained\\n\"\n        for item in misc_contained_list:\n            format_playbook_note__note_content += f\"- {item}\\n\"\n        format_playbook_note__note_content += \"(Manual action likely required)\"\n                \n    if format_playbook_note__note_content:\n        format_playbook_note__note_title = \"[Auto-Generated] Revert Containment Summary\"\n\n",
+                    "x": 340,
+                    "y": 640
+                },
+                "11": {
+                    "data": {
+                        "advanced": {
+                            "customName": "mark close note evidence",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "mark_evidence",
+                            "repoName": "community"
+                        },
+                        "functionId": 3,
+                        "functionName": "mark_close_note_evidence",
+                        "id": "11",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "mark_evidence": {
+                                "description": "Mark an object as Evidence in a container",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "phantom container id"
+                                        ],
+                                        "description": "Container ID or Container Object",
+                                        "inputType": "item",
+                                        "label": "container",
+                                        "name": "container",
+                                        "placeholder": "container:id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "The object to mark as evidence. This could be a vault_id, artifact_id, note_id, container_id, or action_run_id. If the previous playbook block is an action then \"keyword_argument:results\" can be used for the action_run_id with the content_type \"action_run_id\". Vault_id can be an ID or a vault hash.",
+                                        "inputType": "item",
+                                        "label": "input_object",
+                                        "name": "input_object",
+                                        "placeholder": "artifact id, note id, vault_id, etc.",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "The content type of the object to add as evidence which must be one of the following:\n            \n            vault_id\n            artifact_id\n            container_id\n            note_id\n            action_run_id",
+                                        "inputType": "item",
+                                        "label": "content_type",
+                                        "name": "content_type",
+                                        "placeholder": "See help text for supported types",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "mark_evidence",
+                                "name": "mark_evidence"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "mark_evidence": {
+                                "container": "container:id",
+                                "content_type": "note_id",
+                                "input_object": "close_undo_containment_task:custom_function_result.data.note_id"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "11",
+                    "type": "utility",
+                    "x": 340,
+                    "y": 982
+                },
+                "12": {
+                    "data": {
+                        "advanced": {
+                            "customName": "get contained indicators",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "indicator_get_by_tag",
+                            "repoName": "community"
+                        },
+                        "functionId": 4,
+                        "functionName": "get_contained_indicators",
+                        "id": "12",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "indicator_get_by_tag": {
+                                "description": "Get indicator(s) by tags.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Comma separated list of tags. Tags will be OR'd together: e.g. tag1 OR tag2 OR tag3. Tags do not support whitespace and whitespace will be automatically removed.",
+                                        "inputType": "item",
+                                        "label": "tags_or",
+                                        "name": "tags_or",
+                                        "placeholder": "tag1,tag2,...tagK",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Comma separated list of tags. Tags will be AND'd together: e.g. tag1 AND tag2 AND tag3. Tags do not support whitespace and whitespace will be automatically removed.",
+                                        "inputType": "item",
+                                        "label": "tags_and",
+                                        "name": "tags_and",
+                                        "placeholder": "tag1,tag2,...tagK",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Defaults to last_30_days\noptions:\ntoday\nyesterday\nthis_week\nthis_month\nlast_7_days\nlast_30_days\nlast_week\nlast_month",
+                                        "inputType": "item",
+                                        "label": "indicator_timerange",
+                                        "name": "indicator_timerange",
+                                        "placeholder": "last_30_days",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to ensure the fetched indicator exists in the supplied container.",
+                                        "inputType": "item",
+                                        "label": "container",
+                                        "name": "container",
+                                        "placeholder": "container:id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Comma separated list of tags to filter out. If the indicator's tags contain any of the values in this list, they will be omitted from the output.",
+                                        "inputType": "item",
+                                        "label": "tags_exclude",
+                                        "name": "tags_exclude",
+                                        "placeholder": "tag1, tag2",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "indicator_get_by_tag",
+                                "name": "indicator_get_by_tag"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "indicator_get_by_tag": {
+                                "container": "container:id",
+                                "indicator_timerange": null,
+                                "tags_and": null,
+                                "tags_exclude": null,
+                                "tags_or": "contained, known_asset, known_identity"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "12",
+                    "type": "utility",
+                    "x": 340,
+                    "y": 476
+                },
+                "14": {
+                    "data": {
+                        "advanced": {
+                            "customName": "start undo containment task",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "workbook_task_update",
+                            "repoName": "community"
+                        },
+                        "functionId": 6,
+                        "functionName": "start_undo_containment_task",
+                        "id": "14",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "workbook_task_update": {
+                                "description": "Update a workbook task by task name",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Name of a workbook task (Required)",
+                                        "inputType": "item",
+                                        "label": "task_name",
+                                        "name": "task_name",
+                                        "placeholder": "my_task",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Note title goes here (Optional)",
+                                        "inputType": "item",
+                                        "label": "note_title",
+                                        "name": "note_title",
+                                        "placeholder": "My Title",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Body of note goes here (Optional)",
+                                        "inputType": "item",
+                                        "label": "note_content",
+                                        "name": "note_content",
+                                        "placeholder": "My notes",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "One of: incomplete, in_progress, complete (Optional)",
+                                        "inputType": "item",
+                                        "label": "status",
+                                        "name": "status",
+                                        "placeholder": "in_progress",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Assigns task to provided owner. Accepts keyword 'current\" to assign task to currently running playbook user. (Optional)",
+                                        "inputType": "item",
+                                        "label": "owner",
+                                        "name": "owner",
+                                        "placeholder": "username",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "phantom container id"
+                                        ],
+                                        "description": "ID of Phantom Container (Required)",
+                                        "inputType": "item",
+                                        "label": "container",
+                                        "name": "container",
+                                        "placeholder": "container:id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "workbook_task_update",
+                                "name": "workbook_task_update"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "workbook_task_update": {
+                                "container": "container:id",
+                                "note_content": null,
+                                "note_title": null,
+                                "owner": null,
+                                "status": "in_progress",
+                                "task_name": "Undo Containment"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "14",
+                    "type": "utility",
+                    "x": 680,
+                    "y": 312
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "customName": "dispatch identity undo containment playbooks",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "dispatch_identity_undo_containment_playbooks",
+                        "id": "4",
+                        "inputs": {
+                            "artifact_ids_include": {
+                                "datapaths": [],
+                                "deduplicate": false
+                            },
+                            "indicator_tags_exclude": {
+                                "datapaths": [],
+                                "deduplicate": false
+                            },
+                            "indicator_tags_include": {
+                                "datapaths": [
+                                    "known_identity",
+                                    "contained"
+                                ],
+                                "deduplicate": false
+                            },
+                            "playbook_repo": {
+                                "datapaths": [
+                                    "local"
+                                ],
+                                "deduplicate": false
+                            },
+                            "playbook_tags": {
+                                "datapaths": [
+                                    "identity",
+                                    "undo_containment"
+                                ],
+                                "deduplicate": false
+                            }
+                        },
+                        "playbookName": "dispatch_input_playbooks",
+                        "playbookRepo": 1,
+                        "playbookRepoName": "community",
+                        "playbookType": "data",
+                        "synchronous": true,
+                        "type": "playbook"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "playbook",
+                    "x": 340,
+                    "y": 311.99999999999994
+                },
+                "6": {
+                    "data": {
+                        "advanced": {
+                            "customName": "dispatch asset undo containment playbooks",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "dispatch_asset_undo_containment_playbooks",
+                        "id": "6",
+                        "inputs": {
+                            "artifact_ids_include": {
+                                "datapaths": [],
+                                "deduplicate": false
+                            },
+                            "indicator_tags_exclude": {
+                                "datapaths": [],
+                                "deduplicate": false
+                            },
+                            "indicator_tags_include": {
+                                "datapaths": [
+                                    "known_asset",
+                                    "contained"
+                                ],
+                                "deduplicate": false
+                            },
+                            "playbook_repo": {
+                                "datapaths": [
+                                    "local"
+                                ],
+                                "deduplicate": false
+                            },
+                            "playbook_tags": {
+                                "datapaths": [
+                                    "asset",
+                                    "undo_containment"
+                                ],
+                                "deduplicate": false
+                            }
+                        },
+                        "playbookName": "dispatch_input_playbooks",
+                        "playbookRepo": 1,
+                        "playbookRepoName": "community",
+                        "playbookType": "data",
+                        "synchronous": true,
+                        "type": "playbook"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "playbook",
+                    "x": -1.4210854715202004e-14,
+                    "y": 319.99999999999994
+                },
+                "7": {
+                    "data": {
+                        "advanced": {
+                            "customName": "close undo containment task",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "workbook_task_update",
+                            "repoName": "community"
+                        },
+                        "functionId": 1,
+                        "functionName": "close_undo_containment_task",
+                        "id": "7",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "workbook_task_update": {
+                                "description": "Update a workbook task by task name",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Name of a workbook task (Required)",
+                                        "inputType": "item",
+                                        "label": "task_name",
+                                        "name": "task_name",
+                                        "placeholder": "my_task",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Note title goes here (Optional)",
+                                        "inputType": "item",
+                                        "label": "note_title",
+                                        "name": "note_title",
+                                        "placeholder": "My Title",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Body of note goes here (Optional)",
+                                        "inputType": "item",
+                                        "label": "note_content",
+                                        "name": "note_content",
+                                        "placeholder": "My notes",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "One of: incomplete, in_progress, complete (Optional)",
+                                        "inputType": "item",
+                                        "label": "status",
+                                        "name": "status",
+                                        "placeholder": "in_progress",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Assigns task to provided owner. Accepts keyword 'current\" to assign task to currently running playbook user. (Optional)",
+                                        "inputType": "item",
+                                        "label": "owner",
+                                        "name": "owner",
+                                        "placeholder": "username",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "phantom container id"
+                                        ],
+                                        "description": "ID of Phantom Container (Required)",
+                                        "inputType": "item",
+                                        "label": "container",
+                                        "name": "container",
+                                        "placeholder": "container:id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "workbook_task_update",
+                                "name": "workbook_task_update"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "workbook_task_update": {
+                                "container": "container:id",
+                                "note_content": "format_playbook_note:custom_function:note_content",
+                                "note_title": "format_playbook_note:custom_function:note_title",
+                                "owner": null,
+                                "status": "complete",
+                                "task_name": "Undo Containment"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "7",
+                    "type": "utility",
+                    "x": 340,
+                    "y": 818
+                },
+                "8": {
+                    "data": {
+                        "advanced": {
+                            "customName": "add Risk Recovery workbook",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "workbook_add",
+                            "repoName": "community"
+                        },
+                        "functionId": 2,
+                        "functionName": "add_risk_recovery_workbook",
+                        "id": "8",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "workbook_add": {
+                                "description": "Add a workbook to a container. Provide a container id and a workbook name or id",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "phantom container id"
+                                        ],
+                                        "description": "A phantom container id",
+                                        "inputType": "item",
+                                        "label": "container",
+                                        "name": "container",
+                                        "placeholder": "container:id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "A workbook name or id",
+                                        "inputType": "item",
+                                        "label": "workbook",
+                                        "name": "workbook",
+                                        "placeholder": "my_workbook",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Defaults to True. Check to see if workbook already exists in container before adding.",
+                                        "inputType": "item",
+                                        "label": "check_for_existing_workbook",
+                                        "name": "check_for_existing_workbook",
+                                        "placeholder": "True or False",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Defaults to True. Sets the added workbook to the current phase.",
+                                        "inputType": "item",
+                                        "label": "start_workbook",
+                                        "name": "start_workbook",
+                                        "placeholder": "True or False",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "workbook_add",
+                                "name": "workbook_add"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "workbook_add": {
+                                "check_for_existing_workbook": "True",
+                                "container": "container:id",
+                                "start_workbook": "True",
+                                "workbook": "Risk Recovery"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "utility",
+                    "x": 680,
+                    "y": 148
+                }
+            },
+            "notes": "- For detailed implementation see https://docs.splunk.com/Documentation/ESSOC/latest/user/Useplaybookpack"
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_type": "automation",
+        "python_version": "3",
+        "schema": "5.0.6",
+        "version": "5.3.1.84890"
+    },
+    "create_time": "2022-06-04T11:23:09.156212+00:00",
+    "draft_mode": false,
+    "labels": [
+        "risk_notable"
+    ],
+    "tags": []
+}
