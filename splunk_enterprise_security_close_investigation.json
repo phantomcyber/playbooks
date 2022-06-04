@@ -1,0 +1,273 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Response",
+    "coa": {
+        "data": {
+            "description": "A playbook that closes out an investigation in both Splunk Enterprise Security and Splunk SOAR.",
+            "edges": [
+                {
+                    "id": "port_0_to_port_3",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "id": "port_3_to_port_4",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "id": "port_2_to_port_1",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_4_to_port_6",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_6_to_port_2",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                }
+            ],
+            "hash": "7d857599452b05eedd8b2d544cb09d25531bd306",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "x": 20,
+                    "y": 0
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
+                    "x": 20,
+                    "y": 862
+                },
+                "2": {
+                    "data": {
+                        "action": "update event",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "close notable",
+                            "customNameId": 0,
+                            "description": "Close the Notable in Splunk Enterprise Security with a comment.",
+                            "join": [],
+                            "note": "Close the Notable in Splunk Enterprise Security with a comment."
+                        },
+                        "connector": "Splunk",
+                        "connectorConfigs": [
+                            "splunk"
+                        ],
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "close_notable",
+                        "id": "2",
+                        "parameters": {
+                            "comment": {
+                                "functionId": 1,
+                                "parameters": [
+                                    "container:id",
+                                    "container:close_time",
+                                    "get_playbook_owner:custom_function:value"
+                                ],
+                                "template": "Splunk SOAR event {0} closed at {1} by {2}"
+                            },
+                            "event_ids": "filtered-data:event_id_filter:condition_1:artifact:*.cef.event_id",
+                            "status": "closed"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "event_ids"
+                            }
+                        ],
+                        "tab": "byAction",
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "action",
+                    "x": 0,
+                    "y": 680
+                },
+                "3": {
+                    "data": {
+                        "advanced": {
+                            "customName": "get playbook owner",
+                            "customNameId": 0,
+                            "description": "Get effective (execution) user of playbook",
+                            "join": [],
+                            "note": "Get effective (execution) user of playbook"
+                        },
+                        "functionId": 1,
+                        "functionName": "get_playbook_owner",
+                        "id": "3",
+                        "inputParameters": [],
+                        "outputVariables": [
+                            "value"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "code",
+                    "userCode": "\n    user_id = phantom.get_effective_user()\n    url = phantom.build_phantom_rest_url('ph_user', user_id)\n    response = phantom.requests.get(url, verify=False).json()\n    get_playbook_owner__value = response['username']\n\n",
+                    "x": 0,
+                    "y": 148
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "customName": "close event",
+                            "customNameId": 0,
+                            "description": "Close the container in Splunk SOAR",
+                            "join": [],
+                            "note": "Close the container in Splunk SOAR",
+                            "refreshNotableData": true
+                        },
+                        "functionId": 1,
+                        "functionName": "close_event",
+                        "id": "4",
+                        "selectMore": false,
+                        "tab": "apis",
+                        "type": "utility",
+                        "utilities": {
+                            "set_status": {
+                                "description": "",
+                                "fields": [
+                                    {
+                                        "choices": "notableStatus",
+                                        "description": "",
+                                        "label": "status",
+                                        "name": "status",
+                                        "placeholder": "Select status",
+                                        "renderType": "dropdown",
+                                        "required": true
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "container",
+                                        "required": false
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "trace",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "set status",
+                                "name": "set_status",
+                                "refreshNotableData": true
+                            }
+                        },
+                        "utilityType": "api",
+                        "values": {
+                            "set_status": {
+                                "_internal": [
+                                    "container",
+                                    "trace"
+                                ],
+                                "status": "closed"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "utility",
+                    "x": 0,
+                    "y": 326
+                },
+                "6": {
+                    "data": {
+                        "advanced": {
+                            "customName": "event id filter",
+                            "customNameId": 0,
+                            "description": "Get the artifacts with the event id",
+                            "join": [],
+                            "note": "Get the artifacts with the event id"
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "artifact:*.cef.event_id",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "event id",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "event_id_filter",
+                        "id": "6",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "filter",
+                    "x": 60,
+                    "y": 504
+                }
+            },
+            "notes": "- Adjust Splunk actions to reflect which Splunk asset is loaded on the system.\n- If needed, change status options in \"close event\" and \"close notable\" to the desired close status."
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_type": "automation",
+        "python_version": "3",
+        "schema": "5.0.6",
+        "version": "5.3.0.84310"
+    },
+    "create_time": "2022-06-04T21:32:35.390242+00:00",
+    "draft_mode": false,
+    "labels": [
+        "risk_notable",
+        "notable"
+    ],
+    "tags": [
+        "response_option"
+    ]
+}
