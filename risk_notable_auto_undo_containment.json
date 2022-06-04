@@ -82,9 +82,28 @@
                     "sourcePort": "14_out",
                     "targetNode": "12",
                     "targetPort": "12_in"
+                },
+                {
+                    "id": "port_10_to_port_15",
+                    "sourceNode": "10",
+                    "sourcePort": "10_out",
+                    "targetNode": "15",
+                    "targetPort": "15_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_15_to_port_16",
+                    "sourceNode": "15",
+                    "sourcePort": "15_out",
+                    "targetNode": "16",
+                    "targetPort": "16_in"
                 }
             ],
-            "hash": "467fcab4f1ef832294e1b847630545d2ea8d27e6",
+            "hash": "a0a104c0d4c1dba38f53617c4ef02e9460ed7299",
             "nodes": {
                 "0": {
                     "data": {
@@ -115,8 +134,8 @@
                     "id": "1",
                     "type": "end",
                     "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
-                    "x": 360,
-                    "y": 1146
+                    "x": 190,
+                    "y": 1176
                 },
                 "10": {
                     "data": {
@@ -223,8 +242,8 @@
                     "errors": {},
                     "id": "11",
                     "type": "utility",
-                    "x": 340,
-                    "y": 982
+                    "x": 170,
+                    "y": 1005
                 },
                 "12": {
                     "data": {
@@ -435,6 +454,85 @@
                     "x": 680,
                     "y": 312
                 },
+                "15": {
+                    "data": {
+                        "advanced": {
+                            "customName": "notable artifact filter",
+                            "customNameId": 0,
+                            "description": "Finds artifacts with a notable event_id",
+                            "join": [],
+                            "note": "Finds artifacts with a notable event_id"
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "artifact:*.cef.event_id",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "notable artifact",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "notable_artifact_filter",
+                        "id": "15",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "15",
+                    "type": "filter",
+                    "x": 570,
+                    "y": 818
+                },
+                "16": {
+                    "data": {
+                        "action": "update event",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "update splunk",
+                            "customNameId": 0,
+                            "description": "Updates Splunk Enterprise Security with a containment action note.",
+                            "join": [],
+                            "note": "Updates Splunk Enterprise Security with a containment action note."
+                        },
+                        "connector": "Splunk",
+                        "connectorConfigs": [
+                            "splunk"
+                        ],
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "update_splunk",
+                        "id": "16",
+                        "parameters": {
+                            "comment": {
+                                "parameters": [
+                                    "container:url",
+                                    "format_playbook_note:custom_function:note_content"
+                                ],
+                                "template": "From event: {0}\n\n{1}"
+                            },
+                            "event_ids": "filtered-data:notable_artifact_filter:condition_1:artifact:*.cef.event_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "event_ids"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "16",
+                    "type": "action",
+                    "x": 510,
+                    "y": 998
+                },
                 "4": {
                     "data": {
                         "advanced": {
@@ -486,7 +584,7 @@
                     "id": "4",
                     "type": "playbook",
                     "x": 340,
-                    "y": 311.99999999999994
+                    "y": 312
                 },
                 "6": {
                     "data": {
@@ -538,8 +636,8 @@
                     "errors": {},
                     "id": "6",
                     "type": "playbook",
-                    "x": -1.4210854715202004e-14,
-                    "y": 319.99999999999994
+                    "x": 0,
+                    "y": 312
                 },
                 "7": {
                     "data": {
@@ -654,8 +752,8 @@
                     "errors": {},
                     "id": "7",
                     "type": "utility",
-                    "x": 340,
-                    "y": 818
+                    "x": 170,
+                    "y": 826
                 },
                 "8": {
                     "data": {
@@ -753,7 +851,7 @@
         "schema": "5.0.6",
         "version": "5.3.1.84890"
     },
-    "create_time": "2022-06-04T11:23:09.156212+00:00",
+    "create_time": "2022-06-04T11:43:19.106170+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"
