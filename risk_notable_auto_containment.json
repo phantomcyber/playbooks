@@ -42,41 +42,6 @@
                     "targetPort": "12_in"
                 },
                 {
-                    "id": "port_10_to_port_4",
-                    "sourceNode": "10",
-                    "sourcePort": "10_out",
-                    "targetNode": "4",
-                    "targetPort": "4_in"
-                },
-                {
-                    "id": "port_7_to_port_13",
-                    "sourceNode": "7",
-                    "sourcePort": "7_out",
-                    "targetNode": "13",
-                    "targetPort": "13_in"
-                },
-                {
-                    "id": "port_9_to_port_13",
-                    "sourceNode": "9",
-                    "sourcePort": "9_out",
-                    "targetNode": "13",
-                    "targetPort": "13_in"
-                },
-                {
-                    "id": "port_13_to_port_14",
-                    "sourceNode": "13",
-                    "sourcePort": "13_out",
-                    "targetNode": "14",
-                    "targetPort": "14_in"
-                },
-                {
-                    "id": "port_14_to_port_10",
-                    "sourceNode": "14",
-                    "sourcePort": "14_out",
-                    "targetNode": "10",
-                    "targetPort": "10_in"
-                },
-                {
                     "id": "port_4_to_port_11",
                     "sourceNode": "4",
                     "sourcePort": "4_out",
@@ -129,13 +94,6 @@
                     "targetPort": "9_in"
                 },
                 {
-                    "id": "port_10_to_port_16",
-                    "sourceNode": "10",
-                    "sourcePort": "10_out",
-                    "targetNode": "16",
-                    "targetPort": "16_in"
-                },
-                {
                     "conditions": [
                         {
                             "index": 0
@@ -146,9 +104,44 @@
                     "sourcePort": "16_out",
                     "targetNode": "17",
                     "targetPort": "17_in"
+                },
+                {
+                    "id": "port_7_to_port_18",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "18",
+                    "targetPort": "18_in"
+                },
+                {
+                    "id": "port_9_to_port_18",
+                    "sourceNode": "9",
+                    "sourcePort": "9_out",
+                    "targetNode": "18",
+                    "targetPort": "18_in"
+                },
+                {
+                    "id": "port_18_to_port_19",
+                    "sourceNode": "18",
+                    "sourcePort": "18_out",
+                    "targetNode": "19",
+                    "targetPort": "19_in"
+                },
+                {
+                    "id": "port_19_to_port_4",
+                    "sourceNode": "19",
+                    "sourcePort": "19_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "id": "port_19_to_port_16",
+                    "sourceNode": "19",
+                    "sourcePort": "19_out",
+                    "targetNode": "16",
+                    "targetPort": "16_in"
                 }
             ],
-            "hash": "095f0ace1f80105157267c743203457a955faa61",
+            "hash": "cb21c33fe533abc6a2ed5f1af8de00890553eb3a",
             "nodes": {
                 "0": {
                     "data": {
@@ -180,40 +173,7 @@
                     "type": "end",
                     "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
                     "x": 190,
-                    "y": 1652
-                },
-                "10": {
-                    "customCode": null,
-                    "data": {
-                        "advanced": {
-                            "customName": "format containment note",
-                            "customNameId": 0,
-                            "description": "Format a custom report based on which playbooks were dispatched",
-                            "join": [],
-                            "note": "Format a custom report based on which playbooks were dispatched"
-                        },
-                        "functionId": 1,
-                        "functionName": "format_containment_note",
-                        "id": "10",
-                        "inputParameters": [
-                            "dispatch_asset_containment_playbooks:playbook_output:playbook_run_id_list",
-                            "dispatch_identity_containment_playbooks:playbook_output:playbook_run_id_list",
-                            "get_known_entities:custom_function_result.data.*.indicator_value",
-                            "get_known_entities:custom_function_result.data.*.indicator_tags",
-                            "collect_hosts_and_users:custom_function_result.data.*.artifact_value"
-                        ],
-                        "outputVariables": [
-                            "note_title",
-                            "note_content"
-                        ],
-                        "type": "code"
-                    },
-                    "errors": {},
-                    "id": "10",
-                    "type": "code",
-                    "userCode": "    from itertools import zip_longest\n    \n    format_containment_note__note_title = \"\"\n    format_containment_note__note_content = \"\"\n    \n    def playbook_report(pb_run_id):\n        pb_run_url = phantom.build_phantom_rest_url('playbook_run', pb_run_id)\n        response = phantom.requests.get(pb_run_url, verify=False).json()\n        if response.get('id'):\n            message = json.loads(response['message'])\n            formatted_content = f\"\\n#### Playbook Executed - {message['playbook']}\\n\"\n            formatted_content += (\n                \"| status | action | app | parameters |\\n\"\n                \"| --- | --- | --- | --- |\\n\"\n            )\n            for result_item in message['result']:\n                app_dict = {}\n                for item in result_item['app_runs']:\n                    param = item['parameter']\n                    param.pop('context', None)\n                    if item['app'] not in app_dict.keys():\n                        app_dict[item['app']] = {'success': [], 'failed': []}\n                    if item['status'] == 'success':\n                        app_dict[item['app']]['success'].append(param)\n                    if item['status'] == 'failed':\n                        app_dict[item['app']]['failed'].append(param)\n                for app, params in app_dict.items():\n                    if params['success']:\n                        formatted_content += f\"| success | {result_item['action']} | {app} | ```{params['success']}``` |\\n\"\n                    if params['failed']:\n                        formatted_content += f\"| failed | {result_item['action']} | {app} | ```{params['failed']}``` |\\n\"\n            return formatted_content + \"\\n&nbsp;\\n\\n&nbsp;\\n\"\n    \n    asset_list = []\n    asset_contained_list = []\n    identity_list = []\n    identity_contained_list = []\n    misc_not_contained_list = []\n    \n    for i_value, i_tag in zip(get_known_entities_data___indicator_value, get_known_entities_data___indicator_tags):\n        if i_tag:\n            if 'known_asset' in i_tag:\n                asset_list.append(i_value.lower())\n                if 'contained' in i_tag:\n                    asset_contained_list.append(i_value.lower())\n            if 'known_identity' in i_tag:\n                identity_list.append(i_value.lower())\n                if 'contained' in i_tag:\n                    identity_contained_list.append(i_value.lower())\n    \n    for value in collect_hosts_and_users_data___artifact_value:\n        if value.lower() not in asset_list and value.lower() not in identity_list:\n            misc_not_contained_list.append(value)\n                \n    if dispatch_asset_containment_playbooks_output_playbook_run_id_list_values:\n        format_containment_note__note_content += (\n            \"## Asset Containment Report\\n\\n\"\n            \"| Known Assets from event | Known Assets contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(asset_list, asset_contained_list, fillvalue=\" \"):\n            format_containment_note__note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_asset_containment_playbooks_output_playbook_run_id_list_values:\n            format_containment_note__note_content += playbook_report(run_id)\n\n    if dispatch_identity_containment_playbooks_output_playbook_run_id_list_values:\n        format_containment_note__note_content += (\n            \"## Identity Containment Report\\n\\n\"\n            \"| Known Identities from event | Known Identities contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(identity_list, identity_contained_list, fillvalue=\" \"):\n            format_containment_note__note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_identity_containment_playbooks_output_playbook_run_id_list_values:\n            format_containment_note__note_content += playbook_report(run_id)\n    \n    if misc_not_contained_list:\n        misc_not_contained_list = set(misc_not_contained_list)\n        format_containment_note__note_content += f\"## Unidentified Entities Not Contained \\n\"\n        for item in misc_not_contained_list:\n            format_containment_note__note_content += f\"- {item}\\n\"\n        format_containment_note__note_content += \"(Manual action may be required)\"\n                \n    if format_containment_note__note_content:\n        format_containment_note__note_title = \"[Auto-Generated] Containment Summary\"\n\n",
-                    "x": 340,
-                    "y": 1116
+                    "y": 1520
                 },
                 "11": {
                     "data": {
@@ -299,7 +259,7 @@
                     "id": "11",
                     "type": "utility",
                     "x": 0,
-                    "y": 1481
+                    "y": 1349
                 },
                 "12": {
                     "data": {
@@ -376,184 +336,7 @@
                     "id": "12",
                     "type": "utility",
                     "x": 340,
-                    "y": 1481
-                },
-                "13": {
-                    "data": {
-                        "advanced": {
-                            "customName": "get known entities",
-                            "customNameId": 0,
-                            "join": []
-                        },
-                        "customFunction": {
-                            "draftMode": false,
-                            "name": "indicator_get_by_tag",
-                            "repoName": "community"
-                        },
-                        "functionId": 6,
-                        "functionName": "get_known_entities",
-                        "id": "13",
-                        "selectMore": false,
-                        "type": "utility",
-                        "utilities": {
-                            "indicator_get_by_tag": {
-                                "description": "Get indicator(s) by tags.",
-                                "fields": [
-                                    {
-                                        "dataTypes": [],
-                                        "description": "Comma separated list of tags. Tags will be OR'd together: e.g. tag1 OR tag2 OR tag3. Tags do not support whitespace and whitespace will be automatically removed.",
-                                        "inputType": "item",
-                                        "label": "tags_or",
-                                        "name": "tags_or",
-                                        "placeholder": "tag1,tag2,...tagK",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    },
-                                    {
-                                        "dataTypes": [],
-                                        "description": "Comma separated list of tags. Tags will be AND'd together: e.g. tag1 AND tag2 AND tag3. Tags do not support whitespace and whitespace will be automatically removed.",
-                                        "inputType": "item",
-                                        "label": "tags_and",
-                                        "name": "tags_and",
-                                        "placeholder": "tag1,tag2,...tagK",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    },
-                                    {
-                                        "dataTypes": [],
-                                        "description": "Defaults to last_30_days\noptions:\ntoday\nyesterday\nthis_week\nthis_month\nlast_7_days\nlast_30_days\nlast_week\nlast_month",
-                                        "inputType": "item",
-                                        "label": "indicator_timerange",
-                                        "name": "indicator_timerange",
-                                        "placeholder": "last_30_days",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    },
-                                    {
-                                        "dataTypes": [],
-                                        "description": "Optional parameter to ensure the fetched indicator exists in the supplied container.",
-                                        "inputType": "item",
-                                        "label": "container",
-                                        "name": "container",
-                                        "placeholder": "container:id",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    },
-                                    {
-                                        "dataTypes": [],
-                                        "description": "Comma separated list of tags to filter out. If the indicator's tags contain any of the values in this list, they will be omitted from the output.",
-                                        "inputType": "item",
-                                        "label": "tags_exclude",
-                                        "name": "tags_exclude",
-                                        "placeholder": "tag1, tag2",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    }
-                                ],
-                                "label": "indicator_get_by_tag",
-                                "name": "indicator_get_by_tag"
-                            }
-                        },
-                        "utilityType": "custom_function",
-                        "values": {
-                            "indicator_get_by_tag": {
-                                "container": "container:id",
-                                "indicator_timerange": null,
-                                "tags_and": null,
-                                "tags_exclude": "",
-                                "tags_or": "known_identity, known_asset"
-                            }
-                        }
-                    },
-                    "errors": {},
-                    "id": "13",
-                    "type": "utility",
-                    "x": 340,
-                    "y": 820
-                },
-                "14": {
-                    "data": {
-                        "advanced": {
-                            "customName": "collect hosts and users",
-                            "customNameId": 0,
-                            "join": []
-                        },
-                        "customFunction": {
-                            "draftMode": false,
-                            "name": "collect_by_cef_type",
-                            "repoName": "community"
-                        },
-                        "functionId": 7,
-                        "functionName": "collect_hosts_and_users",
-                        "id": "14",
-                        "selectMore": false,
-                        "type": "utility",
-                        "utilities": {
-                            "collect_by_cef_type": {
-                                "description": "Collect all artifact values that match the desired CEF data types, such as \"ip\", \"url\", \"sha1\", or \"all\". Optionally also filter for artifacts that have the specified tags.",
-                                "fields": [
-                                    {
-                                        "dataTypes": [
-                                            "phantom container id"
-                                        ],
-                                        "description": "Container ID or container object.",
-                                        "inputType": "item",
-                                        "label": "container",
-                                        "name": "container",
-                                        "placeholder": "container:id",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    },
-                                    {
-                                        "dataTypes": [],
-                                        "description": "The CEF data type to collect values for. This could be a single string or a comma separated list such as \"hash,filehash,file_hash\". The special value \"all\" can also be used to collect all field values from all artifacts.",
-                                        "inputType": "item",
-                                        "label": "data_types",
-                                        "name": "data_types",
-                                        "placeholder": "data_type1, data_type2, data_type3",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    },
-                                    {
-                                        "dataTypes": [],
-                                        "description": "If tags are provided, only return fields from artifacts that have all of the provided tags. This could be an individual tag or a comma separated list.",
-                                        "inputType": "item",
-                                        "label": "tags",
-                                        "name": "tags",
-                                        "placeholder": "tag1,tag2,tag3",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    },
-                                    {
-                                        "dataTypes": [],
-                                        "description": "Defaults to 'new'. Define custom scope. Advanced Settings Scope is not passed to a custom function. Options are 'all' or 'new'.",
-                                        "inputType": "item",
-                                        "label": "scope",
-                                        "name": "scope",
-                                        "placeholder": "new",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    }
-                                ],
-                                "label": "collect_by_cef_type",
-                                "name": "collect_by_cef_type"
-                            }
-                        },
-                        "utilityType": "custom_function",
-                        "values": {
-                            "collect_by_cef_type": {
-                                "container": "container:id",
-                                "data_types": "user, user name, username, user_name, host, host name, hostname, host_name",
-                                "scope": "all",
-                                "tags": null
-                            }
-                        }
-                    },
-                    "errors": {},
-                    "id": "14",
-                    "type": "utility",
-                    "x": 340,
-                    "y": 968
+                    "y": 1349
                 },
                 "16": {
                     "data": {
@@ -588,7 +371,7 @@
                     "id": "16",
                     "type": "filter",
                     "x": 740,
-                    "y": 1294
+                    "y": 1162
                 },
                 "17": {
                     "data": {
@@ -633,7 +416,145 @@
                     "id": "17",
                     "type": "action",
                     "x": 680,
-                    "y": 1474
+                    "y": 1342
+                },
+                "18": {
+                    "data": {
+                        "advanced": {
+                            "customName": "collect assets and identites",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "indicator_collect",
+                            "repoName": "community"
+                        },
+                        "functionId": 9,
+                        "functionName": "collect_assets_and_identites",
+                        "id": "18",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "indicator_collect": {
+                                "description": "Collect all indicators in a container and separate them by data type. Additional output data paths are created for each data type. Artifact scope is ignored.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "phantom container id"
+                                        ],
+                                        "description": "The current container",
+                                        "inputType": "item",
+                                        "label": "container",
+                                        "name": "container",
+                                        "placeholder": "container:id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "phantom artifact id"
+                                        ],
+                                        "description": "Optional parameter to only look for indicator values that occur in the artifacts with these IDs. Must be one of: json serializable list, comma separated integers, or a single integer.",
+                                        "inputType": "list",
+                                        "label": "artifact_ids_include",
+                                        "name": "artifact_ids_include",
+                                        "placeholder": "artifact:*.id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to only include indicators with at least one of the provided types in the output. If left empty, all indicator types will be included except those that are explicitly excluded. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_types_include",
+                                        "name": "indicator_types_include",
+                                        "placeholder": "ip, domain",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to exclude indicators with any of the provided types from the output. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_types_exclude",
+                                        "name": "indicator_types_exclude",
+                                        "placeholder": "ip, domain",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to only include indicators with at least one of the provided tags in the output. If left empty, tags will be ignored except when they are excluded. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_tags_include",
+                                        "name": "indicator_tags_include",
+                                        "placeholder": "not_contained, malware",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to exclude indicators with any of the provided tags from the output. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_tags_exclude",
+                                        "name": "indicator_tags_exclude",
+                                        "placeholder": "contained, not_malware",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "indicator_collect",
+                                "name": "indicator_collect"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "indicator_collect": {
+                                "artifact_ids_include": null,
+                                "container": "container:id",
+                                "indicator_tags_exclude": null,
+                                "indicator_tags_include": null,
+                                "indicator_types_exclude": null,
+                                "indicator_types_include": "user, user name, username, user_name, host, host name, hostname, host_name"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "18",
+                    "type": "utility",
+                    "x": 340,
+                    "y": 820
+                },
+                "19": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format containment note",
+                            "customNameId": 0,
+                            "description": "Format a custom report based on which playbooks were dispatched",
+                            "join": [],
+                            "note": "Format a custom report based on which playbooks were dispatched"
+                        },
+                        "functionId": 2,
+                        "functionName": "format_containment_note",
+                        "id": "19",
+                        "inputParameters": [
+                            "collect_assets_and_identites:custom_function_result.data.all_indicators",
+                            "dispatch_identity_containment_playbooks:playbook_output:playbook_run_id_list",
+                            "dispatch_asset_containment_playbooks:playbook_output:playbook_run_id_list"
+                        ],
+                        "outputVariables": [
+                            "note_title",
+                            "note_content"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "19",
+                    "type": "code",
+                    "userCode": "    from itertools import zip_longest\n    \n    # format a report for a playbook_run\n    def playbook_report(pb_run_id):\n        pb_run_url = phantom.build_phantom_rest_url('playbook_run', pb_run_id)\n        response = phantom.requests.get(pb_run_url, verify=False).json()\n        if response.get('id'):\n            message = json.loads(response['message'])\n            formatted_content = f\"\\n#### Playbook Executed - {message['playbook']}\\n\"\n            formatted_content += (\n                \"| status | action | app | parameters |\\n\"\n                \"| --- | --- | --- | --- |\\n\"\n            )\n            for result_item in message['result']:\n                app_dict = {}\n                for item in result_item['app_runs']:\n                    param = item['parameter']\n                    param.pop('context', None)\n                    if item['app'] not in app_dict.keys():\n                        app_dict[item['app']] = {'success': [], 'failed': []}\n                    if item['status'] == 'success':\n                        app_dict[item['app']]['success'].append(param)\n                    if item['status'] == 'failed':\n                        app_dict[item['app']]['failed'].append(param)\n                for app, params in app_dict.items():\n                    if params['success']:\n                        formatted_content += f\"| success | {result_item['action']} | {app} | ```{params['success']}``` |\\n\"\n                    if params['failed']:\n                        formatted_content += f\"| failed | {result_item['action']} | {app} | ```{params['failed']}``` |\\n\"\n            return formatted_content + \"\\n&nbsp;\\n\\n&nbsp;\\n\"\n    \n    indicators = collect_assets_and_identites_data_all_indicators[0]\n    known_assets = []\n    contained_assets = []\n    known_identities = []\n    contained_identities = []\n    misc_entities = []\n    \n    # sort each indicator into known or unknown and contained or not contained\n    for indicator in indicators:\n        if 'known_asset' in indicator['tags']:\n            known_assets.append(indicator['cef_value'])\n            if 'contained' in indicator['tags']:\n                contained_assets.append(indicator['cef_value'])\n        elif 'known_identity' in indicator['tags']:\n            known_identities.append(indicator['cef_value'])\n            if 'contained' in indicator['tags']:\n                contained_identities.append(indicator['cef_value'])\n        else:\n            misc_entities.append(indicator['cef_value'])\n            \n    # deduplicate each list\n    known_assets = list(set(known_assets))\n    contained_assets = list(set(contained_assets))\n    known_identities = list(set(known_identities))\n    contained_identities = list(set(contained_identities))\n    misc_entities = list(set(misc_entities))\n    \n    note_content = ''\n    \n    # asset containment report            \n    if dispatch_asset_containment_playbooks_output_playbook_run_id_list_values:\n        note_content += (\n            \"## Asset Containment Report\\n\\n\"\n            \"| Known Assets from event | Known Assets contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(known_assets, contained_assets, fillvalue=\" \"):\n            note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_asset_containment_playbooks_output_playbook_run_id_list_values:\n            if run_id:\n                note_content += playbook_report(run_id)\n\n    # identity containment report\n    if dispatch_identity_containment_playbooks_output_playbook_run_id_list_values:\n        note_content += (\n            \"\\n\\n\\n\\n## Identity Containment Report\\n\\n\"\n            \"| Known Identities from event | Known Identities contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(known_identities, contained_identities, fillvalue=\" \"):\n            note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_identity_containment_playbooks_output_playbook_run_id_list_values:\n            if run_id:\n                note_content += playbook_report(run_id)\n    \n    if misc_entities:\n        note_content += f\"## Unidentified Entities Not Contained \\n\"\n        for item in misc_entities:\n            note_content += f\"- {item}\\n\"\n        note_content += \"(Manual action may be required)\"\n                \n    if note_content:\n        format_containment_note__note_title = \"[Auto-Generated] Containment Summary\"\n        format_containment_note__note_content = note_content\n",
+                    "x": 340,
+                    "y": 984
                 },
                 "2": {
                     "data": {
@@ -951,7 +872,7 @@
                     "id": "4",
                     "type": "utility",
                     "x": 170,
-                    "y": 1310
+                    "y": 1178
                 },
                 "5": {
                     "data": {
@@ -1141,9 +1062,9 @@
         "playbook_type": "automation",
         "python_version": "3",
         "schema": "5.0.6",
-        "version": "5.3.0.84310"
+        "version": "5.3.1.84890"
     },
-    "create_time": "2022-06-09T19:03:17.591389+00:00",
+    "create_time": "2022-06-09T20:17:47.525825+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"

@@ -205,7 +205,7 @@ def dispatch_identity_containment_playbooks(action=None, success=None, container
     ################################################################################
 
     # call playbook "community/dispatch_input_playbooks", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_identity_containment_playbooks", callback=join_get_known_entities, inputs=inputs)
+    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_identity_containment_playbooks", callback=join_collect_assets_and_identites, inputs=inputs)
 
     return
 
@@ -238,130 +238,7 @@ def dispatch_asset_containment_playbooks(action=None, success=None, container=No
     ################################################################################
 
     # call playbook "community/dispatch_input_playbooks", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_asset_containment_playbooks", callback=join_get_known_entities, inputs=inputs)
-
-    return
-
-
-def format_containment_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("format_containment_note() called")
-
-    ################################################################################
-    # Format a custom report based on which playbooks were dispatched
-    ################################################################################
-
-    dispatch_asset_containment_playbooks_output_playbook_run_id_list = phantom.collect2(container=container, datapath=["dispatch_asset_containment_playbooks:playbook_output:playbook_run_id_list"])
-    dispatch_identity_containment_playbooks_output_playbook_run_id_list = phantom.collect2(container=container, datapath=["dispatch_identity_containment_playbooks:playbook_output:playbook_run_id_list"])
-    get_known_entities_data = phantom.collect2(container=container, datapath=["get_known_entities:custom_function_result.data.*.indicator_value","get_known_entities:custom_function_result.data.*.indicator_tags"])
-    collect_hosts_and_users_data = phantom.collect2(container=container, datapath=["collect_hosts_and_users:custom_function_result.data.*.artifact_value"])
-
-    dispatch_asset_containment_playbooks_output_playbook_run_id_list_values = [item[0] for item in dispatch_asset_containment_playbooks_output_playbook_run_id_list]
-    dispatch_identity_containment_playbooks_output_playbook_run_id_list_values = [item[0] for item in dispatch_identity_containment_playbooks_output_playbook_run_id_list]
-    get_known_entities_data___indicator_value = [item[0] for item in get_known_entities_data]
-    get_known_entities_data___indicator_tags = [item[1] for item in get_known_entities_data]
-    collect_hosts_and_users_data___artifact_value = [item[0] for item in collect_hosts_and_users_data]
-
-    format_containment_note__note_title = None
-    format_containment_note__note_content = None
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-    from itertools import zip_longest
-    
-    format_containment_note__note_title = ""
-    format_containment_note__note_content = ""
-    
-    def playbook_report(pb_run_id):
-        pb_run_url = phantom.build_phantom_rest_url('playbook_run', pb_run_id)
-        response = phantom.requests.get(pb_run_url, verify=False).json()
-        if response.get('id'):
-            message = json.loads(response['message'])
-            formatted_content = f"\n#### Playbook Executed - {message['playbook']}\n"
-            formatted_content += (
-                "| status | action | app | parameters |\n"
-                "| --- | --- | --- | --- |\n"
-            )
-            for result_item in message['result']:
-                app_dict = {}
-                for item in result_item['app_runs']:
-                    param = item['parameter']
-                    param.pop('context', None)
-                    if item['app'] not in app_dict.keys():
-                        app_dict[item['app']] = {'success': [], 'failed': []}
-                    if item['status'] == 'success':
-                        app_dict[item['app']]['success'].append(param)
-                    if item['status'] == 'failed':
-                        app_dict[item['app']]['failed'].append(param)
-                for app, params in app_dict.items():
-                    if params['success']:
-                        formatted_content += f"| success | {result_item['action']} | {app} | ```{params['success']}``` |\n"
-                    if params['failed']:
-                        formatted_content += f"| failed | {result_item['action']} | {app} | ```{params['failed']}``` |\n"
-            return formatted_content + "\n&nbsp;\n\n&nbsp;\n"
-    
-    asset_list = []
-    asset_contained_list = []
-    identity_list = []
-    identity_contained_list = []
-    misc_not_contained_list = []
-    
-    for i_value, i_tag in zip(get_known_entities_data___indicator_value, get_known_entities_data___indicator_tags):
-        if i_tag:
-            if 'known_asset' in i_tag:
-                asset_list.append(i_value.lower())
-                if 'contained' in i_tag:
-                    asset_contained_list.append(i_value.lower())
-            if 'known_identity' in i_tag:
-                identity_list.append(i_value.lower())
-                if 'contained' in i_tag:
-                    identity_contained_list.append(i_value.lower())
-    
-    for value in collect_hosts_and_users_data___artifact_value:
-        if value.lower() not in asset_list and value.lower() not in identity_list:
-            misc_not_contained_list.append(value)
-                
-    if dispatch_asset_containment_playbooks_output_playbook_run_id_list_values:
-        format_containment_note__note_content += (
-            "## Asset Containment Report\n\n"
-            "| Known Assets from event | Known Assets contained |\n"
-            "| --- | --- |\n"
-        )
-        for zipped_list in zip_longest(asset_list, asset_contained_list, fillvalue=" "):
-            format_containment_note__note_content += f"| {zipped_list[0]} | {zipped_list[1]} |\n"
-        for run_id in dispatch_asset_containment_playbooks_output_playbook_run_id_list_values:
-            format_containment_note__note_content += playbook_report(run_id)
-
-    if dispatch_identity_containment_playbooks_output_playbook_run_id_list_values:
-        format_containment_note__note_content += (
-            "## Identity Containment Report\n\n"
-            "| Known Identities from event | Known Identities contained |\n"
-            "| --- | --- |\n"
-        )
-        for zipped_list in zip_longest(identity_list, identity_contained_list, fillvalue=" "):
-            format_containment_note__note_content += f"| {zipped_list[0]} | {zipped_list[1]} |\n"
-        for run_id in dispatch_identity_containment_playbooks_output_playbook_run_id_list_values:
-            format_containment_note__note_content += playbook_report(run_id)
-    
-    if misc_not_contained_list:
-        misc_not_contained_list = set(misc_not_contained_list)
-        format_containment_note__note_content += f"## Unidentified Entities Not Contained \n"
-        for item in misc_not_contained_list:
-            format_containment_note__note_content += f"- {item}\n"
-        format_containment_note__note_content += "(Manual action may be required)"
-                
-    if format_containment_note__note_content:
-        format_containment_note__note_title = "[Auto-Generated] Containment Summary"
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.save_run_data(key="format_containment_note:note_title", value=json.dumps(format_containment_note__note_title))
-    phantom.save_run_data(key="format_containment_note:note_content", value=json.dumps(format_containment_note__note_content))
-
-    close_protect_task(container=container)
-    notable_artifact_filter(container=container)
+    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_asset_containment_playbooks", callback=join_collect_assets_and_identites, inputs=inputs)
 
     return
 
@@ -422,75 +299,6 @@ def mark_containment_report_as_evidence(action=None, success=None, container=Non
     ################################################################################
 
     phantom.custom_function(custom_function="community/mark_evidence", parameters=parameters, name="mark_containment_report_as_evidence")
-
-    return
-
-
-def join_get_known_entities(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("join_get_known_entities() called")
-
-    if phantom.completed(playbook_names=["dispatch_identity_containment_playbooks", "dispatch_asset_containment_playbooks"]):
-        # call connected block "get_known_entities"
-        get_known_entities(container=container, handle=handle)
-
-    return
-
-
-def get_known_entities(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("get_known_entities() called")
-
-    id_value = container.get("id", None)
-
-    parameters = []
-
-    parameters.append({
-        "tags_or": "known_identity, known_asset",
-        "tags_and": None,
-        "container": id_value,
-        "tags_exclude": None,
-        "indicator_timerange": None,
-    })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="community/indicator_get_by_tag", parameters=parameters, name="get_known_entities", callback=collect_hosts_and_users)
-
-    return
-
-
-def collect_hosts_and_users(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("collect_hosts_and_users() called")
-
-    id_value = container.get("id", None)
-
-    parameters = []
-
-    parameters.append({
-        "tags": None,
-        "scope": "all",
-        "container": id_value,
-        "data_types": "user, user name, username, user_name, host, host name, hostname, host_name",
-    })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="community/collect_by_cef_type", parameters=parameters, name="collect_hosts_and_users", callback=format_containment_note)
 
     return
 
@@ -558,6 +366,176 @@ def update_splunk(action=None, success=None, container=None, results=None, handl
     ################################################################################
 
     phantom.act("update event", parameters=parameters, name="update_splunk", assets=["splunk"])
+
+    return
+
+
+def join_collect_assets_and_identites(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("join_collect_assets_and_identites() called")
+
+    if phantom.completed(playbook_names=["dispatch_identity_containment_playbooks", "dispatch_asset_containment_playbooks"]):
+        # call connected block "collect_assets_and_identites"
+        collect_assets_and_identites(container=container, handle=handle)
+
+    return
+
+
+def collect_assets_and_identites(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("collect_assets_and_identites() called")
+
+    id_value = container.get("id", None)
+
+    parameters = []
+
+    parameters.append({
+        "container": id_value,
+        "artifact_ids_include": None,
+        "indicator_types_include": "user, user name, username, user_name, host, host name, hostname, host_name",
+        "indicator_types_exclude": None,
+        "indicator_tags_include": None,
+        "indicator_tags_exclude": None,
+    })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/indicator_collect", parameters=parameters, name="collect_assets_and_identites", callback=format_containment_note)
+
+    return
+
+
+def format_containment_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("format_containment_note() called")
+
+    ################################################################################
+    # Format a custom report based on which playbooks were dispatched
+    ################################################################################
+
+    collect_assets_and_identites__result = phantom.collect2(container=container, datapath=["collect_assets_and_identites:custom_function_result.data.all_indicators"])
+    dispatch_identity_containment_playbooks_output_playbook_run_id_list = phantom.collect2(container=container, datapath=["dispatch_identity_containment_playbooks:playbook_output:playbook_run_id_list"])
+    dispatch_asset_containment_playbooks_output_playbook_run_id_list = phantom.collect2(container=container, datapath=["dispatch_asset_containment_playbooks:playbook_output:playbook_run_id_list"])
+
+    collect_assets_and_identites_data_all_indicators = [item[0] for item in collect_assets_and_identites__result]
+    dispatch_identity_containment_playbooks_output_playbook_run_id_list_values = [item[0] for item in dispatch_identity_containment_playbooks_output_playbook_run_id_list]
+    dispatch_asset_containment_playbooks_output_playbook_run_id_list_values = [item[0] for item in dispatch_asset_containment_playbooks_output_playbook_run_id_list]
+
+    format_containment_note__note_title = None
+    format_containment_note__note_content = None
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+    from itertools import zip_longest
+    
+    # format a report for a playbook_run
+    def playbook_report(pb_run_id):
+        pb_run_url = phantom.build_phantom_rest_url('playbook_run', pb_run_id)
+        response = phantom.requests.get(pb_run_url, verify=False).json()
+        if response.get('id'):
+            message = json.loads(response['message'])
+            formatted_content = f"\n#### Playbook Executed - {message['playbook']}\n"
+            formatted_content += (
+                "| status | action | app | parameters |\n"
+                "| --- | --- | --- | --- |\n"
+            )
+            for result_item in message['result']:
+                app_dict = {}
+                for item in result_item['app_runs']:
+                    param = item['parameter']
+                    param.pop('context', None)
+                    if item['app'] not in app_dict.keys():
+                        app_dict[item['app']] = {'success': [], 'failed': []}
+                    if item['status'] == 'success':
+                        app_dict[item['app']]['success'].append(param)
+                    if item['status'] == 'failed':
+                        app_dict[item['app']]['failed'].append(param)
+                for app, params in app_dict.items():
+                    if params['success']:
+                        formatted_content += f"| success | {result_item['action']} | {app} | ```{params['success']}``` |\n"
+                    if params['failed']:
+                        formatted_content += f"| failed | {result_item['action']} | {app} | ```{params['failed']}``` |\n"
+            return formatted_content + "\n&nbsp;\n\n&nbsp;\n"
+    
+    indicators = collect_assets_and_identites_data_all_indicators[0]
+    known_assets = []
+    contained_assets = []
+    known_identities = []
+    contained_identities = []
+    misc_entities = []
+    
+    # sort each indicator into known or unknown and contained or not contained
+    for indicator in indicators:
+        if 'known_asset' in indicator['tags']:
+            known_assets.append(indicator['cef_value'])
+            if 'contained' in indicator['tags']:
+                contained_assets.append(indicator['cef_value'])
+        elif 'known_identity' in indicator['tags']:
+            known_identities.append(indicator['cef_value'])
+            if 'contained' in indicator['tags']:
+                contained_identities.append(indicator['cef_value'])
+        else:
+            misc_entities.append(indicator['cef_value'])
+            
+    # deduplicate each list
+    known_assets = list(set(known_assets))
+    contained_assets = list(set(contained_assets))
+    known_identities = list(set(known_identities))
+    contained_identities = list(set(contained_identities))
+    misc_entities = list(set(misc_entities))
+    
+    note_content = ''
+    
+    # asset containment report            
+    if dispatch_asset_containment_playbooks_output_playbook_run_id_list_values:
+        note_content += (
+            "## Asset Containment Report\n\n"
+            "| Known Assets from event | Known Assets contained |\n"
+            "| --- | --- |\n"
+        )
+        for zipped_list in zip_longest(known_assets, contained_assets, fillvalue=" "):
+            note_content += f"| {zipped_list[0]} | {zipped_list[1]} |\n"
+        for run_id in dispatch_asset_containment_playbooks_output_playbook_run_id_list_values:
+            if run_id:
+                note_content += playbook_report(run_id)
+
+    # identity containment report
+    if dispatch_identity_containment_playbooks_output_playbook_run_id_list_values:
+        note_content += (
+            "\n\n\n\n## Identity Containment Report\n\n"
+            "| Known Identities from event | Known Identities contained |\n"
+            "| --- | --- |\n"
+        )
+        for zipped_list in zip_longest(known_identities, contained_identities, fillvalue=" "):
+            note_content += f"| {zipped_list[0]} | {zipped_list[1]} |\n"
+        for run_id in dispatch_identity_containment_playbooks_output_playbook_run_id_list_values:
+            if run_id:
+                note_content += playbook_report(run_id)
+    
+    if misc_entities:
+        note_content += f"## Unidentified Entities Not Contained \n"
+        for item in misc_entities:
+            note_content += f"- {item}\n"
+        note_content += "(Manual action may be required)"
+                
+    if note_content:
+        format_containment_note__note_title = "[Auto-Generated] Containment Summary"
+        format_containment_note__note_content = note_content
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.save_run_data(key="format_containment_note:note_title", value=json.dumps(format_containment_note__note_title))
+    phantom.save_run_data(key="format_containment_note:note_content", value=json.dumps(format_containment_note__note_content))
+
+    close_protect_task(container=container)
+    notable_artifact_filter(container=container)
 
     return
 
