@@ -422,11 +422,16 @@ def check_valid_inputs(action=None, success=None, container=None, results=None, 
 def on_finish(container, summary):
     phantom.debug("on_finish() called")
 
+    note_content_combined_value = phantom.concatenate("Overridden by custom code", dedup=True)
+
     output = {
-        "note_content": "",
-        "verdict": "",
-        "sub_playbook_outputs": "",
-        "sub_playbook_inputs": "",
+        "note_content": note_content_combined_value,
+        "verdict": "Overridden by custom code",
+        "sub_playbook_outputs": "Overridden by custom code",
+        "sub_playbook_inputs": "Overridden by custom code",
+        "playbook_run_id_list": "Overridden by custom code",
+        "playbook_id_list": "Overridden by custom code",
+        "playbook_name_list": "Overridden by custom code",
     }
 
     ################################################################################
