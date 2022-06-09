@@ -1,5 +1,5 @@
 """
-Use TruSTAR to gather threat information about indicators in a SOAR event. Tag the indicators with the normalized priority score from TruSTAR and summarize the findings in an analyst note. This playbook is meant to be used as a child playbook executed by a parent playbook such as &quot;threat_intel_investigate&quot;.
+Use Intelligence Management to gather threat information about indicators in a SOAR event. Tag the indicators with the normalized priority score from Intelligence Management and summarize the findings in an analyst note. This playbook is meant to be used as a child playbook executed by a parent playbook such as &quot;threat_intel_investigate&quot;.
 """
 
 
@@ -22,8 +22,8 @@ def indicator_reputation(action=None, success=None, container=None, results=None
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
 
     ################################################################################
-    # Query the Indicator API in TruSTAR to find threat intelligence scores and attributes 
-    # about each of the indicators passed into the playbook.
+    # Query the Indicator API in Intelligence Management to find threat intelligence 
+    # scores and attributes about each of the indicators passed into the playbook.
     ################################################################################
 
     playbook_input_indicators = phantom.collect2(container=container, datapath=["playbook_input:indicators"])
@@ -34,6 +34,7 @@ def indicator_reputation(action=None, success=None, container=None, results=None
     for playbook_input_indicators_item in playbook_input_indicators:
         if playbook_input_indicators_item[0] is not None:
             parameters.append({
+                "limit": 10000,
                 "indicator_value": playbook_input_indicators_item[0],
             })
 
@@ -97,9 +98,9 @@ def format_note(action=None, success=None, container=None, results=None, handle=
     phantom.debug("format_note() called")
 
     ################################################################################
-    # Combine the TruSTAR results into a note to pass up to the parent playbook. Build 
-    # a markdown table of results with links to TruSTAR queries and select fields 
-    # from the reputation information for each indicator.
+    # Combine the Intelligence Management results into a note to pass up to the parent 
+    # playbook. Build a markdown table of results with links to Intelligence Management 
+    # queries and select fields from the reputation information for each indicator.
     ################################################################################
 
     indicator_reputation_result_data = phantom.collect2(container=container, datapath=["indicator_reputation:action_result.parameter.indicator_value","indicator_reputation:action_result.data.*.observable.type","indicator_reputation:action_result.data.*.priorityScore","indicator_reputation:action_result.data.*.submissionTags","indicator_reputation:action_result.data.*.attributes","indicator_reputation:action_result.data.*.safelisted","indicator_reputation:action_result.data.*.scoreContexts.*.sourceName"], action_results=results)
@@ -123,10 +124,10 @@ def format_note(action=None, success=None, container=None, results=None, handle=
 
     import urllib.parse
     
-    note = """
-| Indicator | Type | Priority Score | Submission Tags | Attributes | Safe Listed? | Sources |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-    """
+    note = (
+        "| Indicator | Type | Priority Score | Submission Tags | Attributes | Safe Listed? | Sources |\n"
+        "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
+    )
     
     for item in indicator_reputation_result_data:
         if item[1]:            
@@ -158,7 +159,7 @@ def indicator_found(action=None, success=None, container=None, results=None, han
     phantom.debug("indicator_found() called")
 
     ################################################################################
-    # Filter for indicators that were found in TruSTAR.
+    # Filter for indicators that were found in Intelligence Management.
     ################################################################################
 
     # collect filtered artifact ids and results for 'if' condition 1
