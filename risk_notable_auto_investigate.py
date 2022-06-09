@@ -66,11 +66,11 @@ def dispatch_investigate_playbooks(action=None, success=None, container=None, re
     playbook_tags_combined_value = phantom.concatenate("investigate", "risk_notable")
 
     inputs = {
-        "playbook_tags": playbook_tags_combined_value,
         "playbook_repo": "local",
-        "indicator_tags_include": "",
-        "indicator_tags_exclude": "",
+        "playbook_tags": playbook_tags_combined_value,
         "artifact_ids_include": "",
+        "indicator_tags_exclude": "",
+        "indicator_tags_include": "",
     }
 
     ################################################################################
@@ -231,38 +231,24 @@ def update_investigate_task(action=None, success=None, container=None, results=N
     phantom.debug("update_investigate_task() called")
 
     id_value = container.get("id", None)
-    dispatch_investigate_playbooks_output_note_title = phantom.collect2(container=container, datapath=["dispatch_investigate_playbooks:playbook_output:note_title"])
-    dispatch_investigate_playbooks_output_note_content = phantom.collect2(container=container, datapath=["dispatch_investigate_playbooks:playbook_output:note_content"])
+    dispatch_investigate_playbooks_output_sub_playbook_outputs = phantom.collect2(container=container, datapath=["dispatch_investigate_playbooks:playbook_output:sub_playbook_outputs.note_title","dispatch_investigate_playbooks:playbook_output:sub_playbook_outputs.note_content"])
 
     parameters = []
 
     # build parameters list for 'update_investigate_task' call
-    for dispatch_investigate_playbooks_output_note_title_item in dispatch_investigate_playbooks_output_note_title:
-        for dispatch_investigate_playbooks_output_note_content_item in dispatch_investigate_playbooks_output_note_content:
-            parameters.append({
-                "owner": None,
-                "status": None,
-                "container": id_value,
-                "task_name": "Investigate",
-                "note_title": dispatch_investigate_playbooks_output_note_title_item[0],
-                "note_content": dispatch_investigate_playbooks_output_note_content_item[0],
-            })
+    for dispatch_investigate_playbooks_output_sub_playbook_outputs_item in dispatch_investigate_playbooks_output_sub_playbook_outputs:
+        parameters.append({
+            "owner": None,
+            "status": None,
+            "container": id_value,
+            "task_name": "Investigate",
+            "note_title": dispatch_investigate_playbooks_output_sub_playbook_outputs_item[0],
+            "note_content": dispatch_investigate_playbooks_output_sub_playbook_outputs_item[1],
+        })
 
     ################################################################################
     ## Custom Code Start
     ################################################################################
-
-    parameters = []
-    for idx, title_item in enumerate(dispatch_investigate_playbooks_output_note_title):
-        parameters.append({
-                "owner": None,
-                "status": None,
-                "container": id_value,
-                "task_name": "Investigate",
-                "note_title": dispatch_investigate_playbooks_output_note_title[idx][0],
-                "note_content": dispatch_investigate_playbooks_output_note_content[idx][0],
-            })
-
 
     ################################################################################
     ## Custom Code End
@@ -365,7 +351,7 @@ def risk_threshold_decision(action=None, success=None, container=None, results=N
     found_match_1 = phantom.decision(
         container=container,
         conditions=[
-            ["dedup_risk_events:custom_function:total_score", ">=", 250]
+            ["sum_risk_score:custom_function:total_score", ">=", 250]
         ])
 
     # call connected blocks if condition 1 matched
@@ -402,37 +388,24 @@ def close_investigate(action=None, success=None, container=None, results=None, h
     phantom.debug("close_investigate() called")
 
     id_value = container.get("id", None)
-    dispatch_investigate_playbooks_output_note_title = phantom.collect2(container=container, datapath=["dispatch_investigate_playbooks:playbook_output:note_title"])
-    dispatch_investigate_playbooks_output_note_content = phantom.collect2(container=container, datapath=["dispatch_investigate_playbooks:playbook_output:note_content"])
+    dispatch_investigate_playbooks_output_sub_playbook_outputs = phantom.collect2(container=container, datapath=["dispatch_investigate_playbooks:playbook_output:sub_playbook_outputs.note_title","dispatch_investigate_playbooks:playbook_output:sub_playbook_outputs.note_content"])
 
     parameters = []
 
     # build parameters list for 'close_investigate' call
-    for dispatch_investigate_playbooks_output_note_title_item in dispatch_investigate_playbooks_output_note_title:
-        for dispatch_investigate_playbooks_output_note_content_item in dispatch_investigate_playbooks_output_note_content:
-            parameters.append({
-                "owner": None,
-                "status": "complete",
-                "container": id_value,
-                "task_name": "Investigate",
-                "note_title": dispatch_investigate_playbooks_output_note_title_item[0],
-                "note_content": dispatch_investigate_playbooks_output_note_content_item[0],
-            })
+    for dispatch_investigate_playbooks_output_sub_playbook_outputs_item in dispatch_investigate_playbooks_output_sub_playbook_outputs:
+        parameters.append({
+            "owner": None,
+            "status": "complete",
+            "container": id_value,
+            "task_name": "Investigate",
+            "note_title": dispatch_investigate_playbooks_output_sub_playbook_outputs_item[0],
+            "note_content": dispatch_investigate_playbooks_output_sub_playbook_outputs_item[1],
+        })
 
     ################################################################################
     ## Custom Code Start
     ################################################################################
-
-    parameters = []
-    for idx, title_item in enumerate(dispatch_investigate_playbooks_output_note_title):
-        parameters.append({
-                "owner": None,
-                "status": "complete",
-                "container": id_value,
-                "task_name": "Investigate",
-                "note_title": dispatch_investigate_playbooks_output_note_title[idx][0],
-                "note_content": dispatch_investigate_playbooks_output_note_content[idx][0],
-            })
 
     ################################################################################
     ## Custom Code End
@@ -485,10 +458,10 @@ def render_verdict_note(action=None, success=None, container=None, results=None,
 
     # parameter list for template variable replacement
     parameters = [
-        "dedup_risk_events:custom_function:total_score",
-        "dedup_risk_events:custom_function:individual_scores",
-        "dedup_risk_events:custom_function:names",
-        "dedup_risk_events:custom_function:descriptions"
+        "sum_risk_score:custom_function:total_score",
+        "filtered-data:risk_rule_filter:condition_1:artifact:*.cef._total_risk_score",
+        "filtered-data:risk_rule_filter:condition_1:artifact:*.name",
+        "filtered-data:risk_rule_filter:condition_1:artifact:*.description"
     ]
 
     ################################################################################
@@ -551,7 +524,7 @@ def enrichment_output_decision(action=None, success=None, container=None, result
     found_match_1 = phantom.decision(
         container=container,
         conditions=[
-            ["dispatch_investigate_playbooks:playbook_output:note_content", "!=", ""]
+            ["dispatch_investigate_playbooks:playbook_output:sub_playbook_outputs.note_content", "!=", ""]
         ])
 
     # call connected blocks if condition 1 matched
@@ -686,7 +659,7 @@ def merge_result_decision(action=None, success=None, container=None, results=Non
     found_match_1 = phantom.decision(
         container=container,
         conditions=[
-            ["playbook_risk_notable_auto_merge_1:playbook_output:merge_result", "!=", "merged into case"]
+            ["risk_notable_auto_merge:playbook_output:merge_result", "!=", "merged into case"]
         ])
 
     # call connected blocks if condition 1 matched
@@ -697,62 +670,32 @@ def merge_result_decision(action=None, success=None, container=None, results=Non
     return
 
 
-def dedup_risk_events(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("dedup_risk_events() called")
+def sum_risk_score(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("sum_risk_score() called")
 
     ################################################################################
     # Calculate a risk score based on all of the unique risk events
     ################################################################################
 
-    filtered_artifact_0_data_risk_rule_filter = phantom.collect2(container=container, datapath=["filtered-data:risk_rule_filter:condition_1:artifact:*.cef.calculated_risk_score","filtered-data:risk_rule_filter:condition_1:artifact:*.data","filtered-data:risk_rule_filter:condition_1:artifact:*.name","filtered-data:risk_rule_filter:condition_1:artifact:*.description"], scope="all")
+    filtered_artifact_0_data_risk_rule_filter = phantom.collect2(container=container, datapath=["filtered-data:risk_rule_filter:condition_1:artifact:*.cef._total_risk_score"], scope="all")
 
-    filtered_artifact_0__cef_calculated_risk_score = [item[0] for item in filtered_artifact_0_data_risk_rule_filter]
-    filtered_artifact_0__data = [item[1] for item in filtered_artifact_0_data_risk_rule_filter]
-    filtered_artifact_0__name = [item[2] for item in filtered_artifact_0_data_risk_rule_filter]
-    filtered_artifact_0__description = [item[3] for item in filtered_artifact_0_data_risk_rule_filter]
+    filtered_artifact_0__cef__total_risk_score = [item[0] for item in filtered_artifact_0_data_risk_rule_filter]
 
-    dedup_risk_events__total_score = None
-    dedup_risk_events__individual_scores = None
-    dedup_risk_events__names = None
-    dedup_risk_events__descriptions = None
+    sum_risk_score__total_score = None
 
     ################################################################################
     ## Custom Code Start
     ################################################################################
-    event_id_list = []
-    for item in filtered_artifact_0__data:
-        for sub_item in item:
-            if sub_item.get('risk_event'):
-                event_id_list.append(sub_item['risk_event']['id'])
-    event_id_dict = {}
-    for event_id, risk_score, name, description in zip(
-        event_id_list, 
-        filtered_artifact_0__cef_calculated_risk_score,
-        filtered_artifact_0__name,
-        filtered_artifact_0__description
-    ):
-        # Get the calculated risk score per unique event_id.
-        # Putting in a dictionary ensures only one entry per event_id.
-        if event_id:
-            event_id_dict[event_id] = {'score': risk_score, 'name': name, 'description': description}
-    dedup_risk_events__total_score = 0
-    dedup_risk_events__individual_scores = []
-    dedup_risk_events__names = []
-    dedup_risk_events__descriptions = []
-    for key in event_id_dict:
-        dedup_risk_events__total_score += int(event_id_dict[key]['score'])
-        dedup_risk_events__individual_scores.append(event_id_dict[key]['score'])
-        dedup_risk_events__names.append(event_id_dict[key]['name'])
-        dedup_risk_events__descriptions.append(event_id_dict[key]['description'])
+
+    sum_risk_score__total_score = 0
+    for score in filtered_artifact_0__cef__total_risk_score:
+        sum_risk_score__total_score += float(score)
 
     ################################################################################
     ## Custom Code End
     ################################################################################
 
-    phantom.save_run_data(key="dedup_risk_events:total_score", value=json.dumps(dedup_risk_events__total_score))
-    phantom.save_run_data(key="dedup_risk_events:individual_scores", value=json.dumps(dedup_risk_events__individual_scores))
-    phantom.save_run_data(key="dedup_risk_events:names", value=json.dumps(dedup_risk_events__names))
-    phantom.save_run_data(key="dedup_risk_events:descriptions", value=json.dumps(dedup_risk_events__descriptions))
+    phantom.save_run_data(key="sum_risk_score:total_score", value=json.dumps(sum_risk_score__total_score))
 
     risk_threshold_decision(container=container)
 
@@ -777,7 +720,7 @@ def risk_rule_filter(action=None, success=None, container=None, results=None, ha
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        dedup_risk_events(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        sum_risk_score(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 

@@ -246,7 +246,7 @@
                     "id": "0",
                     "type": "start",
                     "x": 150,
-                    "y": -6.394884621840902e-14
+                    "y": -1.2789769243681803e-13
                 },
                 "1": {
                     "data": {
@@ -936,8 +936,8 @@
                         "values": {
                             "workbook_task_update": {
                                 "container": "container:id",
-                                "note_content": "dispatch_investigate_playbooks:playbook_output:note_content",
-                                "note_title": "dispatch_investigate_playbooks:playbook_output:note_title",
+                                "note_content": "dispatch_investigate_playbooks:playbook_output:sub_playbook_outputs.note_content",
+                                "note_title": "dispatch_investigate_playbooks:playbook_output:sub_playbook_outputs.note_title",
                                 "owner": null,
                                 "status": null,
                                 "task_name": "Investigate"
@@ -947,7 +947,7 @@
                     "errors": {},
                     "id": "31",
                     "type": "utility",
-                    "userCode": "\n    parameters = []\n    for idx, title_item in enumerate(dispatch_investigate_playbooks_output_note_title):\n        parameters.append({\n                \"owner\": None,\n                \"status\": None,\n                \"container\": id_value,\n                \"task_name\": \"Investigate\",\n                \"note_title\": dispatch_investigate_playbooks_output_note_title[idx][0],\n                \"note_content\": dispatch_investigate_playbooks_output_note_content[idx][0],\n            })\n\n\n",
+                    "userCode": "\n",
                     "x": 90,
                     "y": 3292
                 },
@@ -1073,7 +1073,7 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": ">=",
-                                        "param": "dedup_risk_events:custom_function:total_score",
+                                        "param": "sum_risk_score:custom_function:total_score",
                                         "value": "250"
                                     }
                                 ],
@@ -1235,8 +1235,8 @@
                         "values": {
                             "workbook_task_update": {
                                 "container": "container:id",
-                                "note_content": "dispatch_investigate_playbooks:playbook_output:note_content",
-                                "note_title": "dispatch_investigate_playbooks:playbook_output:note_title",
+                                "note_content": "dispatch_investigate_playbooks:playbook_output:sub_playbook_outputs.note_content",
+                                "note_title": "dispatch_investigate_playbooks:playbook_output:sub_playbook_outputs.note_title",
                                 "owner": null,
                                 "status": "complete",
                                 "task_name": "Investigate"
@@ -1246,7 +1246,7 @@
                     "errors": {},
                     "id": "47",
                     "type": "utility",
-                    "userCode": "\n    parameters = []\n    for idx, title_item in enumerate(dispatch_investigate_playbooks_output_note_title):\n        parameters.append({\n                \"owner\": None,\n                \"status\": \"complete\",\n                \"container\": id_value,\n                \"task_name\": \"Investigate\",\n                \"note_title\": dispatch_investigate_playbooks_output_note_title[idx][0],\n                \"note_content\": dispatch_investigate_playbooks_output_note_content[idx][0],\n            })\n\n",
+                    "userCode": "\n",
                     "x": 430,
                     "y": 2802
                 },
@@ -1380,10 +1380,10 @@
                         "functionName": "render_verdict_note",
                         "id": "49",
                         "parameters": [
-                            "dedup_risk_events:custom_function:total_score",
-                            "dedup_risk_events:custom_function:individual_scores",
-                            "dedup_risk_events:custom_function:names",
-                            "dedup_risk_events:custom_function:descriptions"
+                            "sum_risk_score:custom_function:total_score",
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.cef._total_risk_score",
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.name",
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.description"
                         ],
                         "template": "## SOAR has invoked Auto-Containment\n## The risk rule artifacts have a deduplicated *{0}* points of risk which exceeds the user-defined critical threshold of *250* points\n\n## These detections contributed to auto-containment.\n| Score | Detection Source | Detection Message |\n| --- | --- | --- |\n%%\n| {1} | {2} | ```{3}```|\n%%\n",
                         "type": "format"
@@ -1525,7 +1525,7 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": "!=",
-                                        "param": "dispatch_investigate_playbooks:playbook_output:note_content",
+                                        "param": "dispatch_investigate_playbooks:playbook_output:sub_playbook_outputs.note_content",
                                         "value": ""
                                     }
                                 ],
@@ -1816,7 +1816,7 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": "!=",
-                                        "param": "playbook_risk_notable_auto_merge_1:playbook_output:merge_result",
+                                        "param": "risk_notable_auto_merge:playbook_output:merge_result",
                                         "value": "merged into case"
                                     }
                                 ],
@@ -1841,7 +1841,7 @@
                 "60": {
                     "data": {
                         "advanced": {
-                            "customName": "dedup risk events",
+                            "customName": "sum risk score",
                             "customNameId": 0,
                             "description": "Calculate a risk score based on all of the unique risk events",
                             "join": [],
@@ -1849,26 +1849,20 @@
                             "scope": "all"
                         },
                         "functionId": 1,
-                        "functionName": "dedup_risk_events",
+                        "functionName": "sum_risk_score",
                         "id": "60",
                         "inputParameters": [
-                            "filtered-data:risk_rule_filter:condition_1:artifact:*.cef.calculated_risk_score",
-                            "filtered-data:risk_rule_filter:condition_1:artifact:*.data",
-                            "filtered-data:risk_rule_filter:condition_1:artifact:*.name",
-                            "filtered-data:risk_rule_filter:condition_1:artifact:*.description"
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.cef._total_risk_score"
                         ],
                         "outputVariables": [
-                            "total_score",
-                            "individual_scores",
-                            "names",
-                            "descriptions"
+                            "total_score"
                         ],
                         "type": "code"
                     },
                     "errors": {},
                     "id": "60",
                     "type": "code",
-                    "userCode": "    event_id_list = []\n    for item in filtered_artifact_0__data:\n        for sub_item in item:\n            if sub_item.get('risk_event'):\n                event_id_list.append(sub_item['risk_event']['id'])\n    event_id_dict = {}\n    for event_id, risk_score, name, description in zip(\n        event_id_list, \n        filtered_artifact_0__cef_calculated_risk_score,\n        filtered_artifact_0__name,\n        filtered_artifact_0__description\n    ):\n        # Get the calculated risk score per unique event_id.\n        # Putting in a dictionary ensures only one entry per event_id.\n        if event_id:\n            event_id_dict[event_id] = {'score': risk_score, 'name': name, 'description': description}\n    dedup_risk_events__total_score = 0\n    dedup_risk_events__individual_scores = []\n    dedup_risk_events__names = []\n    dedup_risk_events__descriptions = []\n    for key in event_id_dict:\n        dedup_risk_events__total_score += int(event_id_dict[key]['score'])\n        dedup_risk_events__individual_scores.append(event_id_dict[key]['score'])\n        dedup_risk_events__names.append(event_id_dict[key]['name'])\n        dedup_risk_events__descriptions.append(event_id_dict[key]['description'])\n\n",
+                    "userCode": "\n    sum_risk_score__total_score = 0\n    for score in filtered_artifact_0__cef__total_risk_score:\n        sum_risk_score__total_score += float(score)\n\n",
                     "x": 260,
                     "y": 2296
                 },
@@ -1918,7 +1912,7 @@
         "schema": "5.0.6",
         "version": "5.3.1.84890"
     },
-    "create_time": "2022-06-04T11:34:55.963428+00:00",
+    "create_time": "2022-06-08T21:20:48.087556+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"
