@@ -4,7 +4,7 @@
     "category": "Use Cases",
     "coa": {
         "data": {
-            "description": "Use TruSTAR to gather threat information about indicators in a SOAR event. Tag the indicators with the normalized priority score from TruSTAR and summarize the findings in an analyst note. This playbook is meant to be used as a child playbook executed by a parent playbook such as \"threat_intel_investigate\".",
+            "description": "Use Intelligence Management to gather threat information about indicators in a SOAR event. Tag the indicators with the normalized priority score from Intelligence Management and summarize the findings in an analyst note. This playbook is meant to be used as a child playbook executed by a parent playbook such as \"threat_intel_investigate\".",
             "edges": [
                 {
                     "id": "port_0_to_port_2",
@@ -54,7 +54,7 @@
                     "targetPort": "3_in"
                 }
             ],
-            "hash": "429eb175623d7202cbfce355d56512786b3bc52f",
+            "hash": "9465fc81fb4104284f53b963c13aba43418c702a",
             "nodes": {
                 "0": {
                     "data": {
@@ -95,24 +95,33 @@
                         "advanced": {
                             "customName": "indicator reputation",
                             "customNameId": 0,
-                            "description": "Query the Indicator API in TruSTAR to find threat intelligence scores and attributes about each of the indicators passed into the playbook.",
+                            "description": "Query the Indicator API in Intelligence Management to find threat intelligence scores and attributes about each of the indicators passed into the playbook.",
                             "join": [],
-                            "note": "Query the Indicator API in TruSTAR to find threat intelligence scores and attributes about each of the indicators passed into the playbook."
+                            "note": "Query the Indicator API in Intelligence Management to find threat intelligence scores and attributes about each of the indicators passed into the playbook."
                         },
-                        "connector": "TruSTAR",
+                        "connector": "TruSTAR Demo",
                         "connectorConfigs": [
                             "trustar"
                         ],
-                        "connectorId": "536ae6e0-72b2-4ae1-9520-810acaddd2d1",
+                        "connectorId": "fc432809-43a7-4a15-8db7-501a5332d69d",
                         "connectorVersion": "v1",
                         "functionId": 1,
                         "functionName": "indicator_reputation",
                         "id": "2",
                         "parameters": {
-                            "indicator_value": "playbook_input:indicators"
+                            "indicator_value": "playbook_input:indicators",
+                            "limit": 10000
                         },
                         "requiredParameters": [
-                            "indicator_value"
+                            {
+                                "data_type": "numeric",
+                                "default": 10000,
+                                "field": "limit"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "indicator_value"
+                            }
                         ],
                         "type": "action"
                     },
@@ -202,9 +211,9 @@
                         "advanced": {
                             "customName": "format note",
                             "customNameId": 0,
-                            "description": "Combine the TruSTAR results into a note to pass up to the parent playbook. Build a markdown table of results with links to TruSTAR queries and select fields from the reputation information for each indicator.",
+                            "description": "Combine the Intelligence Management results into a note to pass up to the parent playbook. Build a markdown table of results with links to Intelligence Management queries and select fields from the reputation information for each indicator.",
                             "join": [],
-                            "note": "Combine the TruSTAR results into a note to pass up to the parent playbook. Build a markdown table of results with links to TruSTAR queries and select fields from the reputation information for each indicator."
+                            "note": "Combine the Intelligence Management results into a note to pass up to the parent playbook. Build a markdown table of results with links to Intelligence Management queries and select fields from the reputation information for each indicator."
                         },
                         "functionId": 1,
                         "functionName": "format_note",
@@ -228,18 +237,18 @@
                     "errors": {},
                     "id": "5",
                     "type": "code",
-                    "userCode": "\n    import urllib.parse\n    \n    note = \"\"\"\n| Indicator | Type | Priority Score | Submission Tags | Attributes | Safe Listed? | Sources |\n| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n    \"\"\"\n    \n    for item in indicator_reputation_result_data:\n        if item[1]:            \n            # for the first column, use the indicator as the text and the trustar query as the href\n            trustar_link = 'https://station.trustar.co/browse/search?q={}'.format(urllib.parse.quote(item[0]))\n            indicator_markdown = '[{}]({})'.format(item[0], trustar_link)\n            indicator_type = item[1]\n            priority = item[2]\n            submission_tags = json.dumps(item[3]).replace('[', '').replace(']', '')\n            attributes = json.dumps(item[4]).replace('{', '').replace('}', '').replace('[', '').replace(']', '')\n            safe_listed = item[5]\n            sources = item[6]\n            note += \"|{}|{}|{}|{}|{}|{}|{}|\\n\".format(indicator_markdown, indicator_type, priority, submission_tags, attributes, safe_listed, sources)\n        else:\n            note += \"|{}|Not found in TruSTAR||||||\\n\".format(item[0])\n\n    format_note__note_content = note\n    \n",
+                    "userCode": "\n    import urllib.parse\n    \n    note = (\n        \"| Indicator | Type | Priority Score | Submission Tags | Attributes | Safe Listed? | Sources |\\n\"\n        \"| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\\n\"\n    )\n    \n    for item in indicator_reputation_result_data:\n        if item[1]:            \n            # for the first column, use the indicator as the text and the trustar query as the href\n            trustar_link = 'https://station.trustar.co/browse/search?q={}'.format(urllib.parse.quote(item[0]))\n            indicator_markdown = '[{}]({})'.format(item[0], trustar_link)\n            indicator_type = item[1]\n            priority = item[2]\n            submission_tags = json.dumps(item[3]).replace('[', '').replace(']', '')\n            attributes = json.dumps(item[4]).replace('{', '').replace('}', '').replace('[', '').replace(']', '')\n            safe_listed = item[5]\n            sources = item[6]\n            note += \"|{}|{}|{}|{}|{}|{}|{}|\\n\".format(indicator_markdown, indicator_type, priority, submission_tags, attributes, safe_listed, sources)\n        else:\n            note += \"|{}|Not found in TruSTAR||||||\\n\".format(item[0])\n\n    format_note__note_content = note\n    \n",
                     "x": 340,
-                    "y": 506
+                    "y": 500
                 },
                 "6": {
                     "data": {
                         "advanced": {
                             "customName": "indicator_found",
                             "customNameId": 0,
-                            "description": "Filter for indicators that were found in TruSTAR.",
+                            "description": "Filter for indicators that were found in Intelligence Management.",
                             "join": [],
-                            "note": "Filter for indicators that were found in TruSTAR."
+                            "note": "Filter for indicators that were found in Intelligence Management."
                         },
                         "conditions": [
                             {
@@ -268,7 +277,7 @@
                     "y": 326
                 }
             },
-            "notes": "This playbook uses the following Apps:\n - TruSTAR (indicator reputation) [asset name = trustar] - query TruSTAR for threat intelligence\n\nDeployment Notes:\n - To use this playbook as a sub-playbook of \"threat_intel_investigate\", copy it to the local git repository and make sure it has the tags \"investigate\" and \"threat_intel\"\n- To use this playbook as a sub-playbook of \"risk_notable_enrich\", copy it to local and make sure it has the tags \"investigate\" and \"risk_notable\"\n - To control the types of indicators processed by this playbook, change the data types of the \"indicators\" input\n"
+            "notes": "This playbook uses the following Apps:\n - Intelligence Management (indicator reputation) [asset name = trustar] - query Intelligence Management for threat intelligence\n\nDeployment Notes:\n - To use this playbook as a sub-playbook of \"threat_intel_investigate\", copy it to the local git repository and make sure it has the tags \"investigate\" and \"threat_intel\"\n- To use this playbook as a sub-playbook of \"risk_notable_enrich\", copy it to local and make sure it has the tags \"investigate\" and \"risk_notable\"\n - To control the types of indicators processed by this playbook, change the data types of the \"indicators\" input\n"
         },
         "input_spec": [
             {
@@ -313,10 +322,10 @@
         ],
         "playbook_type": "data",
         "python_version": "3",
-        "schema": "5.0.4",
-        "version": "5.1.0.70187"
+        "schema": "5.0.6",
+        "version": "5.3.1.84890"
     },
-    "create_time": "2021-11-24T21:10:50.604011+00:00",
+    "create_time": "2022-06-09T18:18:38.079671+00:00",
     "draft_mode": false,
     "labels": [
         "*"
