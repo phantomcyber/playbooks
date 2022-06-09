@@ -205,7 +205,7 @@ def dispatch_identity_containment_playbooks(action=None, success=None, container
     ################################################################################
 
     # call playbook "community/dispatch_input_playbooks", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_identity_containment_playbooks", callback=join_get_not_contained_indicators, inputs=inputs)
+    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_identity_containment_playbooks", callback=join_get_known_entities, inputs=inputs)
 
     return
 
@@ -238,17 +238,7 @@ def dispatch_asset_containment_playbooks(action=None, success=None, container=No
     ################################################################################
 
     # call playbook "community/dispatch_input_playbooks", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_asset_containment_playbooks", callback=join_get_not_contained_indicators, inputs=inputs)
-
-    return
-
-
-def join_format_containment_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("join_format_containment_note() called")
-
-    if phantom.completed(custom_function_names=["collect_hosts_and_users", "get_contained_indicators"]):
-        # call connected block "format_containment_note"
-        format_containment_note(container=container, handle=handle)
+    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_asset_containment_playbooks", callback=join_get_known_entities, inputs=inputs)
 
     return
 
@@ -262,16 +252,14 @@ def format_containment_note(action=None, success=None, container=None, results=N
 
     dispatch_asset_containment_playbooks_output_playbook_run_id_list = phantom.collect2(container=container, datapath=["dispatch_asset_containment_playbooks:playbook_output:playbook_run_id_list"])
     dispatch_identity_containment_playbooks_output_playbook_run_id_list = phantom.collect2(container=container, datapath=["dispatch_identity_containment_playbooks:playbook_output:playbook_run_id_list"])
-    get_not_contained_indicators_data = phantom.collect2(container=container, datapath=["get_not_contained_indicators:custom_function_result.data.*.indicator_value","get_not_contained_indicators:custom_function_result.data.*.indicator_tags"])
+    get_known_entities_data = phantom.collect2(container=container, datapath=["get_known_entities:custom_function_result.data.*.indicator_value","get_known_entities:custom_function_result.data.*.indicator_tags"])
     collect_hosts_and_users_data = phantom.collect2(container=container, datapath=["collect_hosts_and_users:custom_function_result.data.*.artifact_value"])
-    get_contained_indicators_data = phantom.collect2(container=container, datapath=["get_contained_indicators:custom_function_result.data.*.indicator_value"])
 
     dispatch_asset_containment_playbooks_output_playbook_run_id_list_values = [item[0] for item in dispatch_asset_containment_playbooks_output_playbook_run_id_list]
     dispatch_identity_containment_playbooks_output_playbook_run_id_list_values = [item[0] for item in dispatch_identity_containment_playbooks_output_playbook_run_id_list]
-    get_not_contained_indicators_data___indicator_value = [item[0] for item in get_not_contained_indicators_data]
-    get_not_contained_indicators_data___indicator_tags = [item[1] for item in get_not_contained_indicators_data]
+    get_known_entities_data___indicator_value = [item[0] for item in get_known_entities_data]
+    get_known_entities_data___indicator_tags = [item[1] for item in get_known_entities_data]
     collect_hosts_and_users_data___artifact_value = [item[0] for item in collect_hosts_and_users_data]
-    get_contained_indicators_data___indicator_value = [item[0] for item in get_contained_indicators_data]
 
     format_containment_note__note_title = None
     format_containment_note__note_content = None
@@ -318,7 +306,7 @@ def format_containment_note(action=None, success=None, container=None, results=N
     identity_contained_list = []
     misc_not_contained_list = []
     
-    for i_value, i_tag in zip(get_not_contained_indicators_data___indicator_value, get_not_contained_indicators_data___indicator_tags):
+    for i_value, i_tag in zip(get_known_entities_data___indicator_value, get_known_entities_data___indicator_tags):
         if i_tag:
             if 'known_asset' in i_tag:
                 asset_list.append(i_value.lower())
@@ -438,18 +426,18 @@ def mark_containment_report_as_evidence(action=None, success=None, container=Non
     return
 
 
-def join_get_not_contained_indicators(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("join_get_not_contained_indicators() called")
+def join_get_known_entities(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("join_get_known_entities() called")
 
     if phantom.completed(playbook_names=["dispatch_identity_containment_playbooks", "dispatch_asset_containment_playbooks"]):
-        # call connected block "get_not_contained_indicators"
-        get_not_contained_indicators(container=container, handle=handle)
+        # call connected block "get_known_entities"
+        get_known_entities(container=container, handle=handle)
 
     return
 
 
-def get_not_contained_indicators(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("get_not_contained_indicators() called")
+def get_known_entities(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("get_known_entities() called")
 
     id_value = container.get("id", None)
 
@@ -473,18 +461,7 @@ def get_not_contained_indicators(action=None, success=None, container=None, resu
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="community/indicator_get_by_tag", parameters=parameters, name="get_not_contained_indicators", callback=get_not_contained_indicators_callback)
-
-    return
-
-
-def get_not_contained_indicators_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("get_not_contained_indicators_callback() called")
-
-    
-    collect_hosts_and_users(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=filtered_artifacts, filtered_results=filtered_results)
-    get_contained_indicators(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=filtered_artifacts, filtered_results=filtered_results)
-
+    phantom.custom_function(custom_function="community/indicator_get_by_tag", parameters=parameters, name="get_known_entities", callback=collect_hosts_and_users)
 
     return
 
@@ -513,37 +490,7 @@ def collect_hosts_and_users(action=None, success=None, container=None, results=N
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="community/collect_by_cef_type", parameters=parameters, name="collect_hosts_and_users", callback=join_format_containment_note)
-
-    return
-
-
-def get_contained_indicators(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("get_contained_indicators() called")
-
-    id_value = container.get("id", None)
-
-    parameters = []
-
-    parameters.append({
-        "tags_or": "contained",
-        "tags_and": None,
-        "container": id_value,
-        "tags_exclude": None,
-        "indicator_timerange": None,
-    })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="community/indicator_get_by_tag", parameters=parameters, name="get_contained_indicators", callback=join_format_containment_note)
+    phantom.custom_function(custom_function="community/collect_by_cef_type", parameters=parameters, name="collect_hosts_and_users", callback=format_containment_note)
 
     return
 
