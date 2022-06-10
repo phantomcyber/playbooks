@@ -226,18 +226,20 @@ def format_playbook_note(action=None, success=None, container=None, results=None
         for zipped_list in zip_longest(asset_list, asset_contained_list, fillvalue=" "):
             format_playbook_note__note_content += f"| {zipped_list[0]} | {zipped_list[1]} |\n"
         for run_id in dispatch_asset_undo_containment_playbooks_output_playbook_run_id_list_values:
-            format_playbook_note__note_content += playbook_report(run_id)
+            if run_id:
+                format_playbook_note__note_content += playbook_report(run_id)
 
     if dispatch_identity_undo_containment_playbooks_output_playbook_run_id_list_values:
         format_playbook_note__note_content += (
-            "## Identity Undo Containment Report\n\n"
+            "\n\n## Identity Undo Containment Report\n\n"
             "| Identities from event | Identities from event still marked as contained |\n"
             "| --- | --- |\n"
         )
         for zipped_list in zip_longest(identity_list, identity_contained_list, fillvalue=" "):
             format_playbook_note__note_content += f"| {zipped_list[0]} | {zipped_list[1]} |\n"
         for run_id in dispatch_identity_undo_containment_playbooks_output_playbook_run_id_list_values:
-            format_playbook_note__note_content += playbook_report(run_id)
+            if run_id:
+                format_playbook_note__note_content += playbook_report(run_id)
     
     if misc_contained_list:
         format_playbook_note__note_content += "## Unidentified Entities Still Contained\n"
@@ -310,8 +312,8 @@ def get_contained_indicators(action=None, success=None, container=None, results=
     parameters = []
 
     parameters.append({
-        "tags_or": "contained, known_asset, known_identity",
-        "tags_and": None,
+        "tags_or": "known_asset, known_identity",
+        "tags_and": "contained",
         "container": id_value,
         "tags_exclude": None,
         "indicator_timerange": None,

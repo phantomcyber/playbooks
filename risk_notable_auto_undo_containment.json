@@ -103,7 +103,7 @@
                     "targetPort": "16_in"
                 }
             ],
-            "hash": "a0a104c0d4c1dba38f53617c4ef02e9460ed7299",
+            "hash": "40ad3cbf9e87ea005e1672394522f2ac8b473107",
             "nodes": {
                 "0": {
                     "data": {
@@ -118,7 +118,7 @@
                     "id": "0",
                     "type": "start",
                     "x": 360,
-                    "y": 0
+                    "y": -6.394884621840902e-14
                 },
                 "1": {
                     "data": {
@@ -164,7 +164,7 @@
                     "errors": {},
                     "id": "10",
                     "type": "code",
-                    "userCode": "    from itertools import zip_longest\n\n    format_playbook_note__note_title = \"\"\n    format_playbook_note__note_content = \"\"\n    \n    def playbook_report(pb_run_id):\n        pb_run_url = phantom.build_phantom_rest_url('playbook_run', pb_run_id)\n        response = phantom.requests.get(pb_run_url, verify=False).json()\n        if response.get('id'):\n            message = json.loads(response['message'])\n            formatted_content = f\"\\n#### Playbook Executed - {message['playbook']}\\n\"\n            formatted_content += (\n                \"| status | action | app | parameters |\\n\"\n                \"| --- | --- | --- | --- |\\n\"\n            )\n            for result_item in message['result']:\n                app_dict = {}\n                for item in result_item['app_runs']:\n                    param = item['parameter']\n                    param.pop('context', None)\n                    if item['app'] not in app_dict.keys():\n                        app_dict[item['app']] = {'success': [], 'failed': []}\n                    if item['status'] == 'success':\n                        app_dict[item['app']]['success'].append(param)\n                    if item['status'] == 'failed':\n                        app_dict[item['app']]['failed'].append(param)\n                for app, params in app_dict.items():\n                    if params['success']:\n                        formatted_content += f\"| success | {result_item['action']} | {app} | ```{params['success']}``` |\\n\"\n                    if params['failed']:\n                        formatted_content += f\"| failed | {result_item['action']} | {app} | ```{params['failed']}``` |\\n\"\n            return formatted_content + \"\\n&nbsp;\\n\\n&nbsp;\\n\\n\"\n    \n    asset_list = []\n    asset_contained_list = []\n    identity_list = []\n    identity_contained_list = []\n    misc_contained_list = []\n    \n    for i_value, i_tag in zip(get_contained_indicators_data___indicator_value, get_contained_indicators_data___indicator_tags):\n        if i_tag:\n            if 'known_asset' in i_tag:\n                asset_list.append(i_value.lower())\n            if 'known_identity' in i_tag:\n                identity_list.append(i_value.lower())\n            if 'known_asset' in i_tag and 'contained' in i_tag:\n                asset_contained_list.append(i_value.lower())\n            elif 'known_identity' in i_tag and 'contained' in i_tag:\n                identity_contained_list.append(i_value.lower())\n            elif 'contained' in i_tag:\n                 misc_contained_list.append(i_value.lower())\n            \n                \n    if dispatch_asset_undo_containment_playbooks_output_playbook_run_id_list_values:\n        format_playbook_note__note_content += (\n            \"## Asset Undo Containment Report\\n\\n\"\n            \"| Assets from event | Assets from event still marked as contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(asset_list, asset_contained_list, fillvalue=\" \"):\n            format_playbook_note__note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_asset_undo_containment_playbooks_output_playbook_run_id_list_values:\n            format_playbook_note__note_content += playbook_report(run_id)\n\n    if dispatch_identity_undo_containment_playbooks_output_playbook_run_id_list_values:\n        format_playbook_note__note_content += (\n            \"## Identity Undo Containment Report\\n\\n\"\n            \"| Identities from event | Identities from event still marked as contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(identity_list, identity_contained_list, fillvalue=\" \"):\n            format_playbook_note__note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_identity_undo_containment_playbooks_output_playbook_run_id_list_values:\n            format_playbook_note__note_content += playbook_report(run_id)\n    \n    if misc_contained_list:\n        format_playbook_note__note_content += \"## Unidentified Entities Still Contained\\n\"\n        for item in misc_contained_list:\n            format_playbook_note__note_content += f\"- {item}\\n\"\n        format_playbook_note__note_content += \"(Manual action likely required)\"\n                \n    if format_playbook_note__note_content:\n        format_playbook_note__note_title = \"[Auto-Generated] Revert Containment Summary\"\n\n",
+                    "userCode": "    from itertools import zip_longest\n\n    format_playbook_note__note_title = \"\"\n    format_playbook_note__note_content = \"\"\n    \n    def playbook_report(pb_run_id):\n        pb_run_url = phantom.build_phantom_rest_url('playbook_run', pb_run_id)\n        response = phantom.requests.get(pb_run_url, verify=False).json()\n        if response.get('id'):\n            message = json.loads(response['message'])\n            formatted_content = f\"\\n#### Playbook Executed - {message['playbook']}\\n\"\n            formatted_content += (\n                \"| status | action | app | parameters |\\n\"\n                \"| --- | --- | --- | --- |\\n\"\n            )\n            for result_item in message['result']:\n                app_dict = {}\n                for item in result_item['app_runs']:\n                    param = item['parameter']\n                    param.pop('context', None)\n                    if item['app'] not in app_dict.keys():\n                        app_dict[item['app']] = {'success': [], 'failed': []}\n                    if item['status'] == 'success':\n                        app_dict[item['app']]['success'].append(param)\n                    if item['status'] == 'failed':\n                        app_dict[item['app']]['failed'].append(param)\n                for app, params in app_dict.items():\n                    if params['success']:\n                        formatted_content += f\"| success | {result_item['action']} | {app} | ```{params['success']}``` |\\n\"\n                    if params['failed']:\n                        formatted_content += f\"| failed | {result_item['action']} | {app} | ```{params['failed']}``` |\\n\"\n            return formatted_content + \"\\n&nbsp;\\n\\n&nbsp;\\n\\n\"\n    \n    asset_list = []\n    asset_contained_list = []\n    identity_list = []\n    identity_contained_list = []\n    misc_contained_list = []\n    \n    for i_value, i_tag in zip(get_contained_indicators_data___indicator_value, get_contained_indicators_data___indicator_tags):\n        if i_tag:\n            if 'known_asset' in i_tag:\n                asset_list.append(i_value.lower())\n            if 'known_identity' in i_tag:\n                identity_list.append(i_value.lower())\n            if 'known_asset' in i_tag and 'contained' in i_tag:\n                asset_contained_list.append(i_value.lower())\n            elif 'known_identity' in i_tag and 'contained' in i_tag:\n                identity_contained_list.append(i_value.lower())\n            elif 'contained' in i_tag:\n                 misc_contained_list.append(i_value.lower())\n            \n                \n    if dispatch_asset_undo_containment_playbooks_output_playbook_run_id_list_values:\n        format_playbook_note__note_content += (\n            \"## Asset Undo Containment Report\\n\\n\"\n            \"| Assets from event | Assets from event still marked as contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(asset_list, asset_contained_list, fillvalue=\" \"):\n            format_playbook_note__note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_asset_undo_containment_playbooks_output_playbook_run_id_list_values:\n            if run_id:\n                format_playbook_note__note_content += playbook_report(run_id)\n\n    if dispatch_identity_undo_containment_playbooks_output_playbook_run_id_list_values:\n        format_playbook_note__note_content += (\n            \"\\n\\n## Identity Undo Containment Report\\n\\n\"\n            \"| Identities from event | Identities from event still marked as contained |\\n\"\n            \"| --- | --- |\\n\"\n        )\n        for zipped_list in zip_longest(identity_list, identity_contained_list, fillvalue=\" \"):\n            format_playbook_note__note_content += f\"| {zipped_list[0]} | {zipped_list[1]} |\\n\"\n        for run_id in dispatch_identity_undo_containment_playbooks_output_playbook_run_id_list_values:\n            if run_id:\n                format_playbook_note__note_content += playbook_report(run_id)\n    \n    if misc_contained_list:\n        format_playbook_note__note_content += \"## Unidentified Entities Still Contained\\n\"\n        for item in misc_contained_list:\n            format_playbook_note__note_content += f\"- {item}\\n\"\n        format_playbook_note__note_content += \"(Manual action likely required)\"\n                \n    if format_playbook_note__note_content:\n        format_playbook_note__note_title = \"[Auto-Generated] Revert Containment Summary\"\n\n",
                     "x": 340,
                     "y": 640
                 },
@@ -326,9 +326,9 @@
                             "indicator_get_by_tag": {
                                 "container": "container:id",
                                 "indicator_timerange": null,
-                                "tags_and": null,
+                                "tags_and": "contained",
                                 "tags_exclude": null,
-                                "tags_or": "contained, known_asset, known_identity"
+                                "tags_or": "known_asset, known_identity"
                             }
                         }
                     },
@@ -336,7 +336,7 @@
                     "id": "12",
                     "type": "utility",
                     "x": 340,
-                    "y": 476
+                    "y": 475.99999999999994
                 },
                 "14": {
                     "data": {
@@ -452,7 +452,7 @@
                     "id": "14",
                     "type": "utility",
                     "x": 680,
-                    "y": 312
+                    "y": 311.99999999999994
                 },
                 "15": {
                     "data": {
@@ -511,6 +511,7 @@
                         "id": "16",
                         "parameters": {
                             "comment": {
+                                "functionId": 1,
                                 "parameters": [
                                     "container:url",
                                     "format_playbook_note:custom_function:note_content"
@@ -584,7 +585,7 @@
                     "id": "4",
                     "type": "playbook",
                     "x": 340,
-                    "y": 312
+                    "y": 311.99999999999994
                 },
                 "6": {
                     "data": {
@@ -636,8 +637,8 @@
                     "errors": {},
                     "id": "6",
                     "type": "playbook",
-                    "x": 0,
-                    "y": 312
+                    "x": -1.4210854715202004e-14,
+                    "y": 311.99999999999994
                 },
                 "7": {
                     "data": {
@@ -839,7 +840,7 @@
                     "id": "8",
                     "type": "utility",
                     "x": 680,
-                    "y": 148
+                    "y": 147.99999999999997
                 }
             },
             "notes": "- For detailed implementation see https://docs.splunk.com/Documentation/ESSOC/latest/user/Useplaybookpack"
@@ -851,7 +852,7 @@
         "schema": "5.0.6",
         "version": "5.3.1.84890"
     },
-    "create_time": "2022-06-04T11:43:19.106170+00:00",
+    "create_time": "2022-06-10T20:18:11.260114+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"
