@@ -29,7 +29,8 @@ def risk_rule_filter(action=None, success=None, container=None, results=None, ha
         logical_operator="and",
         conditions=[
             ["artifact:*.label", "==", "risk_rule"],
-            ["artifact:*.cef._risk_score_reset", "==", ""]
+            ["artifact:*.cef._risk_score_reset", "==", ""],
+            ["reset_prompt:action_result.status", "==", "success"]
         ],
         name="risk_rule_filter:condition_1")
 
@@ -201,43 +202,6 @@ def post_negative_risk_event(action=None, success=None, container=None, results=
     return
 
 
-def artifact_add_reset_field(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("artifact_add_reset_field() called")
-
-    filtered_artifact_0_data_risk_rule_filter = phantom.collect2(container=container, datapath=["filtered-data:risk_rule_filter:condition_1:artifact:*.id","filtered-data:risk_rule_filter:condition_1:artifact:*.id"])
-    custom_format__current_time = json.loads(phantom.get_run_data(key="custom_format:current_time"))
-
-    parameters = []
-
-    # build parameters list for 'artifact_add_reset_field' call
-    for filtered_artifact_0_item_risk_rule_filter in filtered_artifact_0_data_risk_rule_filter:
-        parameters.append({
-            "name": None,
-            "tags": None,
-            "label": None,
-            "severity": None,
-            "cef_field": "_risk_score_reset",
-            "cef_value": custom_format__current_time,
-            "input_json": None,
-            "artifact_id": filtered_artifact_0_item_risk_rule_filter[0],
-            "cef_data_type": None,
-        })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="local/artifact_update", parameters=parameters, name="artifact_add_reset_field")
-
-    return
-
-
 def add_not_found_comment(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("add_not_found_comment() called")
 
@@ -257,6 +221,44 @@ def add_not_found_comment(action=None, success=None, container=None, results=Non
     ################################################################################
 
     phantom.comment(container=container, comment="Risk score already reset for the provided artifacts")
+
+    return
+
+
+def artifact_add_reset_field(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("artifact_add_reset_field() called")
+
+    filtered_artifact_0_data_risk_rule_filter = phantom.collect2(container=container, datapath=["filtered-data:risk_rule_filter:condition_1:artifact:*.id","filtered-data:risk_rule_filter:condition_1:artifact:*.id"])
+    custom_format__current_time = json.loads(phantom.get_run_data(key="custom_format:current_time"))
+
+    parameters = []
+
+    # build parameters list for 'artifact_add_reset_field' call
+    for filtered_artifact_0_item_risk_rule_filter in filtered_artifact_0_data_risk_rule_filter:
+        parameters.append({
+            "artifact_id": filtered_artifact_0_item_risk_rule_filter[0],
+            "name": None,
+            "label": None,
+            "severity": None,
+            "cef_field": "_risk_score_reset",
+            "cef_value": custom_format__current_time,
+            "cef_data_type": None,
+            "tags": None,
+            "overwrite_tags": None,
+            "input_json": None,
+        })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/artifact_update", parameters=parameters, name="artifact_add_reset_field")
 
     return
 

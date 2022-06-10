@@ -45,13 +45,6 @@
                     "targetPort": "3_in"
                 },
                 {
-                    "id": "port_9_to_port_1",
-                    "sourceNode": "9",
-                    "sourcePort": "9_out",
-                    "targetNode": "1",
-                    "targetPort": "1_in"
-                },
-                {
                     "conditions": [
                         {
                             "index": 1
@@ -62,13 +55,6 @@
                     "sourcePort": "6_out",
                     "targetNode": "11",
                     "targetPort": "11_in"
-                },
-                {
-                    "id": "port_8_to_port_9",
-                    "sourceNode": "8",
-                    "sourcePort": "8_out",
-                    "targetNode": "9",
-                    "targetPort": "9_in"
                 },
                 {
                     "id": "port_11_to_port_1",
@@ -83,9 +69,23 @@
                     "sourcePort": "5_out",
                     "targetNode": "8",
                     "targetPort": "8_in"
+                },
+                {
+                    "id": "port_8_to_port_12",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "12",
+                    "targetPort": "12_in"
+                },
+                {
+                    "id": "port_12_to_port_1",
+                    "sourceNode": "12",
+                    "sourcePort": "12_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
                 }
             ],
-            "hash": "edddd2c7b00cf7da757dc2d63115eeba664d5aa0",
+            "hash": "24ddae909ded599db26ab167c8f7a353c5e6737d",
             "nodes": {
                 "0": {
                     "data": {
@@ -99,8 +99,8 @@
                     "errors": {},
                     "id": "0",
                     "type": "start",
-                    "x": 190,
-                    "y": -1.2789769243681803e-13
+                    "x": 180,
+                    "y": 280
                 },
                 "1": {
                     "data": {
@@ -116,8 +116,8 @@
                     "id": "1",
                     "type": "end",
                     "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
-                    "x": 190,
-                    "y": 1178
+                    "x": 180,
+                    "y": 1220
                 },
                 "11": {
                     "data": {
@@ -181,227 +181,10 @@
                     "errors": {},
                     "id": "11",
                     "type": "utility",
-                    "x": 340,
-                    "y": 1030
-                },
-                "3": {
-                    "data": {
-                        "advanced": {
-                            "customName": "risk rule filter",
-                            "customNameId": 0,
-                            "description": "Grab the available risk rules without a risk score and send them to custom format.",
-                            "join": [],
-                            "note": "Grab the available risk rules without a risk score and send them to custom format.",
-                            "scope": "default"
-                        },
-                        "conditions": [
-                            {
-                                "comparisons": [
-                                    {
-                                        "conditionIndex": 0,
-                                        "op": "==",
-                                        "param": "artifact:*.label",
-                                        "value": "risk_rule"
-                                    },
-                                    {
-                                        "conditionIndex": 0,
-                                        "op": "==",
-                                        "param": "artifact:*.cef._risk_score_reset",
-                                        "value": ""
-                                    }
-                                ],
-                                "conditionIndex": 0,
-                                "customName": "risk rule exists",
-                                "logic": "and"
-                            }
-                        ],
-                        "functionId": 1,
-                        "functionName": "risk_rule_filter",
-                        "id": "3",
-                        "type": "filter"
-                    },
-                    "errors": {},
-                    "id": "3",
-                    "type": "filter",
-                    "x": 60,
-                    "y": 508
-                },
-                "5": {
-                    "data": {
-                        "advanced": {
-                            "customName": "custom format",
-                            "customNameId": 0,
-                            "description": "Generate new Splunk events with the correct timestamp and negative risk score.",
-                            "join": [],
-                            "note": "Generate new Splunk events with the correct timestamp and negative risk score."
-                        },
-                        "functionId": 1,
-                        "functionName": "custom_format",
-                        "id": "5",
-                        "inputParameters": [
-                            "filtered-data:risk_rule_filter:condition_1:artifact:*.name",
-                            "filtered-data:risk_rule_filter:condition_1:artifact:*.description",
-                            "filtered-data:risk_rule_filter:condition_1:artifact:*.data",
-                            "filtered-data:risk_rule_filter:condition_1:artifact:*.cef",
-                            "container:id",
-                            "container:name",
-                            "reset_prompt:action_result.data.*.user",
-                            "reset_prompt:action_result.summary.responses.0"
-                        ],
-                        "outputVariables": [
-                            "splunk_event",
-                            "current_time"
-                        ],
-                        "type": "code"
-                    },
-                    "errors": {},
-                    "id": "5",
-                    "type": "code",
-                    "userCode": "    from datetime import datetime\n    custom_format__current_time = str(datetime.now())\n    custom_format__splunk_event = []\n    \n    for name, description, artifact_cef, artifact_data in zip(filtered_artifact_0__name, filtered_artifact_0__description, filtered_artifact_0__cef, filtered_artifact_0__data):\n        risk_event_data = [item['risk_event'] for item in artifact_data if item.get('risk_event')] \n        if (\n            artifact_cef.keys() >= {'_total_risk_score', 'risk_object', 'risk_object_type'}\n            and risk_event_data\n        ):\n            for risk_event in risk_event_data:\n                risk_event_id = risk_event['id']\n                timestamp = risk_event['timestamp']\n                close_reason = reset_prompt_summary_responses_0[0]\n                risk_score = (float(artifact_cef['_total_risk_score']) / int(artifact_cef['_event_count'])) * -1\n                risk_object = artifact_cef['risk_object']\n                risk_object_type = artifact_cef['risk_object_type']\n                owner_name_value = reset_prompt_result_item_0[0]\n                log_template = (\n                    f'{timestamp}, risk_score=\"{risk_score}\", risk_event_id=\"{risk_event_id}\", '\n                    f' risk_object=\"{risk_object}\", risk_object_type=\"{risk_object_type}\",'\n                    f' close_reason=\"{close_reason}\", close_action_owner=\"{owner_name_value}\", close_time=\"{custom_format__current_time}\", '\n                    f' search_name=\"{name}\", risk_message=\"{description}\", soar_event_id=\"{id_value}\", soar_event_name=\"{name_value}\"'\n                )\n                custom_format__splunk_event.append(log_template)\n    \n    custom_format__splunk_event = '\\r\\n'.join(custom_format__splunk_event)\n\n",
                     "x": 0,
-                    "y": 680
+                    "y": 1060
                 },
-                "6": {
-                    "data": {
-                        "advanced": {
-                            "customName": "risk rule decision",
-                            "customNameId": 0,
-                            "description": "Determine if at least one risk_rule exists that hasn't been risk score reset.",
-                            "join": [],
-                            "note": "Determine if at least one risk_rule exists that hasn't been risk score reset."
-                        },
-                        "conditions": [
-                            {
-                                "comparisons": [
-                                    {
-                                        "conditionIndex": 0,
-                                        "op": "==",
-                                        "param": "artifact:*.label",
-                                        "value": "risk_rule"
-                                    },
-                                    {
-                                        "conditionIndex": 0,
-                                        "op": "==",
-                                        "param": "artifact:*.cef._risk_score_reset",
-                                        "value": ""
-                                    }
-                                ],
-                                "conditionIndex": 0,
-                                "customName": "risk rule exists",
-                                "display": "If",
-                                "logic": "and",
-                                "type": "if"
-                            },
-                            {
-                                "comparisons": [
-                                    {
-                                        "conditionIndex": 1,
-                                        "op": "==",
-                                        "param": "",
-                                        "value": ""
-                                    }
-                                ],
-                                "conditionIndex": 1,
-                                "customName": "no risk rules exist",
-                                "display": "Else",
-                                "logic": "and",
-                                "type": "else"
-                            }
-                        ],
-                        "functionId": 2,
-                        "functionName": "risk_rule_decision",
-                        "id": "6",
-                        "type": "decision"
-                    },
-                    "errors": {},
-                    "id": "6",
-                    "type": "decision",
-                    "x": 250,
-                    "y": 148
-                },
-                "7": {
-                    "customCode": "def reset_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug(\"reset_prompt() called\")\n\n    ################################################################################\n    # Prompt the user for required information about the reason for close. This will \n    # be used for the message in the raw event.\n    ################################################################################\n\n    # set user and message variables for phantom.prompt call\n\n    user_id = phantom.get_effective_user()\n    url = phantom.build_phantom_rest_url('ph_user', user_id)\n    response = phantom.requests.get(url, verify=False).json()\n    user = response['username']\n    message = \"\"\"Enter a reason for resetting risk.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = []\n\n    # responses\n    response_types = [\n        {\n            \"prompt\": \"Reason\",\n            \"options\": {\n                \"type\": \"message\",\n            },\n        }\n    ]\n\n    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name=\"reset_prompt\", parameters=parameters, response_types=response_types, callback=risk_rule_filter)\n\n    return",
-                    "data": {
-                        "advanced": {
-                            "customName": "reset prompt",
-                            "customNameId": 0,
-                            "description": "Prompt the user for required information about the reason for close. This will be used for the message in the raw event.",
-                            "join": [],
-                            "note": "Prompt the user for required information about the reason for close. This will be used for the message in the raw event."
-                        },
-                        "approver": "admin",
-                        "functionId": 1,
-                        "functionName": "reset_prompt",
-                        "id": "7",
-                        "message": "Enter a reason for resetting risk.",
-                        "parameters": [],
-                        "responseTime": 30,
-                        "responses": [
-                            {
-                                "responsePrompt": "Reason",
-                                "responseType": "message"
-                            }
-                        ],
-                        "type": "prompt"
-                    },
-                    "errors": {},
-                    "id": "7",
-                    "type": "prompt",
-                    "x": 80,
-                    "y": 328
-                },
-                "8": {
-                    "data": {
-                        "action": "post data",
-                        "actionType": "generic",
-                        "advanced": {
-                            "customName": "post negative risk event",
-                            "customNameId": 0,
-                            "description": "Post all of the negative risk events as one block into the risk index that is new line separated.",
-                            "join": [],
-                            "note": "Post all of the negative risk events as one block into the risk index that is new line separated."
-                        },
-                        "connector": "Splunk",
-                        "connectorConfigs": [
-                            "splunk"
-                        ],
-                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
-                        "connectorVersion": "v1",
-                        "functionId": 1,
-                        "functionName": "post_negative_risk_event",
-                        "id": "8",
-                        "parameters": {
-                            "data": "custom_format:custom_function:splunk_event",
-                            "index": "risk",
-                            "source": "Splunk SOAR",
-                            "source_type": "stash"
-                        },
-                        "requiredParameters": [
-                            {
-                                "data_type": "string",
-                                "field": "data"
-                            },
-                            {
-                                "data_type": "string",
-                                "default": "Phantom",
-                                "field": "source"
-                            },
-                            {
-                                "data_type": "string",
-                                "default": "Automation/Orchestration Platform",
-                                "field": "source_type"
-                            }
-                        ],
-                        "type": "action"
-                    },
-                    "errors": {},
-                    "id": "8",
-                    "type": "action",
-                    "userCode": "\n\n",
-                    "x": 0,
-                    "y": 866
-                },
-                "9": {
+                "12": {
                     "data": {
                         "advanced": {
                             "customName": "artifact add reset field",
@@ -411,22 +194,22 @@
                         "customFunction": {
                             "draftMode": false,
                             "name": "artifact_update",
-                            "repoName": "local"
+                            "repoName": "community"
                         },
-                        "functionId": 1,
+                        "functionId": 3,
                         "functionName": "artifact_add_reset_field",
-                        "id": "9",
+                        "id": "12",
                         "selectMore": false,
                         "type": "utility",
                         "utilities": {
                             "artifact_update": {
-                                "description": "Update an artifact with the specified attributes. All parameters are optional, except that cef_field and cef_value must both be provided if one is provided. Supports all fields available in /rest/artifact. Add any unlisted inputs as dictionary keys in input_json. Unsupported keys will automatically be dropped.",
+                                "description": "Update an artifact with the specified attributes. All parameters are optional, except that an artifact_id must be provided and if one of cef_field or cef_value is provided then they must both be provided. Supports all fields available in /rest/artifact. Add any unlisted inputs as dictionary keys in input_json. Unsupported keys will automatically be dropped.",
                                 "fields": [
                                     {
                                         "dataTypes": [
                                             "phantom artifact id"
                                         ],
-                                        "description": "ID of the artifact to update, which is required.",
+                                        "description": "ID of the artifact to update, which is required unless artifact_id is a key within input_json",
                                         "inputType": "item",
                                         "label": "artifact_id",
                                         "name": "artifact_id",
@@ -510,6 +293,16 @@
                                     },
                                     {
                                         "dataTypes": [],
+                                        "description": "Optional input. Either True or False with default as False. If set to True, existing tags on the indicator record will be replaced by the provided input. If set to False, the new tags will be appended to the existing indicator tags.",
+                                        "inputType": "item",
+                                        "label": "overwrite_tags",
+                                        "name": "overwrite_tags",
+                                        "placeholder": "True or False",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
                                         "description": "Optional parameter to modify any extra attributes of the artifact. Input_json will be merged with other inputs. In the event of a conflict, input_json will take precedence.",
                                         "inputType": "item",
                                         "label": "input_json",
@@ -533,16 +326,239 @@
                                 "input_json": null,
                                 "label": null,
                                 "name": null,
+                                "overwrite_tags": null,
                                 "severity": null,
                                 "tags": null
                             }
                         }
                     },
                     "errors": {},
-                    "id": "9",
+                    "id": "12",
                     "type": "utility",
-                    "x": -1.4210854715202004e-14,
-                    "y": 1030
+                    "x": 340,
+                    "y": 1067
+                },
+                "3": {
+                    "data": {
+                        "advanced": {
+                            "customName": "risk rule filter",
+                            "customNameId": 0,
+                            "description": "Grab the available risk rules without a risk score and send them to custom format.",
+                            "join": [],
+                            "note": "Grab the available risk rules without a risk score and send them to custom format.",
+                            "scope": "default"
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "artifact:*.label",
+                                        "value": "risk_rule"
+                                    },
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "artifact:*.cef._risk_score_reset",
+                                        "value": ""
+                                    },
+                                    {
+                                        "op": "==",
+                                        "param": "reset_prompt:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "risk rule exists",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "risk_rule_filter",
+                        "id": "3",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "filter",
+                    "x": 400,
+                    "y": 660
+                },
+                "5": {
+                    "data": {
+                        "advanced": {
+                            "customName": "custom format",
+                            "customNameId": 0,
+                            "description": "Generate new Splunk events with the correct timestamp and negative risk score.",
+                            "join": [],
+                            "note": "Generate new Splunk events with the correct timestamp and negative risk score."
+                        },
+                        "functionId": 1,
+                        "functionName": "custom_format",
+                        "id": "5",
+                        "inputParameters": [
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.name",
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.description",
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.data",
+                            "filtered-data:risk_rule_filter:condition_1:artifact:*.cef",
+                            "container:id",
+                            "container:name",
+                            "reset_prompt:action_result.data.*.user",
+                            "reset_prompt:action_result.summary.responses.0"
+                        ],
+                        "outputVariables": [
+                            "splunk_event",
+                            "current_time"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "code",
+                    "userCode": "    from datetime import datetime\n    custom_format__current_time = str(datetime.now())\n    custom_format__splunk_event = []\n    \n    for name, description, artifact_cef, artifact_data in zip(filtered_artifact_0__name, filtered_artifact_0__description, filtered_artifact_0__cef, filtered_artifact_0__data):\n        risk_event_data = [item['risk_event'] for item in artifact_data if item.get('risk_event')] \n        if (\n            artifact_cef.keys() >= {'_total_risk_score', 'risk_object', 'risk_object_type'}\n            and risk_event_data\n        ):\n            for risk_event in risk_event_data:\n                risk_event_id = risk_event['id']\n                timestamp = risk_event['timestamp']\n                close_reason = reset_prompt_summary_responses_0[0]\n                risk_score = (float(artifact_cef['_total_risk_score']) / int(artifact_cef['_event_count'])) * -1\n                risk_object = artifact_cef['risk_object']\n                risk_object_type = artifact_cef['risk_object_type']\n                owner_name_value = reset_prompt_result_item_0[0]\n                log_template = (\n                    f'{timestamp}, risk_score=\"{risk_score}\", risk_event_id=\"{risk_event_id}\", '\n                    f' risk_object=\"{risk_object}\", risk_object_type=\"{risk_object_type}\",'\n                    f' close_reason=\"{close_reason}\", close_action_owner=\"{owner_name_value}\", close_time=\"{custom_format__current_time}\", '\n                    f' search_name=\"{name}\", risk_message=\"{description}\", soar_event_id=\"{id_value}\", soar_event_name=\"{name_value}\"'\n                )\n                custom_format__splunk_event.append(log_template)\n    \n    custom_format__splunk_event = '\\r\\n'.join(custom_format__splunk_event)\n\n",
+                    "x": 340,
+                    "y": 800
+                },
+                "6": {
+                    "data": {
+                        "advanced": {
+                            "customName": "risk rule decision",
+                            "customNameId": 0,
+                            "description": "Determine if at least one risk_rule exists that hasn't been risk score reset.",
+                            "join": [],
+                            "note": "Determine if at least one risk_rule exists that hasn't been risk score reset."
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "artifact:*.label",
+                                        "value": "risk_rule"
+                                    },
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "artifact:*.cef._risk_score_reset",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "risk rule exists",
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 1,
+                                        "op": "==",
+                                        "param": "",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 1,
+                                "customName": "no risk rules exist",
+                                "display": "Else",
+                                "logic": "and",
+                                "type": "else"
+                            }
+                        ],
+                        "functionId": 2,
+                        "functionName": "risk_rule_decision",
+                        "id": "6",
+                        "type": "decision"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "decision",
+                    "x": 240,
+                    "y": 380
+                },
+                "7": {
+                    "customCode": "def reset_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug(\"reset_prompt() called\")\n\n    ################################################################################\n    # Prompt the user for required information about the reason for close. This will \n    # be used for the message in the raw event.\n    ################################################################################\n\n    # set user and message variables for phantom.prompt call\n\n    user_id = phantom.get_effective_user()\n    url = phantom.build_phantom_rest_url('ph_user', user_id)\n    response = phantom.requests.get(url, verify=False).json()\n    user = response['username']\n    message = \"\"\"Enter a reason for resetting risk.\"\"\"\n\n    # parameter list for template variable replacement\n    parameters = []\n\n    # responses\n    response_types = [\n        {\n            \"prompt\": \"Reason\",\n            \"options\": {\n                \"type\": \"message\",\n            },\n        }\n    ]\n\n    phantom.prompt2(container=container, user=user, message=message, respond_in_mins=30, name=\"reset_prompt\", parameters=parameters, response_types=response_types, callback=risk_rule_filter)\n\n    return",
+                    "data": {
+                        "advanced": {
+                            "customName": "reset prompt",
+                            "customNameId": 0,
+                            "description": "Prompt the user for required information about the reason for close. This will be used for the message in the raw event.",
+                            "join": [],
+                            "note": "Prompt the user for required information about the reason for close. This will be used for the message in the raw event."
+                        },
+                        "approver": "admin",
+                        "functionId": 1,
+                        "functionName": "reset_prompt",
+                        "id": "7",
+                        "message": "Enter a reason for resetting risk.",
+                        "parameters": [],
+                        "responseTime": 30,
+                        "responses": [
+                            {
+                                "responsePrompt": "Reason",
+                                "responseType": "message"
+                            }
+                        ],
+                        "type": "prompt"
+                    },
+                    "errors": {},
+                    "id": "7",
+                    "type": "prompt",
+                    "x": 420,
+                    "y": 520
+                },
+                "8": {
+                    "data": {
+                        "action": "post data",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "post negative risk event",
+                            "customNameId": 0,
+                            "description": "Post all of the negative risk events as one block into the risk index that is new line separated.",
+                            "join": [],
+                            "note": "Post all of the negative risk events as one block into the risk index that is new line separated."
+                        },
+                        "connector": "Splunk",
+                        "connectorConfigs": [
+                            "splunk"
+                        ],
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "post_negative_risk_event",
+                        "id": "8",
+                        "parameters": {
+                            "data": "custom_format:custom_function:splunk_event",
+                            "index": "risk",
+                            "source": "Splunk SOAR",
+                            "source_type": "stash"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "data"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "Phantom",
+                                "field": "source"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "Automation/Orchestration Platform",
+                                "field": "source_type"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "action",
+                    "userCode": "\n\n",
+                    "x": 340,
+                    "y": 920
                 }
             },
             "notes": "This is designed to work in tandem with risk_notable_import_data for pulling risk events into SOAR.  It requires the following CEF keys be available: '_total_risk_score', 'risk_object', 'risk_object_type' and the following data keys: 'risk_event': 'id', 'risk_event': 'timestamp''. It is recommended that playbook scope remain default and not overridden in any blocks. \n\nRisk event resets in other containers will not be visible to this playbook, so all risk rule artifacts should be merged into one container before resetting risk (as demonstrated in risk_notable_auto_merge)."
@@ -552,9 +568,9 @@
         "playbook_type": "automation",
         "python_version": "3",
         "schema": "5.0.6",
-        "version": "5.3.0.84310"
+        "version": "5.3.1.84890"
     },
-    "create_time": "2022-05-23T20:57:58.966884+00:00",
+    "create_time": "2022-06-10T20:44:32.483683+00:00",
     "draft_mode": false,
     "labels": [
         "risk_notable"
