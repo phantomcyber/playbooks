@@ -1,0 +1,248 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "coa": {
+        "data": {
+            "description": "Block a domain using Cisco Umbrella.",
+            "edges": [
+                {
+                    "id": "port_0_to_port_2",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "id": "port_4_to_port_1",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_2_to_port_5",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_5_to_port_4",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                }
+            ],
+            "hash": "4082f91a299c11435501c0bfc8886e4a4c6e13f2",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "x": 20,
+                    "y": 0
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
+                    "x": 20,
+                    "y": 640
+                },
+                "2": {
+                    "data": {
+                        "action": "block domain",
+                        "actionType": "contain",
+                        "advanced": {
+                            "customName": "cisco umbrella block domain",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "Cisco Umbrella",
+                        "connectorConfigs": [
+                            "cisco_umbrella"
+                        ],
+                        "connectorId": "96f3e021-5396-42d0-97f4-4fab683e9adb",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "cisco_umbrella_block_domain",
+                        "id": "2",
+                        "parameters": {
+                            "domain": "playbook_input:domain"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "domain"
+                            }
+                        ],
+                        "tab": "byAction",
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "action",
+                    "x": 0,
+                    "y": 148
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "customName": "tag blocked domain",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "indicator_tag",
+                            "repoName": "community"
+                        },
+                        "functionId": 1,
+                        "functionName": "tag_blocked_domain",
+                        "id": "4",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "indicator_tag": {
+                                "description": "Tag an existing indicator record. Tags can be overwritten or appended.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Specifies the indicator which the tag will be added to. Supports a string indicator value or an indicator id.",
+                                        "inputType": "item",
+                                        "label": "indicator",
+                                        "name": "indicator",
+                                        "placeholder": "my_indicator",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Comma separated list of tags. Tags should only contain characters Aa-Zz, 0-9, '-', and '_'.",
+                                        "inputType": "item",
+                                        "label": "tags",
+                                        "name": "tags",
+                                        "placeholder": "tag1,tag2,...,tagk",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Either True or False with default as False. If set to True, existing tags on the indicator record will be replaced by the provided input. If set to False, the new tags will be appended to the existing indicator tags.",
+                                        "inputType": "item",
+                                        "label": "overwrite",
+                                        "name": "overwrite",
+                                        "placeholder": "False",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "indicator_tag",
+                                "name": "indicator_tag"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "indicator_tag": {
+                                "indicator": "filtered-data:check_success:condition_1:cisco_umbrella_block_domain:action_result.parameter.domain",
+                                "overwrite": null,
+                                "tags": "blocked"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "utility",
+                    "x": 0,
+                    "y": 492
+                },
+                "5": {
+                    "data": {
+                        "advanced": {
+                            "customName": "check success",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "cisco_umbrella_block_domain:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "blocked",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "check_success",
+                        "id": "5",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "filter",
+                    "x": 60,
+                    "y": 264.5
+                }
+            },
+            "notes": "The input parameters and playbooks tags are compatible with the block indicators parent playbook in the risk notable playbook pack: https://docs.splunk.com/Documentation/ESSOC/latest/user/Useplaybookpack "
+        },
+        "input_spec": [
+            {
+                "contains": [
+                    "domain"
+                ],
+                "description": "Domain name to block, which is typically a top level domain plus one.",
+                "name": "domain"
+            }
+        ],
+        "output_spec": null,
+        "playbook_type": "data",
+        "python_version": "3",
+        "schema": "5.0.6",
+        "version": "5.3.1.84890"
+    },
+    "create_time": "2022-06-13T12:51:46.836607+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": [
+        "block",
+        "risk_notable"
+    ]
+}

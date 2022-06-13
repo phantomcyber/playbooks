@@ -1,0 +1,313 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "coa": {
+        "data": {
+            "description": "Create a ticket in another case management system to track this event. Use the title and description from the input, but also append a header and indicator summary table to share more information from the SOAR event.",
+            "edges": [
+                {
+                    "id": "port_0_to_port_4",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "id": "port_4_to_port_6",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_6_to_port_3",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "id": "port_3_to_port_1",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "82956944bcc34010d9d69a585c04061e5c513b4f",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "x": 1000,
+                    "y": 419.99999999999966
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
+                    "x": 1000,
+                    "y": 920
+                },
+                "3": {
+                    "data": {
+                        "action": "create ticket",
+                        "actionType": "generic",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "ServiceNow",
+                        "connectorConfigs": [
+                            "servicenow"
+                        ],
+                        "connectorId": "a590c3bc-ca41-4a0e-b063-8066ca868794",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "create_ticket_1",
+                        "id": "3",
+                        "parameters": {
+                            "description": "format_ticket_description:formatted_data",
+                            "short_description": "playbook_input:ticket_title",
+                            "table": "incident"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "incident",
+                                "field": "table"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "action",
+                    "x": 980,
+                    "y": 780
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "indicator_collect",
+                            "repoName": "community"
+                        },
+                        "functionId": 1,
+                        "functionName": "indicator_collect_1",
+                        "id": "4",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "indicator_collect": {
+                                "description": "Collect all indicators in a container and separate them by data type. Additional output data paths are created for each data type. Artifact scope is ignored.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "phantom container id"
+                                        ],
+                                        "description": "The current container",
+                                        "inputType": "item",
+                                        "label": "container",
+                                        "name": "container",
+                                        "placeholder": "container:id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "phantom artifact id"
+                                        ],
+                                        "description": "Optional parameter to only look for indicator values that occur in the artifacts with these IDs. Must be one of: json serializable list, comma separated integers, or a single integer.",
+                                        "inputType": "list",
+                                        "label": "artifact_ids_include",
+                                        "name": "artifact_ids_include",
+                                        "placeholder": "artifact:*.id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to only include indicators with at least one of the provided types in the output. If left empty, all indicator types will be included except those that are explicitly excluded. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_types_include",
+                                        "name": "indicator_types_include",
+                                        "placeholder": "ip, domain",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to exclude indicators with any of the provided types from the output. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_types_exclude",
+                                        "name": "indicator_types_exclude",
+                                        "placeholder": "ip, domain",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to only include indicators with at least one of the provided tags in the output. If left empty, tags will be ignored except when they are excluded. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_tags_include",
+                                        "name": "indicator_tags_include",
+                                        "placeholder": "not_contained, malware",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to exclude indicators with any of the provided tags from the output. Accepts a comma-separated list.",
+                                        "inputType": "list",
+                                        "label": "indicator_tags_exclude",
+                                        "name": "indicator_tags_exclude",
+                                        "placeholder": "contained, not_malware",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "indicator_collect",
+                                "name": "indicator_collect"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "indicator_collect": {
+                                "artifact_ids_include": "playbook_input:artifact_ids_include",
+                                "container": "container:id",
+                                "indicator_tags_exclude": "playbook_input:indicator_tags_exclude",
+                                "indicator_tags_include": "playbook_input:indicator_tags_include",
+                                "indicator_types_exclude": "playbook_input:indicator_types_exclude",
+                                "indicator_types_include": "playbook_input:indicator_types_include"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "utility",
+                    "userCode": "\n    parameters[0][\"artifact_ids_include\"] = ', '.join([item[0] for item in playbook_input_artifact_ids_include_values if item])\n    parameters[0][\"indicator_types_include\"] = ', '.join([item[0] for item in playbook_input_indicator_types_include_values if item])\n    parameters[0][\"indicator_types_exclude\"] = ', '.join([item[0] for item in playbook_input_indicator_types_exclude_values if item])\n    parameters[0][\"indicator_tags_include\"] = ', '.join([item[0] for item in playbook_input_indicator_tags_include_values if item])\n    parameters[0][\"indicator_tags_exclude\"] = ', '.join([item[0] for item in playbook_input_indicator_tags_exclude_values if item])\n\n",
+                    "x": 980,
+                    "y": 520
+                },
+                "6": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format ticket description",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "format_ticket_description",
+                        "id": "6",
+                        "parameters": [
+                            "container:url",
+                            "playbook_input:ticket_description",
+                            "indicator_collect_1:custom_function_result.data.all_indicators.*.cef_value",
+                            "indicator_collect_1:custom_function_result.data.all_indicators.*.tags",
+                            "indicator_collect_1:custom_function_result.data.all_indicators.*.artifact_id"
+                        ],
+                        "template": "Tracking SOAR event: {0}\n\n{1}\n\nSummary Table of select indicators from event:\n\n%%\nindicator value: {2}\nindicator tags: {3}\nSOAR artifact ID: {4}\n\n%%\n",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "format",
+                    "x": 980,
+                    "y": 640
+                }
+            },
+            "notes": "* Use the artifact and indicator inputs to specify the most important indicators for the event.\n\n* Often the event title can be reused as the ticket title."
+        },
+        "input_spec": [
+            {
+                "contains": [],
+                "description": "One line summary of the ticket",
+                "name": "ticket_title"
+            },
+            {
+                "contains": [],
+                "description": "Longer description of the ticket. A common header will be added to the beginning to link to the SOAR event, and an indicator summary table will be added to the end.",
+                "name": "ticket_description"
+            },
+            {
+                "contains": [],
+                "description": "If provided, only add indicators from the selected artifacts to the indicator summary table in the ticket description.",
+                "name": "artifact_ids_include"
+            },
+            {
+                "contains": [],
+                "description": "",
+                "name": "indicator_types_include"
+            },
+            {
+                "contains": [],
+                "description": "",
+                "name": "indicator_types_exclude"
+            },
+            {
+                "contains": [],
+                "description": "",
+                "name": "indicator_tags_include"
+            },
+            {
+                "contains": [],
+                "description": "",
+                "name": "indicator_tags_exclude"
+            }
+        ],
+        "output_spec": [
+            {
+                "contains": [
+                    "servicenow ticket sysid"
+                ],
+                "datapaths": [
+                    "create_ticket_1:action_result.summary.created_ticket_id"
+                ],
+                "deduplicate": false,
+                "description": "The ID of the created ticket",
+                "metadata": {
+                    "create_ticket_1:action_result.summary.created_ticket_id": {
+                        "contains": [
+                            "servicenow ticket sysid",
+                            "md5"
+                        ]
+                    }
+                },
+                "name": "ticket_id"
+            }
+        ],
+        "playbook_type": "data",
+        "python_version": "3",
+        "schema": "5.0.6",
+        "version": "5.3.1.84890"
+    },
+    "create_time": "2022-06-12T19:42:46.018570+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": []
+}

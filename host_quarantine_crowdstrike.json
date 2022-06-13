@@ -1,0 +1,242 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "coa": {
+        "data": {
+            "description": "Quarantine an endpoint using CrowdStrike Falcon.",
+            "edges": [
+                {
+                    "id": "port_0_to_port_4",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "id": "port_4_to_port_5",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_5_to_port_6",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_6_to_port_1",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "1db0f7db6ff964f75081f3d6f319dc26f658718b",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "x": 20,
+                    "y": 0
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
+                    "x": 20,
+                    "y": 640
+                },
+                "4": {
+                    "data": {
+                        "action": "quarantine device",
+                        "actionType": "contain",
+                        "advanced": {
+                            "customName": "quarantine device crowdstrike",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "CrowdStrike OAuth API",
+                        "connectorConfigs": [
+                            "crowdstrike_oauth"
+                        ],
+                        "connectorId": "ae971ba5-3117-444a-8ac5-6ce779f3a232",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "quarantine_device_crowdstrike",
+                        "id": "4",
+                        "parameters": {
+                            "device_id": ""
+                        },
+                        "requiredParameters": [],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "action",
+                    "x": 0,
+                    "y": 148
+                },
+                "5": {
+                    "data": {
+                        "advanced": {
+                            "customName": "check success",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "quarantine_device_crowdstrike:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "contained",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "check_success",
+                        "id": "5",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "filter",
+                    "x": 60,
+                    "y": 312
+                },
+                "6": {
+                    "data": {
+                        "advanced": {
+                            "customName": "tag contained host",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "indicator_tag",
+                            "repoName": "local"
+                        },
+                        "functionId": 1,
+                        "functionName": "tag_contained_host",
+                        "id": "6",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "indicator_tag": {
+                                "description": "Tag an existing indicator record. Tags can be overwritten or appended.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Specifies the indicator which the tag will be added to. Supports a string indicator value or an indicator id.",
+                                        "inputType": "item",
+                                        "label": "indicator",
+                                        "name": "indicator",
+                                        "placeholder": "my_indicator",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Comma separated list of tags. Tags should only contain characters Aa-Zz, 0-9, '-', and '_'.",
+                                        "inputType": "item",
+                                        "label": "tags",
+                                        "name": "tags",
+                                        "placeholder": "tag1,tag2,...,tagk",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Either True or False with default as False. If set to True, existing tags on the indicator record will be replaced by the provided input. If set to False, the new tags will be appended to the existing indicator tags.",
+                                        "inputType": "item",
+                                        "label": "overwrite",
+                                        "name": "overwrite",
+                                        "placeholder": "False",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "indicator_tag",
+                                "name": "indicator_tag"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "indicator_tag": {
+                                "indicator": "filtered-data:check_success:condition_1:quarantine_device_crowdstrike:action_result.parameter.hostname",
+                                "overwrite": null,
+                                "tags": "contained"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "utility",
+                    "x": 0,
+                    "y": 492
+                }
+            },
+            "notes": "The input parameters and playbooks tags are compatible with the auto contain parent playbook in the risk notable playbook pack: https://docs.splunk.com/Documentation/ESSOC/latest/user/Useplaybookpack "
+        },
+        "input_spec": [
+            {
+                "contains": [
+                    "host name"
+                ],
+                "description": "The host name of the device to quarantine.",
+                "name": "internal_hostname"
+            }
+        ],
+        "output_spec": null,
+        "playbook_type": "data",
+        "python_version": "3",
+        "schema": "5.0.6",
+        "version": "5.3.1.84890"
+    },
+    "create_time": "2022-06-13T13:00:55.564358+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": [
+        "asset",
+        "containment"
+    ]
+}

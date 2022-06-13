@@ -1,0 +1,316 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "coa": {
+        "data": {
+            "description": "Gather intelligence about one or more URLs, tag the URL indicators with priority scores, and return a verdict that can be used in other playbooks or analyst actions.",
+            "edges": [
+                {
+                    "id": "port_0_to_port_2",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "id": "port_2_to_port_3",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "id": "port_2_to_port_8",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_8_to_port_7",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "id": "port_7_to_port_1",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_3_to_port_1",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "1eb905e2b3412f0f4f32da345e2af8f401157ff4",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "x": 190,
+                    "y": 0
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
+                    "x": 190,
+                    "y": 624
+                },
+                "2": {
+                    "data": {
+                        "action": "indicator reputation",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "description": "Gather intelligence about the URL from Splunk Intelligence Management (formerly known as TruSTAR).",
+                            "join": [],
+                            "note": "Gather intelligence about the URL from Splunk Intelligence Management (formerly known as TruSTAR)."
+                        },
+                        "connector": "TruSTAR",
+                        "connectorConfigs": [
+                            "trustar"
+                        ],
+                        "connectorId": "536ae6e0-72b2-4ae1-9520-810acaddd2d1",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "indicator_reputation_1",
+                        "id": "2",
+                        "parameters": {
+                            "indicator_value": "playbook_input:url",
+                            "limit": 10000
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "numeric",
+                                "default": 10000,
+                                "field": "limit"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "indicator_value"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "action",
+                    "x": 170,
+                    "y": 148
+                },
+                "3": {
+                    "data": {
+                        "advanced": {
+                            "customName": "tag with priority score",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "indicator_tag",
+                            "repoName": "community"
+                        },
+                        "functionId": 1,
+                        "functionName": "tag_with_priority_score",
+                        "id": "3",
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "indicator_tag": {
+                                "description": "Tag an existing indicator record. Tags can be overwritten or appended.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Specifies the indicator which the tag will be added to. Supports a string indicator value or an indicator id.",
+                                        "inputType": "item",
+                                        "label": "indicator",
+                                        "name": "indicator",
+                                        "placeholder": "my_indicator",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "Comma separated list of tags. Tags should only contain characters Aa-Zz, 0-9, '-', and '_'.",
+                                        "inputType": "item",
+                                        "label": "tags",
+                                        "name": "tags",
+                                        "placeholder": "tag1,tag2,...,tagk",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Either True or False with default as False. If set to True, existing tags on the indicator record will be replaced by the provided input. If set to False, the new tags will be appended to the existing indicator tags.",
+                                        "inputType": "item",
+                                        "label": "overwrite",
+                                        "name": "overwrite",
+                                        "placeholder": "False",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "indicator_tag",
+                                "name": "indicator_tag"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "indicator_tag": {
+                                "indicator": "indicator_reputation_1:action_result.parameter.indicator_value",
+                                "overwrite": null,
+                                "tags": "indicator_reputation_1:action_result.data.*.priorityScore"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "utility",
+                    "x": 340,
+                    "y": 476
+                },
+                "7": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format verdict",
+                            "customNameId": 0,
+                            "description": "Create a formatted text block to return as a verdict, including each URL with a priority score of MEDIUM or higher.",
+                            "join": [],
+                            "note": "Create a formatted text block to return as a verdict, including each URL with a priority score of MEDIUM or higher."
+                        },
+                        "functionId": 2,
+                        "functionName": "format_verdict",
+                        "id": "7",
+                        "parameters": [
+                            "filtered-data:filter_medium_or_higher:condition_1:indicator_reputation_1:action_result.parameter.indicator_value",
+                            "filtered-data:filter_medium_or_higher:condition_1:indicator_reputation_1:action_result.data.*.priorityScore"
+                        ],
+                        "template": "%%\n| {0} :: {1} |\n%%",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "7",
+                    "type": "format",
+                    "x": 0,
+                    "y": 476
+                },
+                "8": {
+                    "data": {
+                        "advanced": {
+                            "customName": "filter medium or higher",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "indicator_reputation_1:action_result.data.*.priorityScore",
+                                        "value": "MEDIUM"
+                                    },
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "indicator_reputation_1:action_result.data.*.priorityScore",
+                                        "value": "HIGH"
+                                    },
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "indicator_reputation_1:action_result.data.*.priorityScore",
+                                        "value": "CRITICAL"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "suspicious urls",
+                                "logic": "or"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "filter_medium_or_higher",
+                        "id": "8",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "filter",
+                    "x": 60,
+                    "y": 296
+                }
+            },
+            "notes": "A similar playbook called intelligence_management_enrich_indicators can be used to gather intelligence about all types of indicators, including URLs."
+        },
+        "input_spec": [
+            {
+                "contains": [
+                    "url"
+                ],
+                "description": "URL to investigate",
+                "name": "url"
+            }
+        ],
+        "output_spec": [
+            {
+                "contains": [],
+                "datapaths": [
+                    "format_verdict:formatted_data"
+                ],
+                "deduplicate": false,
+                "description": "Return URLs with priority scores of Medium or higher",
+                "metadata": {},
+                "name": "verdict"
+            }
+        ],
+        "playbook_type": "data",
+        "python_version": "3",
+        "schema": "5.0.6",
+        "version": "5.3.1.84890"
+    },
+    "create_time": "2022-06-12T17:16:04.284354+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": [
+        "investigate",
+        "threat_intel",
+        "risk_notable"
+    ]
+}
