@@ -623,23 +623,23 @@ def results_decision(action=None, success=None, container=None, results=None, ha
 def artifact_update_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("artifact_update_2() called")
 
-    filtered_artifact_0_data_filter_artifact_score = phantom.collect2(container=container, datapath=["filtered-data:filter_artifact_score:condition_1:artifact:*.id","filtered-data:filter_artifact_score:condition_1:artifact:*.id"])
+    filtered_artifact_0_data_filter_artifact_score = phantom.collect2(container=container, datapath=["filtered-data:filter_artifact_score:condition_1:artifact:*.id","filtered-data:filter_artifact_score:condition_1:artifact:*.id"], scope="all")
 
     parameters = []
 
     # build parameters list for 'artifact_update_2' call
     for filtered_artifact_0_item_filter_artifact_score in filtered_artifact_0_data_filter_artifact_score:
         parameters.append({
-            "artifact_id": filtered_artifact_0_item_filter_artifact_score[0],
             "name": None,
+            "tags": "high_risk_score",
             "label": None,
             "severity": None,
             "cef_field": None,
             "cef_value": None,
-            "cef_data_type": None,
-            "tags": "high_risk_score",
-            "overwrite_tags": None,
             "input_json": None,
+            "artifact_id": filtered_artifact_0_item_filter_artifact_score[0],
+            "cef_data_type": None,
+            "overwrite_tags": None,
         })
 
     ################################################################################
