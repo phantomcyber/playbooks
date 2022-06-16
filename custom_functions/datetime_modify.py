@@ -27,7 +27,7 @@ def datetime_modify(input_datetime=None, input_format_string=None, modification_
     
     # set the date to the default, which is the current time if none is provided
     if not input_datetime:
-        input_datetime = datetime.datetime.now().strftime(input_format_string)
+        input_datetime = datetime.datetime.utcnow().strftime(input_format_string)
     
     # use the phantom default as the output format string if none is provided
     if not output_format_string:
