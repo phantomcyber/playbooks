@@ -391,7 +391,7 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
     ################################################################################
     ## Custom Code Start
     ################################################################################
-from dateutil.parser import parse
+    from dateutil.parser import parse
     from django.utils.dateparse import parse_datetime
     import re
     from hashlib import sha256
