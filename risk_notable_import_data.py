@@ -391,7 +391,7 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
     ################################################################################
     ## Custom Code Start
     ################################################################################
-    from dateutil.parser import parse
+from dateutil.parser import parse
     from django.utils.dateparse import parse_datetime
     import re
     from hashlib import sha256
@@ -451,6 +451,20 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
         "user_id": "destinationUserId", 
     }
     
+    def flatten_single_value(values):
+        if len(values) == 1:
+            return values[0]
+        return values
+    
+    def extract_ip_fields(key, value):
+        hostname_map = { 'src': 'sourceHostName', 'dest': 'destinationHostName' }
+        if type(value) is not list: 
+            value = [value]
+        ip_regex = '(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)'
+        return {
+            cim_cef[key]: flatten_single_value([v for v in value if re.match(ip_regex, v)]),
+            hostname_map[key]: flatten_single_value([v for v in value if not re.match(ip_regex, v)])
+        }
     
     # Iterate through Splunk search results
     for index, artifact_json in enumerate(search_json):
@@ -461,20 +475,12 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
             tags = []
             # Swap CIM for CEF values
             if cim_cef.get(key.lower()):
-                if key.lower() == 'dest':
-                    # if 'dest' matches an IP, use 'dest', otherwise use 'destinationHostName'
-                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', key):
-                        artifact_json[cim_cef[key]] = artifact_json.pop(key)
-                    else:
-                        artifact_json['destinationHostName'] = artifact_json.pop(key)
-                elif key.lower() == 'src':
-                    # if 'src' matches an IP, use 'src', otherwise use 'sourceHostName'
-                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', key):
-                        artifact_json[cim_cef[key]] = artifact_json.pop(key)
-                    else:
-                        artifact_json['sourceHostName'] = artifact_json.pop(key)
+                value = artifact_json.pop(key)
+                if key.lower() == 'dest' or key.lower() == 'src':
+                    fields = extract_ip_fields(key.lower(), value)
+                    artifact_json = {**artifact_json, **fields}
                 else:
-                    artifact_json[cim_cef[key.lower()]] = artifact_json.pop(key)
+                    artifact_json[cim_cef[key.lower()]] = value
         
         
         temp_dictionary = artifact_json.copy()
