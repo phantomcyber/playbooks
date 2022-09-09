@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 ##############################
 # Start - Global Code Block
 
-import os, inspect, threading, requests, time
+import os, inspect, threading, requests, time, sys
 import phantom.vault as Vault
 
 # End - Global Code block
@@ -363,32 +363,6 @@ def Provision_Object_3(action=None, success=None, container=None, results=None, 
 
     return
 
-def Get_Workloads_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug('Get_Workloads_1() called')
-        
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'Get_Workloads_1' call
-
-    parameters = []
-    
-    # build parameters list for 'Get_Workloads_1' call
-    parameters.append({
-        'name': "",
-        'os_id': "",
-        'labels': "",
-        'online': True,
-        'managed': "",
-        'hostname': "",
-        'description': "",
-        'enforcement_mode': "VISIBILITY_ONLY",
-        'public_ip_address': "",
-    })
-
-    phantom.act(action="get workloads", parameters=parameters, assets=['illumio'], callback=decision_8, name="Get_Workloads_1")
-
-    return
-
 def Update_Enforcement_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('Update_Enforcement_1() called')
         
@@ -538,32 +512,6 @@ def Provision_Object_4(action=None, success=None, container=None, results=None, 
             })
 
     phantom.act(action="provision objects", parameters=parameters, assets=['illumio'], callback=Update_Enforcement_Mode2, name="Provision_Object_4")
-
-    return
-
-def Get_Workloads_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug('Get_Workloads_2() called')
-        
-    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-    
-    # collect data for 'Get_Workloads_2' call
-
-    parameters = []
-    
-    # build parameters list for 'Get_Workloads_2' call
-    parameters.append({
-        'name': "",
-        'os_id': "",
-        'labels': "",
-        'online': True,
-        'managed': "",
-        'hostname': "",
-        'description': "",
-        'enforcement_mode': "VISIBILITY_ONLY",
-        'public_ip_address': "",
-    })
-
-    phantom.act(action="get workloads", parameters=parameters, assets=['illumio'], callback=decision_9, name="Get_Workloads_2")
 
     return
 
@@ -897,6 +845,60 @@ def Create_Service_Binding_2(action=None, success=None, container=None, results=
                 })
 
     phantom.act(action="create service binding", parameters=parameters, assets=['illumio'], callback=Get_IP_List_1, name="Create_Service_Binding_2")
+
+    return
+
+def Get_Workloads_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('Get_Workloads_1() called')
+        
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'Get_Workloads_1' call
+
+    parameters = []
+    
+    # build parameters list for 'Get_Workloads_1' call
+    parameters.append({
+        'max_results': sys.maxsize,
+        'enforcement_mode': "VISIBILITY_ONLY",
+        'online': "",
+        'managed': "",
+        'name': "",
+        'labels': "",
+        'public_ip_address': "",
+        'description': "",
+        'hostname': "",
+        'os_id': "",
+    })
+
+    phantom.act(action="get workloads", parameters=parameters, assets=['illumio'], callback=decision_8, name="Get_Workloads_1")
+
+    return
+
+def Get_Workloads_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug('Get_Workloads_2() called')
+        
+    #phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    # collect data for 'Get_Workloads_2' call
+
+    parameters = []
+    
+    # build parameters list for 'Get_Workloads_2' call
+    parameters.append({
+        'max_results': sys.maxsize,
+        'enforcement_mode': "VISIBILITY_ONLY",
+        'online': "",
+        'managed': "",
+        'name': "",
+        'labels': "",
+        'public_ip_address': "",
+        'description': "",
+        'hostname': "",
+        'os_id': "",
+    })
+
+    phantom.act(action="get workloads", parameters=parameters, assets=['illumio'], callback=decision_9, name="Get_Workloads_2")
 
     return
 
