@@ -370,17 +370,15 @@ def Update_Enforcement_1(action=None, success=None, container=None, results=None
     
     # collect data for 'Update_Enforcement_1' call
     results_data_1 = phantom.collect2(container=container, datapath=['Get_Workloads_1:action_result.data.*.workloads.*.href', 'Get_Workloads_1:action_result.parameter.context.artifact_id'], action_results=results)
+    
+    workload_list =[]
+    for results_item_1 in results_data_1:
+        if results_item_1[0]:
+            workload_list.append(results_item_1[0])
 
     parameters = []
     
-    # build parameters list for 'Update_Enforcement_1' call
-    for results_item_1 in results_data_1:
-        if results_item_1[0]:
-            parameters.append({
-                'workload_hrefs': results_item_1[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[1]},
-            })
+    parameters.append({'workload_hrefs': ",".join(workload_list)})
 
     phantom.act(action="update enforcement mode", parameters=parameters, assets=['illumio'], name="Update_Enforcement_1")
 
@@ -522,17 +520,15 @@ def Update_Enforcement_Mode_2(action=None, success=None, container=None, results
     
     # collect data for 'Update_Enforcement_Mode_2' call
     results_data_1 = phantom.collect2(container=container, datapath=['Get_Workloads_2:action_result.data.*.workloads.*.href', 'Get_Workloads_2:action_result.parameter.context.artifact_id'], action_results=results)
+    
+    workload_list =[]
+    for results_item_1 in results_data_1:
+        if results_item_1[0]:
+            workload_list.append(results_item_1[0])
 
     parameters = []
     
-    # build parameters list for 'Update_Enforcement_Mode_2' call
-    for results_item_1 in results_data_1:
-        if results_item_1[0]:
-            parameters.append({
-                'workload_hrefs': results_item_1[0],
-                # context (artifact id) is added to associate results with the artifact
-                'context': {'artifact_id': results_item_1[1]},
-            })
+    parameters.append({'workload_hrefs': ",".join(workload_list)})
 
     phantom.act(action="update enforcement mode", parameters=parameters, assets=['illumio'], name="Update_Enforcement_Mode_2")
 
@@ -547,17 +543,16 @@ def Create_Service_Binding(action=None, success=None, container=None, results=No
     results_data_1 = phantom.collect2(container=container, datapath=['Get_Traffic_Analysis:action_result.data.*.traffic_flows.*.dst.workload.href', 'Get_Traffic_Analysis:action_result.parameter.context.artifact_id'], action_results=results)
     results_data_2 = phantom.collect2(container=container, datapath=['Provision_Object_1:action_result.data.*.provisioned_href.0', 'Provision_Object_1:action_result.parameter.context.artifact_id'], action_results=results)
 
+    workload_list = set()
+    for results_item_1 in results_data_1:
+        if results_item_1[0]:
+            workload_list.add(results_item_1[0])
+
     parameters = []
     
-    # build parameters list for 'Create_Service_Binding' call
-    for results_item_1 in results_data_1:
-        for results_item_2 in results_data_2:
-            if results_item_1[0] and results_item_2[0]:
-                parameters.append({
-                    'workload_hrefs': results_item_1[0],
-                    'virtual_service_href': results_item_2[0],
-                    # context (artifact id) is added to associate results with the artifact
-                    'context': {'artifact_id': results_item_1[1]},
+    parameters.append({
+                    'workload_hrefs': ",".join(workload_list),
+                    'virtual_service_href': results_data_2[0][0]
                 })
 
     phantom.act(action="create service binding", parameters=parameters, assets=['illumio'], callback=Get_IP_List_1, name="Create_Service_Binding")
@@ -593,7 +588,6 @@ def decision_4(action=None, success=None, container=None, results=None, handle=N
     results_data_1 = phantom.collect2(container=container, datapath=['Get_Traffic_Analysis:action_result.data.*.traffic_flows.*.dst.workload.href'], action_results=results)
     workload_list = []
     for val in results_data_1:
-        phantom.debug(type(val[0]))
         if val[0]:
             workload_list.append(val[0])
 
@@ -694,7 +688,6 @@ def decision_7(action=None, success=None, container=None, results=None, handle=N
     results_data_1 = phantom.collect2(container=container, datapath=['Get_Traffic_Analysis:action_result.data.*.traffic_flows.*.dst.workload.href'], action_results=results)
     workload_list = []
     for val in results_data_1:
-        phantom.debug(type(val[0]))
         if val[0]:
             workload_list.append(val[0])
 
@@ -831,17 +824,16 @@ def Create_Service_Binding_2(action=None, success=None, container=None, results=
     results_data_1 = phantom.collect2(container=container, datapath=['Get_Traffic_Analysis:action_result.data.*.traffic_flows.*.dst.workload.href', 'Get_Traffic_Analysis:action_result.parameter.context.artifact_id'], action_results=results)
     results_data_2 = phantom.collect2(container=container, datapath=['Create_Virtual_Service:action_result.data.*.href', 'Create_Virtual_Service:action_result.parameter.context.artifact_id'], action_results=results)
 
+    workload_list = set()
+    for results_item_1 in results_data_1:
+        if results_item_1[0]:
+            workload_list.add(results_item_1[0])
+
     parameters = []
     
-    # build parameters list for 'Create_Service_Binding_2' call
-    for results_item_1 in results_data_1:
-        for results_item_2 in results_data_2:
-            if results_item_1[0] and results_item_2[0]:
-                parameters.append({
-                    'workload_hrefs': results_item_1[0],
-                    'virtual_service_href': results_item_2[0],
-                    # context (artifact id) is added to associate results with the artifact
-                    'context': {'artifact_id': results_item_1[1]},
+    parameters.append({
+                    'workload_hrefs': ",".join(workload_list),
+                    'virtual_service_href': results_data_2[0][0]
                 })
 
     phantom.act(action="create service binding", parameters=parameters, assets=['illumio'], callback=Get_IP_List_1, name="Create_Service_Binding_2")
