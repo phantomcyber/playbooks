@@ -8,6 +8,7 @@ import json
 from datetime import datetime, timedelta
 
 
+@phantom.playbook_block()
 def on_start(container):
     phantom.debug('on_start() called')
 
@@ -16,6 +17,7 @@ def on_start(container):
 
     return
 
+@phantom.playbook_block()
 def get_splunk_asset_details(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("get_splunk_asset_details() called")
 
@@ -40,6 +42,7 @@ def get_splunk_asset_details(action=None, success=None, container=None, results=
     return
 
 
+@phantom.playbook_block()
 def event_id_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("event_id_filter() called")
 
@@ -63,6 +66,7 @@ def event_id_filter(action=None, success=None, container=None, results=None, han
     return
 
 
+@phantom.playbook_block()
 def run_risk_rule_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("run_risk_rule_query() called")
 
@@ -106,6 +110,7 @@ def run_risk_rule_query(action=None, success=None, container=None, results=None,
     return
 
 
+@phantom.playbook_block()
 def create_risk_artifacts(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("create_risk_artifacts() called")
 
@@ -144,6 +149,7 @@ def create_risk_artifacts(action=None, success=None, container=None, results=Non
     return
 
 
+@phantom.playbook_block()
 def create_risk_artifacts_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("create_risk_artifacts_callback() called")
 
@@ -155,6 +161,7 @@ def create_risk_artifacts_callback(action=None, success=None, container=None, re
     return
 
 
+@phantom.playbook_block()
 def filter_artifact_score(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("filter_artifact_score() called")
 
@@ -181,6 +188,7 @@ def filter_artifact_score(action=None, success=None, container=None, results=Non
     return
 
 
+@phantom.playbook_block()
 def mark_artifact_evidence(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("mark_artifact_evidence() called")
 
@@ -212,6 +220,7 @@ def mark_artifact_evidence(action=None, success=None, container=None, results=No
     return
 
 
+@phantom.playbook_block()
 def mitre_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("mitre_format() called")
 
@@ -329,6 +338,7 @@ def mitre_format(action=None, success=None, container=None, results=None, handle
     return
 
 
+@phantom.playbook_block()
 def format_summary_note(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("format_summary_note() called")
 
@@ -366,6 +376,7 @@ def format_summary_note(action=None, success=None, container=None, results=None,
     return
 
 
+@phantom.playbook_block()
 def parse_risk_results_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("parse_risk_results_1() called")
 
@@ -461,18 +472,14 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
             tags = []
             # Swap CIM for CEF values
             if cim_cef.get(key.lower()):
-                if key.lower() == 'dest':
-                    # if 'dest' matches an IP, use 'dest', otherwise use 'destinationHostName'
-                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', key):
-                        artifact_json[cim_cef[key]] = artifact_json.pop(key)
+                # if src or dest matches an IP use src or dest' otherwise use sourceHostName or destinationHostName'
+                if key.lower() == 'dest' or key.lower() == 'src':
+                    hostname_map = { 'src': 'sourceHostName', 'dest': 'destinationHostName' }
+                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', artifact_json[key]):
+                        artifact_json[cim_cef[key.lower()]] = artifact_json.pop(key)
                     else:
-                        artifact_json['destinationHostName'] = artifact_json.pop(key)
-                elif key.lower() == 'src':
-                    # if 'src' matches an IP, use 'src', otherwise use 'sourceHostName'
-                    if re.match('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', key):
-                        artifact_json[cim_cef[key]] = artifact_json.pop(key)
-                    else:
-                        artifact_json['sourceHostName'] = artifact_json.pop(key)
+                        cef_equivalent = hostname_map[key.lower()]
+                        artifact_json[cef_equivalent] = artifact_json.pop(key)
                 else:
                     artifact_json[cim_cef[key.lower()]] = artifact_json.pop(key)
         
@@ -602,6 +609,7 @@ def parse_risk_results_1(action=None, success=None, container=None, results=None
     return
 
 
+@phantom.playbook_block()
 def results_decision(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("results_decision() called")
 
@@ -620,6 +628,7 @@ def results_decision(action=None, success=None, container=None, results=None, ha
     return
 
 
+@phantom.playbook_block()
 def artifact_update_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("artifact_update_2() called")
 
@@ -657,13 +666,14 @@ def artifact_update_2(action=None, success=None, container=None, results=None, h
     return
 
 
+@phantom.playbook_block()
 def on_finish(container, summary):
     phantom.debug("on_finish() called")
 
     format_summary_note = phantom.get_format_data(name="format_summary_note")
 
     output = {
-        "note_title": "[Auto-Generated] Notable Event Summary",
+        "note_title": ["[Auto-Generated] Notable Event Summary"],
         "note_content": format_summary_note,
     }
 
