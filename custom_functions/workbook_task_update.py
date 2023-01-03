@@ -66,7 +66,10 @@ def workbook_task_update(task_name=None, note_title=None, note_content=None, sta
     if task_count > 1:
         raise RuntimeError(f"'Unable to update workbook task. {task_count} match criteria '{task_name}'")
     elif task_count == 0:
-        raise RuntimeError(f"No task name matches input task_name: '{task_name}'")
+        if task_name == "playbook" and current_playbook:
+            raise RuntimeError(f"No task contains the current playbook: '{current_playbook}'")
+        else:
+            raise RuntimeError(f"No task name matches input task_name: '{task_name}'")
 
     if task_is_note_required and not note_content and status == 'complete' and task_status != 1:
         raise RuntimeError('Unable to update workbook task - The task requires a closing note and a closing title')     
