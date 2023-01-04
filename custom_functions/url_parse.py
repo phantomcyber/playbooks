@@ -7,12 +7,14 @@ def url_parse(input_url=None, **kwargs):
     
     Returns a JSON-serializable object that implements the configured data paths:
         scheme: The scheme of the URL, such as HTTP, HTTPS, or FTP.
-        netloc (CEF type: domain): The network location of the URL, which is typically the hostname.
+        netloc: The network location part of the URL.
         path: The path to the resource after the first slash in the URL, such as "en_us/software/splunk-security-orchestration-and-automation.html".
         params: The parameters in the URL after the semicolon.
         query: The query string of the URL after the question mark. Multiple parameters are not separated from each other.
         fragment: The subcomponent of the resource which is identified after the hash sign.
         output_url (CEF type: url): Passthrough of the original url
+        hostname (CEF type: hostname): The host name of the url
+        port (CEF type: port): The port number, if one is used
     """
     ############################ Custom Code Goes Below This Line #################################
     import json
