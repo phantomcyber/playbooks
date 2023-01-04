@@ -22,7 +22,17 @@ def url_parse(input_url=None, **kwargs):
     outputs = {}
     if input_url:
         parsed = urlparse(input_url)
-        outputs = {'scheme': parsed.scheme, 'netloc': parsed.netloc, 'path': parsed.path, 'params': parsed.params, 'query': parsed.query, 'fragment': parsed.fragment, 'output_url': input_url}
+        outputs = {
+            'scheme': parsed.scheme, 
+            'hostname': parsed.hostname,
+            'netloc': parsed.netloc, 
+            'path': parsed.path, 
+            'port': parsed.port,
+            'params': parsed.params, 
+            'query': parsed.query, 
+            'fragment': parsed.fragment, 
+            'output_url': input_url
+        }
                 
     # Return a JSON-serializable object
     assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
