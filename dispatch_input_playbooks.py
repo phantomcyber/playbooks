@@ -266,8 +266,11 @@ def process_outputs(action=None, success=None, container=None, results=None, han
                 output_dict = json.loads(output)
                 for k,v in output_dict.items():
                     # Populate basic outputs for certain keys
-                    if k.lower() in ['verdict', 'note_content', 'observable', 'markdown_reports']:
-                        process_outputs__data[k.lower()].extend(v)
+                    if k.lower() in ['verdict', 'note_content', 'observable', 'markdown_report']:
+                        if isinstance(v, list):
+                            process_outputs__data[k.lower()].extend(v)
+                        else:
+                            process_outputs__data[k.lower()].append(v)
                     # Populate sub_playbook outputs
                     sub_playbook_output_dict[k] = v
             process_outputs__data['sub_playbook_outputs'].append(sub_playbook_output_dict)
