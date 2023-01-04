@@ -242,7 +242,7 @@ def process_outputs(action=None, success=None, container=None, results=None, han
         'playbook_name_list': [], 
         'verdict': [],
         'observable': [],
-        'markdown_reports': [],
+        'markdown_report': [],
         'note_content': [],
         'sub_playbook_outputs': [],
         'sub_playbook_inputs': []
@@ -443,7 +443,7 @@ def on_finish(container, summary):
         "playbook_id_list": [],
         "playbook_name_list": [],
         "observable": [],
-        "markdown_reports": [],
+        "markdown_report": [],
     }
 
     ################################################################################
