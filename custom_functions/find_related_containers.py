@@ -8,7 +8,7 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
         minimum_match_count: The minimum number of values from the value_list parameter or the fields from the field_list that must match with related containers. Supports an integer or the string 'all'. Adding 'all' will set the minimum_match_count to the length of the number of unique values in the value_list or the number of unique fields in the field_list. If no match count provided, this will default to 1.
         container (CEF type: phantom container id): The container to run indicator analysis against. Supports container object or container_id. This container will also be excluded from the results for related_containers.
         earliest_time: Optional modifier to only consider related containers within a time window. Default is -30d.  Supports year (y), month (m), day (d), hour (h), or minute (m)  Custom function will always set the earliest container window based on the input container "create_time".
-        filter_status: Optional comma-separated list of statuses to filter on. Only containers that have statuses matching an item in this list will be included.
+        filter_status: Optional comma-separated list of status IDs or status names to filter on. Only containers that have statuses matching an item in this list will be included. If status names are provided, the automation user must have administrator privileges. Use `/rest/container_status` to obtain status ids instead of adding administrator privileges.
         filter_label (CEF type: phantom container label): Optional comma-separated list of labels to filter on. Only containers that have labels matching an item in this list will be included.
         filter_severity: Optional comma-separated list of severities to filter on. Only containers that have severities matching an item in this list will be included.
         filter_in_case: Optional parameter to filter containers that are in a case or not. True for only containers in cases, False for only containers not in cases. Default is all containers.
@@ -45,6 +45,12 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
         status_url = phantom.build_phantom_rest_url('container_status')
         status_url += f'?_filter_name__in={status_list}'
         status_response = phantom.requests.get(status_url, verify=False).json()
+        if status_response.get('failed') == True and "does not have permission" in status_response.get('message', ""):
+            raise RuntimeError(
+                "User does not have permission to view container_status. "      
+                "Consider using a list of status ids instead of status names - "
+                "`/rest/container_status` can be used to find Status IDs."
+            )
         return [item['id'] for item in status_response.get('data', [])]
         
     
@@ -65,8 +71,7 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
                 if k == 'earliest_time':
                     container_url += f'&_filter_create_time__gt="{format_offset_time(v)}"'
                 if k == 'filter_status':
-                    status_list = get_status_ids(v) if all(isinstance(elem, str) for elem in v) else v
-                    container_url += f'&_filter_status__in={status_list}'
+                    container_url += f'&_filter_status__in={v}'
                 if k == 'filter_label':
                     container_url += f'&_filter_label__in={v}'
                 if k == 'filter_severity':
@@ -256,17 +261,26 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
     test_minimum_match(minimum_match_count, field_list if field_list else value_list)
     
     # Put filters in list form
-    if isinstance(filter_status, str):
-        filter_status = [item.strip().lower() for item in filter_status.split(',')]
-    if isinstance(filter_label, str):
-        filter_label = [item.strip().lower() for item in filter_label.split(',')]
-    if isinstance(filter_severity, str):
-        filter_severity = [item.strip().lower() for item in filter_severity.split(',')]
+    if filter_status and len(filter_status) == 1 and isinstance(filter_status[0], str):
+        filter_status = [item.strip().lower() for item in filter_status[0].split(',')]
+    if filter_label and len(filter_label) == 1 and isinstance(filter_label[0], str):
+        filter_label = [item.strip().lower() for item in filter_label[0].split(',')]
+    if filter_severity and len(filter_severity) == 1 and isinstance(filter_severity[0], str):
+        filter_severity = [item.strip().lower() for item in filter_severity[0].split(',')]
     if isinstance(filter_in_case, str) and filter_in_case.lower() == 'false':
         filter_in_case = False
-    
+        
     ## ------------------- ##
     ## End Input Checking ##
+
+    if filter_status:
+        if all(elem.isnumeric() for elem in filter_status):
+            filter_status = [int(elem) for elem in filter_status]
+        elif all(isinstance(elem, str) for elem in filter_status) and any(elem.isnumeric() for elem in filter_status):
+            raise ValueError("filter_status must be all strings or all integers")
+        elif all(isinstance(elem, str) for elem in filter_status):
+            filter_status = get_status_ids(filter_status)
+            
     if value_list:
         indicator_dictionary, indicator_id_set = fetch_indicators(value_list)
 
@@ -301,6 +315,7 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
             filter_severity=filter_severity, 
             filter_in_case=filter_in_case
         )
+    if outputs:
         phantom.debug(
             f"{len(outputs)} containers found for '{minimum_match_count}' "
             f"minimum matches out of the provided input, '{field_list if field_list else value_list}', "
