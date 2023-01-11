@@ -8,6 +8,7 @@ import json
 from datetime import datetime, timedelta
 
 
+@phantom.playbook_block()
 def on_start(container):
     phantom.debug('on_start() called')
 
@@ -16,6 +17,7 @@ def on_start(container):
 
     return
 
+@phantom.playbook_block()
 def find_matching_playbooks(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("find_matching_playbooks() called")
 
@@ -67,6 +69,7 @@ def find_matching_playbooks(action=None, success=None, container=None, results=N
     return
 
 
+@phantom.playbook_block()
 def playbooks_decision(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("playbooks_decision() called")
 
@@ -89,6 +92,7 @@ def playbooks_decision(action=None, success=None, container=None, results=None, 
     return
 
 
+@phantom.playbook_block()
 def dispatch_playbooks(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("dispatch_playbooks() called")
 
@@ -126,12 +130,12 @@ def dispatch_playbooks(action=None, success=None, container=None, results=None, 
         pb_inputs = {}
         for cef_value, cef_type in zip(indicator_cef_value_list, indicator_cef_type_list):
             for type_item in cef_type:
-                # check if any of the investigate type playbooks have inputs that accept this data type
+                # check if any of the requested playbook types have inputs that accept this data type
                 for spec in spec_item:
                     for contains_type in spec['contains']:
                         if type_item == contains_type:
                             # build playbook inputs
-                            if not pb_inputs:
+                            if not pb_inputs or not pb_inputs.get(spec['name']):
                                 pb_inputs[spec['name']] = [cef_value]
                             else:
                                 if cef_value not in pb_inputs[spec['name']]:
@@ -164,6 +168,7 @@ Ensure you have a input type playbook that handles at least one of the following
     return
 
 
+@phantom.playbook_block()
 def wait_for_playbooks(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("wait_for_playbooks() called")
 
@@ -171,7 +176,7 @@ def wait_for_playbooks(action=None, success=None, container=None, results=None, 
     # Waits for all of the playbooks from the preceding block to finish.
     ################################################################################
 
-    dispatch_playbooks__names = json.loads(phantom.get_run_data(key="dispatch_playbooks:names"))
+    dispatch_playbooks__names = json.loads(_ if (_ := phantom.get_run_data(key="dispatch_playbooks:names")) != "" else "null")  # pylint: disable=used-before-assignment
 
     ################################################################################
     ## Custom Code Start
@@ -191,6 +196,7 @@ def wait_for_playbooks(action=None, success=None, container=None, results=None, 
     return
 
 
+@phantom.playbook_block()
 def indicator_decision(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("indicator_decision() called")
 
@@ -214,6 +220,7 @@ def indicator_decision(action=None, success=None, container=None, results=None, 
     return
 
 
+@phantom.playbook_block()
 def process_outputs(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("process_outputs() called")
 
@@ -222,7 +229,7 @@ def process_outputs(action=None, success=None, container=None, results=None, han
     # that is compatible with the end block.
     ################################################################################
 
-    dispatch_playbooks__ids = json.loads(phantom.get_run_data(key="dispatch_playbooks:ids"))
+    dispatch_playbooks__ids = json.loads(_ if (_ := phantom.get_run_data(key="dispatch_playbooks:ids")) != "" else "null")  # pylint: disable=used-before-assignment
 
     process_outputs__data = None
 
@@ -234,6 +241,8 @@ def process_outputs(action=None, success=None, container=None, results=None, han
         'playbook_id_list': [], 
         'playbook_name_list': [], 
         'verdict': [],
+        'observable': [],
+        'markdown_report': [],
         'note_content': [],
         'sub_playbook_outputs': [],
         'sub_playbook_inputs': []
@@ -257,8 +266,11 @@ def process_outputs(action=None, success=None, container=None, results=None, han
                 output_dict = json.loads(output)
                 for k,v in output_dict.items():
                     # Populate basic outputs for certain keys
-                    if k.lower() in ['verdict', 'note_content']:
-                        process_outputs__data[k.lower()].append(v)
+                    if k.lower() in ['verdict', 'note_content', 'observable', 'markdown_report']:
+                        if isinstance(v, list):
+                            process_outputs__data[k.lower()].extend(v)
+                        else:
+                            process_outputs__data[k.lower()].append(v)
                     # Populate sub_playbook outputs
                     sub_playbook_output_dict[k] = v
             process_outputs__data['sub_playbook_outputs'].append(sub_playbook_output_dict)
@@ -282,6 +294,7 @@ def process_outputs(action=None, success=None, container=None, results=None, han
     return
 
 
+@phantom.playbook_block()
 def find_supported_indicator_types(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("find_supported_indicator_types() called")
 
@@ -318,6 +331,7 @@ def find_supported_indicator_types(action=None, success=None, container=None, re
     return
 
 
+@phantom.playbook_block()
 def collect_indicator(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("collect_indicator() called")
 
@@ -325,7 +339,7 @@ def collect_indicator(action=None, success=None, container=None, results=None, h
     playbook_input_artifact_ids_include = phantom.collect2(container=container, datapath=["playbook_input:artifact_ids_include"])
     playbook_input_indicator_tags_exclude = phantom.collect2(container=container, datapath=["playbook_input:indicator_tags_exclude"])
     playbook_input_indicator_tags_include = phantom.collect2(container=container, datapath=["playbook_input:indicator_tags_include"])
-    find_supported_indicator_types__list = json.loads(phantom.get_run_data(key="find_supported_indicator_types:list"))
+    find_supported_indicator_types__list = json.loads(_ if (_ := phantom.get_run_data(key="find_supported_indicator_types:list")) != "" else "null")  # pylint: disable=used-before-assignment
 
     playbook_input_artifact_ids_include_values = [item[0] for item in playbook_input_artifact_ids_include]
     playbook_input_indicator_tags_exclude_values = [item[0] for item in playbook_input_indicator_tags_exclude]
@@ -381,6 +395,7 @@ def collect_indicator(action=None, success=None, container=None, results=None, h
     return
 
 
+@phantom.playbook_block()
 def check_valid_inputs(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("check_valid_inputs() called")
 
@@ -419,17 +434,19 @@ def check_valid_inputs(action=None, success=None, container=None, results=None, 
     return
 
 
+@phantom.playbook_block()
 def on_finish(container, summary):
     phantom.debug("on_finish() called")
 
     output = {
-        "note_content": "",
-        "verdict": "",
-        "sub_playbook_outputs": "",
-        "sub_playbook_inputs": "",
-        "playbook_run_id_list": "",
-        "playbook_id_list": "",
-        "playbook_name_list": "",
+        "verdict": [],
+        "sub_playbook_outputs": [],
+        "sub_playbook_inputs": [],
+        "playbook_run_id_list": [],
+        "playbook_id_list": [],
+        "playbook_name_list": [],
+        "observable": [],
+        "markdown_report": [],
     }
 
     ################################################################################
