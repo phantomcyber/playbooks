@@ -41,7 +41,6 @@ def collect_by_cef_type(container=None, data_types=None, scope=None, tags=None, 
         data_types = [item.strip() for item in data_types.split(",")]
     elif not data_types:
         raise ValueError("The input 'data_types' is required and was blank")
-    
     if 'all' in data_types and scope == 'new':
         raise ValueError("'all' datatypes not compatible with 'new' scope")
         
@@ -86,7 +85,6 @@ def collect_by_cef_type(container=None, data_types=None, scope=None, tags=None, 
     container_artifact_url = phantom.build_phantom_rest_url('artifact')
     container_artifact_url += f'?_filter_container={container_id}&page_size=0&include_all_cef_types'
     artifacts = phantom.requests.get(container_artifact_url, verify=False).json()['data']
-    
     # build the output list from artifacts with the collected field values
     for artifact in artifacts:
         # if any tags are provided, make sure each provided tag is in the artifact's tags
@@ -94,12 +92,11 @@ def collect_by_cef_type(container=None, data_types=None, scope=None, tags=None, 
             if not set(tags).issubset(set(artifact['tags'])):
                 continue
                 
-        # "all" is a special value to collect every value from every artifact
         cef_dict = {}
         for cef_key, cef_value in artifact['cef'].items():
             match = False
 
-            # if user put 'all' in data_types
+            # "all" is a special value to collect every value from every artifact
             if 'all' in data_types:
                 # if user put 'new' in scope
                 if collected_field_values and str(cef_value) in collected_field_values:
@@ -121,18 +118,19 @@ def collect_by_cef_type(container=None, data_types=None, scope=None, tags=None, 
                 if cef_dict and str(cef_value) in cef_dict.keys():
                     cef_dict[str(cef_value)]['cef_keys'].append(cef_key)
                     if artifact['cef_types'].get(cef_key):
-                        cef_dict[str(cef_value)]['cef_types'].extend(artifact['cef_types'][cef_key])
+                        cef_dict[str(cef_value)]['cef_types'].update(artifact['cef_types'][cef_key])
                 else:
                     cef_dict[str(cef_value)] = {
-                        'cef_keys': [cef_key],
+                        'cef_keys': list(set([cef_key])),
                         'cef_value': str(cef_value), 
                         'artifact_id': artifact['id'],
-                        'artifact_tags': artifact['tags'],
-                        'cef_types': artifact['cef_types'].get(cef_key, [])
+                        'artifact_tags': list(set(artifact['tags'])),
+                        'cef_types': set(artifact['cef_types'].get(cef_key, []))
                     }
                     
-            for value in cef_dict.values():
-                outputs.append(value)
+        for item in cef_dict.values():
+            item['cef_types'] = list(item['cef_types'])
+            outputs.append(item)
 
     # Return a JSON-serializable object
     assert isinstance(outputs, list)  # Will raise an exception if the :outputs: object is not a list
