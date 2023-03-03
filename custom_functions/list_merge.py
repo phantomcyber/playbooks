@@ -15,7 +15,7 @@ def list_merge(input_1=None, input_2=None, input_3=None, input_4=None, input_5=N
         input_10 (CEF type: *)
     
     Returns a JSON-serializable object that implements the configured data paths:
-        *.item (CEF type: *): A combined list of all the values from all the input lists
+        item (CEF type: *): A combined list of all the values from all the input lists
     """
     ############################ Custom Code Goes Below This Line #################################
     import json
@@ -51,5 +51,6 @@ def list_merge(input_1=None, input_2=None, input_3=None, input_4=None, input_5=N
     phantom.debug("merged results: {}".format(outputs))
 
     # Return a JSON-serializable object
+    assert isinstance(outputs, list)  # Will raise an exception if the :outputs: object is not a list
     assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
     return outputs

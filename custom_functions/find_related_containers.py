@@ -261,8 +261,12 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
     test_minimum_match(minimum_match_count, field_list if field_list else value_list)
     
     # Put filters in list form
-    if filter_status and len(filter_status) == 1 and isinstance(filter_status[0], str):
+    if isinstance(filter_status, list) and len(filter_status) == 1 and isinstance(filter_status[0], str):
         filter_status = [item.strip().lower() for item in filter_status[0].split(',')]
+    elif isinstance(filter_status, str) and ',' in filter_status:
+        filter_status = [item.strip().lower() for item in filter_status.split(',')]
+    elif isinstance(filter_status, str) or isinstance(filter_status, int):
+        filter_status = [filter_status]
     if filter_label and len(filter_label) == 1 and isinstance(filter_label[0], str):
         filter_label = [item.strip().lower() for item in filter_label[0].split(',')]
     if filter_severity and len(filter_severity) == 1 and isinstance(filter_severity[0], str):
