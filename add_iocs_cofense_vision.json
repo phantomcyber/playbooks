@@ -1,0 +1,258 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Uncategorized",
+    "coa": {
+        "data": {
+            "description": "",
+            "edges": [
+                {
+                    "id": "port_0_to_port_2",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "id": "port_3_to_port_1",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_2_to_port_4",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_4_to_port_3",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 1
+                        }
+                    ],
+                    "id": "port_4_to_port_1",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "8a311b7e5eed97156ce229b7e7efdea636f52024",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 419.9999999999993
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
+                    "warnings": {},
+                    "x": 1240,
+                    "y": 980
+                },
+                "2": {
+                    "customCode": null,
+                    "data": {
+                        "advanced": {
+                            "customName": "Please provide inputs to create or update the IOCs",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "approver": {
+                            "type": "role",
+                            "value": "Administrator"
+                        },
+                        "functionId": 1,
+                        "functionName": "please_provide_inputs_to_create_or_update_the_iocs",
+                        "id": "2",
+                        "message": "Please provide values to create/update the IOCs.\nNote: For optional parameters, please provide space for blank input.",
+                        "parameters": [],
+                        "responseTime": 30,
+                        "responses": [
+                            {
+                                "responsePrompt": "Source (required)",
+                                "responseType": "message"
+                            },
+                            {
+                                "responsePrompt": "Threat Type (required)",
+                                "responseType": "message"
+                            },
+                            {
+                                "responsePrompt": "Threat Value (required)",
+                                "responseType": "message"
+                            },
+                            {
+                                "responsePrompt": "Threat Level (required)",
+                                "responseType": "message"
+                            },
+                            {
+                                "responsePrompt": "Created At (required)",
+                                "responseType": "message"
+                            },
+                            {
+                                "responsePrompt": "Updated At",
+                                "responseType": "message"
+                            },
+                            {
+                                "responsePrompt": "Source ID (required)",
+                                "responseType": "message"
+                            },
+                            {
+                                "responsePrompt": "Requested Expiration",
+                                "responseType": "message"
+                            }
+                        ],
+                        "type": "prompt"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "prompt",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 1060,
+                    "y": 540
+                },
+                "3": {
+                    "data": {
+                        "action": "update iocs",
+                        "actionType": "generic",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "Cofense Vision",
+                        "connectorConfigs": [
+                            "cofensevision"
+                        ],
+                        "connectorId": "9a810074-0261-4c91-99d4-7ed782ee12a8",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "update_iocs_1",
+                        "id": "3",
+                        "parameters": {
+                            "created_at": "please_provide_inputs_to_create_or_update_the_iocs:action_result.summary.responses.4",
+                            "iocs_json": "",
+                            "requested_expiration": "please_provide_inputs_to_create_or_update_the_iocs:action_result.summary.responses.7",
+                            "source": "please_provide_inputs_to_create_or_update_the_iocs:action_result.summary.responses.0",
+                            "source_id": "please_provide_inputs_to_create_or_update_the_iocs:action_result.summary.responses.6",
+                            "threat_level": "please_provide_inputs_to_create_or_update_the_iocs:action_result.summary.responses.3",
+                            "threat_type": "please_provide_inputs_to_create_or_update_the_iocs:action_result.summary.responses.1",
+                            "threat_value": "please_provide_inputs_to_create_or_update_the_iocs:action_result.summary.responses.2",
+                            "updated_at": "please_provide_inputs_to_create_or_update_the_iocs:action_result.summary.responses.5"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "source"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 860
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "please_provide_inputs_to_create_or_update_the_iocs:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 1,
+                                        "op": "==",
+                                        "param": "",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 1,
+                                "display": "Else",
+                                "logic": "and",
+                                "type": "else"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "decision_1",
+                        "id": "4",
+                        "type": "decision"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "decision",
+                    "warnings": {},
+                    "x": 1060,
+                    "y": 680
+                }
+            },
+            "notes": ""
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_type": "automation",
+        "python_version": "3",
+        "schema": "5.0.8",
+        "version": "5.5.0.108488"
+    },
+    "create_time": "2023-01-25T06:46:17.218307+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": []
+}
