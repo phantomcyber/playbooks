@@ -92,8 +92,8 @@ def collect_by_cef_type(container=None, data_types=None, scope=None, tags=None, 
             if not set(tags).issubset(set(artifact['tags'])):
                 continue
                 
-        cef_dict = {}
         for cef_key, cef_value in artifact['cef'].items():
+            cef_dict = {}
             match = False
 
             # "all" is a special value to collect every value from every artifact
