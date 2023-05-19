@@ -1,0 +1,481 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Uncategorized",
+    "coa": {
+        "data": {
+            "description": "This playbook responds to Recorded Future monitoring of potential typosquatting domain alerts. The domain is filtered from the artifacts and enriched several times via Whois, Censys, Urlscan, DNS, and Recorded Future's Intelligence.\n\nThis playbook runs on the assumption that the typosquatting alert rule ID has been configured in the Recorded Future app's asset 'on-poll' field.",
+            "edges": [
+                {
+                    "id": "port_0_to_port_8",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_8_to_port_15",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "15",
+                    "targetPort": "15_in"
+                },
+                {
+                    "id": "port_15_to_port_16",
+                    "sourceNode": "15",
+                    "sourcePort": "15_out",
+                    "targetNode": "16",
+                    "targetPort": "16_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_16_to_port_17",
+                    "sourceNode": "16",
+                    "sourcePort": "16_out",
+                    "targetNode": "17",
+                    "targetPort": "17_in"
+                },
+                {
+                    "id": "port_15_to_port_20",
+                    "sourceNode": "15",
+                    "sourcePort": "15_out",
+                    "targetNode": "20",
+                    "targetPort": "20_in"
+                },
+                {
+                    "id": "port_20_to_port_21",
+                    "sourceNode": "20",
+                    "sourcePort": "20_out",
+                    "targetNode": "21",
+                    "targetPort": "21_in"
+                },
+                {
+                    "id": "port_21_to_port_22",
+                    "sourceNode": "21",
+                    "sourcePort": "21_out",
+                    "targetNode": "22",
+                    "targetPort": "22_in"
+                },
+                {
+                    "id": "port_19_to_port_1",
+                    "sourceNode": "19",
+                    "sourcePort": "19_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_24_to_port_1",
+                    "sourceNode": "24",
+                    "sourcePort": "24_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_22_to_port_24",
+                    "sourceNode": "22",
+                    "sourcePort": "22_out",
+                    "targetNode": "24",
+                    "targetPort": "24_in"
+                },
+                {
+                    "id": "port_17_to_port_19",
+                    "sourceNode": "17",
+                    "sourcePort": "17_out",
+                    "targetNode": "19",
+                    "targetPort": "19_in"
+                }
+            ],
+            "hash": "74a9cb5fd25438ae5e535a1180a97000411620c4",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "x": 1940,
+                    "y": 880
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "userCode": "\n    # This function is called after all actions are completed.\n    # summary of all the action and/or all details of actions\n    # can be collected here.\n\n    # summary_json = phantom.get_summary()\n    # if 'result' in summary_json:\n        # for action_result in summary_json['result']:\n            # if 'action_run_id' in action_result:\n                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)\n                # phantom.debug(action_results)\n\n",
+                    "x": 1960,
+                    "y": 1680
+                },
+                "15": {
+                    "data": {
+                        "action": "lookup domain",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "DNS",
+                        "connectorConfigs": [
+                            "dns"
+                        ],
+                        "connectorId": "876ab991-313e-48e7-bccd-e8c9650c239c",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "lookup_domain_2",
+                        "id": "15",
+                        "parameters": {
+                            "domain": "filtered-data:filter_2:condition_1:artifact:*.cef.domain",
+                            "type": "A"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "domain"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "15",
+                    "type": "action",
+                    "x": 1920,
+                    "y": 1140
+                },
+                "16": {
+                    "data": {
+                        "advanced": {
+                            "customName": "Filter domain",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "lookup_domain_2:action_result.summary.record_info",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 3,
+                        "functionName": "filter_domain",
+                        "id": "16",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "16",
+                    "type": "filter",
+                    "x": 1740,
+                    "y": 1260
+                },
+                "17": {
+                    "data": {
+                        "action": "whois ip",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "WHOIS",
+                        "connectorConfigs": [
+                            "whois"
+                        ],
+                        "connectorId": "e6723c2e-06ef-415a-8098-62c46c1cb71f",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "whois_ip_1",
+                        "id": "17",
+                        "parameters": {
+                            "ip": "filtered-data:filter_domain:condition_1:lookup_domain_2:action_result.summary.record_info"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "ip"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "17",
+                    "type": "action",
+                    "x": 1680,
+                    "y": 1420
+                },
+                "19": {
+                    "data": {
+                        "action": "ip intelligence",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "Recorded Future IP Intelligence",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "Recorded Future",
+                        "connectorConfigs": [
+                            "recorded future"
+                        ],
+                        "connectorId": "6efe0e1b-76ac-4ffd-8fa0-ac58fd6efd77",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "recorded_future_ip_intelligence",
+                        "id": "19",
+                        "parameters": {
+                            "ip": "filtered-data:filter_domain:condition_1:lookup_domain_2:action_result.summary.record_info"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "ip"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "19",
+                    "type": "action",
+                    "x": 1680,
+                    "y": 1540
+                },
+                "20": {
+                    "data": {
+                        "action": "whois domain",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "WHOIS",
+                        "connectorConfigs": [
+                            "whois"
+                        ],
+                        "connectorId": "e6723c2e-06ef-415a-8098-62c46c1cb71f",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "whois_domain_2",
+                        "id": "20",
+                        "parameters": {
+                            "domain": "filtered-data:filter_2:condition_1:artifact:*.cef.domain"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "domain"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "20",
+                    "type": "action",
+                    "x": 2180,
+                    "y": 1260
+                },
+                "21": {
+                    "data": {
+                        "action": "query certificate",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "Censys Query Certificate",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "Censys",
+                        "connectorConfigs": [
+                            "censys"
+                        ],
+                        "connectorId": "97C8DF6F-C870-4482-B6CA-B6C31745FBAB",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "censys_query_certificate",
+                        "id": "21",
+                        "parameters": {
+                            "limit": 200,
+                            "query": "filtered-data:filter_2:condition_1:artifact:*.cef.domain"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "numeric",
+                                "default": 200,
+                                "field": "limit"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "query"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "21",
+                    "type": "action",
+                    "x": 2180,
+                    "y": 1340
+                },
+                "22": {
+                    "data": {
+                        "action": "detonate url",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "Urlscan Detonate URL",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "urlscan.io",
+                        "connectorConfigs": [
+                            "urlscan"
+                        ],
+                        "connectorId": "c46c00cd-7231-4dd3-8d8e-02b9fa0e14a2",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "urlscan_detonate_url",
+                        "id": "22",
+                        "parameters": {
+                            "get_result": true,
+                            "url": "filtered-data:filter_2:condition_1:artifact:*.cef.domain"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "url"
+                            },
+                            {
+                                "data_type": "boolean",
+                                "default": true,
+                                "field": "get_result"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "22",
+                    "type": "action",
+                    "x": 2180,
+                    "y": 1440
+                },
+                "24": {
+                    "data": {
+                        "action": "domain intelligence",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "Recorded Future Domain Intelligence",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "Recorded Future",
+                        "connectorConfigs": [
+                            "recorded future"
+                        ],
+                        "connectorId": "6efe0e1b-76ac-4ffd-8fa0-ac58fd6efd77",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "recorded_future_domain_intelligence",
+                        "id": "24",
+                        "parameters": {
+                            "domain": "filtered-data:filter_2:condition_1:artifact:*.cef.domain"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "domain"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "24",
+                    "type": "action",
+                    "x": 2180,
+                    "y": 1540
+                },
+                "8": {
+                    "data": {
+                        "advanced": {
+                            "join": [],
+                            "scope": "all"
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "in",
+                                        "param": "DOMAIN",
+                                        "value": "artifact:*.name"
+                                    },
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "artifact:*.cef.title",
+                                        "value": "Certificate Registration"
+                                    },
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "artifact:*.cef.domain",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 2,
+                        "functionName": "filter_2",
+                        "id": "8",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "filter",
+                    "x": 1980,
+                    "y": 980
+                }
+            },
+            "notes": ""
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_type": "automation",
+        "python_version": "3",
+        "schema": "5.0.8",
+        "version": "5.3.4.95226"
+    },
+    "create_time": "2022-09-15T19:40:10.411260+00:00",
+    "draft_mode": false,
+    "labels": [
+        "typosquat"
+    ],
+    "tags": []
+}
