@@ -215,12 +215,16 @@ def normalize_score_url(action=None, success=None, container=None, results=None,
         if summary_data['harmless'] and not suspect:
             score_id = 1
         else:
-            suspect_vendor_ratio = suspect/vendors if suspect and vendors else 1
-            # customize score calculation as desired
-            log_result = log(suspect_vendor_ratio * 100, 100) # log imported from math in global code block
-            score_id = int(log_result * 10) + 3
-            if score_id > 10:
-                score_id = 10
+            if suspect and vendors:
+                # customize score calculation as desired
+                log_result = log((suspect/vendors) * 100, 100) # log imported from math in global code block
+                score_id = int(log_result * 10) + 3
+            
+                if score_id > 10:
+                    score_id = 10
+                    
+            elif suspect == 0:
+                score_id = 0
         
         categories = [cat.lower() for cat in category.values()]
         categories = list(set(categories))
@@ -413,12 +417,16 @@ def normalize_score_domain(action=None, success=None, container=None, results=No
         if summary_data['harmless'] and not suspect:
             score_id = 1
         else:
-            suspect_vendor_ratio = suspect/vendors if suspect and vendors else 1
-            # customize score calculation as desired
-            log_result = log(suspect_vendor_ratio * 100, 100) # log imported from math in global code block
-            score_id = int(log_result * 10) + 3
-            if score_id > 10:
-                score_id = 10
+            if suspect and vendors:
+                # customize score calculation as desired
+                log_result = log((suspect/vendors) * 100, 100) # log imported from math in global code block
+                score_id = int(log_result * 10) + 3
+            
+                if score_id > 10:
+                    score_id = 10
+                    
+            elif suspect == 0:
+                score_id = 0
         
         categories = [cat.lower() for cat in category.values()]
         categories = list(set(categories))
@@ -495,12 +503,16 @@ def normalize_score_ip(action=None, success=None, container=None, results=None, 
         if summary_data['harmless'] and not suspect:
             score_id = 1
         else:
-            suspect_vendor_ratio = suspect/vendors if suspect and vendors else 1
-            # customize score calculation as desired
-            log_result = log(suspect_vendor_ratio * 100, 100) # log imported from math in global code block
-            score_id = int(log_result * 10) + 3
-            if score_id > 10:
-                score_id = 10
+            if suspect and vendors:
+                # customize score calculation as desired
+                log_result = log((suspect/vendors) * 100, 100) # log imported from math in global code block
+                score_id = int(log_result * 10) + 3
+            
+                if score_id > 10:
+                    score_id = 10
+                    
+            elif suspect == 0:
+                score_id = 0
             
         score = score_table[str(score_id)]
 
@@ -571,12 +583,16 @@ def normalize_score_file(action=None, success=None, container=None, results=None
         if summary_data['harmless'] and not suspect:
             score_id = 1
         else:
-            suspect_vendor_ratio = suspect/vendors if suspect and vendors else 1
-            # customize score calculation as desired
-            log_result = log(suspect_vendor_ratio * 100, 100) # log imported from math in global code block
-            score_id = int(log_result * 10) + 3
-            if score_id > 10:
-                score_id = 10
+            if suspect and vendors:
+                # customize score calculation as desired
+                log_result = log((suspect/vendors) * 100, 100) # log imported from math in global code block
+                score_id = int(log_result * 10) + 3
+            
+                if score_id > 10:
+                    score_id = 10
+                    
+            elif suspect == 0:
+                score_id = 0
             
         score = score_table[str(score_id)]
 
