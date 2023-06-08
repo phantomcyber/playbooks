@@ -273,6 +273,11 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
         filter_severity = [item.strip().lower() for item in filter_severity[0].split(',')]
     if isinstance(filter_in_case, str) and filter_in_case.lower() == 'false':
         filter_in_case = False
+    elif isinstance(filter_in_case, str) and filter_in_case.lower() == 'true':
+        filter_in_case = True
+    elif filter_in_case and not isinstance(filter_in_case, bool):
+        raise TypeError("Invalid input for filter_in_case. Must be 'true' or 'false' or none")
+        
         
     ## ------------------- ##
     ## End Input Checking ##
