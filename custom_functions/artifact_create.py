@@ -57,14 +57,18 @@ def artifact_create(container=None, name=None, label=None, severity=None, cef_fi
 
     # run_automation must be "true" or "false" and defaults to "false"
     if run_automation:
-        if not isinstance(run_automation, str):
-            raise TypeError("run automation must be a string")
-        if run_automation.lower() == 'true':
-            new_artifact['run_automation'] = True
-        elif run_automation.lower() == 'false':
-            new_artifact['run_automation'] = False
+        if isinstance(run_automation, str):
+            if run_automation.lower() == 'true':
+                new_artifact['run_automation'] = True
+            elif run_automation.lower() == 'false':
+                new_artifact['run_automation'] = False
+            else:
+                raise ValueError("run_automation must be either 'true' or 'false'")
+        elif not isinstance(run_automation, bool):
+            raise TypeError("run automation must be a string or bool")
         else:
-            raise ValueError("run_automation must be either 'true' or 'false'")
+            new_artifact['run_automation'] = run_automation
+        
     else:
         new_artifact['run_automation'] = False
     
