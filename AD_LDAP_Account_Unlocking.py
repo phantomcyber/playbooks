@@ -1,5 +1,5 @@
 """
-Accepts user name that needs to be disabled in Microsoft LDAP Active Directory. Generates an observable output based on the status of account locking or disabling.
+Accepts user name that needs to be unlocked in Microsoft LDAP Active Directory. Generates an observable output based on the status of account unlocking or enabling.
 """
 
 
@@ -36,26 +36,26 @@ def username_filter(action=None, success=None, container=None, results=None, han
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        disable_user_account(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        enable_user_account(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     return
 
 
 @phantom.playbook_block()
-def disable_user_account(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("disable_user_account() called")
+def enable_user_account(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("enable_user_account() called")
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
 
     ################################################################################
-    # Disable user account from filtered playbook inputs.
+    # Unlock user account from filtered playbook inputs.
     ################################################################################
 
     filtered_input_0_user = phantom.collect2(container=container, datapath=["filtered-data:username_filter:condition_1:playbook_input:user"])
 
     parameters = []
 
-    # build parameters list for 'disable_user_account' call
+    # build parameters list for 'enable_user_account' call
     for filtered_input_0_user_item in filtered_input_0_user:
         if filtered_input_0_user_item[0] is not None:
             parameters.append({
@@ -73,7 +73,7 @@ def disable_user_account(action=None, success=None, container=None, results=None
     ## Custom Code End
     ################################################################################
 
-    phantom.act("disable account", parameters=parameters, name="disable_user_account", assets=["microsoft ad ldap"], callback=filter_disable_account)
+    phantom.act("enable account", parameters=parameters, name="enable_user_account", assets=["microsoft ad ldap"], callback=filter_unlock_account)
 
     return
 
@@ -86,14 +86,14 @@ def username_observables(action=None, success=None, container=None, results=None
     # Format a normalized output for each user.
     ################################################################################
 
-    filtered_result_0_data_filter_disable_account = phantom.collect2(container=container, datapath=["filtered-data:filter_disable_account:condition_1:disable_user_account:action_result.parameter.user","filtered-data:filter_disable_account:condition_1:disable_user_account:action_result.parameter.use_samaccountname","filtered-data:filter_disable_account:condition_1:disable_user_account:action_result.data.*.user_dn","filtered-data:filter_disable_account:condition_1:disable_user_account:action_result.status","filtered-data:filter_disable_account:condition_1:disable_user_account:action_result.message","filtered-data:filter_disable_account:condition_1:disable_user_account:action_result.data.*.starting_status"])
+    filtered_result_0_data_filter_unlock_account = phantom.collect2(container=container, datapath=["filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.parameter.user","filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.parameter.use_samaccountname","filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.data.*.user_dn","filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.status","filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.message","filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.data.*.starting_status"])
 
-    filtered_result_0_parameter_user = [item[0] for item in filtered_result_0_data_filter_disable_account]
-    filtered_result_0_parameter_use_samaccountname = [item[1] for item in filtered_result_0_data_filter_disable_account]
-    filtered_result_0_data___user_dn = [item[2] for item in filtered_result_0_data_filter_disable_account]
-    filtered_result_0_status = [item[3] for item in filtered_result_0_data_filter_disable_account]
-    filtered_result_0_message = [item[4] for item in filtered_result_0_data_filter_disable_account]
-    filtered_result_0_data___starting_status = [item[5] for item in filtered_result_0_data_filter_disable_account]
+    filtered_result_0_parameter_user = [item[0] for item in filtered_result_0_data_filter_unlock_account]
+    filtered_result_0_parameter_use_samaccountname = [item[1] for item in filtered_result_0_data_filter_unlock_account]
+    filtered_result_0_data___user_dn = [item[2] for item in filtered_result_0_data_filter_unlock_account]
+    filtered_result_0_status = [item[3] for item in filtered_result_0_data_filter_unlock_account]
+    filtered_result_0_message = [item[4] for item in filtered_result_0_data_filter_unlock_account]
+    filtered_result_0_data___starting_status = [item[5] for item in filtered_result_0_data_filter_unlock_account]
 
     username_observables__observable_array = None
 
@@ -124,20 +124,20 @@ def username_observables(action=None, success=None, container=None, results=None
 
 
 @phantom.playbook_block()
-def filter_disable_account(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("filter_disable_account() called")
+def filter_unlock_account(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("filter_unlock_account() called")
 
     ################################################################################
-    # filter check if the user is disabled successfully.
+    # filter check if the user is unlocked successfully.
     ################################################################################
 
     # collect filtered artifact ids and results for 'if' condition 1
     matched_artifacts_1, matched_results_1 = phantom.condition(
         container=container,
         conditions=[
-            ["disable_user_account:action_result.status", "==", "success"]
+            ["enable_user_account:action_result.status", "==", "success"]
         ],
-        name="filter_disable_account:condition_1",
+        name="filter_unlock_account:condition_1",
         delimiter=",")
 
     # call connected blocks if filtered artifacts or results

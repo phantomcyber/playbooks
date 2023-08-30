@@ -1,10 +1,10 @@
 {
     "blockly": false,
     "blockly_xml": "<xml></xml>",
-    "category": "Disable Account",
+    "category": "Enable Account",
     "coa": {
         "data": {
-            "description": "Accepts user name that needs to be disabled in Active Directory. Generates a report and observable output based on the status of account locking or disabling.",
+            "description": "Accepts user name that needs to be enabled in Active Directory. Generates a report and observable output based on the status of account unlocking or enabling.",
             "edges": [
                 {
                     "id": "port_3_to_port_7",
@@ -66,11 +66,11 @@
                             "index": 0
                         }
                     ],
-                    "id": "port_13_to_port_8",
-                    "sourceNode": "13",
-                    "sourcePort": "13_out",
-                    "targetNode": "8",
-                    "targetPort": "8_in"
+                    "id": "port_7_to_port_13",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "13",
+                    "targetPort": "13_in"
                 },
                 {
                     "conditions": [
@@ -78,14 +78,14 @@
                             "index": 0
                         }
                     ],
-                    "id": "port_7_to_port_13",
-                    "sourceNode": "7",
-                    "sourcePort": "7_out",
-                    "targetNode": "13",
-                    "targetPort": "13_in"
+                    "id": "port_13_to_port_8",
+                    "sourceNode": "13",
+                    "sourcePort": "13_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
                 }
             ],
-            "hash": "3268ee70fd0ab575e5b7d055b3420d043f661155",
+            "hash": "fa3bf5509d648eac79a36ba25378f72cbb49a684",
             "nodes": {
                 "0": {
                     "data": {
@@ -101,7 +101,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 160,
-                    "y": -6.394884621840902e-14
+                    "y": -1.2789769243681803e-13
                 },
                 "1": {
                     "data": {
@@ -117,7 +117,7 @@
                     "type": "end",
                     "warnings": {},
                     "x": 300,
-                    "y": 1414
+                    "y": 1398
                 },
                 "10": {
                     "data": {
@@ -134,7 +134,7 @@
                         "parameters": [
                             "normalized_observable_filter:custom_function:observable_merge_report"
                         ],
-                        "template": "SOAR retrieved tickets from Splunk. The table below shows a summary of the information gathered.\\n\\n\n| value | type | message | status |\n| --- | --- | --- | --- |\n%%\n| {0}\n%%\n",
+                        "template": "SOAR attempted to unlock account(s). The table below shows a summary of the information gathered.\\n\\n\n| Value | Type | Message | Status |\n| --- | --- | --- | --- |\n%%\n| {0} \n%%\n",
                         "type": "format"
                     },
                     "errors": {},
@@ -143,7 +143,7 @@
                     "userCode": "\n    # Write your custom code here...\n    #phantom.debug(phantom.format(container=container, template=template, parameters=parameters, name=\"merge_report\"))\n",
                     "warnings": {},
                     "x": 280,
-                    "y": 880
+                    "y": 864
                 },
                 "11": {
                     "data": {
@@ -222,7 +222,7 @@
                     "type": "utility",
                     "warnings": {},
                     "x": 280,
-                    "y": 1058
+                    "y": 1042
                 },
                 "12": {
                     "data": {
@@ -326,10 +326,18 @@
                         },
                         "utilityType": "custom_function",
                         "values": {
+                            "comment": {
+                                "_internal": [
+                                    "container",
+                                    "author",
+                                    "trace"
+                                ],
+                                "comment": "Observable output of input playbooks does not exist."
+                            },
                             "workbook_task_update": {
                                 "container": "container:id",
                                 "note_content": "merge_report:formatted_data",
-                                "note_title": "AD Disable Account Report",
+                                "note_title": "AD Enable Account Report",
                                 "owner": null,
                                 "status": "complete",
                                 "task_name": "playbook"
@@ -341,12 +349,12 @@
                     "type": "utility",
                     "warnings": {},
                     "x": 280,
-                    "y": 1236
+                    "y": 1220
                 },
                 "13": {
                     "data": {
                         "advanced": {
-                            "customName": "observable filter",
+                            "customName": "observable filter ",
                             "customNameId": 0,
                             "description": "Filter to check if observable output is successfully generated or not.",
                             "join": [],
@@ -358,12 +366,12 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": "!=",
-                                        "param": "dispatch_account_disable:playbook_output:observable",
+                                        "param": "dispatch_account_enable:playbook_output:observable",
                                         "value": ""
                                     }
                                 ],
                                 "conditionIndex": 0,
-                                "customName": "observable_exist",
+                                "customName": "Successful observables",
                                 "logic": "and"
                             }
                         ],
@@ -377,17 +385,17 @@
                     "type": "filter",
                     "warnings": {},
                     "x": 340,
-                    "y": 499
+                    "y": 480
                 },
                 "3": {
                     "data": {
                         "advanced": {
-                            "customName": "dispatch account disable",
+                            "customName": "dispatch account enable",
                             "customNameId": 0,
                             "join": []
                         },
                         "functionId": 1,
-                        "functionName": "dispatch_account_disable",
+                        "functionName": "dispatch_account_enable",
                         "id": "3",
                         "inputs": {
                             "artifact_ids_include": {
@@ -408,7 +416,7 @@
                             },
                             "playbook_tags": {
                                 "datapaths": [
-                                    "disable_account",
+                                    "enable_account",
                                     "active_directory"
                                 ],
                                 "deduplicate": false
@@ -426,18 +434,20 @@
                     "type": "playbook",
                     "warnings": {},
                     "x": 140,
-                    "y": 147.99999999999997
+                    "y": 140
                 },
                 "7": {
                     "data": {
                         "advanced": {
+                            "case_sensitive": false,
                             "customName": "observable output decision",
                             "customNameId": 0,
                             "delimiter": ",",
-                            "delimiter_enabled": true,
-                            "description": "decision to check if observable output is successfully generated or not.",
+                            "delimiter_enabled": false,
+                            "description": "Decision to check if observable output is successfully generated or not.",
                             "join": [],
-                            "note": "decision to check if observable output is successfully generated or not."
+                            "notRequiredJoins": [],
+                            "note": "Decision to check if observable output is successfully generated or not."
                         },
                         "conditions": [
                             {
@@ -445,7 +455,7 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": "!=",
-                                        "param": "dispatch_account_disable:playbook_output:observable",
+                                        "param": "dispatch_account_enable:playbook_output:observable",
                                         "value": ""
                                     }
                                 ],
@@ -481,7 +491,7 @@
                     "type": "decision",
                     "warnings": {},
                     "x": 220,
-                    "y": 312
+                    "y": 300
                 },
                 "8": {
                     "data": {
@@ -496,7 +506,7 @@
                         "functionName": "normalized_observable_filter",
                         "id": "8",
                         "inputParameters": [
-                            "filtered-data:observable_filter:condition_1:dispatch_account_disable:playbook_output:observable"
+                            "filtered-data:observable_filter:condition_1:dispatch_account_enable:playbook_output:observable"
                         ],
                         "outputVariables": [
                             "observable_value",
@@ -508,10 +518,10 @@
                     "errors": {},
                     "id": "8",
                     "type": "code",
-                    "userCode": "\n    # Write your custom code here...\n    normalized_observable_filter__observable_message = []\n    normalized_observable_filter__observable_value = []\n    normalized_observable_filter__observable_merge_report = []\n    fmt_output = \"\"\n    output_observable_values =  [(i or \"\") for i in filtered_output_0_dispatch_account_disable_output_observable_values]\n    \n    #phantom.debug(\"output_observable_values: {}\".format(output_observable_values))\n    for observable_item in output_observable_values:\n        if observable_item['status'] == \"success\":\n            user_name = observable_item['value'].split(\"@\")[0]\n            normalized_observable_filter__observable_value.append(user_name)\n            fmt_output += \"{} | {} | {} | {} | \\n\".format(observable_item['value'], observable_item['type'], observable_item['message'], observable_item['status'])\n            normalized_observable_filter__observable_merge_report.append(fmt_output)\n    normalized_observable_filter__observable_value = normalized_observable_filter__observable_value[0]\n    normalized_observable_filter__observable_type = \"Disable Account\"\n    #phantom.debug(normalized_observable_filter__observable_merge_report)\n",
+                    "userCode": "\n    # Write your custom code here...\n    normalized_observable_filter__observable_message = []\n    normalized_observable_filter__observable_value = []\n    normalized_observable_filter__observable_merge_report = []\n    fmt_output = \"\"\n    output_observable_values =  [(i or \"\") for i in filtered_output_0_dispatch_account_enable_output_observable_values]\n    \n    phantom.debug(\"output_observable_values: {}\".format(output_observable_values))\n    for observable_item in output_observable_values:\n        if observable_item['status'] == \"success\":\n            user_name = observable_item['value'].split(\"@\")[0]\n            normalized_observable_filter__observable_value.append(user_name)\n            fmt_output += \"{} | {} | {} | {} | \\n\".format(observable_item['value'], observable_item['type'], observable_item['message'], observable_item['status'])\n            normalized_observable_filter__observable_merge_report.append(fmt_output)\n    normalized_observable_filter__observable_value = normalized_observable_filter__observable_value[0]\n    normalized_observable_filter__observable_type = \"Enable Account\"\n    phantom.debug(normalized_observable_filter__observable_merge_report)\n",
                     "warnings": {},
                     "x": 280,
-                    "y": 686
+                    "y": 680
                 },
                 "9": {
                     "data": {
@@ -576,11 +586,11 @@
                     "id": "9",
                     "type": "utility",
                     "warnings": {},
-                    "x": 0,
-                    "y": 492
+                    "x": -180,
+                    "y": 500
                 }
             },
-            "notes": "Inputs: users\nActions: Account Locking/Disabling\nOutputs: reports, observables"
+            "notes": "Inputs: users\nActions: Account Unlocking/Enabling\nOutputs: reports, observables"
         },
         "input_spec": null,
         "output_spec": null,
@@ -589,17 +599,17 @@
         "schema": "5.0.10",
         "version": "6.0.1.123902"
     },
-    "create_time": "2023-08-17T18:44:17.675610+00:00",
+    "create_time": "2023-08-14T15:39:14.219920+00:00",
     "draft_mode": false,
     "labels": [
         "*"
     ],
     "tags": [
         "user",
-        "D3-AL",
-        "disable_account",
         "azure_ad_graph",
         "microsoft_ad_ldap",
+        "enable_account",
+        "D3-RUAA",
         "active_directory"
     ]
 }
