@@ -1,10 +1,10 @@
 {
     "blockly": false,
     "blockly_xml": "<xml></xml>",
-    "category": "Account Locking",
+    "category": "Account Unlocking",
     "coa": {
         "data": {
-            "description": "Accepts user name that needs to be disabled in Azure Active Directory. Generates an observable output based on the status of account locking or disabling.",
+            "description": "Accepts user name that needs to be enabled in AWS IAM. Enabling an account involves reattaching their login profile which will require setting a new password. Generates an observable output based on the status of account unlocking or enabling.",
             "edges": [
                 {
                     "id": "port_0_to_port_2",
@@ -12,6 +12,20 @@
                     "sourcePort": "0_out",
                     "targetNode": "2",
                     "targetPort": "2_in"
+                },
+                {
+                    "id": "port_6_to_port_1",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_3_to_port_7",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
                 },
                 {
                     "conditions": [
@@ -26,33 +40,19 @@
                     "targetPort": "3_in"
                 },
                 {
-                    "id": "port_4_to_port_1",
-                    "sourceNode": "4",
-                    "sourcePort": "4_out",
-                    "targetNode": "1",
-                    "targetPort": "1_in"
-                },
-                {
-                    "id": "port_3_to_port_5",
-                    "sourceNode": "3",
-                    "sourcePort": "3_out",
-                    "targetNode": "5",
-                    "targetPort": "5_in"
-                },
-                {
                     "conditions": [
                         {
                             "index": 0
                         }
                     ],
-                    "id": "port_5_to_port_4",
-                    "sourceNode": "5",
-                    "sourcePort": "5_out",
-                    "targetNode": "4",
-                    "targetPort": "4_in"
+                    "id": "port_7_to_port_6",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
                 }
             ],
-            "hash": "6c58fabb2330bc8e95deed79637e55071609c19c",
+            "hash": "b2fe53c9f23ab72c164e6ad04defb56936a35804",
             "nodes": {
                 "0": {
                     "data": {
@@ -68,7 +68,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 19.999999999999986,
-                    "y": -3.836930773104541e-13
+                    "y": -5.755396159656812e-13
                 },
                 "1": {
                     "data": {
@@ -89,10 +89,8 @@
                 "2": {
                     "data": {
                         "advanced": {
-                            "customName": "user name filter",
+                            "customName": "username filter",
                             "customNameId": 0,
-                            "delimiter": ",",
-                            "delimiter_enabled": true,
                             "description": "Filter user name inputs to route inputs to appropriate actions.",
                             "join": [],
                             "note": "Filter user name inputs to route inputs to appropriate actions."
@@ -108,12 +106,12 @@
                                     }
                                 ],
                                 "conditionIndex": 0,
-                                "customName": "user_name_check",
+                                "customName": "username_filter",
                                 "logic": "and"
                             }
                         ],
                         "functionId": 1,
-                        "functionName": "user_name_filter",
+                        "functionName": "username_filter",
                         "id": "2",
                         "type": "filter"
                     },
@@ -126,31 +124,42 @@
                 },
                 "3": {
                     "data": {
-                        "action": "disable user",
-                        "actionType": "generic",
+                        "action": "enable user",
+                        "actionType": "correct",
                         "advanced": {
-                            "customName": "disable user account",
+                            "customName": "enable user account",
                             "customNameId": 0,
-                            "description": "Disable the user attributes for filtered playbook inputs.",
+                            "description": "Enable user account from filtered playbook inputs.",
                             "join": [],
-                            "note": "Disable the user attributes for filtered playbook inputs."
+                            "note": "Enable user account from filtered playbook inputs."
                         },
-                        "connector": "Azure AD Graph",
+                        "connector": "AWS IAM",
                         "connectorConfigs": [
-                            "azure_ad_graph"
+                            "aws_iam"
                         ],
-                        "connectorId": "c6d3b801-5c26-4abd-9e89-6d8007e2778f",
+                        "connectorId": "7d06523f-d524-4dbd-befd-7f30f5492882",
                         "connectorVersion": "v1",
                         "functionId": 1,
-                        "functionName": "disable_user_account",
+                        "functionName": "enable_user_account",
                         "id": "3",
                         "parameters": {
-                            "user_id": "filtered-data:user_name_filter:condition_1:playbook_input:user"
+                            "enable_access_keys": true,
+                            "password": "Ch@ng3M3!123",
+                            "username": "filtered-data:username_filter:condition_1:playbook_input:user"
                         },
                         "requiredParameters": [
                             {
                                 "data_type": "string",
-                                "field": "user_id"
+                                "field": "password"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "username"
+                            },
+                            {
+                                "data_type": "boolean",
+                                "default": true,
+                                "field": "enable_access_keys"
                             }
                         ],
                         "type": "action"
@@ -162,7 +171,7 @@
                     "x": 0,
                     "y": 320
                 },
-                "4": {
+                "6": {
                     "data": {
                         "advanced": {
                             "customName": "username observables",
@@ -171,13 +180,16 @@
                             "join": [],
                             "note": "Format a normalized output for each user."
                         },
-                        "functionId": 1,
+                        "functionId": 2,
                         "functionName": "username_observables",
-                        "id": "4",
+                        "id": "6",
                         "inputParameters": [
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.parameter.user_id",
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.status",
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.message"
+                            "filtered-data:filter_enable_result:condition_1:enable_user_account:action_result.parameter.disable_access_keys",
+                            "filtered-data:filter_enable_result:condition_1:enable_user_account:action_result.parameter.username",
+                            "filtered-data:filter_enable_result:condition_1:enable_user_account:action_result.parameter.credentials",
+                            "filtered-data:filter_enable_result:condition_1:enable_user_account:action_result.data.*.RequestId",
+                            "filtered-data:filter_enable_result:condition_1:enable_user_account:action_result.message",
+                            "filtered-data:filter_enable_result:condition_1:enable_user_account:action_result.status"
                         ],
                         "outputVariables": [
                             "observable_array"
@@ -185,23 +197,21 @@
                         "type": "code"
                     },
                     "errors": {},
-                    "id": "4",
+                    "id": "6",
                     "type": "code",
-                    "userCode": "\n    # Write your custom code here...\n    username_observables__observable_array = []\n    \n    for user_id, status, msg in zip(filtered_result_0_parameter_user_id, filtered_result_0_status, filtered_result_0_message):\n        user_acc_status = {\n            \"type\": \"Azure AD Account\",\n            \"value\": user_id,\n            \"message\": msg,\n            \"status\": status\n        }\n        username_observables__observable_array.append(user_acc_status)\n        #phantom.debug(username_observables__observable_array)\n",
+                    "userCode": "\n    # Write your custom code here...\n    username_observables__observable_array = []\n    \n    for access_key, usrname, creds, req_id, msg, status in zip(filtered_result_0_parameter_disable_access_keys, filtered_result_0_parameter_username, filtered_result_0_parameter_credentials, filtered_result_0_data___requestid, filtered_result_0_message, filtered_result_0_status):\n        user_acc_status = {\n            \"type\": \"aws iam user name\",\n            \"value\": usrname,\n            \"message\": msg,\n            \"status\": status\n        }\n\n        username_observables__observable_array.append(user_acc_status)\n        #phantom.debug(username_observables__observable_array)\n",
                     "warnings": {},
                     "x": 0,
                     "y": 680
                 },
-                "5": {
+                "7": {
                     "data": {
                         "advanced": {
-                            "customName": "filter disable result",
+                            "customName": "filter enable result",
                             "customNameId": 0,
-                            "delimiter": ",",
-                            "delimiter_enabled": true,
-                            "description": "filter check if the user is disabled successfully.",
+                            "description": "filter check if the user is enabled successfully.",
                             "join": [],
-                            "note": "filter check if the user is disabled successfully."
+                            "note": "filter check if the user is enabled successfully."
                         },
                         "conditions": [
                             {
@@ -209,37 +219,37 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": "==",
-                                        "param": "disable_user_account:action_result.status",
+                                        "param": "enable_user_account:action_result.status",
                                         "value": "success"
                                     }
                                 ],
                                 "conditionIndex": 0,
-                                "customName": "disabled_success",
+                                "customName": "enable_success",
                                 "logic": "and"
                             }
                         ],
                         "functionId": 2,
-                        "functionName": "filter_disable_result",
-                        "id": "5",
+                        "functionName": "filter_enable_result",
+                        "id": "7",
                         "type": "filter"
                     },
                     "errors": {},
-                    "id": "5",
+                    "id": "7",
                     "type": "filter",
                     "warnings": {},
                     "x": 60,
                     "y": 500
                 }
             },
-            "notes": "Inputs: users\nInteractions: Azure AD Graph\nActions: Account Locking/Disabling\nOutputs: observables"
+            "notes": "Inputs: users\nInteractions: AWS IAM\nActions: enable user\nOutputs: observables"
         },
         "input_spec": [
             {
                 "contains": [
                     "user name",
-                    "azure user principal name"
+                    "aws iam user name"
                 ],
-                "description": "A user name provided to be disable - Azure AD",
+                "description": "A user name provided for account restoration - AWS IAM",
                 "name": "user"
             }
         ],
@@ -260,16 +270,15 @@
         "schema": "5.0.10",
         "version": "6.0.1.123902"
     },
-    "create_time": "2023-08-17T18:47:08.503246+00:00",
+    "create_time": "2023-08-14T15:09:52.076731+00:00",
     "draft_mode": false,
     "labels": [
         "*"
     ],
     "tags": [
         "user",
-        "azure_ad_graph",
-        "disable_account",
-        "D3-AL",
-        "active_directory"
+        "aws_iam",
+        "enable_account",
+        "D3-RUAA"
     ]
 }

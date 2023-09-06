@@ -1,10 +1,10 @@
 {
     "blockly": false,
     "blockly_xml": "<xml></xml>",
-    "category": "Account Locking",
+    "category": "Account Unlocking",
     "coa": {
         "data": {
-            "description": "Accepts user name that needs to be disabled in Azure Active Directory. Generates an observable output based on the status of account locking or disabling.",
+            "description": "Accepts user name that needs to be unlocked in Microsoft LDAP Active Directory. Generates an observable output based on the status of account unlocking or enabling.",
             "edges": [
                 {
                     "id": "port_0_to_port_2",
@@ -52,7 +52,7 @@
                     "targetPort": "4_in"
                 }
             ],
-            "hash": "6c58fabb2330bc8e95deed79637e55071609c19c",
+            "hash": "67653916cd906cc7a34fc0082e8cdef3b8f99437",
             "nodes": {
                 "0": {
                     "data": {
@@ -68,7 +68,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 19.999999999999986,
-                    "y": -3.836930773104541e-13
+                    "y": -1.9184653865522705e-13
                 },
                 "1": {
                     "data": {
@@ -84,12 +84,12 @@
                     "type": "end",
                     "warnings": {},
                     "x": 19.999999999999986,
-                    "y": 860
+                    "y": 864
                 },
                 "2": {
                     "data": {
                         "advanced": {
-                            "customName": "user name filter",
+                            "customName": "username filter",
                             "customNameId": 0,
                             "delimiter": ",",
                             "delimiter_enabled": true,
@@ -108,12 +108,12 @@
                                     }
                                 ],
                                 "conditionIndex": 0,
-                                "customName": "user_name_check",
+                                "customName": "filter_username_check",
                                 "logic": "and"
                             }
                         ],
                         "functionId": 1,
-                        "functionName": "user_name_filter",
+                        "functionName": "username_filter",
                         "id": "2",
                         "type": "filter"
                     },
@@ -126,31 +126,34 @@
                 },
                 "3": {
                     "data": {
-                        "action": "disable user",
+                        "action": "enable account",
                         "actionType": "generic",
                         "advanced": {
-                            "customName": "disable user account",
+                            "customName": "enable user account",
                             "customNameId": 0,
-                            "description": "Disable the user attributes for filtered playbook inputs.",
+                            "delayTime": 0,
+                            "description": "Unlock user account from filtered playbook inputs.",
                             "join": [],
-                            "note": "Disable the user attributes for filtered playbook inputs."
+                            "note": "Unlock user account from filtered playbook inputs."
                         },
-                        "connector": "Azure AD Graph",
+                        "connector": "AD LDAP",
                         "connectorConfigs": [
-                            "azure_ad_graph"
+                            "microsoft ad ldap"
                         ],
-                        "connectorId": "c6d3b801-5c26-4abd-9e89-6d8007e2778f",
+                        "connectorId": "a5730e5d-a396-4695-92c2-35ff391aaf45",
                         "connectorVersion": "v1",
                         "functionId": 1,
-                        "functionName": "disable_user_account",
+                        "functionName": "enable_user_account",
                         "id": "3",
                         "parameters": {
-                            "user_id": "filtered-data:user_name_filter:condition_1:playbook_input:user"
+                            "use_samaccountname": true,
+                            "user": "filtered-data:username_filter:condition_1:playbook_input:user"
                         },
                         "requiredParameters": [
                             {
                                 "data_type": "string",
-                                "field": "user_id"
+                                "default": false,
+                                "field": "user"
                             }
                         ],
                         "type": "action"
@@ -160,7 +163,7 @@
                     "type": "action",
                     "warnings": {},
                     "x": 0,
-                    "y": 320
+                    "y": 328
                 },
                 "4": {
                     "data": {
@@ -175,9 +178,12 @@
                         "functionName": "username_observables",
                         "id": "4",
                         "inputParameters": [
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.parameter.user_id",
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.status",
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.message"
+                            "filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.parameter.user",
+                            "filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.parameter.use_samaccountname",
+                            "filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.data.*.user_dn",
+                            "filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.status",
+                            "filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.message",
+                            "filtered-data:filter_unlock_account:condition_1:enable_user_account:action_result.data.*.starting_status"
                         ],
                         "outputVariables": [
                             "observable_array"
@@ -187,7 +193,7 @@
                     "errors": {},
                     "id": "4",
                     "type": "code",
-                    "userCode": "\n    # Write your custom code here...\n    username_observables__observable_array = []\n    \n    for user_id, status, msg in zip(filtered_result_0_parameter_user_id, filtered_result_0_status, filtered_result_0_message):\n        user_acc_status = {\n            \"type\": \"Azure AD Account\",\n            \"value\": user_id,\n            \"message\": msg,\n            \"status\": status\n        }\n        username_observables__observable_array.append(user_acc_status)\n        #phantom.debug(username_observables__observable_array)\n",
+                    "userCode": "\n    # Write your custom code here...\n    username_observables__observable_array = []\n    \n    for user, sam_account, user_dn, status, msg, prev_status in zip(filtered_result_0_parameter_user, filtered_result_0_parameter_use_samaccountname, filtered_result_0_data___user_dn, filtered_result_0_status, filtered_result_0_message, filtered_result_0_data___starting_status):\n        user_acc_status = {\n            \"type\": \"Microsoft AD LDAP user name\",\n            \"value\": user,\n            \"message\": msg,\n            \"status\": status\n        }\n        \n        username_observables__observable_array.append(user_acc_status)\n        #phantom.debug(username_observables__observable_array)\n",
                     "warnings": {},
                     "x": 0,
                     "y": 680
@@ -195,13 +201,13 @@
                 "5": {
                     "data": {
                         "advanced": {
-                            "customName": "filter disable result",
+                            "customName": "filter unlock account",
                             "customNameId": 0,
                             "delimiter": ",",
                             "delimiter_enabled": true,
-                            "description": "filter check if the user is disabled successfully.",
+                            "description": "filter check if the user is unlocked successfully.",
                             "join": [],
-                            "note": "filter check if the user is disabled successfully."
+                            "note": "filter check if the user is unlocked successfully."
                         },
                         "conditions": [
                             {
@@ -209,17 +215,17 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": "==",
-                                        "param": "disable_user_account:action_result.status",
+                                        "param": "enable_user_account:action_result.status",
                                         "value": "success"
                                     }
                                 ],
                                 "conditionIndex": 0,
-                                "customName": "disabled_success",
+                                "customName": "unlock_success",
                                 "logic": "and"
                             }
                         ],
                         "functionId": 2,
-                        "functionName": "filter_disable_result",
+                        "functionName": "filter_unlock_account",
                         "id": "5",
                         "type": "filter"
                     },
@@ -231,15 +237,14 @@
                     "y": 500
                 }
             },
-            "notes": "Inputs: users\nInteractions: Azure AD Graph\nActions: Account Locking/Disabling\nOutputs: observables"
+            "notes": "Inputs: users\nInteractions: Microsoft AD LDAP\nActions: Unlock Account\nOutputs: observables"
         },
         "input_spec": [
             {
                 "contains": [
-                    "user name",
-                    "azure user principal name"
+                    "user name"
                 ],
-                "description": "A user name provided to be disable - Azure AD",
+                "description": "A user name provided to be enabled - AD LDAP",
                 "name": "user"
             }
         ],
@@ -260,16 +265,16 @@
         "schema": "5.0.10",
         "version": "6.0.1.123902"
     },
-    "create_time": "2023-08-17T18:47:08.503246+00:00",
+    "create_time": "2023-06-23T13:39:30.530535+00:00",
     "draft_mode": false,
     "labels": [
         "*"
     ],
     "tags": [
         "user",
-        "azure_ad_graph",
-        "disable_account",
-        "D3-AL",
+        "microsoft_ad_ldap",
+        "enable_account",
+        "D3-RUAA",
         "active_directory"
     ]
 }

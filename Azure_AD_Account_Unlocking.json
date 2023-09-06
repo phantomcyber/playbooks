@@ -1,10 +1,10 @@
 {
     "blockly": false,
     "blockly_xml": "<xml></xml>",
-    "category": "Account Locking",
+    "category": "Account Unlocking",
     "coa": {
         "data": {
-            "description": "Accepts user name that needs to be disabled in Azure Active Directory. Generates an observable output based on the status of account locking or disabling.",
+            "description": "Accepts user name that needs to be enabled in Azure Active Directory. Generates an observable output based on the status of account unlocking or enabling.",
             "edges": [
                 {
                     "id": "port_0_to_port_2",
@@ -52,7 +52,7 @@
                     "targetPort": "4_in"
                 }
             ],
-            "hash": "6c58fabb2330bc8e95deed79637e55071609c19c",
+            "hash": "28807b4b67e7fd29b25e171fedb8e0b3461b08f4",
             "nodes": {
                 "0": {
                     "data": {
@@ -68,7 +68,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 19.999999999999986,
-                    "y": -3.836930773104541e-13
+                    "y": -5.115907697472721e-13
                 },
                 "1": {
                     "data": {
@@ -126,14 +126,14 @@
                 },
                 "3": {
                     "data": {
-                        "action": "disable user",
+                        "action": "enable user",
                         "actionType": "generic",
                         "advanced": {
-                            "customName": "disable user account",
+                            "customName": "enable user account",
                             "customNameId": 0,
-                            "description": "Disable the user attributes for filtered playbook inputs.",
+                            "description": "Enables the user accounts provided by the filtered playbook inputs",
                             "join": [],
-                            "note": "Disable the user attributes for filtered playbook inputs."
+                            "note": "Enables the user accounts provided by the filtered playbook inputs"
                         },
                         "connector": "Azure AD Graph",
                         "connectorConfigs": [
@@ -142,7 +142,7 @@
                         "connectorId": "c6d3b801-5c26-4abd-9e89-6d8007e2778f",
                         "connectorVersion": "v1",
                         "functionId": 1,
-                        "functionName": "disable_user_account",
+                        "functionName": "enable_user_account",
                         "id": "3",
                         "parameters": {
                             "user_id": "filtered-data:user_name_filter:condition_1:playbook_input:user"
@@ -175,9 +175,9 @@
                         "functionName": "username_observables",
                         "id": "4",
                         "inputParameters": [
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.parameter.user_id",
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.status",
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.message"
+                            "filtered-data:filter_enable_result:condition_1:enable_user_account:action_result.parameter.user_id",
+                            "filtered-data:filter_enable_result:condition_1:enable_user_account:action_result.status",
+                            "filtered-data:filter_enable_result:condition_1:enable_user_account:action_result.message"
                         ],
                         "outputVariables": [
                             "observable_array"
@@ -195,13 +195,13 @@
                 "5": {
                     "data": {
                         "advanced": {
-                            "customName": "filter disable result",
+                            "customName": "filter enable result",
                             "customNameId": 0,
                             "delimiter": ",",
                             "delimiter_enabled": true,
-                            "description": "filter check if the user is disabled successfully.",
+                            "description": "filter check if the user is enabled successfully.",
                             "join": [],
-                            "note": "filter check if the user is disabled successfully."
+                            "note": "filter check if the user is enabled successfully."
                         },
                         "conditions": [
                             {
@@ -209,17 +209,17 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": "==",
-                                        "param": "disable_user_account:action_result.status",
+                                        "param": "enable_user_account:action_result.status",
                                         "value": "success"
                                     }
                                 ],
                                 "conditionIndex": 0,
-                                "customName": "disabled_success",
+                                "customName": "enabled_success",
                                 "logic": "and"
                             }
                         ],
                         "functionId": 2,
-                        "functionName": "filter_disable_result",
+                        "functionName": "filter_enable_result",
                         "id": "5",
                         "type": "filter"
                     },
@@ -231,7 +231,7 @@
                     "y": 500
                 }
             },
-            "notes": "Inputs: users\nInteractions: Azure AD Graph\nActions: Account Locking/Disabling\nOutputs: observables"
+            "notes": "Inputs: users\nInteractions: Azure AD Graph\nActions: enable user\nOutputs: observables"
         },
         "input_spec": [
             {
@@ -239,7 +239,7 @@
                     "user name",
                     "azure user principal name"
                 ],
-                "description": "A user name provided to be disable - Azure AD",
+                "description": "A user name provided to be enabled - Azure AD",
                 "name": "user"
             }
         ],
@@ -260,7 +260,7 @@
         "schema": "5.0.10",
         "version": "6.0.1.123902"
     },
-    "create_time": "2023-08-17T18:47:08.503246+00:00",
+    "create_time": "2023-08-14T15:28:43.647352+00:00",
     "draft_mode": false,
     "labels": [
         "*"
@@ -268,8 +268,8 @@
     "tags": [
         "user",
         "azure_ad_graph",
-        "disable_account",
-        "D3-AL",
+        "enable_account",
+        "D3-RUAA",
         "active_directory"
     ]
 }

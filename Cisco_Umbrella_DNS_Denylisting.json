@@ -1,10 +1,10 @@
 {
     "blockly": false,
     "blockly_xml": "<xml></xml>",
-    "category": "Account Locking",
+    "category": "DNS Denylisting",
     "coa": {
         "data": {
-            "description": "Accepts user name that needs to be disabled in Azure Active Directory. Generates an observable output based on the status of account locking or disabling.",
+            "description": "Accepts a domain or list of domains as input. Blocks the given domains in Cisco Umbrella.\n\nhttps://d3fend.mitre.org/technique/d3f:DNSDenylisting/",
             "edges": [
                 {
                     "id": "port_0_to_port_2",
@@ -26,18 +26,18 @@
                     "targetPort": "3_in"
                 },
                 {
-                    "id": "port_4_to_port_1",
-                    "sourceNode": "4",
-                    "sourcePort": "4_out",
+                    "id": "port_5_to_port_1",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
                     "targetNode": "1",
                     "targetPort": "1_in"
                 },
                 {
-                    "id": "port_3_to_port_5",
+                    "id": "port_3_to_port_6",
                     "sourceNode": "3",
                     "sourcePort": "3_out",
-                    "targetNode": "5",
-                    "targetPort": "5_in"
+                    "targetNode": "6",
+                    "targetPort": "6_in"
                 },
                 {
                     "conditions": [
@@ -45,14 +45,14 @@
                             "index": 0
                         }
                     ],
-                    "id": "port_5_to_port_4",
-                    "sourceNode": "5",
-                    "sourcePort": "5_out",
-                    "targetNode": "4",
-                    "targetPort": "4_in"
+                    "id": "port_6_to_port_5",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
                 }
             ],
-            "hash": "6c58fabb2330bc8e95deed79637e55071609c19c",
+            "hash": "3ef6e0e09a728ad1f2aea6b5c89f41b9f5671f50",
             "nodes": {
                 "0": {
                     "data": {
@@ -67,8 +67,8 @@
                     "id": "0",
                     "type": "start",
                     "warnings": {},
-                    "x": 19.999999999999986,
-                    "y": -3.836930773104541e-13
+                    "x": 1000,
+                    "y": 419.99999999999955
                 },
                 "1": {
                     "data": {
@@ -83,19 +83,17 @@
                     "id": "1",
                     "type": "end",
                     "warnings": {},
-                    "x": 19.999999999999986,
-                    "y": 860
+                    "x": 1000,
+                    "y": 1200
                 },
                 "2": {
                     "data": {
                         "advanced": {
-                            "customName": "user name filter",
+                            "customName": "domain input filter",
                             "customNameId": 0,
-                            "delimiter": ",",
-                            "delimiter_enabled": true,
-                            "description": "Filter user name inputs to route inputs to appropriate actions.",
+                            "description": "Determine branches based on provided inputs.",
                             "join": [],
-                            "note": "Filter user name inputs to route inputs to appropriate actions."
+                            "note": "Determine branches based on provided inputs."
                         },
                         "conditions": [
                             {
@@ -103,17 +101,17 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": "!=",
-                                        "param": "playbook_input:user",
-                                        "value": ""
+                                        "param": "playbook_input:domain",
+                                        "value": "None"
                                     }
                                 ],
                                 "conditionIndex": 0,
-                                "customName": "user_name_check",
+                                "customName": "input_url",
                                 "logic": "and"
                             }
                         ],
                         "functionId": 1,
-                        "functionName": "user_name_filter",
+                        "functionName": "domain_input_filter",
                         "id": "2",
                         "type": "filter"
                     },
@@ -121,36 +119,36 @@
                     "id": "2",
                     "type": "filter",
                     "warnings": {},
-                    "x": 60,
-                    "y": 140
+                    "x": 1040,
+                    "y": 540
                 },
                 "3": {
                     "data": {
-                        "action": "disable user",
-                        "actionType": "generic",
+                        "action": "block domain",
+                        "actionType": "contain",
                         "advanced": {
-                            "customName": "disable user account",
+                            "customName": "block domain",
                             "customNameId": 0,
-                            "description": "Disable the user attributes for filtered playbook inputs.",
+                            "description": "Block domains in Cisco Umbrella based on given domains. ",
                             "join": [],
-                            "note": "Disable the user attributes for filtered playbook inputs."
+                            "note": "Block domains in Cisco Umbrella based on given domains. "
                         },
-                        "connector": "Azure AD Graph",
+                        "connector": "Cisco Umbrella",
                         "connectorConfigs": [
-                            "azure_ad_graph"
+                            "cisco_umbrella"
                         ],
-                        "connectorId": "c6d3b801-5c26-4abd-9e89-6d8007e2778f",
+                        "connectorId": "96f3e021-5396-42d0-97f4-4fab683e9adb",
                         "connectorVersion": "v1",
                         "functionId": 1,
-                        "functionName": "disable_user_account",
+                        "functionName": "block_domain",
                         "id": "3",
                         "parameters": {
-                            "user_id": "filtered-data:user_name_filter:condition_1:playbook_input:user"
+                            "domain": "playbook_input:domain"
                         },
                         "requiredParameters": [
                             {
                                 "data_type": "string",
-                                "field": "user_id"
+                                "field": "domain"
                             }
                         ],
                         "type": "action"
@@ -159,25 +157,24 @@
                     "id": "3",
                     "type": "action",
                     "warnings": {},
-                    "x": 0,
-                    "y": 320
+                    "x": 980,
+                    "y": 740
                 },
-                "4": {
+                "5": {
                     "data": {
                         "advanced": {
-                            "customName": "username observables",
+                            "customName": "build observable",
                             "customNameId": 0,
-                            "description": "Format a normalized output for each user.",
+                            "description": "This block uses custom code to generate an observable dictionary to output into the observables data path.",
                             "join": [],
-                            "note": "Format a normalized output for each user."
+                            "note": "This block uses custom code to generate an observable dictionary to output into the observables data path."
                         },
                         "functionId": 1,
-                        "functionName": "username_observables",
-                        "id": "4",
+                        "functionName": "build_observable",
+                        "id": "5",
                         "inputParameters": [
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.parameter.user_id",
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.status",
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.message"
+                            "filtered-data:success_filter:condition_1:block_domain:action_result.parameter.domain",
+                            "filtered-data:success_filter:condition_1:block_domain:action_result.status"
                         ],
                         "outputVariables": [
                             "observable_array"
@@ -185,23 +182,21 @@
                         "type": "code"
                     },
                     "errors": {},
-                    "id": "4",
+                    "id": "5",
                     "type": "code",
-                    "userCode": "\n    # Write your custom code here...\n    username_observables__observable_array = []\n    \n    for user_id, status, msg in zip(filtered_result_0_parameter_user_id, filtered_result_0_status, filtered_result_0_message):\n        user_acc_status = {\n            \"type\": \"Azure AD Account\",\n            \"value\": user_id,\n            \"message\": msg,\n            \"status\": status\n        }\n        username_observables__observable_array.append(user_acc_status)\n        #phantom.debug(username_observables__observable_array)\n",
+                    "userCode": "\n    build_observable__observable_array = list()\n    for status, domain in zip(filtered_result_0_status, filtered_result_0_parameter_domain):\n        if status == \"success\":\n            observable = {\n                \"type\": \"domain\",\n                \"value\": domain,\n                \"source\": \"Cisco Umbrella\",\n                \"status\": \"blocked\"\n            }\n            \n            build_observable__observable_array.append(observable)\n\n",
                     "warnings": {},
-                    "x": 0,
-                    "y": 680
+                    "x": 980,
+                    "y": 1060
                 },
-                "5": {
+                "6": {
                     "data": {
                         "advanced": {
-                            "customName": "filter disable result",
+                            "customName": "success filter",
                             "customNameId": 0,
-                            "delimiter": ",",
-                            "delimiter_enabled": true,
-                            "description": "filter check if the user is disabled successfully.",
+                            "description": "Determine if the block domain was successful.",
                             "join": [],
-                            "note": "filter check if the user is disabled successfully."
+                            "note": "Determine if the block domain was successful."
                         },
                         "conditions": [
                             {
@@ -209,48 +204,47 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": "==",
-                                        "param": "disable_user_account:action_result.status",
+                                        "param": "block_domain:action_result.status",
                                         "value": "success"
                                     }
                                 ],
                                 "conditionIndex": 0,
-                                "customName": "disabled_success",
+                                "customName": "success",
                                 "logic": "and"
                             }
                         ],
                         "functionId": 2,
-                        "functionName": "filter_disable_result",
-                        "id": "5",
+                        "functionName": "success_filter",
+                        "id": "6",
                         "type": "filter"
                     },
                     "errors": {},
-                    "id": "5",
+                    "id": "6",
                     "type": "filter",
                     "warnings": {},
-                    "x": 60,
-                    "y": 500
+                    "x": 1040,
+                    "y": 880
                 }
             },
-            "notes": "Inputs: users\nInteractions: Azure AD Graph\nActions: Account Locking/Disabling\nOutputs: observables"
+            "notes": "Inputs: domain\nInteractions: Cisco Umbrella\nActions: block domain\nOutputs: observables"
         },
         "input_spec": [
             {
                 "contains": [
-                    "user name",
-                    "azure user principal name"
+                    "domain"
                 ],
-                "description": "A user name provided to be disable - Azure AD",
-                "name": "user"
+                "description": "Accepts domain and block them",
+                "name": "domain"
             }
         ],
         "output_spec": [
             {
                 "contains": [],
                 "datapaths": [
-                    "username_observables:custom_function:observable_array"
+                    "build_observable:custom_function:observable_array"
                 ],
                 "deduplicate": false,
-                "description": "An array of observable dictionaries ",
+                "description": "An array of observable dictionaries with value, type and information about the blocked domains.",
                 "metadata": {},
                 "name": "observable"
             }
@@ -258,18 +252,17 @@
         "playbook_type": "data",
         "python_version": "3",
         "schema": "5.0.10",
-        "version": "6.0.1.123902"
+        "version": "6.1.0.131"
     },
-    "create_time": "2023-08-17T18:47:08.503246+00:00",
+    "create_time": "2023-08-02T11:29:36.835550+00:00",
     "draft_mode": false,
     "labels": [
         "*"
     ],
     "tags": [
-        "user",
-        "azure_ad_graph",
-        "disable_account",
-        "D3-AL",
-        "active_directory"
+        "Cisco Umbrella",
+        "denylist",
+        "D3-DNSDL",
+        "domain"
     ]
 }

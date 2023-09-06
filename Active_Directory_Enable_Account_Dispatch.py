@@ -1,5 +1,5 @@
 """
-Accepts user name that needs to be disabled in Active Directory. Generates a report and observable output based on the status of account locking or disabling.
+Accepts user name that needs to be enabled in Active Directory. Generates a report and observable output based on the status of account unlocking or enabling.
 """
 
 
@@ -12,16 +12,16 @@ from datetime import datetime, timedelta
 def on_start(container):
     phantom.debug('on_start() called')
 
-    # call 'dispatch_account_disable' block
-    dispatch_account_disable(container=container)
+    # call 'dispatch_account_enable' block
+    dispatch_account_enable(container=container)
 
     return
 
 @phantom.playbook_block()
-def dispatch_account_disable(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
-    phantom.debug("dispatch_account_disable() called")
+def dispatch_account_enable(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+    phantom.debug("dispatch_account_enable() called")
 
-    playbook_tags_combined_value = phantom.concatenate("disable_account", "active_directory")
+    playbook_tags_combined_value = phantom.concatenate("enable_account", "active_directory")
 
     inputs = {
         "playbook_repo": [],
@@ -42,7 +42,7 @@ def dispatch_account_disable(action=None, success=None, container=None, results=
     ################################################################################
 
     # call playbook "community/dispatch_input_playbooks", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_account_disable", callback=observable_output_decision, inputs=inputs)
+    playbook_run_id = phantom.playbook("community/dispatch_input_playbooks", container=container, name="dispatch_account_enable", callback=observable_output_decision, inputs=inputs)
 
     return
 
@@ -52,16 +52,17 @@ def observable_output_decision(action=None, success=None, container=None, result
     phantom.debug("observable_output_decision() called")
 
     ################################################################################
-    # decision to check if observable output is successfully generated or not.
+    # Decision to check if observable output is successfully generated or not.
     ################################################################################
 
     # check for 'if' condition 1
     found_match_1 = phantom.decision(
         container=container,
         conditions=[
-            ["dispatch_account_disable:playbook_output:observable", "!=", ""]
+            ["dispatch_account_enable:playbook_output:observable", "!=", ""]
         ],
-        delimiter=",")
+        case_sensitive=False,
+        delimiter=None)
 
     # call connected blocks if condition 1 matched
     if found_match_1:
@@ -84,9 +85,9 @@ def normalized_observable_filter(action=None, success=None, container=None, resu
     # types of disable_account used to locked users in active directory.
     ################################################################################
 
-    filtered_output_0_dispatch_account_disable_output_observable = phantom.collect2(container=container, datapath=["filtered-data:observable_filter:condition_1:dispatch_account_disable:playbook_output:observable"])
+    filtered_output_0_dispatch_account_enable_output_observable = phantom.collect2(container=container, datapath=["filtered-data:observable_filter:condition_1:dispatch_account_enable:playbook_output:observable"])
 
-    filtered_output_0_dispatch_account_disable_output_observable_values = [item[0] for item in filtered_output_0_dispatch_account_disable_output_observable]
+    filtered_output_0_dispatch_account_enable_output_observable_values = [item[0] for item in filtered_output_0_dispatch_account_enable_output_observable]
 
     normalized_observable_filter__observable_value = None
     normalized_observable_filter__observable_type = None
@@ -101,9 +102,9 @@ def normalized_observable_filter(action=None, success=None, container=None, resu
     normalized_observable_filter__observable_value = []
     normalized_observable_filter__observable_merge_report = []
     fmt_output = ""
-    output_observable_values =  [(i or "") for i in filtered_output_0_dispatch_account_disable_output_observable_values]
+    output_observable_values =  [(i or "") for i in filtered_output_0_dispatch_account_enable_output_observable_values]
     
-    #phantom.debug("output_observable_values: {}".format(output_observable_values))
+    phantom.debug("output_observable_values: {}".format(output_observable_values))
     for observable_item in output_observable_values:
         if observable_item['status'] == "success":
             user_name = observable_item['value'].split("@")[0]
@@ -111,8 +112,8 @@ def normalized_observable_filter(action=None, success=None, container=None, resu
             fmt_output += "{} | {} | {} | {} | \n".format(observable_item['value'], observable_item['type'], observable_item['message'], observable_item['status'])
             normalized_observable_filter__observable_merge_report.append(fmt_output)
     normalized_observable_filter__observable_value = normalized_observable_filter__observable_value[0]
-    normalized_observable_filter__observable_type = "Disable Account"
-    #phantom.debug(normalized_observable_filter__observable_merge_report)
+    normalized_observable_filter__observable_type = "Enable Account"
+    phantom.debug(normalized_observable_filter__observable_merge_report)
     ################################################################################
     ## Custom Code End
     ################################################################################
@@ -157,7 +158,7 @@ def merge_report(action=None, success=None, container=None, results=None, handle
     # summary report for all disable account input playbooks.
     ################################################################################
 
-    template = """SOAR retrieved tickets from Splunk. The table below shows a summary of the information gathered.\\n\\n\n| value | type | message | status |\n| --- | --- | --- | --- |\n%%\n| {0}\n%%\n"""
+    template = """SOAR attempted to unlock account(s). The table below shows a summary of the information gathered.\\n\\n\n| Value | Type | Message | Status |\n| --- | --- | --- | --- |\n%%\n| {0} \n%%\n"""
 
     # parameter list for template variable replacement
     parameters = [
@@ -233,7 +234,7 @@ def update_workbook_task(action=None, success=None, container=None, results=None
         "status": "complete",
         "container": id_value,
         "task_name": "playbook",
-        "note_title": "AD Disable Account Report",
+        "note_title": "AD Enable Account Report",
         "note_content": merge_report,
     })
 
@@ -264,7 +265,7 @@ def observable_filter(action=None, success=None, container=None, results=None, h
     matched_artifacts_1, matched_results_1 = phantom.condition(
         container=container,
         conditions=[
-            ["dispatch_account_disable:playbook_output:observable", "!=", ""]
+            ["dispatch_account_enable:playbook_output:observable", "!=", ""]
         ],
         name="observable_filter:condition_1",
         delimiter=None)

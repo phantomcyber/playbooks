@@ -1,17 +1,17 @@
 {
     "blockly": false,
     "blockly_xml": "<xml></xml>",
-    "category": "Account Locking",
+    "category": "Isolation",
     "coa": {
         "data": {
-            "description": "Accepts user name that needs to be disabled in Azure Active Directory. Generates an observable output based on the status of account locking or disabling.",
+            "description": "Accepts a URL or list of URLs as input. Blocks the given URLs in ZScaler.\n\nhttps://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering/",
             "edges": [
                 {
-                    "id": "port_0_to_port_2",
+                    "id": "port_0_to_port_4",
                     "sourceNode": "0",
                     "sourcePort": "0_out",
-                    "targetNode": "2",
-                    "targetPort": "2_in"
+                    "targetNode": "4",
+                    "targetPort": "4_in"
                 },
                 {
                     "conditions": [
@@ -19,25 +19,25 @@
                             "index": 0
                         }
                     ],
-                    "id": "port_2_to_port_3",
-                    "sourceNode": "2",
-                    "sourcePort": "2_out",
-                    "targetNode": "3",
-                    "targetPort": "3_in"
-                },
-                {
-                    "id": "port_4_to_port_1",
+                    "id": "port_4_to_port_6",
                     "sourceNode": "4",
                     "sourcePort": "4_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_7_to_port_1",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
                     "targetNode": "1",
                     "targetPort": "1_in"
                 },
                 {
-                    "id": "port_3_to_port_5",
-                    "sourceNode": "3",
-                    "sourcePort": "3_out",
-                    "targetNode": "5",
-                    "targetPort": "5_in"
+                    "id": "port_6_to_port_8",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
                 },
                 {
                     "conditions": [
@@ -45,14 +45,14 @@
                             "index": 0
                         }
                     ],
-                    "id": "port_5_to_port_4",
-                    "sourceNode": "5",
-                    "sourcePort": "5_out",
-                    "targetNode": "4",
-                    "targetPort": "4_in"
+                    "id": "port_8_to_port_7",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
                 }
             ],
-            "hash": "6c58fabb2330bc8e95deed79637e55071609c19c",
+            "hash": "ddce2d54e4936120ec7acc772b88f91fab41ec55",
             "nodes": {
                 "0": {
                     "data": {
@@ -68,7 +68,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 19.999999999999986,
-                    "y": -3.836930773104541e-13
+                    "y": -6.394884621840902e-14
                 },
                 "1": {
                     "data": {
@@ -84,18 +84,18 @@
                     "type": "end",
                     "warnings": {},
                     "x": 19.999999999999986,
-                    "y": 860
+                    "y": 864
                 },
-                "2": {
+                "4": {
                     "data": {
                         "advanced": {
-                            "customName": "user name filter",
+                            "customName": "url input filter",
                             "customNameId": 0,
                             "delimiter": ",",
                             "delimiter_enabled": true,
-                            "description": "Filter user name inputs to route inputs to appropriate actions.",
+                            "description": "Determine branches based on provided inputs.",
                             "join": [],
-                            "note": "Filter user name inputs to route inputs to appropriate actions."
+                            "note": "Determine branches based on provided inputs."
                         },
                         "conditions": [
                             {
@@ -103,81 +103,82 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": "!=",
-                                        "param": "playbook_input:user",
-                                        "value": ""
+                                        "param": "playbook_input:input_url",
+                                        "value": "None"
                                     }
                                 ],
                                 "conditionIndex": 0,
-                                "customName": "user_name_check",
+                                "customName": "input_url",
                                 "logic": "and"
                             }
                         ],
                         "functionId": 1,
-                        "functionName": "user_name_filter",
-                        "id": "2",
+                        "functionName": "url_input_filter",
+                        "id": "4",
                         "type": "filter"
                     },
                     "errors": {},
-                    "id": "2",
+                    "id": "4",
                     "type": "filter",
                     "warnings": {},
                     "x": 60,
-                    "y": 140
+                    "y": 148
                 },
-                "3": {
+                "6": {
                     "data": {
-                        "action": "disable user",
-                        "actionType": "generic",
+                        "action": "block url",
+                        "actionType": "contain",
                         "advanced": {
-                            "customName": "disable user account",
+                            "customName": "block url",
                             "customNameId": 0,
-                            "description": "Disable the user attributes for filtered playbook inputs.",
+                            "description": "Block urls in ZScaler based on given urls. ",
                             "join": [],
-                            "note": "Disable the user attributes for filtered playbook inputs."
+                            "note": "Block urls in ZScaler based on given urls. "
                         },
-                        "connector": "Azure AD Graph",
+                        "connector": "Zscaler",
                         "connectorConfigs": [
-                            "azure_ad_graph"
+                            "zscaler"
                         ],
-                        "connectorId": "c6d3b801-5c26-4abd-9e89-6d8007e2778f",
+                        "connectorId": "ee475421-d2e4-4d8e-addb-a2ce1465d6a3",
                         "connectorVersion": "v1",
                         "functionId": 1,
-                        "functionName": "disable_user_account",
-                        "id": "3",
+                        "functionName": "block_url",
+                        "id": "6",
                         "parameters": {
-                            "user_id": "filtered-data:user_name_filter:condition_1:playbook_input:user"
+                            "url": "filtered-data:url_input_filter:condition_1:playbook_input:input_url"
                         },
                         "requiredParameters": [
                             {
                                 "data_type": "string",
-                                "field": "user_id"
+                                "field": "url"
                             }
                         ],
                         "type": "action"
                     },
                     "errors": {},
-                    "id": "3",
+                    "id": "6",
                     "type": "action",
                     "warnings": {},
                     "x": 0,
-                    "y": 320
+                    "y": 328
                 },
-                "4": {
+                "7": {
                     "data": {
                         "advanced": {
-                            "customName": "username observables",
+                            "customName": "build observable",
                             "customNameId": 0,
-                            "description": "Format a normalized output for each user.",
+                            "description": "This block uses custom code to generate an observable dictionary to output into the observables data path.",
                             "join": [],
-                            "note": "Format a normalized output for each user."
+                            "note": "This block uses custom code to generate an observable dictionary to output into the observables data path."
                         },
                         "functionId": 1,
-                        "functionName": "username_observables",
-                        "id": "4",
+                        "functionName": "build_observable",
+                        "id": "7",
                         "inputParameters": [
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.parameter.user_id",
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.status",
-                            "filtered-data:filter_disable_result:condition_1:disable_user_account:action_result.message"
+                            "block_url:action_result.summary",
+                            "block_url:action_result.status",
+                            "block_url:action_result.message",
+                            "filtered-data:url_input_filter:condition_1:playbook_input:input_url"
                         ],
                         "outputVariables": [
                             "observable_array"
@@ -185,23 +186,23 @@
                         "type": "code"
                     },
                     "errors": {},
-                    "id": "4",
+                    "id": "7",
                     "type": "code",
-                    "userCode": "\n    # Write your custom code here...\n    username_observables__observable_array = []\n    \n    for user_id, status, msg in zip(filtered_result_0_parameter_user_id, filtered_result_0_status, filtered_result_0_message):\n        user_acc_status = {\n            \"type\": \"Azure AD Account\",\n            \"value\": user_id,\n            \"message\": msg,\n            \"status\": status\n        }\n        username_observables__observable_array.append(user_acc_status)\n        #phantom.debug(username_observables__observable_array)\n",
+                    "userCode": "\n    build_observable__observable_array = list()\n    for summary, status, message, url in zip(block_url_result_item_0, block_url_result_item_1, block_url_result_message, filtered_input_0_input_url_values):\n        observable = {\n            \"type\": \"url\",\n            \"value\": url,\n            \"source\": \"ZScaler\"\n        }\n        if len(summary[\"ignored\"]) > 0:\n            observable[\"status\"] = \"ignored\"\n        else:\n            observable[\"status\"] = \"updated\"\n            \n        build_observable__observable_array.append(observable)\n        \n\n",
                     "warnings": {},
                     "x": 0,
-                    "y": 680
+                    "y": 700
                 },
-                "5": {
+                "8": {
                     "data": {
                         "advanced": {
-                            "customName": "filter disable result",
+                            "customName": "block url success filter",
                             "customNameId": 0,
                             "delimiter": ",",
                             "delimiter_enabled": true,
-                            "description": "filter check if the user is disabled successfully.",
+                            "description": "Determine if the block url action was successful or not.",
                             "join": [],
-                            "note": "filter check if the user is disabled successfully."
+                            "note": "Determine if the block url action was successful or not."
                         },
                         "conditions": [
                             {
@@ -209,48 +210,49 @@
                                     {
                                         "conditionIndex": 0,
                                         "op": "==",
-                                        "param": "disable_user_account:action_result.status",
+                                        "param": "block_url:action_result.status",
                                         "value": "success"
                                     }
                                 ],
                                 "conditionIndex": 0,
-                                "customName": "disabled_success",
+                                "customName": "success",
                                 "logic": "and"
                             }
                         ],
                         "functionId": 2,
-                        "functionName": "filter_disable_result",
-                        "id": "5",
+                        "functionName": "block_url_success_filter",
+                        "id": "8",
                         "type": "filter"
                     },
                     "errors": {},
-                    "id": "5",
+                    "id": "8",
                     "type": "filter",
                     "warnings": {},
                     "x": 60,
-                    "y": 500
+                    "y": 506
                 }
             },
-            "notes": "Inputs: users\nInteractions: Azure AD Graph\nActions: Account Locking/Disabling\nOutputs: observables"
+            "notes": "Inputs: url\nInteractions: ZScaler\nActions: block url\nOutputs: observables"
         },
         "input_spec": [
             {
                 "contains": [
-                    "user name",
-                    "azure user principal name"
+                    "url"
                 ],
-                "description": "A user name provided to be disable - Azure AD",
-                "name": "user"
+                "description": "Accepts url and block them",
+                "name": "input_url"
             }
         ],
         "output_spec": [
             {
-                "contains": [],
+                "contains": [
+                    "url"
+                ],
                 "datapaths": [
-                    "username_observables:custom_function:observable_array"
+                    "build_observable:custom_function:observable_array"
                 ],
                 "deduplicate": false,
-                "description": "An array of observable dictionaries ",
+                "description": "An array of observable dictionaries with value, type and information about the blocked urls.",
                 "metadata": {},
                 "name": "observable"
             }
@@ -260,16 +262,15 @@
         "schema": "5.0.10",
         "version": "6.0.1.123902"
     },
-    "create_time": "2023-08-17T18:47:08.503246+00:00",
+    "create_time": "2023-06-21T09:27:47.392005+00:00",
     "draft_mode": false,
     "labels": [
         "*"
     ],
     "tags": [
-        "user",
-        "azure_ad_graph",
-        "disable_account",
-        "D3-AL",
-        "active_directory"
+        "url",
+        "D3-OTF",
+        "ZScaler",
+        "denylist"
     ]
 }
