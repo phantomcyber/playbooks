@@ -1,6 +1,6 @@
 def list_zip(zip_type=None, pad_values=None, input_1=None, input_2=None, input_3=None, input_4=None, input_5=None, input_6=None, input_7=None, input_8=None, **kwargs):
     """
-    This function zips two or more lists together to create a list of equal length. This can be useful when multiple upstream blocks are used for a single downstream block with multiple inputs. A maximum of 9 lists can be zipped together. The input lists are intended to be flat lists of strings, not nested lists or dictionaries.
+    This function zips two or more lists together to create a list of equal length. This can be useful when multiple upstream blocks are used for a single downstream block with multiple inputs. A maximum of 8 lists can be zipped together. The input lists are intended to be flat lists of strings, not nested lists or dictionaries.
     
     Args:
         zip_type: (Optional) 'longest' OR 'shortest'. Defaults to 'shortest'. Determines how to treat lists of unequal size. Longest will pad the merged list to the longest of all of the lists. Shortest will truncate the merged list to the shortest of all of the lists.
