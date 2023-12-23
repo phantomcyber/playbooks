@@ -122,9 +122,15 @@ def find_related_containers(field_list=None, value_list=None, minimum_match_coun
         offset_time = format_offset_time(seconds)
         for pairing in pairing_list:
             for k,v in pairing.items():
+                
+                if isinstance(v, (int, float)):
+                    value_string = v
+                else:
+                    value_string = f'"{v}"'                
+                
                 params = {
                     '_filter_create_time__gt': f'"{offset_time}"',
-                    f'_filter_cef__{k}': f'"{v}"', 
+                    f'_filter_cef__{k}': value_string, 
                     'page_size': 0, 
                     '_exclude_container': current_container
                 }
