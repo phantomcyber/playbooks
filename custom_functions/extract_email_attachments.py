@@ -16,6 +16,7 @@ def extract_email_attachments(vault_id=None, container_id=None, name=None, label
         new_vault_id (CEF type: vault id): The unique identifier for the newly created vault item. Each new_vault_id corresponds to an attachment extracted from the email and stored in the vault. 
     """
     ############################ Custom Code Goes Below This Line #################################
+
     import json
     import phantom.rules as phantom
     import tempfile
@@ -23,10 +24,14 @@ def extract_email_attachments(vault_id=None, container_id=None, name=None, label
     from email import policy
     from email.parser import BytesParser
 
+    # Set default value for container_id if not provided
+    if container_id is None:
+        container_id = int(phantom.get_current_container_id_())
+
     # Input validation
     if not isinstance(vault_id, str):
         raise TypeError("Expected vault_id to be a string")
-    if container_id is not None and not isinstance(container_id, int):
+    if not isinstance(container_id, int):
         raise TypeError("Expected container_id to be an integer")
     if name is not None and not isinstance(name, str):
         raise TypeError("Expected name to be a string")
@@ -209,3 +214,4 @@ def extract_email_attachments(vault_id=None, container_id=None, name=None, label
     assert isinstance(outputs, list)  # Will raise an exception if the :outputs: object is not a list
     assert json.dumps(outputs)  # Will raise an exception if the :outputs: object is not JSON-serializable
     return outputs
+ 
