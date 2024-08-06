@@ -1,0 +1,496 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Threat Response",
+    "coa": {
+        "data": {
+            "description": "This workflow performs a Protection Group snapshot operation on the set of protection group volumes configured on the Flash Array (On-Premises Target) using the names provided as an input variable using the Artifacts.\nThis operation is triggered by Splunk SOAR Playbook to safeguard the volume data inside the protection groups as a threat response, to any critical alerts or incidents",
+            "edges": [
+                {
+                    "id": "port_0_to_port_2",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "id": "port_2_to_port_10",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "10",
+                    "targetPort": "10_in"
+                },
+                {
+                    "id": "port_10_to_port_6",
+                    "sourceNode": "10",
+                    "sourcePort": "10_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_6_to_port_19",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "19",
+                    "targetPort": "19_in"
+                },
+                {
+                    "id": "port_19_to_port_20",
+                    "sourceNode": "19",
+                    "sourcePort": "19_out",
+                    "targetNode": "20",
+                    "targetPort": "20_in"
+                },
+                {
+                    "id": "port_20_to_port_21",
+                    "sourceNode": "20",
+                    "sourcePort": "20_out",
+                    "targetNode": "21",
+                    "targetPort": "21_in"
+                },
+                {
+                    "id": "port_21_to_port_22",
+                    "sourceNode": "21",
+                    "sourcePort": "21_out",
+                    "targetNode": "22",
+                    "targetPort": "22_in"
+                },
+                {
+                    "id": "port_22_to_port_23",
+                    "sourceNode": "22",
+                    "sourcePort": "22_out",
+                    "targetNode": "23",
+                    "targetPort": "23_in"
+                },
+                {
+                    "id": "port_23_to_port_1",
+                    "sourceNode": "23",
+                    "sourcePort": "23_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "492cd95ea22200e59fb649aedfb04a0ba9d48aee",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 459.9999999999992
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 1680
+                },
+                "10": {
+                    "customCode": "@phantom.playbook_block()\ndef fetch_latest_fa_api_version(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"fetch_latest_fa_api_version() called\")\n\n    list_the_flash_array_versions_result_data = phantom.collect2(container=container, datapath=[\"list_the_flash_array_versions:action_result.data.*.parsed_response_body\"], action_results=results)\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    list_the_flash_array_versions_result_item_0 = [item[0] for item in list_the_flash_array_versions_result_data]\n\n    fetch_latest_fa_api_version__latestvers = list_the_flash_array_versions_result_item_0[0]['version'][-1]\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key=\"fetch_latest_fa_api_version:latestvers\", value=json.dumps(fetch_latest_fa_api_version__latestvers))\n\n    flasharray_login(container=container)\n\n\n    return",
+                    "data": {
+                        "advanced": {
+                            "customName": "Fetch Latest FA API Version",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "fetch_latest_fa_api_version",
+                        "id": "10",
+                        "inputParameters": [
+                            "list_the_flash_array_versions:action_result.data.*.parsed_response_body"
+                        ],
+                        "outputVariables": [
+                            "latestvers"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "10",
+                    "type": "code",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 980,
+                    "y": 720
+                },
+                "19": {
+                    "customCode": "@phantom.playbook_block()\ndef fetch_the_auth_token(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"fetch_the_auth_token() called\")\n\n    flasharray_login_result_data = phantom.collect2(container=container, datapath=[\"flasharray_login:action_result.data.*.response_headers.x-auth-token\"], action_results=results)\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    flasharray_login_result_item_0 = [item[0] for item in flasharray_login_result_data]\n    phantom.debug(flasharray_login_result_data[0][0])\n\n    fetch_the_auth_token__x_auth_token = flasharray_login_result_data[0][0]\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key=\"fetch_the_auth_token:x_auth_token\", value=json.dumps(fetch_the_auth_token__x_auth_token))\n    \n    fetch_flash_array_pg_list(container=container)\n\n    return",
+                    "data": {
+                        "advanced": {
+                            "customName": "Fetch The Auth Token",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 5,
+                        "functionName": "fetch_the_auth_token",
+                        "id": "19",
+                        "inputParameters": [
+                            "flasharray_login:action_result.data.*.response_headers"
+                        ],
+                        "outputVariables": [
+                            "X Auth Token"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "19",
+                    "type": "code",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 980,
+                    "y": 980
+                },
+                "2": {
+                    "data": {
+                        "action": "get data",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "List The Flash Array Versions",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "HTTP",
+                        "connectorConfigs": [
+                            "purearray"
+                        ],
+                        "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "list_the_flash_array_versions",
+                        "id": "2",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "conditionIndex": 0,
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "display": "If",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "location": "/api/api_version"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "location"
+                            }
+                        ],
+                        "tab": "byAction",
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 600
+                },
+                "20": {
+                    "customCode": "@phantom.playbook_block()\ndef fetch_flash_array_pg_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"fetch_flash_array_pg_list() called\")\n\n    location_formatted_string = phantom.format(\n        container=container,\n        template=\"\"\"/api/{0}/protection-groups\"\"\",\n        parameters=[\n            \"fetch_latest_fa_api_version:custom_function:latestvers\"\n        ])\n\n    # Get the x_auth_token from the previous code step\n    x_auth_token = phantom.get_run_data(key=\"fetch_the_auth_token:x_auth_token\")\n    \n    # Ensure the token is in the correct format\n    x_auth_token = x_auth_token.strip('\"')\n    \n    # Create the headers dictionary\n    headers = {\n        \"x-auth-token\": x_auth_token\n    }\n    \n    # Debug statements to verify values\n    phantom.debug(f\"Formatted location string: {location_formatted_string}\")\n    phantom.debug(f\"Auth token: {x_auth_token}\")\n    phantom.debug(f\"Headers: {json.dumps(headers)}\")\n\n    parameters = []\n\n    if location_formatted_string is not None:\n        parameters.append({\n            \"headers\": json.dumps(headers),  # Ensure headers are passed as a JSON string\n            \"location\": location_formatted_string,\n        })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.act(\"get data\", parameters=parameters, name=\"fetch_flash_array_pg_list\", assets=[\"purearray\"], callback=list_all_the_protection_groups)\n\n\n    return",
+                    "data": {
+                        "action": "get data",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "Fetch Flash Array PG list",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "HTTP",
+                        "connectorConfigs": [
+                            "purearray"
+                        ],
+                        "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
+                        "connectorVersion": "v1",
+                        "functionId": 3,
+                        "functionName": "fetch_flash_array_pg_list",
+                        "id": "20",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "headers": "fetch_the_auth_token:custom_function:x_auth_token",
+                            "location": {
+                                "functionId": 3,
+                                "parameters": [
+                                    "fetch_latest_fa_api_version:custom_function:latestvers"
+                                ],
+                                "template": "/api/{0}/protection-groups\n"
+                            }
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "location"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "20",
+                    "type": "action",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 980,
+                    "y": 1100
+                },
+                "21": {
+                    "customCode": "@phantom.playbook_block()\ndef list_all_the_protection_groups(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"list_all_the_protection_groups() called\")\n\n   # Collect the parsed response body from the fetch_pg action\n    fetch_flash_array_pg_list_result_data = phantom.collect2(container=container, datapath=[\"fetch_flash_array_pg_list:action_result.data.*.parsed_response_body.items.*.name\"], action_results=results)\n\n    pgroup_names = []\n    if fetch_flash_array_pg_list_result_data:\n        try:\n            for item in fetch_flash_array_pg_list_result_data:\n                if item[0]:  # Ensure there is a name present\n                    pgroup_names.append(item[0])\n\n        except Exception as e:\n            phantom.error(f\"Error extracting protection group names: {str(e)}\")\n\n    # Join the protection group names with newline characters for better readability\n    formatted_pgroup_names = \"\\n\".join(pgroup_names)\n\n    # Debug statement to display only the formatted protection group names\n    phantom.debug(f\"Formatted protection group names:\\n{formatted_pgroup_names}\")\n\n    # Save the extracted protection group names to run data \n    list_all_the_protection_groups__pgroups = pgroup_names\n    phantom.save_run_data(key=\"list_all_the_protection_groups:pgroups\", value=json.dumps(list_all_the_protection_groups__pgroups))\n    \n    protection_group_snapshot(container=container)\n    return",
+                    "data": {
+                        "advanced": {
+                            "customName": "List all the Protection Groups",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 6,
+                        "functionName": "list_all_the_protection_groups",
+                        "id": "21",
+                        "inputParameters": [
+                            "fetch_flash_array_pg_list:action_result.data.*.parsed_response_body"
+                        ],
+                        "outputVariables": [
+                            "pgroups"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "21",
+                    "type": "code",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 980,
+                    "y": 1240
+                },
+                "22": {
+                    "customCode": "@phantom.playbook_block()\ndef protection_group_snapshot(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"protection_group_snapshot() called\")\n\n   # Collect the pg name from the artifact\n    pg_name_artifact = phantom.collect2(container=container, datapath=[\"artifact:*.cef.pg_name\"])\n    \n    # Log collected artifacts for debugging\n    phantom.debug(f\"Collected pg name artifact: {pg_name_artifact}\")\n\n    # Concatenate the pg names into a single string\n    if pg_name_artifact and pg_name_artifact[0][0]:\n        pg_names = pg_name_artifact[0][0]\n    else:\n        pg_names = \"default_pg_name\"  # Provide a default pg name or handle the error\n\n    phantom.debug(f\"Using pg names: {pg_names}\")\n\n    body_formatted_string = json.dumps({\n        \"source_names\": pg_names\n    })\n    \n    location_formatted_string = phantom.format(\n        container=container,\n        template=\"/api/{0}/protection-group-snapshots\",\n        parameters=[\n            \"fetch_latest_fa_api_version:custom_function:latestvers\"\n        ])\n\n    fetch_the_auth_token__x_auth_token = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_the_auth_token:x_auth_token\")) != \"\" else \"null\")  # pylint: disable=used-before-assignment\n    fetch_latest_fa_api_version__latestvers = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_latest_fa_api_version:latestvers\")) != \"\" else \"null\")  # pylint: disable=used-before-assignment\n\n    parameters = []\n\n    if location_formatted_string is not None:\n        parameters.append({\n            \"body\": body_formatted_string,\n            \"headers\": json.dumps({\"x-auth-token\": fetch_the_auth_token__x_auth_token, \"Content-Type\": \"application/json\"}),\n            \"location\": location_formatted_string,\n        })\n\n    phantom.act(\"post data\", parameters=parameters, name=\"protection_group_snapshot\", assets=[\"purearray\"],callback=logout_of_the_flash_array)\n\n    return",
+                    "data": {
+                        "action": "post data",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "protection group snapshot",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "HTTP",
+                        "connectorConfigs": [
+                            "purearray"
+                        ],
+                        "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
+                        "connectorVersion": "v1",
+                        "functionId": 3,
+                        "functionName": "protection_group_snapshot",
+                        "id": "22",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "headers": "fetch_the_auth_token:custom_function:x_auth_token",
+                            "location": {
+                                "functionId": 3,
+                                "parameters": [
+                                    "fetch_latest_fa_api_version:custom_function:latestvers"
+                                ],
+                                "template": "/api/{0}/protection-group-snapshots\n"
+                            }
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "location"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "22",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 1400
+                },
+                "23": {
+                    "customCode": "@phantom.playbook_block()\ndef logout_of_the_flash_array(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"logout_of_the_flash_array() called\")\n\n  # Retrieve the latest version and x_auth_token from the run data\n    fetch_latest_fa_api_version__latestvers = phantom.get_run_data(key=\"fetch_latest_fa_api_version:latestvers\").strip('\"')\n    fetch_the_auth_token__x_auth_token = phantom.get_run_data(key=\"fetch_the_auth_token:x_auth_token\").strip('\"')\n\n    # Log the retrieved values for debugging\n    phantom.debug(f\"Latest version: {fetch_latest_fa_api_version__latestvers}\")\n    phantom.debug(f\"X-Auth-Token: {fetch_the_auth_token__x_auth_token}\")\n\n    # Check if the version and x_auth_token were retrieved successfully\n    if not fetch_latest_fa_api_version__latestvers:\n        phantom.error(\"Latest version not found\")\n        return\n    if not fetch_the_auth_token__x_auth_token:\n        phantom.error(\"X-Auth-Token not found\")\n        return\n\n    # Format the location string using the latest version\n    location_formatted_string = f\"/api/{fetch_latest_fa_api_version__latestvers}/logout\"\n\n    # Prepare headers as a dictionary\n    headers = {\n        \"X-Auth-Token\": fetch_the_auth_token__x_auth_token,\n        \"Content-Type\": \"application/json\"\n    }\n\n    # Prepare the parameters for the post data action\n    parameters = [{\n        \"location\": location_formatted_string,\n        \"headers\": json.dumps(headers)  # Convert headers to JSON string\n    }]\n\n    # Debug the prepared parameters\n    phantom.debug(f\"parameters: {parameters}\")\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    # Perform the post data action with the prepared parameters\n    if parameters:\n        phantom.act(\"post data\", parameters=parameters, name=\"logout_of_the_flash_array\", assets=[\"purearray\"])\n    else:\n        phantom.error(\"No valid parameters found for post data action.\")\n\n    return",
+                    "data": {
+                        "action": "post data",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "Logout of the Flash Array",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "HTTP",
+                        "connectorConfigs": [
+                            "purearray"
+                        ],
+                        "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "logout_of_the_flash_array",
+                        "id": "23",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "headers": "fetch_the_auth_token:custom_function:x_auth_token",
+                            "location": {
+                                "functionId": 2,
+                                "parameters": [
+                                    "fetch_latest_fa_api_version:custom_function:latestvers"
+                                ],
+                                "template": "/api/{0}/logout\n"
+                            }
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "location"
+                            }
+                        ],
+                        "tab": "byAction",
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "23",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 1540
+                },
+                "6": {
+                    "customCode": "@phantom.playbook_block()\ndef flasharray_login(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"flasharray_login() called\")\n\n    location_formatted_string = phantom.format(\n        container=container,\n        template=\"\"\"\\n/api/{0}/login\\n\"\"\",\n        parameters=[\n            \"fetch_latest_fa_api_version:custom_function:latestvers\"\n        ])\n\n    fetch_latest_fa_api_version__latestvers = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_latest_fa_api_version:latestvers\")) != \"\" else \"null\")  # pylint: disable=used-before-assignment\n\n    parameters = []\n\n    if location_formatted_string is not None:\n        parameters.append({\n            \"location\": location_formatted_string,\n        })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.act(\"post data\", parameters=parameters, name=\"flasharray_login\", assets=[\"purearray\"], callback=fetch_the_auth_token)\n\n\n    return",
+                    "data": {
+                        "action": "post data",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "FlashArray Login",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "HTTP",
+                        "connectorConfigs": [
+                            "purearray"
+                        ],
+                        "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
+                        "connectorVersion": "v1",
+                        "customDatapaths": {
+                            "fetch_vers": {
+                                "action_result.data.*.parsed_response_body.version": {
+                                    "contains": [],
+                                    "isCustomDatapath": true,
+                                    "label": "action_result.data.*.parsed_response_body.version",
+                                    "value": "fetch_vers:action_result.data.*.parsed_response_body.version"
+                                }
+                            }
+                        },
+                        "functionId": 1,
+                        "functionName": "flasharray_login",
+                        "id": "6",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "location": {
+                                "functionId": 1,
+                                "parameters": [
+                                    "fetch_latest_fa_api_version:custom_function:latestvers"
+                                ],
+                                "template": "\n/api/{0}/login\n"
+                            }
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "location"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 860
+                }
+            },
+            "notes": "",
+            "origin": {
+                "playbook_id": 1199,
+                "playbook_name": "PB-Pure-Storage-PG-Snapshot",
+                "playbook_repo_id": 2,
+                "playbook_repo_name": "local"
+            }
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "automation",
+        "python_version": "3",
+        "schema": "5.0.12",
+        "version": "6.2.2.134"
+    },
+    "create_time": "2024-08-06T17:21:33.496770+00:00",
+    "draft_mode": false,
+    "labels": [
+        "events"
+    ],
+    "tags": []
+}
