@@ -1,0 +1,463 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Threat Response",
+    "coa": {
+        "data": {
+            "description": "This workflow performs a File System snapshot operation on the set of File Systems configured on the Flash Blade (On-Premises Target) using the names provided as an input using the artifacts. This operation is triggered by Splunk SOAR Playbook to safeguard the File System data as a threat response, using action scripts in response to any critical alerts/events.",
+            "edges": [
+                {
+                    "id": "port_15_to_port_18",
+                    "sourceNode": "15",
+                    "sourcePort": "15_out",
+                    "targetNode": "18",
+                    "targetPort": "18_in"
+                },
+                {
+                    "id": "port_21_to_port_23",
+                    "sourceNode": "21",
+                    "sourcePort": "21_out",
+                    "targetNode": "23",
+                    "targetPort": "23_in"
+                },
+                {
+                    "id": "port_23_to_port_15",
+                    "sourceNode": "23",
+                    "sourcePort": "23_out",
+                    "targetNode": "15",
+                    "targetPort": "15_in"
+                },
+                {
+                    "id": "port_18_to_port_24",
+                    "sourceNode": "18",
+                    "sourcePort": "18_out",
+                    "targetNode": "24",
+                    "targetPort": "24_in"
+                },
+                {
+                    "id": "port_24_to_port_25",
+                    "sourceNode": "24",
+                    "sourcePort": "24_out",
+                    "targetNode": "25",
+                    "targetPort": "25_in"
+                },
+                {
+                    "id": "port_0_to_port_21",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "21",
+                    "targetPort": "21_in"
+                },
+                {
+                    "id": "port_27_to_port_1",
+                    "sourceNode": "27",
+                    "sourcePort": "27_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_25_to_port_26",
+                    "sourceNode": "25",
+                    "sourcePort": "25_out",
+                    "targetNode": "26",
+                    "targetPort": "26_in"
+                },
+                {
+                    "id": "port_26_to_port_27",
+                    "sourceNode": "26",
+                    "sourcePort": "26_out",
+                    "targetNode": "27",
+                    "targetPort": "27_in"
+                }
+            ],
+            "hash": "18f31882bdf8080e3ef349cbd5e5e1e753c75400",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 279.9999999999983
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 1460
+                },
+                "15": {
+                    "customCode": null,
+                    "data": {
+                        "action": "post data",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "FlashBlade Login",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "HTTP",
+                        "connectorConfigs": [
+                            "flashblade"
+                        ],
+                        "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "flashblade_login",
+                        "id": "15",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "location": "/api/login"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "location"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "15",
+                    "type": "action",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 960,
+                    "y": 620
+                },
+                "18": {
+                    "customCode": "@phantom.playbook_block()\ndef fetch_the_auth_token(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"fetch_the_auth_token() called\")\n\n    flashblade_login_result_data = phantom.collect2(container=container, datapath=[\"flashblade_login:action_result.data.*.response_headers\"], action_results=results)\n\n    # Debug the collected data\n    phantom.debug(f\"flashblade_login_result_data: {flashblade_login_result_data}\")\n\n    if flashblade_login_result_data:\n        flashblade_login_result_item_0 = [item[0] for item in flashblade_login_result_data if item[0]]\n        phantom.debug(f\"flashblade_login_result_item_0: {flashblade_login_result_item_0}\")\n\n        if flashblade_login_result_item_0:\n            response_headers = flashblade_login_result_item_0[0]\n            phantom.debug(f\"Response Headers: {response_headers}\")\n\n            # Normalize header keys to lowercase\n            normalized_headers = {key.lower(): value for key, value in response_headers.items()}\n            phantom.debug(f\"Normalized Response Headers: {normalized_headers}\")\n\n            # Extract x-auth-token from the normalized response headers\n            fetch_the_auth_token__x_auth_token = normalized_headers.get('x-auth-token')\n            phantom.debug(f\"Auth token: {fetch_the_auth_token__x_auth_token}\")\n\n            if fetch_the_auth_token__x_auth_token:\n                # Save the extracted auth token to run data\n                phantom.save_run_data(key=\"fetch_the_auth_token:x_auth_token\", value=json.dumps(fetch_the_auth_token__x_auth_token))\n                \n                list_the_file_systems(container=container)\n                \n            else:\n                phantom.error(\"x-auth-token not found in the response headers.\")\n        else:\n            phantom.error(\"No auth token found in the response headers.\")\n    else:\n        phantom.error(\"No data collected from the response headers.\")\n    \n    return",
+                    "data": {
+                        "advanced": {
+                            "customName": "Fetch The Auth Token",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 5,
+                        "functionName": "fetch_the_auth_token",
+                        "id": "18",
+                        "inputParameters": [
+                            "flashblade_login:action_result.data.*.response_headers"
+                        ],
+                        "outputVariables": [
+                            "X Auth Token"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "18",
+                    "type": "code",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 960,
+                    "y": 760
+                },
+                "21": {
+                    "customCode": null,
+                    "data": {
+                        "action": "get data",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "List the Flash Blade versions",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "HTTP",
+                        "connectorConfigs": [
+                            "flashblade"
+                        ],
+                        "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "list_the_flash_blade_versions",
+                        "id": "21",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "headers": "",
+                            "location": "/api/api_version"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "location"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "21",
+                    "type": "action",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 960,
+                    "y": 379.9999999999994
+                },
+                "23": {
+                    "customCode": "@phantom.playbook_block()\ndef fetch_latest_fb_api_version(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"fetch_latest_fb_api_version() called\")\n    list_the_flash_blade_versions_result_data = phantom.collect2(container=container, datapath=[\"list_the_flash_blade_versions:action_result.data.*.parsed_response_body\"], action_results=results)\n\n    if not list_the_flash_blade_versions_result_data:\n        phantom.error(\"Failed to fetch versions data.\")\n        return\n\n    list_the_flash_blade_versions_result_item_0 = [item[0] for item in list_the_flash_blade_versions_result_data if item[0]]\n    phantom.debug(f\"Versions Data: {list_the_flash_blade_versions_result_item_0}\")\n\n    if list_the_flash_blade_versions_result_item_0 and 'versions' in list_the_flash_blade_versions_result_item_0[0]:\n        latest_version = list_the_flash_blade_versions_result_item_0[0]['versions'][-1]\n    else:\n        phantom.error(\"Failed to retrieve versions from response.\")\n        return\n\n    phantom.debug(f\"Latest version: {latest_version}\")\n\n    phantom.save_run_data(key=\"fetch_latest_fb_api_version:version\", value=json.dumps(latest_version))\n\n    flashblade_login(container=container)\n\n    return",
+                    "data": {
+                        "advanced": {
+                            "customName": "Fetch latest FB API version",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 7,
+                        "functionName": "fetch_latest_fb_api_version",
+                        "id": "23",
+                        "inputParameters": [
+                            "list_the_flash_blade_versions:action_result.data.*.parsed_response_body"
+                        ],
+                        "outputVariables": [
+                            "version"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "23",
+                    "type": "code",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 960,
+                    "y": 480
+                },
+                "24": {
+                    "customCode": "@phantom.playbook_block()\ndef list_the_file_systems(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"list_the_file_systems() called\")\n\n\n\n # Collect the volume name from the artifact\n    filesystem_name_artifact = phantom.collect2(container=container, datapath=[\"artifact:*.cef.filesystem_name\"])\n    \n    # Log collected artifacts for debugging\n    phantom.debug(f\"Collected filesyste name artifact: {filesystem_name_artifact}\")\n\n        \n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    # Concatenate the filesystem names into a single list\n    if filesystem_name_artifact and filesystem_name_artifact[0][0]:\n        filesystem_names = filesystem_name_artifact[0][0].split(',')\n    else:\n        filesystem_names = [\"default_filesystem_name\"]  # Provide a default filesystem name or handle the error\n\n    phantom.debug(f\"Using filesystem names: {filesystem_names}\")\n\n    body_formatted_string = json.dumps({\n        \"source_names\": filesystem_names\n    })\n    \n    location_formatted_string = phantom.format(\n        container=container,\n        template=\"\"\"/api/{0}/file-systems\\n\"\"\",\n        parameters=[\n            \"fetch_latest_fb_api_version:custom_function:version\"\n        ])\n\n    fetch_the_auth_token__x_auth_token = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_the_auth_token:x_auth_token\")) != \"\" else \"null\")  # pylint: disable=used-before-assignment\n    fetch_latest_fb_api_version__version = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_latest_fb_api_version:version\")) != \"\" else \"null\")  # pylint: disable=used-before-assignment\n\n    parameters = []\n\n    if location_formatted_string is not None:\n        parameters.append({\n            \"headers\": json.dumps({\"x-auth-token\": fetch_the_auth_token__x_auth_token, \"Content-Type\": \"application/json\"}),\n            \"location\": location_formatted_string,\n        })\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.act(\"get data\", parameters=parameters, name=\"list_the_file_systems\", assets=[\"flashblade\"], callback=extract_the_filesystems)\n\n    return",
+                    "data": {
+                        "action": "get data",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "List the File Systems",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "HTTP",
+                        "connectorConfigs": [
+                            "flashblade"
+                        ],
+                        "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "list_the_file_systems",
+                        "id": "24",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "headers": "fetch_the_auth_token:custom_function:x_auth_token",
+                            "location": {
+                                "functionId": 2,
+                                "parameters": [
+                                    "fetch_latest_fb_api_version:custom_function:version"
+                                ],
+                                "template": "/api/{0}/file-systems\n"
+                            }
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "location"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "24",
+                    "type": "action",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 960,
+                    "y": 880
+                },
+                "25": {
+                    "customCode": "@phantom.playbook_block()\ndef extract_the_filesystems(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"extract_the_filesystems() called\")\n\n    list_the_file_systems_result_data = phantom.collect2(container=container, datapath=[\"list_the_file_systems:action_result.data.*.parsed_response_body.items.*.name\"], action_results=results)\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    phantom.debug(f\"output --->{list_the_file_systems_result_data}\")\n    list_the_file_systems_result_item_0 = [item[0] for item in list_the_file_systems_result_data]\n\n    extract_the_filesystems__filesystem_names = None\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key=\"extract_the_filesystems:filesystem_names\", value=json.dumps(extract_the_filesystems__filesystem_names))\n\n    filesystem_snapshot(container=container)\n\n    return",
+                    "data": {
+                        "advanced": {
+                            "customName": "Extract the filesystems",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 8,
+                        "functionName": "extract_the_filesystems",
+                        "id": "25",
+                        "inputParameters": [
+                            "list_the_file_systems:action_result.data.*.parsed_response_body"
+                        ],
+                        "outputVariables": [
+                            "filesystem names"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "25",
+                    "type": "code",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 960,
+                    "y": 1000
+                },
+                "26": {
+                    "customCode": "@phantom.playbook_block()\ndef filesystem_snapshot(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"filesystem_snapshot() called\")\n    \n    \n    \n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    # Collect the FIlesystem name from the artifact\n    filesystem_name_artifact = phantom.collect2(container=container, datapath=[\"artifact:*.cef.filesystem_name\"])\n    \n    \n    # Log collected artifacts for debugging\n    phantom.debug(f\"Collected filesystem name artifact: {filesystem_name_artifact}\")\n\n        \n        # Concatenate the filesystem names into a single list\n    if filesystem_name_artifact:\n        filesystem_names = filesystem_name_artifact[0][0]\n    else:\n        filesystem_names = [\"default_filesystem_name\"]  # Provide a default filesystem name or handle the error\n\n    phantom.debug(f\"Using filesystem names: {filesystem_names}\")\n    \n    #body_formatted_string = json.dumps({\n    #    \"sources\": filesystem_names,\n    #    \"suffix\": \"test\"\n    #})\n    body_formatted_string = json.dumps({\n        \"source_names\": filesystem_names\n    })\n    fetch_the_auth_token__x_auth_token = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_the_auth_token:x_auth_token\")) != \"\" else \"null\") # pylint: disable=used-before-assignment\n    vers = json.loads(phantom.get_run_data(key=\"fetch_latest_fb_api_version:version\"))\n    for filesystem_name in filesystem_names.split(','):\n        \n        location_formatted_string = phantom.format(\n            container=container,\n            template=f\"/api/{vers}/file-system-snapshots?source_names={filesystem_name}\",\n            #parameters=[\n            #    \"fetch_latest_fb_api_version:custom_function:version\"\n            #]\n            )\n\n        parameters = []\n\n        if location_formatted_string is not None:\n            parameters.append({\n                #\"body\": body_formatted_string,\n                \"headers\": json.dumps({\"x-auth-token\": fetch_the_auth_token__x_auth_token, \"Content-Type\": \"application/json\"}),\n                \"location\": location_formatted_string\n            })\n\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n        phantom.act(\"post data\", parameters=parameters, name=\"filesystem_snapshot\", assets=[\"flashblade\"], callback=logout_of_the_flash_blade)\n    \n    return",
+                    "data": {
+                        "action": "post data",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "Filesystem Snapshot",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "HTTP",
+                        "connectorConfigs": [
+                            "flashblade"
+                        ],
+                        "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "filesystem_snapshot",
+                        "id": "26",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "body": "{     \"source_names\": [\"fiotest\"] }",
+                            "headers": "fetch_the_auth_token:custom_function:x_auth_token",
+                            "location": {
+                                "functionId": 2,
+                                "parameters": [
+                                    "fetch_latest_fb_api_version:custom_function:version"
+                                ],
+                                "template": "/api/{0}/file-system-snapshots\n"
+                            }
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "location"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "26",
+                    "type": "action",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 960,
+                    "y": 1140
+                },
+                "27": {
+                    "customCode": "@phantom.playbook_block()\ndef logout_of_the_flash_blade(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"logout_of_the_flash_blade() called\")\n\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    # Retrieve the latest x_auth_token from the run data\n    fetch_the_auth_token__x_auth_token = phantom.get_run_data(key=\"fetch_the_auth_token:x_auth_token\").strip('\"')\n\n    # Log the retrieved values for debugging\n    phantom.debug(f\"X-Auth-Token: {fetch_the_auth_token__x_auth_token}\")\n\n    # Check if the version and x_auth_token were retrieved successfully\n    if not fetch_the_auth_token__x_auth_token:\n        phantom.error(\"X-Auth-Token not found\")\n        return\n\n    # Format the location string using the latest version\n    location_formatted_string = f\"/api/logout\"\n\n    # Prepare headers as a dictionary\n    headers = {\n        \"X-Auth-Token\": fetch_the_auth_token__x_auth_token,\n        \"Content-Type\": \"application/json\"\n    }\n\n    # Prepare the parameters for the post data action\n    parameters = [{\n        \"location\": location_formatted_string,\n        \"headers\": json.dumps(headers)  # Convert headers to JSON string\n    }]\n\n    # Debug the prepared parameters\n    phantom.debug(f\"parameters: {parameters}\")\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    # Perform the post data action with the prepared parameters\n    if parameters:\n        phantom.act(\"post data\", parameters=parameters, name=\"logout_of_the_flash_blade\", assets=[\"flashblade\"])\n    else:\n        phantom.error(\"No valid parameters found for post data action.\")\n\n    return",
+                    "data": {
+                        "action": "post data",
+                        "actionType": "generic",
+                        "advanced": {
+                            "customName": "Logout of the Flash Blade",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "HTTP",
+                        "connectorConfigs": [
+                            "flashblade"
+                        ],
+                        "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
+                        "connectorVersion": "v1",
+                        "functionId": 3,
+                        "functionName": "logout_of_the_flash_blade",
+                        "id": "27",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "headers": "fetch_the_auth_token:custom_function:x_auth_token",
+                            "location": "/api/logout"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "location"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "27",
+                    "type": "action",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 960,
+                    "y": 1260
+                }
+            },
+            "notes": "",
+            "origin": {
+                "playbook_id": 1286,
+                "playbook_name": "Unni-FB",
+                "playbook_repo_id": 2,
+                "playbook_repo_name": "local"
+            }
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "automation",
+        "python_version": "3",
+        "schema": "5.0.12",
+        "version": "6.2.2.134"
+    },
+    "create_time": "2024-08-08T05:45:23.112157+00:00",
+    "draft_mode": false,
+    "labels": [
+        "events"
+    ],
+    "tags": []
+}
