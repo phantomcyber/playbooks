@@ -4,15 +4,8 @@
     "category": "Threat Response",
     "coa": {
         "data": {
-            "description": "This workflow performs a volume snapshot operation on the set of volumes configured on the Flash Array (On-Premises Target) using the names provided as an input using the artifacts. This operation is triggered by Splunk SOAR Playbook to safeguard the volume data as a threat response, using action scripts in response to any critical alerts/events.",
+            "description": "This workflow performs a volume snapshot operation on the set of volumes configured on the Flash Array (On-Premises Target) using the names provided as an input using the custom list This operation is triggered by Splunk SOAR Playbook to safeguard the volume data as a threat response, using action scripts in response to any critical alerts/events.",
             "edges": [
-                {
-                    "id": "port_0_to_port_2",
-                    "sourceNode": "0",
-                    "sourcePort": "0_out",
-                    "targetNode": "2",
-                    "targetPort": "2_in"
-                },
                 {
                     "id": "port_2_to_port_10",
                     "sourceNode": "2",
@@ -35,27 +28,6 @@
                     "targetPort": "11_in"
                 },
                 {
-                    "id": "port_11_to_port_12",
-                    "sourceNode": "11",
-                    "sourcePort": "11_out",
-                    "targetNode": "12",
-                    "targetPort": "12_in"
-                },
-                {
-                    "id": "port_12_to_port_13",
-                    "sourceNode": "12",
-                    "sourcePort": "12_out",
-                    "targetNode": "13",
-                    "targetPort": "13_in"
-                },
-                {
-                    "id": "port_13_to_port_14",
-                    "sourceNode": "13",
-                    "sourcePort": "13_out",
-                    "targetNode": "14",
-                    "targetPort": "14_in"
-                },
-                {
                     "id": "port_14_to_port_15",
                     "sourceNode": "14",
                     "sourcePort": "14_out",
@@ -68,9 +40,30 @@
                     "sourcePort": "15_out",
                     "targetNode": "1",
                     "targetPort": "1_in"
+                },
+                {
+                    "id": "port_11_to_port_14",
+                    "sourceNode": "11",
+                    "sourcePort": "11_out",
+                    "targetNode": "14",
+                    "targetPort": "14_in"
+                },
+                {
+                    "id": "port_0_to_port_16",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "16",
+                    "targetPort": "16_in"
+                },
+                {
+                    "id": "port_16_to_port_2",
+                    "sourceNode": "16",
+                    "sourcePort": "16_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
                 }
             ],
-            "hash": "63a7570d480511d49816a0900225be97c7561f68",
+            "hash": "df22a099b6042cd0b4d918fb22a85b97a53a9a5b",
             "nodes": {
                 "0": {
                     "data": {
@@ -86,7 +79,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 1000,
-                    "y": 459.9999999999992
+                    "y": 119.99999999999989
                 },
                 "1": {
                     "data": {
@@ -102,10 +95,10 @@
                     "type": "end",
                     "warnings": {},
                     "x": 1000,
-                    "y": 1640
+                    "y": 1200
                 },
                 "10": {
-                    "customCode": "@phantom.playbook_block()\ndef fetch_latest_fa_api_version(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"fetch_latest_fa_api_version() called\")\n\n    list_the_flash_array_versions_result_data = phantom.collect2(container=container, datapath=[\"list_the_flash_array_versions:action_result.data.*.parsed_response_body\"], action_results=results)\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    list_the_flash_array_versions_result_item_0 = [item[0] for item in list_the_flash_array_versions_result_data]\n\n    fetch_latest_fa_api_version__latestvers = list_the_flash_array_versions_result_item_0[0]['version'][-1]\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key=\"fetch_latest_fa_api_version:latestvers\", value=json.dumps(fetch_latest_fa_api_version__latestvers))\n\n    flasharray_login(container=container)\n    \n    return",
+                    "customCode": "@phantom.playbook_block()\ndef fetch_latest_fa_api_version(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"fetch_latest_fa_api_version() called\")\n\n    list_the_flash_array_versions_result_data = phantom.collect2(container=container, datapath=[\"list_the_flash_array_versions:action_result.data.*.parsed_response_body\"], action_results=results)\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    try:\n        list_the_flash_array_versions_result_item_0 = [item[0] for item in list_the_flash_array_versions_result_data if item and item[0]]\n        \n        if not list_the_flash_array_versions_result_item_0 or 'version' not in list_the_flash_array_versions_result_item_0[0]:\n            raise ValueError(\"No valid version data found\")\n\n        fetch_latest_fa_api_version__latestvers = list_the_flash_array_versions_result_item_0[0]['version'][-1]\n\n    except (IndexError, KeyError, ValueError) as e:\n        phantom.error(f\"Failed to fetch the latest FA API version: {str(e)}\")\n        return\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key=\"fetch_latest_fa_api_version:latestvers\", value=json.dumps(fetch_latest_fa_api_version__latestvers))\n\n    flasharray_login(container=container)\n    \n    return",
                     "data": {
                         "advanced": {
                             "customName": "Fetch Latest FA API Version",
@@ -129,10 +122,10 @@
                     "userCode": null,
                     "warnings": {},
                     "x": 980,
-                    "y": 700
+                    "y": 480
                 },
                 "11": {
-                    "customCode": "@phantom.playbook_block()\ndef fetch_the_auth_token(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"fetch_the_auth_token() called\")\n\n    flasharray_login_result_data = phantom.collect2(container=container, datapath=[\"flasharray_login:action_result.data.*.response_headers.x-auth-token\"], action_results=results)\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    flasharray_login_result_item_0 = [item[0] for item in flasharray_login_result_data]\n    phantom.debug(flasharray_login_result_data[0][0])\n\n    fetch_the_auth_token__x_auth_token = flasharray_login_result_data[0][0]\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key=\"fetch_the_auth_token:x_auth_token\", value=json.dumps(fetch_the_auth_token__x_auth_token))\n    \n    get_flash_array_volumes_list(container=container)\n\n\n    return",
+                    "customCode": "@phantom.playbook_block()\ndef fetch_the_auth_token(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"fetch_the_auth_token() called\")\n\n    flasharray_login_result_data = phantom.collect2(container=container, datapath=[\"flasharray_login:action_result.data.*.response_headers.x-auth-token\"], action_results=results)\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n    flasharray_login_result_item_0 = [item[0] for item in flasharray_login_result_data]\n    phantom.debug(flasharray_login_result_data[0][0])\n\n    fetch_the_auth_token__x_auth_token = flasharray_login_result_data[0][0]\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.save_run_data(key=\"fetch_the_auth_token:x_auth_token\", value=json.dumps(fetch_the_auth_token__x_auth_token))\n    \n    volume_snapshot(container=container)\n\n\n    return",
                     "data": {
                         "advanced": {
                             "customName": "Fetch The Auth Token",
@@ -156,91 +149,10 @@
                     "userCode": null,
                     "warnings": {},
                     "x": 980,
-                    "y": 960
-                },
-                "12": {
-                    "customCode": "@phantom.playbook_block()\ndef get_flash_array_volumes_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"get_flash_array_volumes_list() called\")\n\n    location_formatted_string = phantom.format(\n        container=container,\n        template=\"\"\"/api/{0}/volumes\"\"\",\n        parameters=[\n            \"fetch_latest_fa_api_version:custom_function:latestvers\"\n        ])\n\n    # Get the x_auth_token from the previous code step\n    x_auth_token = phantom.get_run_data(key=\"fetch_the_auth_token:x_auth_token\")\n    \n    # Ensure the token is in the correct format\n    x_auth_token = x_auth_token.strip('\"')\n    \n    # Create the headers dictionary\n    headers = {\n        \"x-auth-token\": x_auth_token\n    }\n    \n    # Debug statements to verify values\n    phantom.debug(f\"Formatted location string: {location_formatted_string}\")\n    phantom.debug(f\"Auth token: {x_auth_token}\")\n    phantom.debug(f\"Headers: {json.dumps(headers)}\")\n\n    parameters = []\n\n    if location_formatted_string is not None:\n        parameters.append({\n            \"headers\": json.dumps(headers),  # Ensure headers are passed as a JSON string\n            \"location\": location_formatted_string,\n        })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.act(\"get data\", parameters=parameters, name=\"get_flash_array_volumes_list\", assets=[\"purearray\"], callback=volumes_list)\n\n    return",
-                    "data": {
-                        "action": "get data",
-                        "actionType": "investigate",
-                        "advanced": {
-                            "customName": "Get Flash Array Volumes List",
-                            "customNameId": 0,
-                            "join": []
-                        },
-                        "connector": "HTTP",
-                        "connectorConfigs": [
-                            "purearray"
-                        ],
-                        "connectorId": "290b7499-0374-4930-9cdc-5e9b05d65827",
-                        "connectorVersion": "v1",
-                        "functionId": 2,
-                        "functionName": "get_flash_array_volumes_list",
-                        "id": "12",
-                        "loop": {
-                            "enabled": false,
-                            "exitAfterUnit": "m",
-                            "exitAfterValue": 10,
-                            "exitConditionEnabled": false,
-                            "exitLoopAfter": 2,
-                            "pauseUnit": "m",
-                            "pauseValue": 2
-                        },
-                        "parameters": {
-                            "headers": "fetch_the_auth_token:custom_function:x_auth_token",
-                            "location": {
-                                "functionId": 2,
-                                "parameters": [
-                                    "fetch_latest_fa_api_version:custom_function:latestvers"
-                                ],
-                                "template": "/api/{0}/volumes\n"
-                            }
-                        },
-                        "requiredParameters": [
-                            {
-                                "data_type": "string",
-                                "field": "location"
-                            }
-                        ],
-                        "type": "action"
-                    },
-                    "errors": {},
-                    "id": "12",
-                    "type": "action",
-                    "userCode": null,
-                    "warnings": {},
-                    "x": 980,
-                    "y": 1080
-                },
-                "13": {
-                    "customCode": "@phantom.playbook_block()\ndef volumes_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"volumes_list() called\")\n\n# Collect the parsed response body from the fetch_vol action\n    get_flash_array_volumes_list_result_data = phantom.collect2(container=container, datapath=[\"get_flash_array_volumes_list:action_result.data.*.parsed_response_body.items.*.name\"], action_results=results)\n\n    volume_names = []\n    if get_flash_array_volumes_list_result_data:\n        try:\n            for item in get_flash_array_volumes_list_result_data:\n                if item[0]:  # Ensure there is a name present\n                    volume_names.append(item[0])\n\n        except Exception as e:\n            phantom.error(f\"Error extracting volume names: {str(e)}\")\n\n    # Join the volume names with newline characters for better readability\n    formatted_volume_names = \"\\n\".join(volume_names)\n\n    # Debug statement to display only the formatted volume names\n    phantom.debug(f\"Formatted volume names:\\n{formatted_volume_names}\")\n\n    # Save the extracted volume names to run data \n    volumes_list__volumes = volume_names\n    phantom.save_run_data(key=\"volumes_list:volumes\", value=json.dumps(volumes_list__volumes))\n    \n    volume_snapshot(container=container)\n\n    return",
-                    "data": {
-                        "advanced": {
-                            "customName": "Volumes List",
-                            "customNameId": 0,
-                            "join": []
-                        },
-                        "functionId": 3,
-                        "functionName": "volumes_list",
-                        "id": "13",
-                        "inputParameters": [
-                            "get_flash_array_volumes_list:action_result.data.*.parsed_response_body"
-                        ],
-                        "outputVariables": [
-                            "volumes"
-                        ],
-                        "type": "code"
-                    },
-                    "errors": {},
-                    "id": "13",
-                    "type": "code",
-                    "userCode": null,
-                    "warnings": {},
-                    "x": 980,
-                    "y": 1220
+                    "y": 760
                 },
                 "14": {
-                    "customCode": "@phantom.playbook_block()\ndef volume_snapshot(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"volume_snapshot() called\")\n\n # Collect the volume name from the artifact\n    volume_name_artifact = phantom.collect2(container=container, datapath=[\"artifact:*.cef.volume_name\"])\n    \n    # Log collected artifacts for debugging\n    phantom.debug(f\"Collected volume name artifact: {volume_name_artifact}\")\n\n    # Concatenate the volume names into a single string\n    if volume_name_artifact and volume_name_artifact[0][0]:\n        volume_names = volume_name_artifact[0][0]\n    else:\n        volume_names = \"default_volume_name\"  # Provide a default volume name or handle the error\n\n    phantom.debug(f\"Using volume names: {volume_names}\")\n\n    body_formatted_string = json.dumps({\n        \"source_names\": volume_names\n    })\n    \n    location_formatted_string = phantom.format(\n        container=container,\n        template=\"/api/{0}/volume-snapshots\",\n        parameters=[\n            \"fetch_latest_fa_api_version:custom_function:latestvers\"\n        ])\n\n    fetch_the_auth_token__x_auth_token = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_the_auth_token:x_auth_token\")) != \"\" else \"null\")  # pylint: disable=used-before-assignment\n    fetch_latest_fa_api_version__latestvers = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_latest_fa_api_version:latestvers\")) != \"\" else \"null\")  # pylint: disable=used-before-assignment\n\n    parameters = []\n\n    if location_formatted_string is not None:\n        parameters.append({\n            \"body\": body_formatted_string,\n            \"headers\": json.dumps({\"x-auth-token\": fetch_the_auth_token__x_auth_token, \"Content-Type\": \"application/json\"}),\n            \"location\": location_formatted_string,\n        })\n\n    phantom.act(\"post data\", parameters=parameters, name=\"volume_snapshot\", assets=[\"purearray\"], callback=logout_of_the_flash_array)\n\n    return\n\n# Add additional steps to reset or re-create the artifact before the playbook runs again\n@phantom.playbook_block()\ndef reset_artifacts(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"reset_artifacts() called\")\n    \n    # Code to reset or re-create the artifact\n    # This is a placeholder and should be replaced with actual code to reset the artifact state\n\n    return",
+                    "customCode": "@phantom.playbook_block()\ndef volume_snapshot(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"volume_snapshot() called\")\n\n    user_agent = json.loads(phantom.get_run_data(key=\"useragent_setup:user_agent\"))\n    # Collect the volume name from the artifact\n    #volume_name_artifact = phantom.collect2(container=container, datapath=[\"artifact:*.cef.volume_name\"])\n    \n    # Log collected artifacts for debugging\n    #phantom.debug(f\"Collected volume name artifact: {volume_name_artifact}\")\n\n    # Concatenate the volume names into a single string\n    volume_names_list = phantom.get_list(list_name=\"pure_flasharray_volumes\")[2][0]\n    body_formatted_string = json.dumps({\n        \"source_names\": volume_names_list\n    })\n    \n    if isinstance(volume_names_list, list):\n        volume_names = ', '.join(volume_names_list)\n    else:\n        volume_names = volume_names_list\n\n    # Format the body of the POST request\n    body_formatted_string = json.dumps({\n        \"source_names\": volume_names\n    })\n    \n    fetch_the_auth_token__x_auth_token = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_the_auth_token:x_auth_token\")) != \"\" else \"null\")  # pylint: disable=used-before-assignment\n    fetch_latest_fa_api_version__latestvers = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_latest_fa_api_version:latestvers\")) != \"\" else \"null\")\n    \n    location_formatted_string = phantom.format(\n        container=container,\n        template=\"/api/{0}/volume-snapshots\",\n        parameters=[\n            \"fetch_latest_fa_api_version:custom_function:latestvers\"\n        ])\n\n    parameters = []\n\n    if location_formatted_string is not None:\n        parameters.append({\n            \"body\": body_formatted_string,\n            \"headers\": json.dumps({\"x-auth-token\": fetch_the_auth_token__x_auth_token, \"Content-Type\": \"application/json\",\"User-agent\": user_agent}),\n            \"location\": location_formatted_string,\n        })\n\n    phantom.act(\"post data\", parameters=parameters, name=\"volume_snapshot\", assets=[\"purearray\"], callback=logout_of_the_flash_array)\n\n    \n    # Code to reset or re-create the artifact\n    # This is a placeholder and should be replaced with actual code to reset the artifact state\n\n    return",
                     "data": {
                         "action": "post data",
                         "actionType": "generic",
@@ -296,10 +208,10 @@
                     "userCode": null,
                     "warnings": {},
                     "x": 980,
-                    "y": 1340
+                    "y": 900
                 },
                 "15": {
-                    "customCode": "@phantom.playbook_block()\ndef logout_of_the_flash_array(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"logout_of_the_flash_array() called\")\n\n     # Retrieve the latest version and x_auth_token from the run data\n    fetch_latest_fa_api_version__latestvers = phantom.get_run_data(key=\"fetch_latest_fa_api_version:latestvers\").strip('\"')\n    fetch_the_auth_token__x_auth_token = phantom.get_run_data(key=\"fetch_the_auth_token:x_auth_token\").strip('\"')\n\n    # Log the retrieved values for debugging\n    phantom.debug(f\"Latest version: {fetch_latest_fa_api_version__latestvers}\")\n    phantom.debug(f\"X-Auth-Token: {fetch_the_auth_token__x_auth_token}\")\n\n    # Check if the version and x_auth_token were retrieved successfully\n    if not fetch_latest_fa_api_version__latestvers:\n        phantom.error(\"Latest version not found\")\n        return\n    if not fetch_the_auth_token__x_auth_token:\n        phantom.error(\"X-Auth-Token not found\")\n        return\n\n    # Format the location string using the latest version\n    location_formatted_string = f\"/api/{fetch_latest_fa_api_version__latestvers}/logout\"\n\n    # Prepare headers as a dictionary\n    headers = {\n        \"X-Auth-Token\": fetch_the_auth_token__x_auth_token,\n        \"Content-Type\": \"application/json\"\n    }\n\n    # Prepare the parameters for the post data action\n    parameters = [{\n        \"location\": location_formatted_string,\n        \"headers\": json.dumps(headers)  # Convert headers to JSON string\n    }]\n\n    # Debug the prepared parameters\n    phantom.debug(f\"parameters: {parameters}\")\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    # Perform the post data action with the prepared parameters\n    if parameters:\n        phantom.act(\"post data\", parameters=parameters, name=\"logout_of_the_flash_array\", assets=[\"purearray\"])\n    else:\n        phantom.error(\"No valid parameters found for post data action.\")\n\n    return",
+                    "customCode": "@phantom.playbook_block()\ndef logout_of_the_flash_array(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"logout_of_the_flash_array() called\")\n    \n    user_agent = json.loads(phantom.get_run_data(key=\"useragent_setup:user_agent\"))\n\n     # Retrieve the latest version and x_auth_token from the run data\n    fetch_latest_fa_api_version__latestvers = phantom.get_run_data(key=\"fetch_latest_fa_api_version:latestvers\").strip('\"')\n    fetch_the_auth_token__x_auth_token = phantom.get_run_data(key=\"fetch_the_auth_token:x_auth_token\").strip('\"')\n\n    # Log the retrieved values for debugging\n    phantom.debug(f\"Latest version: {fetch_latest_fa_api_version__latestvers}\")\n    phantom.debug(f\"X-Auth-Token: {fetch_the_auth_token__x_auth_token}\")\n\n    # Check if the version and x_auth_token were retrieved successfully\n    if not fetch_latest_fa_api_version__latestvers:\n        phantom.error(\"Latest version not found\")\n        return\n    if not fetch_the_auth_token__x_auth_token:\n        phantom.error(\"X-Auth-Token not found\")\n        return\n\n    # Format the location string using the latest version\n    location_formatted_string = f\"/api/{fetch_latest_fa_api_version__latestvers}/logout\"\n\n    # Prepare headers as a dictionary\n    headers = {\n        \"X-Auth-Token\": fetch_the_auth_token__x_auth_token,\n        \"User-Agent\"  : user_agent,\n        \"Content-Type\": \"application/json\"\n    }\n\n    # Prepare the parameters for the post data action\n    parameters = [{\n        \"location\": location_formatted_string,\n        \"headers\": json.dumps(headers)  # Convert headers to JSON string\n    }]\n\n    # Debug the prepared parameters\n    phantom.debug(f\"parameters: {parameters}\")\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    # Perform the post data action with the prepared parameters\n    if parameters:\n        phantom.act(\"post data\", parameters=parameters, name=\"logout_of_the_flash_array\", assets=[\"purearray\"])\n    else:\n        phantom.error(\"No valid parameters found for post data action.\")\n\n    return",
                     "data": {
                         "action": "post data",
                         "actionType": "generic",
@@ -350,10 +262,33 @@
                     "userCode": null,
                     "warnings": {},
                     "x": 980,
-                    "y": 1480
+                    "y": 1040
+                },
+                "16": {
+                    "customCode": "@phantom.playbook_block()\ndef useragent_setup(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"useragent_setup() called\")\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    import platform\n    USER_AGENT_BASE = 'Pure-Storage-Splunk-SOAR-Integration'\n    VERSION = 'v1.0'\n    user_agent = \"%(base)s %(class)s/%(version)s (%(platform)s)\" % {\n            \"base\": USER_AGENT_BASE,\n            \"class\": __name__,\n            \"version\": VERSION,\n            \"platform\": platform.platform(),\n        }\n\n    phantom.save_run_data(key=\"useragent_setup:user_agent\", value=json.dumps(user_agent))\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n    list_the_flash_array_versions(container=container)\n\n    return",
+                    "data": {
+                        "advanced": {
+                            "customName": "Useragent Setup",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 4,
+                        "functionName": "useragent_setup",
+                        "id": "16",
+                        "inputParameters": [],
+                        "outputVariables": [],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "16",
+                    "type": "code",
+                    "userCode": "\n    import platform\n    USER_AGENT_BASE = 'Pure-Storage-Splunk-SOAR-Integration'\n    VERSION = 'v1.0'\n    user_agent = \"%(base)s %(class)s/%(version)s (%(platform)s)\" % {\n            \"base\": USER_AGENT_BASE,\n            \"class\": __name__,\n            \"version\": VERSION,\n            \"platform\": platform.platform(),\n        }\n\n    phantom.save_run_data(key=\"useragent_setup:user_agent\", value=json.dumps(user_agent))\n\n",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 220
                 },
                 "2": {
-                    "customCode": "@phantom.playbook_block()\ndef list_the_flash_array_versions(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"list_the_flash_array_versions() called\")\n\n    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n\n    parameters = []\n\n    parameters.append({\n        \"location\": \"/api/api_version\",\n    })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.act(\"get data\", parameters=parameters, name=\"list_the_flash_array_versions\", assets=[\"purearray\"], callback=fetch_latest_fa_api_version)\n\n    return",
+                    "customCode": "@phantom.playbook_block()\ndef list_the_flash_array_versions(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"list_the_flash_array_versions() called\")\n    \n    user_agent = json.loads(phantom.get_run_data(key=\"useragent_setup:user_agent\"))\n\n    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))\n\n    parameters = []\n\n    parameters.append({\n        \"headers\": json.dumps({\"User-agent\": user_agent}),\n        \"location\": \"/api/api_version\",\n    })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.act(\"get data\", parameters=parameters, name=\"list_the_flash_array_versions\", assets=[\"purearray\"], callback=fetch_latest_fa_api_version)\n\n    return",
                     "data": {
                         "action": "get data",
                         "actionType": "investigate",
@@ -413,10 +348,10 @@
                     "type": "action",
                     "warnings": {},
                     "x": 980,
-                    "y": 560
+                    "y": 340
                 },
                 "6": {
-                    "customCode": "@phantom.playbook_block()\ndef flasharray_login(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"flasharray_login() called\")\n\n    location_formatted_string = phantom.format(\n        container=container,\n        template=\"\"\"\\n/api/{0}/login\\n\"\"\",\n        parameters=[\n            \"fetch_latest_fa_api_version:custom_function:latestvers\"\n        ])\n\n    fetch_latest_fa_api_version__latestvers = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_latest_fa_api_version:latestvers\")) != \"\" else \"null\")  # pylint: disable=used-before-assignment\n\n    parameters = []\n\n    if location_formatted_string is not None:\n        parameters.append({\n            \"location\": location_formatted_string,\n        })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.act(\"post data\", parameters=parameters, name=\"flasharray_login\", assets=[\"purearray\"], callback=fetch_the_auth_token)\n\n\n    return",
+                    "customCode": "@phantom.playbook_block()\ndef flasharray_login(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"flasharray_login() called\")\n    \n    user_agent = json.loads(phantom.get_run_data(key=\"useragent_setup:user_agent\"))\n\n    location_formatted_string = phantom.format(\n        container=container,\n        template=\"\"\"\\n/api/{0}/login\\n\"\"\",\n        parameters=[\n            \"fetch_latest_fa_api_version:custom_function:latestvers\"\n        ])\n\n    fetch_latest_fa_api_version__latestvers = json.loads(_ if (_ := phantom.get_run_data(key=\"fetch_latest_fa_api_version:latestvers\")) != \"\" else \"null\")  # pylint: disable=used-before-assignment\n\n    parameters = []\n\n    if location_formatted_string is not None:\n        parameters.append({\n            \"headers\": json.dumps({\"User-agent\": user_agent}),\n            \"location\": location_formatted_string,\n        })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.act(\"post data\", parameters=parameters, name=\"flasharray_login\", assets=[\"purearray\"], callback=fetch_the_auth_token)\n\n\n    return",
                     "data": {
                         "action": "post data",
                         "actionType": "generic",
@@ -475,26 +410,26 @@
                     "type": "action",
                     "warnings": {},
                     "x": 980,
-                    "y": 840
+                    "y": 620
                 }
             },
-            "notes": "",
+            "notes": "1. Kindly create a custom list with the name \"pure_flasharray_volumes\"  and add the name of the volumes whose snapshots are to be taken.\n\n2. Kindly update the \"Operates on\" section under the Playbook Settings with the label name created for the Alert Type in Splunk SIEM.",
             "origin": {
-                "playbook_id": 1137,
-                "playbook_name": "DON\"T EDIT - Pure-Storage-Volume-Snapshot",
+                "playbook_id": 1348,
+                "playbook_name": "Pure-Storage-Flash_Array_Volume-Snapshot",
                 "playbook_repo_id": 2,
                 "playbook_repo_name": "local"
             }
         },
         "input_spec": null,
         "output_spec": null,
-        "playbook_trigger": "container_resolved",
+        "playbook_trigger": "artifact_created",
         "playbook_type": "automation",
         "python_version": "3",
         "schema": "5.0.12",
         "version": "6.2.2.134"
     },
-    "create_time": "2024-08-06T17:13:23.230065+00:00",
+    "create_time": "2024-08-09T12:11:21.835413+00:00",
     "draft_mode": false,
     "labels": [
         "events"

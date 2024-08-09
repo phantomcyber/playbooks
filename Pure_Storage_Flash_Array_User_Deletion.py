@@ -1,5 +1,5 @@
 """
-This workflow performs a user deletion on the Flash Array (On-Premises Target) using the names provided as an input variable via Artifacts.\nThis operation can be triggered by Splunk SOAR Playbook to safeguard against multiple failed login attempts to the Flash Array
+This workflow performs a user deletion on the Flash Array (On-Premises Target) using the names provided as an input variable via Custom lists. This operation can be triggered by Splunk SOAR Playbook to safeguard against multiple failed login attempts to the Flash Array&quot;
 """
 
 
@@ -12,20 +12,23 @@ from datetime import datetime, timedelta
 def on_start(container):
     phantom.debug('on_start() called')
 
-    # call 'list_the_flash_array_versions' block
-    list_the_flash_array_versions(container=container)
+    # call 'useragent_setup' block
+    useragent_setup(container=container)
 
     return
 
 @phantom.playbook_block()
 def list_the_flash_array_versions(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("list_the_flash_array_versions() called")
+    
+    user_agent = json.loads(phantom.get_run_data(key="useragent_setup:user_agent"))
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
 
     parameters = []
 
     parameters.append({
+        "headers": json.dumps({"User-agent": user_agent}),
         "location": "/api/api_version",
     })
 
@@ -43,12 +46,11 @@ def list_the_flash_array_versions(action=None, success=None, container=None, res
 
     return
 
-
 @phantom.playbook_block()
 def flasharray_login(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("flasharray_login() called")
-
-    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+    
+    user_agent = json.loads(phantom.get_run_data(key="useragent_setup:user_agent"))
 
     location_formatted_string = phantom.format(
         container=container,
@@ -63,6 +65,7 @@ def flasharray_login(action=None, success=None, container=None, results=None, ha
 
     if location_formatted_string is not None:
         parameters.append({
+            "headers": json.dumps({"User-agent": user_agent}),
             "location": location_formatted_string,
         })
 
@@ -78,6 +81,7 @@ def flasharray_login(action=None, success=None, container=None, results=None, ha
 
     phantom.act("post data", parameters=parameters, name="flasharray_login", assets=["purearray"], callback=fetch_the_auth_token)
 
+
     return
 
 @phantom.playbook_block()
@@ -91,9 +95,17 @@ def fetch_latest_fa_api_version(action=None, success=None, container=None, resul
     ################################################################################
 
     # Write your custom code here...
-    list_the_flash_array_versions_result_item_0 = [item[0] for item in list_the_flash_array_versions_result_data]
+    try:
+        list_the_flash_array_versions_result_item_0 = [item[0] for item in list_the_flash_array_versions_result_data if item and item[0]]
+        
+        if not list_the_flash_array_versions_result_item_0 or 'version' not in list_the_flash_array_versions_result_item_0[0]:
+            raise ValueError("No valid version data found")
 
-    fetch_latest_fa_api_version__latestvers = list_the_flash_array_versions_result_item_0[0]['version'][-1]
+        fetch_latest_fa_api_version__latestvers = list_the_flash_array_versions_result_item_0[0]['version'][-1]
+
+    except (IndexError, KeyError, ValueError) as e:
+        phantom.error(f"Failed to fetch the latest FA API version: {str(e)}")
+        return
 
     ################################################################################
     ## Custom Code End
@@ -102,13 +114,13 @@ def fetch_latest_fa_api_version(action=None, success=None, container=None, resul
     phantom.save_run_data(key="fetch_latest_fa_api_version:latestvers", value=json.dumps(fetch_latest_fa_api_version__latestvers))
 
     flasharray_login(container=container)
-
+    
     return
 
 @phantom.playbook_block()
 def fetch_the_auth_token(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("fetch_the_auth_token() called")   
-    
+    phantom.debug("fetch_the_auth_token() called")
+
     flasharray_login_result_data = phantom.collect2(container=container, datapath=["flasharray_login:action_result.data.*.response_headers.x-auth-token"], action_results=results)
 
     ################################################################################
@@ -127,158 +139,16 @@ def fetch_the_auth_token(action=None, success=None, container=None, results=None
 
     phantom.save_run_data(key="fetch_the_auth_token:x_auth_token", value=json.dumps(fetch_the_auth_token__x_auth_token))
     
-    get_flash_array_users_list(container=container)
-
-
-    return
-
-@phantom.playbook_block()
-def get_flash_array_users_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("get_flash_array_users_list() called")
-
-    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-
-    location_formatted_string = phantom.format(
-        container=container,
-        template="""/api/{0}/admins\n""",
-        parameters=[
-            "fetch_latest_fa_api_version:custom_function:latestvers"
-        ])
-
-   # Get the x_auth_token from the previous code step
-    x_auth_token = phantom.get_run_data(key="fetch_the_auth_token:x_auth_token")
-    
-    # Ensure the token is in the correct format
-    x_auth_token = x_auth_token.strip('"')
-    
-    # Create the headers dictionary
-    headers = {
-        "x-auth-token": x_auth_token
-    }
-    
-    # Debug statements to verify values
-    phantom.debug(f"Formatted location string: {location_formatted_string}")
-    phantom.debug(f"Auth token: {x_auth_token}")
-    phantom.debug(f"Headers: {json.dumps(headers)}")
-
-    parameters = []
-
-    if location_formatted_string is not None:
-        parameters.append({
-            "headers": json.dumps(headers),  # Ensure headers are passed as a JSON string
-            "location": location_formatted_string,
-        })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.act("get data", parameters=parameters, name="get_flash_array_users_list", assets=["purearray"], callback=extract_all_the_current_users)
-
-
-    return
-
-@phantom.playbook_block()
-def extract_all_the_current_users(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("extract_all_the_current_users() called")
-    
-     # Collect the parsed response body from the fetch_vol action
-    get_flash_array_users_list_result_data = phantom.collect2(container=container, datapath=["get_flash_array_users_list:action_result.data.*.parsed_response_body.items.*.name"], action_results=results)
-
-    user_names = []
-    if get_flash_array_users_list_result_data:
-        try:
-            for item in get_flash_array_users_list_result_data:
-                if item[0]:  # Ensure there is a name present
-                    user_names.append(item[0])
-
-        except Exception as e:
-            phantom.error(f"Error extracting user names: {str(e)}")
-
-    # Join the user names with newline characters for better readability
-    formatted_user_names = "\n".join(user_names)
-
-    # Debug statement to display only the formatted user names
-    phantom.debug(f"Formatted user names:\n{formatted_user_names}")
-
-    # Save the extracted user names to run data 
-    extract_all_the_current_users__names = user_names
-    phantom.save_run_data(key="extract_all_the_current_users:users_names", value=json.dumps(extract_all_the_current_users__names))
-    
     delete_the_user(container=container)
 
-    return
-
-@phantom.playbook_block()
-def delete_the_user(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("delete_the_user() called")
-
-   # Collect the user name from the artifact
-    user_name_artifact = phantom.collect2(container=container, datapath=["artifact:*.cef.user_name"])
-    
-    # Log collected artifacts for debugging
-    phantom.debug(f"Collected user name artifact: {user_name_artifact}")
-
-    # Concatenate the user names into a single string
-    if user_name_artifact and user_name_artifact[0][0]:
-        user_name = user_name_artifact[0][0]
-    else:
-        user_name = "default_user_name"  # Provide a default user name or handle the error
-
-    phantom.debug(f"Using user name: {user_name}")
-
-    # Retrieve the latest API version
-    latestvers = phantom.get_run_data(key="fetch_latest_fa_api_version:latestvers").strip('"')
-    
-    # Debug the latest version value
-    phantom.debug(f"Latest API version: {latestvers}")
-
-    # Create the location string for the API call
-    location_formatted_string = f"/api/{latestvers}/admins"
-
-    # Retrieve the auth token
-    x_auth_token = phantom.get_run_data(key="fetch_the_auth_token:x_auth_token").strip('"')
-
-    # Debug the x-auth-token value
-    phantom.debug(f"x-auth-token: {x_auth_token}")
-
-    # Create the headers dictionary
-    headers = {
-        "x-auth-token": x_auth_token,
-        "Content-Type": "application/json"
-    }
-
-    # Create the body for the delete request
-    body = {
-        "names": user_name
-    }
-
-    parameters = []
-
-    if location_formatted_string is not None:
-        parameters.append({
-            "headers": json.dumps(headers),  # Ensure headers are passed as a JSON string
-            "location": location_formatted_string,
-            "body": json.dumps(body)  # Add the body to the request
-        })
-
-    # Debug parameters to ensure they are correct
-    phantom.debug(f"Parameters: {parameters}")
-
-    # Perform the delete action
-    phantom.act("delete data", parameters=parameters, name="delete_the_user", assets=["purearray"],callback=logout_of_the_flash_array)
 
     return
 
 @phantom.playbook_block()
 def logout_of_the_flash_array(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("logout_of_the_flash_array() called")
+    
+    user_agent = json.loads(phantom.get_run_data(key="useragent_setup:user_agent"))
 
      # Retrieve the latest version and x_auth_token from the run data
     fetch_latest_fa_api_version__latestvers = phantom.get_run_data(key="fetch_latest_fa_api_version:latestvers").strip('"')
@@ -302,6 +172,7 @@ def logout_of_the_flash_array(action=None, success=None, container=None, results
     # Prepare headers as a dictionary
     headers = {
         "X-Auth-Token": fetch_the_auth_token__x_auth_token,
+        "User-Agent"  : user_agent,
         "Content-Type": "application/json"
     }
 
@@ -329,6 +200,89 @@ def logout_of_the_flash_array(action=None, success=None, container=None, results
         phantom.act("post data", parameters=parameters, name="logout_of_the_flash_array", assets=["purearray"])
     else:
         phantom.error("No valid parameters found for post data action.")
+
+    return
+
+@phantom.playbook_block()
+def useragent_setup(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("useragent_setup() called")
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    import platform
+    USER_AGENT_BASE = 'Pure-Storage-Splunk-SOAR-Integration'
+    VERSION = 'v1.0'
+    user_agent = "%(base)s %(class)s/%(version)s (%(platform)s)" % {
+            "base": USER_AGENT_BASE,
+            "class": __name__,
+            "version": VERSION,
+            "platform": platform.platform(),
+        }
+
+    phantom.save_run_data(key="useragent_setup:user_agent", value=json.dumps(user_agent))
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+    list_the_flash_array_versions(container=container)
+
+    return
+
+@phantom.playbook_block()
+def delete_the_user(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("delete_the_user() called")
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    user_agent = json.loads(phantom.get_run_data(key="useragent_setup:user_agent"))
+    # Collect the volume name from the artifact
+    #volume_name_artifact = phantom.collect2(container=container, datapath=["artifact:*.cef.volume_name"])
+    
+    # Log collected artifacts for debugging
+    #phantom.debug(f"Collected volume name artifact: {volume_name_artifact}")
+
+    # Concatenate the volume names into a single string
+    users_names_list = phantom.get_list(list_name="pure_flasharray_users")[2][0]
+
+    
+    if isinstance(users_names_list, list):
+        users_names = ', '.join(users_names_list)
+    else:
+        users_names = users_names_list
+
+    # Format the body of the POST request
+    body_formatted_string = json.dumps({
+        "names": users_names
+    })
+    
+    fetch_the_auth_token__x_auth_token = json.loads(_ if (_ := phantom.get_run_data(key="fetch_the_auth_token:x_auth_token")) != "" else "null")  # pylint: disable=used-before-assignment
+    fetch_latest_fa_api_version__latestvers = json.loads(_ if (_ := phantom.get_run_data(key="fetch_latest_fa_api_version:latestvers")) != "" else "null")
+    
+    location_formatted_string = phantom.format(
+        container=container,
+        template="/api/{0}/admins",
+        parameters=[
+            "fetch_latest_fa_api_version:custom_function:latestvers"
+        ])
+
+    parameters = []
+
+    if location_formatted_string is not None:
+        parameters.append({
+            "body": body_formatted_string,
+            "headers": json.dumps({"x-auth-token": fetch_the_auth_token__x_auth_token, "Content-Type": "application/json","User-agent": user_agent}),
+            "location": location_formatted_string,
+        })
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.act("delete data", parameters=parameters, name="delete_the_user", assets=["purearray"], callback=logout_of_the_flash_array)
 
     return
 
