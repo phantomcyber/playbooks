@@ -42,7 +42,7 @@ def list_the_flash_array_versions(action=None, success=None, container=None, res
     ## Custom Code End
     ################################################################################
 
-    phantom.act("get data", parameters=parameters, name="list_the_flash_array_versions", assets=["purearray"], callback=fetch_latest_fa_api_version)
+    phantom.act("get data", parameters=parameters, name="list_the_flash_array_versions", assets=["flasharray"], callback=fetch_latest_fa_api_version)
 
     return
 
@@ -79,7 +79,7 @@ def flasharray_login(action=None, success=None, container=None, results=None, ha
     ## Custom Code End
     ################################################################################
 
-    phantom.act("post data", parameters=parameters, name="flasharray_login", assets=["purearray"], callback=fetch_the_auth_token)
+    phantom.act("post data", parameters=parameters, name="flasharray_login", assets=["flasharray"], callback=fetch_the_auth_token)
 
 
     return
@@ -197,7 +197,7 @@ def logout_of_the_flash_array(action=None, success=None, container=None, results
 
     # Perform the post data action with the prepared parameters
     if parameters:
-        phantom.act("post data", parameters=parameters, name="logout_of_the_flash_array", assets=["purearray"])
+        phantom.act("post data", parameters=parameters, name="logout_of_the_flash_array", assets=["flasharray"])
     else:
         phantom.error("No valid parameters found for post data action.")
 
@@ -282,7 +282,7 @@ def delete_the_user(action=None, success=None, container=None, results=None, han
     ## Custom Code End
     ################################################################################
 
-    phantom.act("delete data", parameters=parameters, name="delete_the_user", assets=["purearray"], callback=logout_of_the_flash_array)
+    phantom.act("delete data", parameters=parameters, name="delete_the_user", assets=["flasharray"], callback=logout_of_the_flash_array)
 
     return
 
