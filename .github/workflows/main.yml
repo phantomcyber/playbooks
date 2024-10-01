@@ -22,11 +22,9 @@ jobs:
         pip install -r .github/tests/requirements.txt
 
     - name: Run Robot Framework tests
-      env:
-        PLAYBOOK: AD_LDAP_Account_Locking
       run: |
         mkdir -p results
-        robot -d results  -L DEBUG:INFO .github/tests/robot/PlaybookScanner.robot
+        python .github/tests/run_on_changed_playbooks.py 6.3 .github/tests/robot/PlaybookScanner.robot
 
     - name: Archive test results
       uses: actions/upload-artifact@v3
