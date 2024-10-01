@@ -2,7 +2,6 @@ import argparse
 import robot
 import os
 import subprocess
-from find_changed_playbooks import get_changed_files_without_extension
 
 def get_changed_files_without_extension(base_branch):
     # Run the git diff command to get the changed files compared to the base branch
