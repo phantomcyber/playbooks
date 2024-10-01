@@ -1,4 +1,4 @@
-from splunk_soar_sdk import ParsedPlaybook
+from soar_robot_utils import ParsedPlaybook
 
 from robot.libraries.BuiltIn import BuiltIn
 
