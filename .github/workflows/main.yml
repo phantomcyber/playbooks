@@ -1,6 +1,6 @@
 name: Playbook Validation
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   test:
@@ -9,6 +9,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -24,7 +26,7 @@ jobs:
     - name: Run Robot Framework tests
       run: |
         mkdir -p results
-        python .github/tests/run_on_changed_playbooks.py 6.3 .github/tests/robot/PlaybookScanner.robot
+        python .github/tests/run_on_changed_playbooks.py ${{ github.event.pull_request.base.ref }} .github/tests/robot/PlaybookScanner.robot
 
     - name: Archive test results
       uses: actions/upload-artifact@v3
