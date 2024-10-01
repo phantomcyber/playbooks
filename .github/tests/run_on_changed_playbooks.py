@@ -1,6 +1,32 @@
 import argparse
 import robot
+import os
+import subprocess
 from find_changed_playbooks import get_changed_files_without_extension
+
+def get_changed_files_without_extension(base_branch):
+    # Run the git diff command to get the changed files compared to the base branch
+    result = subprocess.run(
+        ['git', 'diff', '--name-only', base_branch],
+        stdout=subprocess.PIPE,
+        text=True
+    )
+    
+    files = result.stdout.splitlines()
+
+    # Only consider files in the root directory and with .json or .py extensions
+    root_files = [
+        file for file in files
+        if '/' not in file and (file.endswith('.json') or file.endswith('.py'))  # No subdirectories allowed
+    ]
+
+    # Remove extensions and only return the files that still exist in the working directory
+    files_without_extension = [
+        os.path.splitext(file)[0] for file in root_files if os.path.exists(file)
+    ]
+    
+    # Return unique file names without extensions
+    return list(set(files_without_extension))
 
 def run_robot_tests(robot_file: str, playbook: str):
 
