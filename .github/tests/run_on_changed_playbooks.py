@@ -23,8 +23,8 @@ def main():
     parser = argparse.ArgumentParser(description="Get changed JSON or Python files in the root directory without extensions compared to a base branch")
     
     # Add an argument for the base branch
-    parser.add_argument('base_branch', type=str, help='The base branch to compare against')
-    parser.add_argument('robot_path', type=str, help='Path of the robot test suite')
+    parser.add_argument('--base_branch', type=str, help='The base branch to compare against')
+    parser.add_argument('--robot-path', type=str, help='Path of the robot test suite')
  
     # Parse the arguments
     args = parser.parse_args()
