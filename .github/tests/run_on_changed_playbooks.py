@@ -6,7 +6,7 @@ import subprocess
 def get_changed_files_without_extension(base_branch, current_branch):
     # Run the git diff command to get the changed files compared to the base branch
     result = subprocess.run(
-        ['git', 'diff', '--name-only', base_branch, current_branch],
+        ['git', 'diff', '--name-only', f"{base_branch}...{current_branch}"],
         stdout=subprocess.PIPE,
         text=True
     )
