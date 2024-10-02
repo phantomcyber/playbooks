@@ -63,4 +63,4 @@ if __name__ == "__main__":
     # Parse the arguments
     args = parser.parse_args()
 
-    run_robot_tests(args.robot_path, "Active_Directory_Disable_Account_Dispatch")
+    main(args=args)
