@@ -42,17 +42,7 @@ def run_robot_tests(robot_file: str, playbook: str):
         print("Tests failed.")
 
 
-
-def main():
-    # Create the argument parser
-    parser = argparse.ArgumentParser(description="Get changed JSON or Python files in the root directory without extensions compared to a base branch")
-    
-    # Add an argument for the base branch
-    parser.add_argument('--base-branch', type=str, help='The base branch to compare against')
-    parser.add_argument('--robot-path', type=str, help='Path of the robot test suite')
- 
-    # Parse the arguments
-    args = parser.parse_args()
+def main(args):
     
     # Get changed files compared to the provided base branch
     changed_files = get_changed_files_without_extension(args.base_branch)
@@ -63,4 +53,14 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # Create the argument parser
+    parser = argparse.ArgumentParser(description="Get changed JSON or Python files in the root directory without extensions compared to a base branch")
+    
+    # Add an argument for the base branch
+    parser.add_argument('--base-branch', type=str, help='The base branch to compare against')
+    parser.add_argument('--robot-path', type=str, help='Path of the robot test suite')
+ 
+    # Parse the arguments
+    args = parser.parse_args()
+
+    run_robot_tests(args.robot_path, "Active_Directory_Disable_Account_Dispatch")
