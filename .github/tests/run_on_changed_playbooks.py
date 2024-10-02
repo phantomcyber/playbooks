@@ -45,7 +45,7 @@ def run_robot_tests(robot_file: str, playbook: str):
 def main(args):
     
     # Get changed files compared to the provided base branch
-    changed_files = get_changed_files_without_extension(args.base_branch)
+    changed_files = get_changed_files_without_extension(args.base_branch, args.current_branch)
     
     # Output the files without extensions
     for playbook in changed_files:
