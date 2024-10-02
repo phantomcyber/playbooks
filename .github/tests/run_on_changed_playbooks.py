@@ -3,10 +3,10 @@ import robot
 import os
 import subprocess
 
-def get_changed_files_without_extension(base_branch):
+def get_changed_files_without_extension(base_branch, current_branch):
     # Run the git diff command to get the changed files compared to the base branch
     result = subprocess.run(
-        ['git', 'diff', '--name-only', base_branch],
+        ['git', 'diff', '--name-only', base_branch, current_branch],
         stdout=subprocess.PIPE,
         text=True
     )
@@ -58,6 +58,7 @@ if __name__ == "__main__":
     
     # Add an argument for the base branch
     parser.add_argument('--base-branch', type=str, help='The base branch to compare against')
+    parser.add_argument('--current-branch', type=str, help='The current branch to compare against')
     parser.add_argument('--robot-path', type=str, help='Path of the robot test suite')
  
     # Parse the arguments
