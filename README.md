@@ -12,6 +12,7 @@ If you would like to contribute to the community repo, please follow these steps
 1. Clone the repo and create a new branch
 2. Export the playbook from the Splunk SOAR system.
 3. Unpack the exported `.tgz` file and add it to the playbooks folder.
-4. Open a pull request into the default branch.
-5. Ensure the automated tests are resolved and make changes as needed.
-6. Upon successfully passing the tests, a Splunk SOAR Community repo maintainer will review your submission.
+4. Include a .png screenshot of the playbook.
+5. Open a pull request into the default branch.
+6. Ensure the automated tests are resolved and make changes as needed.
+7. Upon successfully passing the tests, a Splunk SOAR Community repo maintainer will review your submission.
