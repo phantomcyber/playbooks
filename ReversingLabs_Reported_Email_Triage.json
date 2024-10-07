@@ -1,0 +1,364 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Phishing",
+    "coa": {
+        "data": {
+            "description": "",
+            "edges": [
+                {
+                    "id": "port_10_to_port_12",
+                    "sourceNode": "10",
+                    "sourcePort": "10_out",
+                    "targetNode": "12",
+                    "targetPort": "12_in"
+                },
+                {
+                    "id": "port_12_to_port_13",
+                    "sourceNode": "12",
+                    "sourcePort": "12_out",
+                    "targetNode": "13",
+                    "targetPort": "13_in"
+                },
+                {
+                    "id": "port_13_to_port_15",
+                    "sourceNode": "13",
+                    "sourcePort": "13_out",
+                    "targetNode": "15",
+                    "targetPort": "15_in"
+                },
+                {
+                    "id": "port_15_to_port_1",
+                    "sourceNode": "15",
+                    "sourcePort": "15_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_0_to_port_16",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "16",
+                    "targetPort": "16_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_16_to_port_10",
+                    "sourceNode": "16",
+                    "sourcePort": "16_out",
+                    "targetNode": "10",
+                    "targetPort": "10_in"
+                }
+            ],
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {
+                        "input_spec": [
+                            {
+                                "name": "Name is required"
+                            }
+                        ]
+                    },
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 20,
+                    "y": 0
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 20,
+                    "y": 888
+                },
+                "10": {
+                    "data": {
+                        "action": "run query",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "MS Graph for Office 365",
+                        "connectorConfigs": [
+                            "o365_rldevelopment"
+                        ],
+                        "connectorId": "0a0a4087-10e8-4c96-9872-b740ff26d8bb",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "run_query_1",
+                        "id": "10",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "email_address": "secops@company.com",
+                            "folder": "Inbox",
+                            "get_folder_id": true,
+                            "limit": "1",
+                            "query": {
+                                "functionId": 1,
+                                "parameters": [
+                                    "filtered-data:filter_2:condition_1:artifact:*.cef.evidence.1.networkMessageId"
+                                ],
+                                "template": "$filter=contains(subject, '{0}')"
+                            },
+                            "subject": ""
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "Inbox",
+                                "field": "folder"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "email_address"
+                            },
+                            {
+                                "data_type": "boolean",
+                                "default": true,
+                                "field": "get_folder_id"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "10",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 296
+                },
+                "12": {
+                    "data": {
+                        "action": "get email",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "MS Graph for Office 365",
+                        "connectorConfigs": [
+                            "o365_rldevelopment"
+                        ],
+                        "connectorId": "0a0a4087-10e8-4c96-9872-b740ff26d8bb",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "get_email_1",
+                        "id": "12",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "download_attachments": true,
+                            "download_email": false,
+                            "email_address": "secops@company.com",
+                            "id": "run_query_1:action_result.data.*.id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "id"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "email_address"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "12",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 440
+                },
+                "13": {
+                    "data": {
+                        "action": "detonate file",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "Reversinglabs A1000 v2",
+                        "connectorConfigs": [
+                            "a1000-techalc1"
+                        ],
+                        "connectorId": "3b35341f-c26b-490d-9802-82b23d5524c0",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "detonate_file_1",
+                        "id": "13",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "file_name": "get_email_1:action_result.data.*.attachments.*.name",
+                            "vault_id": "get_email_1:action_result.data.*.attachments.*.vaultId"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "vault_id"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "13",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 592
+                },
+                "15": {
+                    "data": {
+                        "action": "get summary report",
+                        "actionType": "generic",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "Reversinglabs A1000 v2",
+                        "connectorConfigs": [
+                            "a1000-techalc1"
+                        ],
+                        "connectorId": "3b35341f-c26b-490d-9802-82b23d5524c0",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "get_summary_report_1",
+                        "id": "15",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "hash": "detonate_file_1:action_result.parameter.vault_id",
+                            "include_network_threat_intelligence": true,
+                            "retry": true,
+                            "skip_reanalysis": true
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "hash"
+                            },
+                            {
+                                "data_type": "boolean",
+                                "default": true,
+                                "field": "retry"
+                            },
+                            {
+                                "data_type": "boolean",
+                                "default": true,
+                                "field": "include_network_threat_intelligence"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "15",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 740
+                },
+                "16": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "artifact:*.name",
+                                        "value": "Email reported by user as malware or phish"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "Filter alert details artifact",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 2,
+                        "functionName": "filter_2",
+                        "id": "16",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "16",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 60,
+                    "y": 120
+                }
+            },
+            "notes": "",
+            "origin": {
+                "playbook_id": 202,
+                "playbook_name": "RL - Email Triage",
+                "playbook_repo_id": 2,
+                "playbook_repo_name": "local"
+            }
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_type": "automation",
+        "python_version": "3",
+        "schema": "5.0.11",
+        "version": "6.2.0.355"
+    },
+    "create_time": "2024-09-26T03:07:45.818610+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": []
+}
