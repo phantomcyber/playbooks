@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sadlc-testing"
+description = "Testing scripts for SOAR playbooks"
+authors = [{ name = "Eric Li", email = "ericli@splunk.com" }]
+requires-python = ">=3.10"
+readme = "README.md"
+dependencies = [
+    "black",
+    "isort",
+    "robotframework",
+    "robotframework-tidy",
+    "paramiko",
+    "mistletoe",
+    "beautifulsoup4",
+    "lxml"
+]
+
+dynamic = ["version", ]
+
+[project.urls]
+repository = "https://cd.splunkdev.com/sgs-soar/sadlc-testing"
+
+[project.optional-dependencies]
+dev = [
+    "pip-tools"
+]
+
+[tool.setuptools]
+py-modules = []
+
+[tool.black]
+line-length = "120"
+extend-exclude = "repos|(.*/)?test/data/|robot/data/"
+
+[tool.isort]
+line_length = "120"
+profile = "black"
+extend_skip_glob = ["repos/*", "test/data/*", "*/test/data/*", "robot/data/*"]
