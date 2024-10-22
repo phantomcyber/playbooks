@@ -40,25 +40,27 @@ def workbook_task_update(task_name=None, note_title=None, note_content=None, sta
             current_playbook = (phantom.get_playbook_info()[0]['repo_name'], phantom.get_playbook_info()[0]['name'])
             
         for task in task_list:
-            match = False
-            if task_name == 'playbook':
-                playbooks = task['data']['suggestions'].get('playbooks', [])
-                for playbook in playbooks:
-                    if playbook['scm'] == current_playbook[0] and playbook['playbook'] == current_playbook[1]:
-                        match = True
-                        task_count += 1
-            elif task_name == task['data']['name']:
-                match = True
-                task_count += 1
-                
-            if match == True:
-                task_id = task['data']['id']
-                task_is_note_required = task['data']['is_note_required']
-                task_status = task['data']['status']
-                task_notes = task['data']['notes']
-                task_owner = task['data']['owner']
-                if task_is_note_required and status == 'complete' and task_status != 1:
-                    closing_note = True
+            if task['success'] and task.get('data'):
+                task_data = task['data']
+                match = False
+                if task_name == 'playbook':
+                    playbooks = task_data['suggestions'].get('playbooks', [])
+                    for playbook in playbooks:
+                        if playbook['scm'] == current_playbook[0] and playbook['playbook'] == current_playbook[1]:
+                            match = True
+                            task_count += 1
+                elif task_name == task_data['name']:
+                    match = True
+                    task_count += 1
+
+                if match == True:
+                    task_id = task_data['id']
+                    task_is_note_required = task_data['is_note_required']
+                    task_status = task_data['status']
+                    task_notes = task_data['notes']
+                    task_owner = task_data['owner']
+                    if task_is_note_required and status == 'complete' and task_status != 1:
+                        closing_note = True
                 
     elif not task_name:
         raise RuntimeError("Missing input for task_name.")
