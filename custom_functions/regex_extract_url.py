@@ -22,9 +22,9 @@ def regex_extract_url(input_string=None, **kwargs):
             url_list.append(url[0])
     if url_list:
         for url in set(url_list):
-            outputs.append({"extracted_url": url, "input_value": input_string})
+            outputs.append({"extracted_url": url, "input_string": input_string})
     else:
-        outputs.append({"extracted_url": None, "input_value": input_string})
+        outputs.append({"extracted_url": None, "input_string": input_string})
 
     phantom.debug("Extracted urls: {}".format(outputs))
     
