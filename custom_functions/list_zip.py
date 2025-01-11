@@ -50,8 +50,8 @@ def list_zip(zip_type=None, pad_values=None, input_1=None, input_2=None, input_3
             # attempt to convert lists as string to lists
             if isinstance(item, str) and item.startswith("[") and item.endswith("]"):    
                 temp_dict[f'input_{idx}'] = [i.strip() for i in item.lstrip('[').rstrip(']').split(',')]
-            elif isinstance(item, list) and len(item) == 1 and item[0].startswith("[") and item[0].endswith("]"):
-                temp_dict[f'input_{idx}'] = [i.strip() for i in item[0].lstrip('[').rstrip(']').split(',')]
+            elif isinstance(item, list) and len(item) == 1 and str(item[0]).startswith("[") and str(item[0]).endswith("]"):
+                temp_dict[f'input_{idx}'] = [i.strip() for i in str(item[0]).lstrip('[').rstrip(']').split(',')]
             # elif raise error on unsupported items
             elif not isinstance(item, list) and not item is None :
                 raise TypeError(f"input_{idx} is not None or list type, it is {type(item)}.")
@@ -59,9 +59,22 @@ def list_zip(zip_type=None, pad_values=None, input_1=None, input_2=None, input_3
             elif item:
                 temp_dict[f'input_{idx}'] = item
         return temp_dict
-
+    
+    def check_equal_inputs_size(*args):
+        max_size = None
+        for item in args:
+            if item:
+                if max_size == None:
+                    max_size = len(item)
+                elif len(item) > max_size:
+                    return False
+        return True
+            
     merged_dict = check_and_merge_inputs(input_1, input_2, input_3, input_4, input_5, input_6, input_7, input_8)
-    pad_values = bool_check(pad_values)
+    if bool_check(pad_values) and not check_equal_inputs_size(input_1, input_2, input_3, input_4, input_5, input_6, input_7, input_8):
+        pad_values = True
+    else:
+        pad_values = False
     values_to_pad = {}
 
     if pad_values:
