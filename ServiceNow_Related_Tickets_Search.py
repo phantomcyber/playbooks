@@ -241,6 +241,7 @@ def build_output(action=None, success=None, container=None, results=None, handle
             if value.get("caller_id"):
                 caller_id = value["caller_id"]["display_value"]
             
+            sample_link = None
             for k, v in value.items():
                 # generate matched fields where the searched entity appears
                 if isinstance(v, str) and key.lower() in v.lower():

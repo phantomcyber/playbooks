@@ -34,6 +34,7 @@ def workbook_task_update(task_name=None, note_title=None, note_content=None, sta
     if task_name:
         task_list = phantom.get_tasks(container_id)
         task_count = 0
+        task_id = None
         current_playbook = ""
         
         if task_name == 'playbook':

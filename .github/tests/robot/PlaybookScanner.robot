@@ -3,6 +3,8 @@ Documentation       Scan playbook to make sure it follows MR review standard.
 ...
 ...                 https://docs.google.com/document/d/1cowcKOZxcc7U90eP5Zy1j5HtLhLQCg9_ALtSOTC_CYE/edit
 
+Library             OperatingSystem
+Library             String
 Library             PlaybookScannerHelper.py
 Library             DynamicTestCases.py
 
@@ -372,3 +374,12 @@ Scan Code Formatting
     # Currently do not enforce code formatting.
     ${passed}=    Run Keyword And Return Status    Should Be Equal    ${old_code}    ${new_code}
     Skip If    ${{not $passed}}    Custom code is not formatted
+
+Scan Code Pylint
+    [Documentation]    Make sure code passes some of the basic pylint checks enforced by the VPE
+    [Arguments]    ${pb}
+
+    ${result}    Run    pylint --enable=E,F --disable=W,C,R,I,E0401 ${playbook}.py  # only check for error and fatal, ignore E0401 (import-error) since we don't have the dependencies
+    ${lines}=    Split String    ${result}    \n
+    ${line_count}=    Get Length    ${lines}
+    Should Be Equal as Integers   ${line_count}    4    ${result}
