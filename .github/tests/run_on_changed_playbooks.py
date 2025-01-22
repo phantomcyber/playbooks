@@ -27,11 +27,11 @@ def get_changed_files_without_extension(base_branch):
     # Return unique file names without extensions
     return list(set(files_without_extension))
 
-def run_robot_tests(robot_file: str, playbook: str):
+def run_robot_tests(robot_file: str, output_dir: str, playbook: str):
 
     result = robot.run(
         robot_file,
-        outputdir='results',
+        outputdir=output_dir,
         loglevel='DEBUG:INFO',
         variable=[f"PLAYBOOK:{playbook}"]
     )
@@ -50,7 +50,7 @@ def main(args):
     print(changed_files)
     # Output the files without extensions
     for playbook in changed_files:
-        run_robot_tests(args.robot_path, playbook)
+        run_robot_tests(args.robot_path, args.output_dir, playbook)
 
 
 if __name__ == "__main__":
@@ -60,6 +60,7 @@ if __name__ == "__main__":
     # Add an argument for the base branch
     parser.add_argument('--base-branch', type=str, help='The base branch to compare against')
     parser.add_argument('--robot-path', type=str, help='Path of the robot test suite')
+    parser.add_argument('--output-dir', type=str, help='Path to results')
  
     # Parse the arguments
     args = parser.parse_args()

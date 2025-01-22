@@ -34,9 +34,10 @@ jobs:
 
     - name: Run Robot Framework tests
       run: |
-        mkdir -p results
-        python .github/tests/run_on_changed_playbooks.py --base-branch=origin/${{github.event.pull_request.base.ref}} --robot-path=.github/tests/robot/PlaybookScanner.robot
-        python .github/tests/run_on_all_automation_code.py --robot-path=.github/tests/robot/AutomationCodeScanner.robot
+        mkdir -p results/changed-playbooks
+        python .github/tests/run_on_changed_playbooks.py --base-branch=origin/${{github.event.pull_request.base.ref}} --robot-path=.github/tests/robot/PlaybookScanner.robot --output-dir=results/changed-playbooks
+        mkdir -p results/all
+        python .github/tests/run_on_all_automation_code.py --robot-path=.github/tests/robot/AutomationCodeScanner.robot --output-dir=results/all
 
     - name: Archive test results
       uses: actions/upload-artifact@v3
