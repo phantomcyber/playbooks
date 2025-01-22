@@ -15,7 +15,6 @@ jobs:
     - name: Fetch all branches
       run: |
         git fetch --all
-        git branch
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -35,9 +34,6 @@ jobs:
 
     - name: Run Robot Framework tests
       run: |
-        git fetch --all
-        git branch
-        git diff --name-only origin/${{github.event.pull_request.head.ref}}...origin/${{github.event.pull_request.base.ref}}
         mkdir -p results
         python .github/tests/run_on_changed_playbooks.py --current-branch=origin/${{github.event.pull_request.head.ref}} --base-branch=origin/${{github.event.pull_request.base.ref}} --robot-path=.github/tests/robot/PlaybookScanner.robot
         python .github/tests/run_on_all_automation_code.py --robot-path=.github/tests/robot/AutomationCodeScanner.robot

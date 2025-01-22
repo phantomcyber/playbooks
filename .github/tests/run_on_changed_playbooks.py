@@ -5,9 +5,8 @@ import subprocess
 
 def get_changed_files_without_extension(base_branch, current_branch):
     # Run the git diff command to get the changed files compared to the base branch
-    subprocess.run(["git", "fetch", "--all"])
     result = subprocess.run(
-        ['git', 'diff', '--name-only', f"{base_branch}...{current_branch}"],
+        ['git', 'diff', '--name-only', f"{base_branch}"],
         stdout=subprocess.PIPE,
         text=True
     )
@@ -18,7 +17,7 @@ def get_changed_files_without_extension(base_branch, current_branch):
             stdout=subprocess.PIPE,
             text=True
         )
-        raise RuntimeError(f"git diff on {base_branch}...{current_branch} failed. Valid branches are:\n{result.stdout}")
+        raise RuntimeError(f"git diff on {base_branch} failed. Valid branches are:\n{result.stdout}")
     
     files = result.stdout.splitlines()
 
