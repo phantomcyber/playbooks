@@ -18,7 +18,7 @@ def on_start(container):
     return
 
 @phantom.playbook_block()
-def default_table_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+def default_table_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("default_table_list() called")
 
     ################################################################################
@@ -55,7 +55,7 @@ def default_table_list(action=None, success=None, container=None, results=None, 
 
 
 @phantom.playbook_block()
-def convert_table_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+def convert_table_list(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("convert_table_list() called")
 
     default_table_list__output = json.loads(_ if (_ := phantom.get_run_data(key="default_table_list:output")) != "" else "null")  # pylint: disable=used-before-assignment
@@ -80,7 +80,7 @@ def convert_table_list(action=None, success=None, container=None, results=None, 
 
 
 @phantom.playbook_block()
-def space_delimiter_input(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+def space_delimiter_input(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("space_delimiter_input() called")
 
     ################################################################################
@@ -112,7 +112,7 @@ def space_delimiter_input(action=None, success=None, container=None, results=Non
 
 
 @phantom.playbook_block()
-def input_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+def input_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("input_filter() called")
 
     ################################################################################
@@ -125,8 +125,7 @@ def input_filter(action=None, success=None, container=None, results=None, handle
         conditions=[
             ["playbook_input:search_term", "!=", None]
         ],
-        name="input_filter:condition_1",
-        delimiter=",")
+        name="input_filter:condition_1")
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
@@ -136,7 +135,7 @@ def input_filter(action=None, success=None, container=None, results=None, handle
 
 
 @phantom.playbook_block()
-def process_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+def process_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("process_results() called")
 
     ################################################################################
@@ -186,7 +185,7 @@ def process_results(action=None, success=None, container=None, results=None, han
 
 
 @phantom.playbook_block()
-def build_output(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+def build_output(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("build_output() called")
 
     ################################################################################
@@ -242,7 +241,6 @@ def build_output(action=None, success=None, container=None, results=None, handle
             if value.get("caller_id"):
                 caller_id = value["caller_id"]["display_value"]
             
-            sample_link = None
             for k, v in value.items():
                 # generate matched fields where the searched entity appears
                 if isinstance(v, str) and key.lower() in v.lower():
@@ -308,7 +306,7 @@ def build_output(action=None, success=None, container=None, results=None, handle
 
 
 @phantom.playbook_block()
-def calculate_earliest_time(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+def calculate_earliest_time(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("calculate_earliest_time() called")
 
     create_time_value = container.get("create_time", None)
@@ -339,7 +337,7 @@ def calculate_earliest_time(action=None, success=None, container=None, results=N
 
 
 @phantom.playbook_block()
-def run_ticket_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+def run_ticket_query(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("run_ticket_query() called")
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
@@ -388,7 +386,7 @@ def run_ticket_query(action=None, success=None, container=None, results=None, ha
 
 
 @phantom.playbook_block()
-def format_report(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+def format_report(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug("format_report() called")
 
     ################################################################################
