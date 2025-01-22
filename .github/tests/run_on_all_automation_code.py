@@ -1,4 +1,5 @@
 import argparse
+import os
 import robot
 from glob import glob
 
@@ -7,6 +8,8 @@ def main(args):
     all_automation_files = ' '.join(glob("*.py") + glob("custom_functions/*.py"))
     
     print(all_automation_files)
+
+    os.makedirs(args.output_dir, exist_ok=True)
 
     result = robot.run(
         args.robot_path,

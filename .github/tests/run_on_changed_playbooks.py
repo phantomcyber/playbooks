@@ -29,6 +29,8 @@ def get_changed_files_without_extension(base_branch):
 
 def run_robot_tests(robot_file: str, output_dir: str, playbook: str):
 
+    os.makedirs(output_dir, exist_ok=True)
+
     result = robot.run(
         robot_file,
         outputdir=output_dir,
@@ -50,7 +52,7 @@ def main(args):
     print(changed_files)
     # Output the files without extensions
     for playbook in changed_files:
-        run_robot_tests(args.robot_path, args.output_dir, playbook)
+        run_robot_tests(args.robot_path, os.path.join(args.output_dir, playbook), playbook)
 
 
 if __name__ == "__main__":
