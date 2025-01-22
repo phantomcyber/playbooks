@@ -10,6 +10,14 @@ def get_changed_files_without_extension(base_branch, current_branch):
         stdout=subprocess.PIPE,
         text=True
     )
+    if result.returncode:
+        # git diff failed
+        result = subprocess.run(
+            ['git', 'branch'],
+            stdout=subprocess.PIPE,
+            text=True
+        )
+        raise RuntimeError(f"git diff on {base_branch}...{current_branch} failed. Valid branches are:\n{result.stdout}")
     
     files = result.stdout.splitlines()
 
@@ -43,12 +51,9 @@ def run_robot_tests(robot_file: str, playbook: str):
 
 
 def main(args):
-
-    base_branch = args.base_branch.strip("/origin/")
-    current_branch = args.current_branch.strip("/origin/")
     
     # Get changed files compared to the provided base branch
-    changed_files = get_changed_files_without_extension(base_branch, current_branch)
+    changed_files = get_changed_files_without_extension(args.base_branch, args.current_branch)
     
     print(changed_files)
     # Output the files without extensions
