@@ -6,7 +6,7 @@ import subprocess
 def get_changed_files_without_extension(base_branch):
     # Run the git diff command to get the changed files compared to the base branch
     result = subprocess.run(
-        ['git', 'diff', '--name-only', f"{base_branch}"],
+        ['git', 'diff', '--name-only', f"{base_branch}6.3"],
         stdout=subprocess.PIPE,
         text=True
     )
@@ -53,6 +53,7 @@ def main(args):
     # Output the files without extensions
     failures = 0
     for playbook in changed_files:
+        print(f"\nScanning playbook: {playbook}")
         result = run_robot_test(args.robot_path, os.path.join(args.output_dir, playbook), playbook)
         if result:
             failures += 1
