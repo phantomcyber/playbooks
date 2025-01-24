@@ -21,7 +21,7 @@ def main(args):
     if result == 0:
         print("Tests passed successfully!")
     else:
-        print("Tests failed.")
+        raise RuntimeError("Tests failed.")
 
 
 if __name__ == "__main__":

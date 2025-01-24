@@ -10,6 +10,9 @@ def get_changed_files_without_extension(base_branch):
         stdout=subprocess.PIPE,
         text=True
     )
+
+    if result.returncode:
+        raise RuntimeError("Failed to check git diff")
     
     files = result.stdout.splitlines()
 
@@ -27,7 +30,7 @@ def get_changed_files_without_extension(base_branch):
     # Return unique file names without extensions
     return list(set(files_without_extension))
 
-def run_robot_tests(robot_file: str, output_dir: str, playbook: str):
+def run_robot_test(robot_file: str, output_dir: str, playbook: str):
 
     os.makedirs(output_dir, exist_ok=True)
 
@@ -38,10 +41,7 @@ def run_robot_tests(robot_file: str, output_dir: str, playbook: str):
         variable=[f"PLAYBOOK:{playbook}"]
     )
 
-    if result == 0:
-        print("Tests passed successfully!")
-    else:
-        print("Tests failed.")
+    return result
 
 
 def main(args):
@@ -51,8 +51,16 @@ def main(args):
     
     print(changed_files)
     # Output the files without extensions
+    failures = 0
     for playbook in changed_files:
-        run_robot_tests(args.robot_path, os.path.join(args.output_dir, playbook), playbook)
+        result = run_robot_test(args.robot_path, os.path.join(args.output_dir, playbook), playbook)
+        if result:
+            failures += 1
+
+    if failures == 0:
+        print("All tests passed successfully!")
+    else:
+        raise RuntimeError(f"Tests failed on {failures} playbooks.")
 
 
 if __name__ == "__main__":
