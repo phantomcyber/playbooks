@@ -1,0 +1,343 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Network Restore",
+    "coa": {
+        "data": {
+            "description": "Accepts a uid (device_id or hostname) as input and quarantines the device in MS Defender for Endpoint. We then generate an observable report. The report can be customized based on user preference.\n\nRef:\nhttps://d3fend.mitre.org/technique/d3f:RestoreNetworkAccess/",
+            "edges": [
+                {
+                    "id": "port_0_to_port_3",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_3_to_port_2",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "id": "port_2_to_port_4",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "id": "port_5_to_port_1",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_4_to_port_6",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_6_to_port_5",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
+                }
+            ],
+            "hash": "d6cb1a2ec0d805d782dfc5ba400453a370e8dd0a",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 1020,
+                    "y": 299.99999999999943
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 1020,
+                    "y": 1120
+                },
+                "2": {
+                    "data": {
+                        "action": "unquarantine device",
+                        "actionType": "correct",
+                        "advanced": {
+                            "customName": "unquarantine device",
+                            "customNameId": 0,
+                            "description": "Unquarantines device in MS Defender for Endpoint given a uid (device_id or hostname).",
+                            "join": [],
+                            "note": "Unquarantines device in MS Defender for Endpoint given a uid (device_id or hostname)."
+                        },
+                        "connector": "Microsoft Defender for Endpoint",
+                        "connectorConfigs": [
+                            "defender-atp"
+                        ],
+                        "connectorId": "e85407b7-91f0-4019-8fa4-0d29bca741d5",
+                        "connectorVersion": null,
+                        "functionId": 1,
+                        "functionName": "unquarantine_device",
+                        "id": "2",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "comment": "Device removed from isolation via Splunk SOAR.",
+                            "device_id": "filtered-data:input_filter:condition_1:playbook_input:uid",
+                            "timeout": 30
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "comment"
+                            },
+                            {
+                                "data_type": "numeric",
+                                "default": 30,
+                                "field": "timeout"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "device_id"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 580
+                },
+                "3": {
+                    "data": {
+                        "advanced": {
+                            "customName": "input filter",
+                            "customNameId": 0,
+                            "description": "Determines if the provided inputs are present in the dataset.",
+                            "join": [],
+                            "note": "Determines if the provided inputs are present in the dataset."
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "playbook_input:uid",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "uid present",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "input_filter",
+                        "id": "3",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 1060,
+                    "y": 424.5
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "customName": "unquarantine device filter",
+                            "customNameId": 0,
+                            "description": "Filters successful unquarantine actions",
+                            "join": [],
+                            "note": "Filters successful unquarantine actions"
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "unquarantine_device:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "successful isolation",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 2,
+                        "functionName": "unquarantine_device_filter",
+                        "id": "4",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 1060,
+                    "y": 704.5
+                },
+                "5": {
+                    "data": {
+                        "advanced": {
+                            "customName": "host observables",
+                            "customNameId": 0,
+                            "description": "Format a normalized output for each host",
+                            "join": [],
+                            "note": "Format a normalized output for each host"
+                        },
+                        "functionId": 1,
+                        "functionName": "host_observables",
+                        "id": "5",
+                        "inputParameters": [
+                            "filtered-data:unquarantine_device_filter:condition_1:unquarantine_device:action_result.parameter.device_id",
+                            "filtered-data:unquarantine_device_filter:condition_1:unquarantine_device:action_result.data.*.computerDnsName",
+                            "unquarantine_device:action_result.data.*.type"
+                        ],
+                        "outputVariables": [
+                            "observable_array"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "code",
+                    "userCode": "    \n    code_1__observable_array = []\n    \n    for device_id, dns, isolationtype in zip(filtered_result_0_parameter_device_id, filtered_result_0_data___computerdnsname, unquarantine_device_result_item_0):\n        # Initialize the observable dictionary\n        observable = {\n            \"source\": \"Microsoft Defender for Endpoint\",\n            \"type\": \"defender atp device id\",\n            \"value\": device_id,\n            \"attributes\": {\n                \"computer_dns_name\": dns,\n                \"isolation_type\": isolationtype\n            },\n            \"status\": \"active\",\n            \"message\": \"Device removed from isolation successfully\"\n        }\n\n        # Add the observable to the array\n        code_1__observable_array.append(observable)\n    \n    # Debug output for verification\n    phantom.debug(code_1__observable_array)\n        \n    # Write your custom code here...\n\n",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 980
+                },
+                "6": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format report device",
+                            "customNameId": 0,
+                            "description": "Format a summary table with the information gathered from the playbook.",
+                            "join": [],
+                            "note": "Format a summary table with the information gathered from the playbook."
+                        },
+                        "functionId": 1,
+                        "functionName": "format_report_device",
+                        "id": "6",
+                        "parameters": [
+                            "filtered-data:unquarantine_device_filter:condition_1:unquarantine_device:action_result.data.*.machineId",
+                            "filtered-data:unquarantine_device_filter:condition_1:unquarantine_device:action_result.data.*.computerDnsName",
+                            "filtered-data:unquarantine_device_filter:condition_1:unquarantine_device:action_result.data.*.type",
+                            "filtered-data:unquarantine_device_filter:condition_1:unquarantine_device:action_result.status"
+                        ],
+                        "template": "Devices were removed from isolation via Splunk SOAR. The table below summarizes the information gathered.\n\n| Device ID | DNS Name | Isolation Type | Unquarantine Status |\n| --- | --- | --- | --- |\n%%\n| {0} | {1} | {2} | {3} |\n%%\n",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "format",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 860
+                }
+            },
+            "notes": "Inputs: uid (Defender Device ID or Hostname)\nInteractions: Microsoft Defender for Endpoint\nActions: unquarantine device\nOutputs: observables, markdown report",
+            "origin": {
+                "playbook_id": 429,
+                "playbook_name": "Microsoft_Defender_for_Endpoint_Network_Isolation",
+                "playbook_repo_id": 4,
+                "playbook_repo_name": "soar"
+            }
+        },
+        "input_spec": [
+            {
+                "contains": [
+                    "defender atp device id",
+                    "host name"
+                ],
+                "description": "MS Defender device ID or hostname to remove from isolation.",
+                "name": "uid"
+            }
+        ],
+        "output_spec": [
+            {
+                "contains": [],
+                "datapaths": [
+                    "host_observables:custom_function:observable_array"
+                ],
+                "deduplicate": false,
+                "description": "An observable dictionary with value, type, computer_dns_name, and isolation_type.",
+                "metadata": {},
+                "name": "observable"
+            },
+            {
+                "contains": [],
+                "datapaths": [
+                    "format_report_device:formatted_data"
+                ],
+                "deduplicate": false,
+                "description": "A report of the devices that were removed from isolation via Splunk SOAR.",
+                "metadata": {},
+                "name": "markdown_report"
+            }
+        ],
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "data",
+        "python_version": "3",
+        "schema": "5.0.15",
+        "version": "6.3.1.178"
+    },
+    "create_time": "2025-01-16T18:08:52.043654+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": [
+        "device",
+        "host name",
+        "D3-RNA",
+        "MS_Defender_for_Endpoint",
+        "restore"
+    ]
+}
