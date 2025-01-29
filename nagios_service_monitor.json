@@ -7,7 +7,7 @@
             "clean": true,
             "code_block": "",
             "description": "This Playbook enables automatic response to notifications from a Nagios server that is monitoring Linux services. When Nagios detects service disruption it is configured to send an email to Phantom, which will trigger this Playbook to attempt a quick fix for the issue by using SSH to restart the System V service in question. The target hostname/IP and service name are parsed from the subject line of the email from Nagios then each parameter is checked against an allowlist (a Custom List on Phantom) before sending the SSH command.\n\nCommunity Contributor: Lora Fulton",
-            "hash": "9bac3f39fe2ad71a3f3d1aa6f391feff09f94ca0",
+            "hash": "d9067a492d2843b01eaa09af4f3035f1c1996e50",
             "joint": {
                 "cells": [
                     {
@@ -298,8 +298,8 @@
                         "join_code": "# read-only block view not available",
                         "join_optional": [],
                         "join_start": 1,
-                        "line_end": 153,
-                        "line_start": 140,
+                        "line_end": 154,
+                        "line_start": 141,
                         "name": "",
                         "notes": "",
                         "number": 0,
@@ -699,354 +699,6 @@
                         "z": 176
                     },
                     {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "fill": "#000000",
-                                "stroke": "#5C6773"
-                            },
-                            ".color-band": {
-                                "fill": "#3C444D"
-                            },
-                            ".format": {
-                                "text": "format service command"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "opacity": 0,
-                                "text": "Configuring now"
-                            },
-                            ".outPorts>.port-out-1": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out-1>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "text": "format"
-                            },
-                            "g.code image": {
-                                "opacity": 1,
-                                "xlink:href": "/inc/coa/img/block_icon_code_dark_on.svg"
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
-                            },
-                            "g.notes": {
-                                "display": "block"
-                            },
-                            "g.notes image": {
-                                "opacity": 1,
-                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
-                            }
-                        },
-                        "block_code": "# read-only block view not available",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
-                        "custom_callback": "",
-                        "custom_code": "def format_service_command(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_service_command() called')\n    \n    container_data = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.emailHeaders.Subject'])\n    \n    service = \"\"\n    for result in container_data:\n        if result[0] and \"Service Alert\" in result[0]:\n            parts = result[0].split(\"** PROBLEM Service Alert: \")\n            service = parts[1].split('/')[1].split(\" process is CRITICAL\")[0]\n\n    ssh_command = \"service {} restart\".format(service)\n    \n    success, message, allowlist = phantom.get_list(\"nagios_service_monitoring_service_name_allowlist\")\n    if [service] in allowlist:\n        phantom.debug(\"service name allowlist check passed\")\n    else:\n        phantom.error(\"service name allowlist check failed\")\n        phantom.comment(container=container, comment=\"service name allowlist check failed\")\n        ssh_command = \"service name allowlist check failed\"\n\n    phantom.format(container=container, template=ssh_command, parameters=[\"\"], name=\"format_service_command\")\n\n    join_execute_program_1(container=container)\n\n    return",
-                        "custom_join": "",
-                        "custom_name": "format service command",
-                        "description": "Parse the service name reported by Nagios and check it against an allowlist (a Custom List). Use the service name to create the ssh command to restart that service.",
-                        "format": "format",
-                        "has_custom": false,
-                        "has_custom_block": true,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "c64b3d4d-4aae-475b-b106-4ba1cb9aaf44",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 140,
-                        "line_start": 113,
-                        "message": "Configuring now",
-                        "name": "format",
-                        "notes": "Parse the service name reported by Nagios and check it against an allowlist (a Custom List). Use the service name to create the ssh command to restart that service.",
-                        "number": 4,
-                        "order": 5,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "parameters": [
-                            {
-                                "position": 0,
-                                "type": "",
-                                "value": ""
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 720,
-                            "y": 80
-                        },
-                        "previous_function": "",
-                        "previous_name": "format_service_command",
-                        "show_number": true,
-                        "size": {
-                            "height": 100,
-                            "width": 180
-                        },
-                        "state": "format",
-                        "status": "",
-                        "template": "{0}",
-                        "title": "format",
-                        "type": "coa.Format",
-                        "warn": false,
-                        "z": 182
-                    },
-                    {
-                        "active": false,
-                        "angle": 0,
-                        "attrs": {
-                            ".background": {
-                                "fill": "#000000",
-                                "stroke": "#5C6773"
-                            },
-                            ".color-band": {
-                                "fill": "#3C444D"
-                            },
-                            ".format": {
-                                "text": "parse hostname or ip"
-                            },
-                            ".inPorts>.port-in": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".inPorts>.port-in>.port-body": {
-                                "port": {
-                                    "id": "in",
-                                    "type": "in"
-                                }
-                            },
-                            ".message": {
-                                "opacity": 0,
-                                "text": "Configuring now"
-                            },
-                            ".outPorts>.port-out-1": {
-                                "ref": ".background",
-                                "ref-x": 0.5
-                            },
-                            ".outPorts>.port-out-1>.port-body": {
-                                "port": {
-                                    "id": "out-1",
-                                    "type": "out"
-                                }
-                            },
-                            ".title": {
-                                "text": "format"
-                            },
-                            "g.code image": {
-                                "opacity": 1,
-                                "xlink:href": "/inc/coa/img/block_icon_code_dark_on.svg"
-                            },
-                            "g.delete": {
-                                "display": "none"
-                            },
-                            "g.error": {
-                                "opacity": 0
-                            },
-                            "g.error image": {
-                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
-                            },
-                            "g.notes": {
-                                "display": "block"
-                            },
-                            "g.notes image": {
-                                "opacity": 1,
-                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
-                            }
-                        },
-                        "block_code": "# read-only block view not available",
-                        "callback_code": "",
-                        "callback_start": 1,
-                        "callsback": false,
-                        "connected_to_start": true,
-                        "connection_name": "",
-                        "connection_type": "",
-                        "custom_callback": "",
-                        "custom_code": "def parse_hostname_or_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('parse_hostname_or_ip() called')\n    \n    container_data = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.emailHeaders.Subject'])\n    \n    command = \"\"\n    for result in container_data:\n        if result[0] and \"Service Alert\" in result[0]:\n            parts = result[0].split(\"** PROBLEM Service Alert: \")\n            hostname_ip = parts[1].split('/')[0]\n\n    success, message, allowlist = phantom.get_list(\"nagios_service_monitoring_hostname_ip_allowlist\")\n    if [hostname_ip] in allowlist:\n        phantom.debug(\"hostname allowlist check passed\")\n    else:\n        phantom.error(\"hostname allowlist check failed\")\n        phantom.comment(container=container, comment=\"hostname allowlist check failed\")\n        hostname_ip = \"hostname allowlist check failed\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"\",\n    ]\n\n    phantom.format(container=container, template=hostname_ip, parameters=parameters, name=\"parse_hostname_or_ip\")\n    \n    join_execute_program_1(container=container)\n\n    return",
-                        "custom_join": "",
-                        "custom_name": "parse hostname or ip",
-                        "description": "Parse the hostname or IP address of the SSH target server and check it against an allowlist (a Custom List).",
-                        "format": "format",
-                        "has_custom": false,
-                        "has_custom_block": true,
-                        "has_custom_callback": false,
-                        "has_custom_join": false,
-                        "id": "b50351a9-f87d-47d8-8140-de044e6d3fc8",
-                        "inPorts": [
-                            "in"
-                        ],
-                        "join_code": "",
-                        "join_optional": [],
-                        "join_start": 1,
-                        "line_end": 110,
-                        "line_start": 80,
-                        "message": "Configuring now",
-                        "name": "format",
-                        "notes": "Parse the hostname or IP address of the SSH target server and check it against an allowlist (a Custom List).",
-                        "number": 3,
-                        "order": 4,
-                        "outPorts": [
-                            "out-1"
-                        ],
-                        "parameters": [
-                            {
-                                "position": 0,
-                                "type": "",
-                                "value": ""
-                            }
-                        ],
-                        "ports": {
-                            "groups": {
-                                "in": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "left"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "left"
-                                    }
-                                },
-                                "out": {
-                                    "attrs": {
-                                        ".port-body": {
-                                            "fill": "#fff",
-                                            "magnet": true,
-                                            "r": 10,
-                                            "stroke": "#000"
-                                        },
-                                        ".port-label": {
-                                            "fill": "#000"
-                                        }
-                                    },
-                                    "label": {
-                                        "position": {
-                                            "args": {
-                                                "y": 10
-                                            },
-                                            "name": "right"
-                                        }
-                                    },
-                                    "position": {
-                                        "name": "right"
-                                    }
-                                }
-                            }
-                        },
-                        "position": {
-                            "x": 720,
-                            "y": -60
-                        },
-                        "previous_function": "",
-                        "previous_name": "parse_hostname_or_ip",
-                        "show_number": true,
-                        "size": {
-                            "height": 100,
-                            "width": 180
-                        },
-                        "state": "format",
-                        "status": "",
-                        "template": "{0}",
-                        "title": "format",
-                        "type": "coa.Format",
-                        "warn": false,
-                        "z": 183
-                    },
-                    {
                         "action": "execute program",
                         "action_type": "generic",
                         "active": false,
@@ -1311,24 +963,373 @@
                         "type": "coa.Action",
                         "warn": false,
                         "z": 184
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".format": {
+                                "text": "format service command"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.code image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_code_dark_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "# read-only block view not available",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "def format_service_command(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('format_service_command() called')\n    \n    container_data = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.emailHeaders.Subject'])\n    \n    service = \"\"\n    for result in container_data:\n        if result[0] and \"Service Alert\" in result[0]:\n            parts = result[0].split(\"** PROBLEM Service Alert: \")\n            service = parts[1].split('/')[1].split(\" process is CRITICAL\")[0]\n\n    ssh_command = \"service {} restart\".format(service)\n    \n    success, message, allowlist = phantom.get_list(\"nagios_service_monitoring_service_name_allowlist\")\n    if [service] in allowlist:\n        phantom.debug(\"service name allowlist check passed\")\n    else:\n        phantom.error(\"service name allowlist check failed\")\n        phantom.comment(container=container, comment=\"service name allowlist check failed\")\n        ssh_command = \"service name allowlist check failed\"\n\n    phantom.format(container=container, template=ssh_command, parameters=[\"\"], name=\"format_service_command\")\n\n    join_execute_program_1(container=container)\n\n    return",
+                        "custom_join": "",
+                        "custom_name": "format service command",
+                        "delimiter": ", ",
+                        "description": "Parse the service name reported by Nagios and check it against an allowlist (a Custom List). Use the service name to create the ssh command to restart that service.",
+                        "format": "format",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "c64b3d4d-4aae-475b-b106-4ba1cb9aaf44",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 141,
+                        "line_start": 114,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "Parse the service name reported by Nagios and check it against an allowlist (a Custom List). Use the service name to create the ssh command to restart that service.",
+                        "number": 4,
+                        "order": 5,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": ""
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 720,
+                            "y": 80
+                        },
+                        "previous_function": "",
+                        "previous_name": "format_service_command",
+                        "show_number": true,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "{0}",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 185
+                    },
+                    {
+                        "active": false,
+                        "angle": 0,
+                        "attrs": {
+                            ".background": {
+                                "fill": "#000000",
+                                "stroke": "#5C6773"
+                            },
+                            ".color-band": {
+                                "fill": "#3C444D"
+                            },
+                            ".format": {
+                                "text": "parse hostname or ip"
+                            },
+                            ".inPorts>.port-in": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".inPorts>.port-in>.port-body": {
+                                "port": {
+                                    "id": "in",
+                                    "type": "in"
+                                }
+                            },
+                            ".message": {
+                                "opacity": 0,
+                                "text": "Configuring now"
+                            },
+                            ".outPorts>.port-out-1": {
+                                "ref": ".background",
+                                "ref-x": 0.5
+                            },
+                            ".outPorts>.port-out-1>.port-body": {
+                                "port": {
+                                    "id": "out-1",
+                                    "type": "out"
+                                }
+                            },
+                            ".title": {
+                                "text": "format"
+                            },
+                            "g.code image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_code_dark_on.svg"
+                            },
+                            "g.delete": {
+                                "display": "none"
+                            },
+                            "g.error": {
+                                "opacity": 0
+                            },
+                            "g.error image": {
+                                "xlink:href": "/inc/coa/img/block_icon_warn.svg"
+                            },
+                            "g.notes": {
+                                "display": "block"
+                            },
+                            "g.notes image": {
+                                "opacity": 1,
+                                "xlink:href": "/inc/coa/img/block_icon_note_dark_on.svg"
+                            }
+                        },
+                        "block_code": "# read-only block view not available",
+                        "callback_code": "",
+                        "callback_start": 1,
+                        "callsback": false,
+                        "connected_to_start": true,
+                        "connection_name": "",
+                        "connection_type": "",
+                        "custom_callback": "",
+                        "custom_code": "def parse_hostname_or_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):\n    phantom.debug('parse_hostname_or_ip() called')\n    \n    container_data = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.emailHeaders.Subject'])\n    \n    command = \"\"\n    hostname_ip = None\n    for result in container_data:\n        if result[0] and \"Service Alert\" in result[0]:\n            parts = result[0].split(\"** PROBLEM Service Alert: \")\n            hostname_ip = parts[1].split('/')[0]\n\n    success, message, allowlist = phantom.get_list(\"nagios_service_monitoring_hostname_ip_allowlist\")\n    if [hostname_ip] in allowlist:\n        phantom.debug(\"hostname allowlist check passed\")\n    else:\n        phantom.error(\"hostname allowlist check failed\")\n        phantom.comment(container=container, comment=\"hostname allowlist check failed\")\n        hostname_ip = \"hostname allowlist check failed\"\n\n    # parameter list for template variable replacement\n    parameters = [\n        \"\",\n    ]\n\n    phantom.format(container=container, template=hostname_ip, parameters=parameters, name=\"parse_hostname_or_ip\")\n    \n    join_execute_program_1(container=container)\n\n    return",
+                        "custom_join": "",
+                        "custom_name": "parse hostname or ip",
+                        "delimiter": ", ",
+                        "description": "Parse the hostname or IP address of the SSH target server and check it against an allowlist (a Custom List).",
+                        "format": "format",
+                        "has_custom": true,
+                        "has_custom_block": true,
+                        "has_custom_callback": false,
+                        "has_custom_join": false,
+                        "id": "b50351a9-f87d-47d8-8140-de044e6d3fc8",
+                        "inPorts": [
+                            "in"
+                        ],
+                        "join_code": "",
+                        "join_optional": [],
+                        "join_start": 1,
+                        "line_end": 111,
+                        "line_start": 80,
+                        "message": "Configuring now",
+                        "name": "format",
+                        "notes": "Parse the hostname or IP address of the SSH target server and check it against an allowlist (a Custom List).",
+                        "number": 3,
+                        "order": 4,
+                        "outPorts": [
+                            "out-1"
+                        ],
+                        "parameters": [
+                            {
+                                "position": 0,
+                                "type": "",
+                                "value": ""
+                            }
+                        ],
+                        "ports": {
+                            "groups": {
+                                "in": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "left"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "left"
+                                    }
+                                },
+                                "out": {
+                                    "attrs": {
+                                        ".port-body": {
+                                            "fill": "#fff",
+                                            "magnet": true,
+                                            "r": 10,
+                                            "stroke": "#000"
+                                        },
+                                        ".port-label": {
+                                            "fill": "#000"
+                                        }
+                                    },
+                                    "label": {
+                                        "position": {
+                                            "args": {
+                                                "y": 10
+                                            },
+                                            "name": "right"
+                                        }
+                                    },
+                                    "position": {
+                                        "name": "right"
+                                    }
+                                }
+                            }
+                        },
+                        "position": {
+                            "x": 720,
+                            "y": -60
+                        },
+                        "previous_function": "",
+                        "previous_name": "parse_hostname_or_ip",
+                        "show_number": true,
+                        "size": {
+                            "height": 100,
+                            "width": 180
+                        },
+                        "state": "format",
+                        "status": "",
+                        "template": "{0}",
+                        "title": "format",
+                        "type": "coa.Format",
+                        "warn": false,
+                        "z": 186
                     }
                 ]
             },
             "notes": "This playbook uses the following Apps:\n - SSH (execute program) [asset name = ssh] - run the \"service restart\" command\nDeployment Notes:\n - This Playbook is triggered by an email ingested from an app such as \"imap\" or \"EWS for O365\"\n - Within Nagios the email notification preferences and the templates for the subject and body and be configured using Admin->Notification Management page\n - If email template changes are made within Nagios then the custom parsing code in format_1 and format_2 will probably need to change\n - The two allowlists should be created as Custom Lists called \"nagios_service_monitoring_hostname_ip_allowlist\" and \"nagios_service_monitoring_service_name_allowlist\""
         },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "automation",
         "python_version": "3",
-        "schema": 4,
-        "version": "4.10.0.40961"
+        "schema": "4",
+        "version": "6.3.1.176"
     },
-    "create_time": "2021-01-22T17:03:43.580173+00:00",
+    "create_time": "2025-01-21T23:43:00.257835+00:00",
     "draft_mode": false,
     "labels": [
         "events"
     ],
-    "tags": [],
-    "misc": {
-        "apps_list": [
-            "SSH"
-        ]
-    }
+    "tags": []
 }

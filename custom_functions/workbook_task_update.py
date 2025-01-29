@@ -31,6 +31,7 @@ def workbook_task_update(task_name=None, note_title=None, note_content=None, sta
     if not any([note_title, note_content, owner, status]):
         raise RuntimeError("Workbook task update requires a note_title, note_content, owner, or status.")
     
+    task_id = None
     if task_name:
         task_list = phantom.get_tasks(container_id)
         task_count = 0
