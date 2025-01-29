@@ -1,0 +1,50 @@
+name: Playbook Validation
+
+on: [pull_request]
+
+jobs:
+  validate_automation_code:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+
+    - name: Fetch all branches
+      run: |
+        git fetch --all
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'  # Specify the Python version you need
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install robotframework
+        pip install -r .github/tests/requirements.txt
+
+    - name: Run Changed Playbook tests
+      if: always()
+      run: |
+        python .github/tests/run_on_changed_playbooks.py --base-branch=origin/${{github.event.pull_request.base.ref}} --robot-path=.github/tests/robot/PlaybookScanner.robot --output-dir=results/changed-playbooks
+
+    - name: Run All Automation Code tests
+      if: always()
+      run: |
+        python .github/tests/run_on_all_automation_code.py --robot-path=.github/tests/robot/AutomationCodeScanner.robot --output-dir=results/all
+
+    - name: Archive test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: robot-results
+        path: results

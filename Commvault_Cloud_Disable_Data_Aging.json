@@ -1,0 +1,456 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Threat Response",
+    "coa": {
+        "data": {
+            "description": "Accepts a server hostname to disable data aging, protecting backup data from being purged to ensure clean recovery availability.",
+            "edges": [
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_3_to_port_4",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "id": "port_4_to_port_5",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 1
+                        }
+                    ],
+                    "id": "port_3_to_port_6",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_6_to_port_1",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_5_to_port_1",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_0_to_port_8",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                },
+                {
+                    "id": "port_8_to_port_3",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                }
+            ],
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 0
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 862
+                },
+                "3": {
+                    "data": {
+                        "advanced": {
+                            "customName": "filter success",
+                            "customNameId": 0,
+                            "description": "Determines whether client API is success or not ",
+                            "join": [],
+                            "note": "Determines whether client API is success or not "
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "disable_data_aging:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "Success",
+                                "logic": "and"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 1,
+                                        "op": "!=",
+                                        "param": "disable_data_aging:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 1,
+                                "customName": "Failed",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "filter_success",
+                        "id": "3",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 230,
+                    "y": 326
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "customName": "add comment success",
+                            "customNameId": 0,
+                            "description": "On success add a comment",
+                            "join": [],
+                            "note": "On success add a comment"
+                        },
+                        "functionId": 1,
+                        "functionName": "add_comment_success",
+                        "id": "4",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "tab": "apis",
+                        "type": "utility",
+                        "utilities": {
+                            "comment": {
+                                "description": "",
+                                "fields": [
+                                    {
+                                        "description": "",
+                                        "label": "comment",
+                                        "name": "comment",
+                                        "placeholder": "Enter a comment",
+                                        "renderType": "datapath",
+                                        "required": true
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "container",
+                                        "required": false
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "author",
+                                        "required": false
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "trace",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "add comment",
+                                "name": "comment"
+                            }
+                        },
+                        "utilityType": "api",
+                        "values": {
+                            "comment": {
+                                "_internal": [
+                                    "container",
+                                    "author",
+                                    "trace"
+                                ],
+                                "comment": "Data aging is disabled now."
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": 340,
+                    "y": 506
+                },
+                "5": {
+                    "data": {
+                        "advanced": {
+                            "customName": "set status closed",
+                            "customNameId": 0,
+                            "description": "On success close  the event",
+                            "join": [],
+                            "note": "On success close  the event",
+                            "refreshNotableData": true
+                        },
+                        "functionId": 2,
+                        "functionName": "set_status_closed",
+                        "id": "5",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "tab": "apis",
+                        "type": "utility",
+                        "utilities": {
+                            "set_status": {
+                                "description": "",
+                                "fields": [
+                                    {
+                                        "choices": "notableStatus",
+                                        "description": "",
+                                        "label": "status",
+                                        "name": "status",
+                                        "placeholder": "Select status",
+                                        "renderType": "dropdown",
+                                        "required": true
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "container",
+                                        "required": false
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "trace",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "set status",
+                                "name": "set_status",
+                                "refreshNotableData": true
+                            }
+                        },
+                        "utilityType": "api",
+                        "values": {
+                            "set_status": {
+                                "_internal": [
+                                    "container",
+                                    "trace"
+                                ],
+                                "status": "closed"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": 340,
+                    "y": 684
+                },
+                "6": {
+                    "data": {
+                        "advanced": {
+                            "customName": "add comment failure",
+                            "customNameId": 0,
+                            "description": "On failure add a comment",
+                            "join": [],
+                            "note": "On failure add a comment"
+                        },
+                        "functionId": 3,
+                        "functionName": "add_comment_failure",
+                        "id": "6",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "tab": "apis",
+                        "type": "utility",
+                        "utilities": {
+                            "comment": {
+                                "description": "",
+                                "fields": [
+                                    {
+                                        "description": "",
+                                        "label": "comment",
+                                        "name": "comment",
+                                        "placeholder": "Enter a comment",
+                                        "renderType": "datapath",
+                                        "required": true
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "container",
+                                        "required": false
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "author",
+                                        "required": false
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "trace",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "add comment",
+                                "name": "comment"
+                            }
+                        },
+                        "utilityType": "api",
+                        "values": {
+                            "comment": {
+                                "_internal": [
+                                    "container",
+                                    "author",
+                                    "trace"
+                                ],
+                                "comment": "Could not disable data aging"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 684
+                },
+                "8": {
+                    "data": {
+                        "action": "disable data aging",
+                        "actionType": "contain",
+                        "advanced": {
+                            "customName": "disable data aging",
+                            "customNameId": 0,
+                            "description": "Disable data aging on a given hostname using Commvault Cloud client API",
+                            "join": [],
+                            "note": "Disable data aging on a given hostname using Commvault Cloud client API"
+                        },
+                        "connector": "Commvault Cloud",
+                        "connectorConfigs": [
+                            "commvault cloud asset"
+                        ],
+                        "connectorId": "dd6086a9-6bd7-4958-903a-e895143af13e",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "disable_data_aging",
+                        "id": "8",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "client_name": "artifact:*.cef.deviceHostname"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "client_name"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 170,
+                    "y": 148
+                }
+            },
+            "notes": "Input: deviceHostName\nInteractions: Commvault Cloud\nAction: disable data aging at the client\nOutput: Success/Failure",
+            "origin": {
+                "playbook_id": 161,
+                "playbook_name": "Commvault Playbook",
+                "playbook_repo_id": 2,
+                "playbook_repo_name": "local"
+            }
+        },
+        "input_spec": null,
+        "output_spec": [
+            {
+                "contains": [],
+                "datapaths": [
+                    "disable_data_aging:action_result.status"
+                ],
+                "deduplicate": false,
+                "description": "",
+                "metadata": {},
+                "name": "Success"
+            }
+        ],
+        "playbook_type": "automation",
+        "python_version": "3",
+        "schema": "5.0.11",
+        "version": "6.2.0.355"
+    },
+    "create_time": "2024-08-06T15:44:07.241302+00:00",
+    "draft_mode": false,
+    "labels": [
+        "events"
+    ],
+    "tags": [
+        "D3-ACH",
+        "containment"
+    ]
+}

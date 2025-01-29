@@ -83,6 +83,7 @@ def parse_hostname_or_ip(action=None, success=None, container=None, results=None
     container_data = phantom.collect2(container=container, datapath=['filtered-data:filter_1:condition_1:artifact:*.cef.emailHeaders.Subject'])
     
     command = ""
+    hostname_ip = None
     for result in container_data:
         if result[0] and "Service Alert" in result[0]:
             parts = result[0].split("** PROBLEM Service Alert: ")
