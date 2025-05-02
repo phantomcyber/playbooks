@@ -580,8 +580,8 @@ def process_system_observables(action=None, success=None, container=None, result
                         "type": data['product_type_desc'],
                         "last_seen": data['last_seen'],
                         "last_reboot": data['last_reboot'],
-                        "last_login_user_sid": data['last_login_user_sid'],
-                        "last_login_timestamp": data['last_login_timestamp'],
+                        "last_login_user_sid": data.get('last_login_user_sid', ''),
+                        "last_login_timestamp": data.get('last_login_timestamp', ''),
                         "operating_system": {
                             "build:": data['os_build'],
                             "kernel_release": data['kernel_version'],

@@ -147,7 +147,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 360,
-                    "y": -2.5579538487363607e-13
+                    "y": -3.197442310920451e-13
                 },
                 "1": {
                     "data": {
@@ -269,7 +269,7 @@
                     "type": "action",
                     "warnings": {},
                     "x": 340,
-                    "y": 836
+                    "y": 840
                 },
                 "17": {
                     "data": {
@@ -357,8 +357,8 @@
                     "id": "18",
                     "type": "action",
                     "warnings": {},
-                    "x": 1.4210854715202004e-14,
-                    "y": 828
+                    "x": 0,
+                    "y": 840
                 },
                 "19": {
                     "customCode": null,
@@ -501,7 +501,7 @@
                     "errors": {},
                     "id": "21",
                     "type": "code",
-                    "userCode": "    process_system_observables__observable_array = []\n    i = 0\n    \n    for system in get_system_info_result_item_2:\n        data = system[0]\n        if data:\n            observable = {\n                \"source\": \"Crowdstrike OAuth API\",         \n                \"type\": \"Endpoint\",     \n                \"activity_name\": \"System Collection\",\n                \"uid\": data['device_id'],\n                \"hostname\": data['hostname'],\n                \"status\": get_system_info_result_item_0[i],\n                \"status_detail\": get_system_info_result_message[i],\n                \"endpoint_artifacts\": [\n                    {\n                        \"agents\": [\n                            {\n                                \"type\": \"Endpoint Detection and Response\",\n                                \"type_id\": 1,\n                                \"uid\": data['cid'],\n                                \"vendor_name\": \"Crowdstrike\",\n                                \"version\": data['agent_version']                        \n                            }\n                        ],\n                        \"ip\": data['local_ip'],\n                        \"external_ip\": data['external_ip'],\n                        \"mac\": data['mac_address'],\n                        \"domain\": data['machine_domain'],\n                        \"type\": data['product_type_desc'],\n                        \"last_seen\": data['last_seen'],\n                        \"last_reboot\": data['last_reboot'],\n                        \"last_login_user_sid\": data['last_login_user_sid'],\n                        \"last_login_timestamp\": data['last_login_timestamp'],\n                        \"operating_system\": {\n                            \"build:\": data['os_build'],\n                            \"kernel_release\": data['kernel_version'],\n                            \"name\": data['os_product_name'],\n                            \"type\": data['platform_name'],\n                            \"version\": data['os_version']\n                        },\n                        \"hw_info\": {\n                            \"bios_manufacturer\": data['bios_manufacturer'],\n                            \"bios_version\": data['bios_version'],\n                            \"serial_number\": data['serial_number'],\n                            \"chassis\": data['chassis_type_desc']\n                        }\n                    }\n                ]\n            }\n        \n        policies = []\n        for policy in data['policies']:\n            policies.append(\n                {\n                    \"name\": policy['policy_type'],\n                    \"uid\": policy['policy_id'],\n                    \"is_applied\": policy['applied']\n                }\n            )\n            observable['endpoint_artifacts'][0]['agents'][0]['policies'] = policies\n        \n        #phantom.debug(f\"---> OBSERVABLE: {observable}\")\n        process_system_observables__observable_array.append(observable)\n        i+=1\n\n",
+                    "userCode": "    process_system_observables__observable_array = []\n    i = 0\n    \n    for system in get_system_info_result_item_2:\n        data = system[0]\n        if data:\n            observable = {\n                \"source\": \"Crowdstrike OAuth API\",         \n                \"type\": \"Endpoint\",     \n                \"activity_name\": \"System Collection\",\n                \"uid\": data['device_id'],\n                \"hostname\": data['hostname'],\n                \"status\": get_system_info_result_item_0[i],\n                \"status_detail\": get_system_info_result_message[i],\n                \"endpoint_artifacts\": [\n                    {\n                        \"agents\": [\n                            {\n                                \"type\": \"Endpoint Detection and Response\",\n                                \"type_id\": 1,\n                                \"uid\": data['cid'],\n                                \"vendor_name\": \"Crowdstrike\",\n                                \"version\": data['agent_version']                        \n                            }\n                        ],\n                        \"ip\": data['local_ip'],\n                        \"external_ip\": data['external_ip'],\n                        \"mac\": data['mac_address'],\n                        \"domain\": data['machine_domain'],\n                        \"type\": data['product_type_desc'],\n                        \"last_seen\": data['last_seen'],\n                        \"last_reboot\": data['last_reboot'],\n                        \"last_login_user_sid\": data.get('last_login_user_sid', ''),\n                        \"last_login_timestamp\": data.get('last_login_timestamp', ''),\n                        \"operating_system\": {\n                            \"build:\": data['os_build'],\n                            \"kernel_release\": data['kernel_version'],\n                            \"name\": data['os_product_name'],\n                            \"type\": data['platform_name'],\n                            \"version\": data['os_version']\n                        },\n                        \"hw_info\": {\n                            \"bios_manufacturer\": data['bios_manufacturer'],\n                            \"bios_version\": data['bios_version'],\n                            \"serial_number\": data['serial_number'],\n                            \"chassis\": data['chassis_type_desc']\n                        }\n                    }\n                ]\n            }\n        \n        policies = []\n        for policy in data['policies']:\n            policies.append(\n                {\n                    \"name\": policy['policy_type'],\n                    \"uid\": policy['policy_id'],\n                    \"is_applied\": policy['applied']\n                }\n            )\n            observable['endpoint_artifacts'][0]['agents'][0]['policies'] = policies\n        \n        #phantom.debug(f\"---> OBSERVABLE: {observable}\")\n        process_system_observables__observable_array.append(observable)\n        i+=1\n\n",
                     "warnings": {},
                     "x": 680,
                     "y": 1020
@@ -611,7 +611,7 @@
                     "type": "action",
                     "warnings": {},
                     "x": -320,
-                    "y": 820
+                    "y": 840
                 },
                 "25": {
                     "data": {
@@ -779,7 +779,7 @@
         "schema": "5.0.15",
         "version": "6.3.1.178"
     },
-    "create_time": "2025-04-21T17:10:28.742317+00:00",
+    "create_time": "2025-05-01T17:39:10.288392+00:00",
     "draft_mode": false,
     "labels": [
         "*"
