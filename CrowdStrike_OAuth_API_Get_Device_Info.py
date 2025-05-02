@@ -105,7 +105,46 @@ def query_device(action=None, success=None, container=None, results=None, handle
     ## Custom Code End
     ################################################################################
 
-    phantom.act("query device", parameters=parameters, name="query_device", assets=["crowdstrike_oauth_api"])
+    phantom.act("query device", parameters=parameters, name="query_device", assets=["crowdstrike_oauth_api"], callback=format_output_data)
+
+    return
+
+
+@phantom.playbook_block()
+def format_output_data(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("format_output_data() called")
+
+    ################################################################################
+    # This code block removes null values returned in some cases for device_id or 
+    # hostname values.  It also provides a default value of "No results found" when 
+    # nothing is returned.
+    ################################################################################
+
+    query_device_result_data = phantom.collect2(container=container, datapath=["query_device:action_result.data.*.device_id","query_device:action_result.data.*.hostname"], action_results=results)
+
+    query_device_result_item_0 = [item[0] for item in query_device_result_data]
+    query_device_result_item_1 = [item[1] for item in query_device_result_data]
+
+    format_output_data__device_ids = None
+    format_output_data__hostnames = None
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    format_output_data__device_ids = [x for x in query_device_result_item_0 if x is not None] 
+    format_output_data__hostnames = [x for x in query_device_result_item_1 if x is not None] 
+    if not format_output_data__device_ids:
+        format_output_data__device_ids = ["No result found"]
+    if not format_output_data__hostnames:
+        format_output_data__hostnames = ["No result found"]
+    
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.save_run_data(key="format_output_data:device_ids", value=json.dumps(format_output_data__device_ids))
+    phantom.save_run_data(key="format_output_data:hostnames", value=json.dumps(format_output_data__hostnames))
 
     return
 
@@ -114,14 +153,15 @@ def query_device(action=None, success=None, container=None, results=None, handle
 def on_finish(container, summary):
     phantom.debug("on_finish() called")
 
-    query_device_result_data = phantom.collect2(container=container, datapath=["query_device:action_result.data.*.device_id","query_device:action_result.data.*.hostname"])
+    format_output_data__device_ids = json.loads(_ if (_ := phantom.get_run_data(key="format_output_data:device_ids")) != "" else "null")  # pylint: disable=used-before-assignment
+    format_output_data__hostnames = json.loads(_ if (_ := phantom.get_run_data(key="format_output_data:hostnames")) != "" else "null")  # pylint: disable=used-before-assignment
 
-    query_device_result_item_0 = [item[0] for item in query_device_result_data]
-    query_device_result_item_1 = [item[1] for item in query_device_result_data]
+    device_id_combined_value = phantom.concatenate(format_output_data__device_ids, dedup=True)
+    hostname_combined_value = phantom.concatenate(format_output_data__hostnames, dedup=True)
 
     output = {
-        "device_id": query_device_result_item_0,
-        "hostname": query_device_result_item_1,
+        "device_id": device_id_combined_value,
+        "hostname": hostname_combined_value,
     }
 
     ################################################################################
