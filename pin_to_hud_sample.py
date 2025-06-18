@@ -72,7 +72,7 @@ def pin_1(action=None, success=None, container=None, results=None, handle=None, 
     dest_ip_artifacts = [x for x in phantom.collect2(container=container, datapath=['artifact:*.cef.destinationAddress']) if x[0]]
     sorc_ip_artifacts = [x for x in phantom.collect2(container=container, datapath=['artifact:*.cef.sourceAddress']) if x[0]]
 
-    styles = set(["white", "red", "purple"])
+    styles = ["white", "red", "purple"]
     
     pin_name = pin_name_mangle("pin_1", container)
     pin_id = phantom.get_data(pin_name)
@@ -104,7 +104,7 @@ def pin_2(action=None, success=None, container=None, results=None, handle=None, 
     dest_username = [x for x in phantom.collect2(container=container, datapath=['artifact:*.cef.destinationUserName']) if x[0]]
     sorc_username = [x for x in phantom.collect2(container=container, datapath=['artifact:*.cef.sourceUserName']) if x[0]]
 
-    styles = set(["white", "red", "purple"])
+    styles = ["white", "red", "purple"]
     pin_name = pin_name_mangle("pin_2", container)
     pin_id = phantom.get_data(pin_name)
     
