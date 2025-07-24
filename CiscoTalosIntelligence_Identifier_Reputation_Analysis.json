@@ -1,0 +1,752 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Identifier Reputation Analysis",
+    "coa": {
+        "data": {
+            "description": "Accepts a URL, IP or Domain and does reputation analysis on the objects. Generates a threat level, threat categories and AUP categories that are formatted and added to a container as a note.",
+            "edges": [
+                {
+                    "id": "port_0_to_port_2",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_2_to_port_3",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 1
+                        }
+                    ],
+                    "id": "port_2_to_port_4",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 2
+                        }
+                    ],
+                    "id": "port_2_to_port_5",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
+                },
+                {
+                    "id": "port_3_to_port_6",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_4_to_port_10",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "10",
+                    "targetPort": "10_in"
+                },
+                {
+                    "id": "port_5_to_port_13",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "13",
+                    "targetPort": "13_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_6_to_port_17",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "17",
+                    "targetPort": "17_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_10_to_port_16",
+                    "sourceNode": "10",
+                    "sourcePort": "10_out",
+                    "targetNode": "16",
+                    "targetPort": "16_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_13_to_port_18",
+                    "sourceNode": "13",
+                    "sourcePort": "13_out",
+                    "targetNode": "18",
+                    "targetPort": "18_in"
+                },
+                {
+                    "id": "port_17_to_port_26",
+                    "sourceNode": "17",
+                    "sourcePort": "17_out",
+                    "targetNode": "26",
+                    "targetPort": "26_in"
+                },
+                {
+                    "id": "port_26_to_port_1",
+                    "sourceNode": "26",
+                    "sourcePort": "26_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_16_to_port_27",
+                    "sourceNode": "16",
+                    "sourcePort": "16_out",
+                    "targetNode": "27",
+                    "targetPort": "27_in"
+                },
+                {
+                    "id": "port_27_to_port_1",
+                    "sourceNode": "27",
+                    "sourcePort": "27_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_18_to_port_28",
+                    "sourceNode": "18",
+                    "sourcePort": "18_out",
+                    "targetNode": "28",
+                    "targetPort": "28_in"
+                },
+                {
+                    "id": "port_28_to_port_1",
+                    "sourceNode": "28",
+                    "sourcePort": "28_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "eba6b9d077093e83e07346cba73e6ed0a16e86ea",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 419.9999999999985
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 1520
+                },
+                "10": {
+                    "data": {
+                        "advanced": {
+                            "customName": "domain reputation filter",
+                            "customNameId": 0,
+                            "description": "Exclude failing domain reputations",
+                            "join": [],
+                            "note": "Exclude failing domain reputations"
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "domain_reputation:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "Success",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 3,
+                        "functionName": "domain_reputation_filter",
+                        "id": "10",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "10",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 1040,
+                    "y": 840
+                },
+                "13": {
+                    "data": {
+                        "advanced": {
+                            "customName": "ip reputation filter",
+                            "customNameId": 0,
+                            "description": "Exclude failing ip reputations",
+                            "join": [],
+                            "note": "Exclude failing ip reputations"
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "ip_reputation:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "Success",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 4,
+                        "functionName": "ip_reputation_filter",
+                        "id": "13",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "13",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 1380,
+                    "y": 840
+                },
+                "16": {
+                    "customCode": null,
+                    "data": {
+                        "advanced": {
+                            "customName": "format 2",
+                            "customNameId": 0,
+                            "description": "Format output of domain threat data into an appropriate format for build_domain_output that generates observable objects.",
+                            "join": [],
+                            "note": "Format output of domain threat data into an appropriate format for build_domain_output that generates observable objects."
+                        },
+                        "functionId": 4,
+                        "functionName": "format_2",
+                        "id": "16",
+                        "parameters": [
+                            "filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.Observable",
+                            "filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.Threat_Level",
+                            "filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.Threat_Categories",
+                            "filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.AUP"
+                        ],
+                        "template": "SOAR analyzed Domain using Talos Intelligence.  The table below shows a summary of the information gathered.\n\n| Domain | Threat Level | Threat Categories | AUP Categories |\n| --- | --- | --- | --- |\n%%\n| {0} | {1} | {2} | {3}\n%%",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "16",
+                    "type": "format",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 980,
+                    "y": 1160
+                },
+                "17": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format 1",
+                            "customNameId": 0,
+                            "description": "Format output of url threat data into an appropriate format for build_url_output that generates observable objects.",
+                            "join": [],
+                            "note": "Format output of url threat data into an appropriate format for build_url_output that generates observable objects."
+                        },
+                        "functionId": 5,
+                        "functionName": "format_1",
+                        "id": "17",
+                        "parameters": [
+                            "filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.Observable",
+                            "filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.Threat_Level",
+                            "filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.Threat_Categories",
+                            "filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.AUP"
+                        ],
+                        "template": "SOAR analyzed URL using Talos Intelligence.  The table below shows a summary of the information gathered.\n\n| URL | Threat Level | Threat Categories | AUP Categories |\n| --- | --- | --- | --- |\n%%\n| {0} | {1} | {2} | {3}\n%%",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "17",
+                    "type": "format",
+                    "warnings": {},
+                    "x": 640,
+                    "y": 1160
+                },
+                "18": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format 3",
+                            "customNameId": 0,
+                            "description": "Format output of ip threat data into an appropriate format for build_ip_output that generates observable objects. ",
+                            "join": [],
+                            "note": "Format output of ip threat data into an appropriate format for build_ip_output that generates observable objects. "
+                        },
+                        "functionId": 6,
+                        "functionName": "format_3",
+                        "id": "18",
+                        "parameters": [
+                            "filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.Observable",
+                            "filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.Threat_Level",
+                            "filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.Threat_Categories",
+                            "filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.AUP"
+                        ],
+                        "template": "SOAR analyzed IP using Talos Intelligence.  The table below shows a summary of the information gathered.\n\n| IP | Threat Level | Threat Categories | AUP Categories |\n| --- | --- | --- | --- |\n%%\n| {0} | {1} | {2} | {3}\n%%",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "18",
+                    "type": "format",
+                    "warnings": {},
+                    "x": 1320,
+                    "y": 1160
+                },
+                "2": {
+                    "data": {
+                        "advanced": {
+                            "customName": "input filter",
+                            "customNameId": 0,
+                            "description": "Filter to pass in a url, domain or ip to it's appropriate action",
+                            "join": [],
+                            "note": "Filter to pass in a url, domain or ip to it's appropriate action"
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "playbook_input:url",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "url",
+                                "logic": "and"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 1,
+                                        "op": "!=",
+                                        "param": "playbook_input:domain",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 1,
+                                "customName": "domain",
+                                "logic": "and"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 2,
+                                        "op": "!=",
+                                        "param": "playbook_input:ip",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 2,
+                                "customName": "ip",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "input_filter",
+                        "id": "2",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 1040,
+                    "y": 564.5
+                },
+                "26": {
+                    "customCode": null,
+                    "data": {
+                        "advanced": {
+                            "customName": "build url output",
+                            "customNameId": 0,
+                            "description": "Generate an observable dictionary to output into the observables data path.",
+                            "join": [],
+                            "note": "Generate an observable dictionary to output into the observables data path."
+                        },
+                        "functionId": 1,
+                        "functionName": "build_url_output",
+                        "id": "26",
+                        "inputParameters": [
+                            "filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.Observable",
+                            "filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.Threat_Level",
+                            "filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.Threat_Categories",
+                            "filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.AUP"
+                        ],
+                        "outputVariables": [
+                            "observable_array"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "26",
+                    "type": "code",
+                    "userCode": "\n    from urllib.parse import urlparse\n    build_url_output__observable_array = []\n    \n    talos_to_score_mapping = {\"unknown\": \"Unknown\", \"trusted\": \"Safe\", \"favorable\": \"Probably_Safe\", \"neutral\": \"May_not_be_Safe\", \"questionable\": \"Suspicious_or_Risky\", \"unstrusted\": \"Malicious\"}\n    score_table = {\n        \"Unkown\": \"0\",\n        \"Very_Safe\": \"1\",\n        \"Safe\": \"2\",\n        \"Probably_Safe\": \"3\",\n        \"Leans_Safe\": \"4\",\n        \"May_not_be_Safe\": \"5\",\n        \"Exercise_Caution\": \"6\",\n        \"Suspicious_or_Risky\": \"7\",\n        \"Possibly_Malicious\": \"8\",\n        \"Probably_Malicious\": \"9\",\n        \"Malicious\": \"10\"\n    }\n    \n    for url, threat_level, threat_categories, aup in zip(filtered_result_0_data___observable, filtered_result_0_data___threat_level, filtered_result_0_data___threat_categories, filtered_result_0_data___aup):\n        parsed_url = urlparse(url)\n        score = talos_to_score_mapping.get(threat_level.lower(), \"\")\n        observable_object = {\n            \"value\": url,\n            \"type\": \"url\",\n            \"reputation\": {\n                \"threat_level\": threat_level,\n                \"threat_categories\": threat_categories,\n                \"aup_categories\": aup,\n                \"score\": score,\n                \"score_id\": score_table.get(score, \"\")\n            },\n            \"attributes\": {\n                \"hostname\": parsed_url.hostname,\n                \"scheme\": parsed_url.scheme\n            },\n            \"source\": \"Cisco Talos Intelligence\",\n        }\n        if parsed_url.path:\n            observable_object['attributes']['path'] = parsed_url.path\n        if parsed_url.query:\n            observable_object['attributes']['query'] = parsed_url.query\n        if parsed_url.port:\n            observable_object['attributes']['port'] = parsed_url.port\n        \n        build_url_output__observable_array.append(observable_object)\n\n",
+                    "warnings": {},
+                    "x": 640,
+                    "y": 1380
+                },
+                "27": {
+                    "customCode": null,
+                    "data": {
+                        "advanced": {
+                            "customName": "build domain output",
+                            "customNameId": 0,
+                            "description": "Generate an observable dictionary to output into the observables data path.",
+                            "join": [],
+                            "note": "Generate an observable dictionary to output into the observables data path."
+                        },
+                        "functionId": 2,
+                        "functionName": "build_domain_output",
+                        "id": "27",
+                        "inputParameters": [
+                            "filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.Observable",
+                            "filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.Threat_Level",
+                            "filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.Threat_Categories",
+                            "filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.AUP"
+                        ],
+                        "outputVariables": [
+                            "observable_array"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "27",
+                    "type": "code",
+                    "userCode": "\n    build_domain_output__observable_array = []\n    \n    talos_to_score_mapping = {\"unknown\": \"Unknown\", \"trusted\": \"Safe\", \"favorable\": \"Probably_Safe\", \"neutral\": \"May_not_be_Safe\", \"questionable\": \"Suspicious_or_Risky\", \"unstrusted\": \"Malicious\"}\n    score_table = {\n        \"Unkown\": \"0\",\n        \"Very_Safe\": \"1\",\n        \"Safe\": \"2\",\n        \"Probably_Safe\": \"3\",\n        \"Leans_Safe\": \"4\",\n        \"May_not_be_Safe\": \"5\",\n        \"Exercise_Caution\": \"6\",\n        \"Suspicious_or_Risky\": \"7\",\n        \"Possibly_Malicious\": \"8\",\n        \"Probably_Malicious\": \"9\",\n        \"Malicious\": \"10\"\n    }\n    \n    for domain, threat_level, threat_categories, aup in zip(filtered_result_0_data___observable, filtered_result_0_data___threat_level, filtered_result_0_data___threat_categories, filtered_result_0_data___aup):\n        score = talos_to_score_mapping.get(threat_level.lower(), \"\")\n        observable_object = {\n            \"value\": domain,\n            \"type\": \"domain\",\n            \"reputation\": {\n                \"threat_level\": threat_level,\n                \"threat_categories\": threat_categories,\n                \"aup_categories\": aup,\n                \"score\": score,\n                \"score_id\": score_table.get(score, \"\")\n            },\n            \"source\": \"Cisco Talos Intelligence\"\n        }\n        build_domain_output__observable_array.append(observable_object)\n\n",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 1380
+                },
+                "28": {
+                    "customCode": null,
+                    "data": {
+                        "advanced": {
+                            "customName": "build ip output",
+                            "customNameId": 0,
+                            "description": "Generate an observable dictionary to output into the observables data path.",
+                            "join": [],
+                            "note": "Generate an observable dictionary to output into the observables data path."
+                        },
+                        "functionId": 3,
+                        "functionName": "build_ip_output",
+                        "id": "28",
+                        "inputParameters": [
+                            "filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.Observable",
+                            "filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.Threat_Level",
+                            "filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.Threat_Categories",
+                            "filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.AUP"
+                        ],
+                        "outputVariables": [
+                            "observable_array"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "28",
+                    "type": "code",
+                    "userCode": "\n    import ipaddress\n    build_ip_output__observable_array = []\n    \n    talos_to_score_mapping = {\"unknown\": \"Unknown\", \"trusted\": \"Safe\", \"favorable\": \"Probably_Safe\", \"neutral\": \"May_not_be_Safe\", \"questionable\": \"Suspicious_or_Risky\", \"unstrusted\": \"Malicious\"}\n    score_table = {\n        \"Unkown\": \"0\",\n        \"Very_Safe\": \"1\",\n        \"Safe\": \"2\",\n        \"Probably_Safe\": \"3\",\n        \"Leans_Safe\": \"4\",\n        \"May_not_be_Safe\": \"5\",\n        \"Exercise_Caution\": \"6\",\n        \"Suspicious_or_Risky\": \"7\",\n        \"Possibly_Malicious\": \"8\",\n        \"Probably_Malicious\": \"9\",\n        \"Malicious\": \"10\"\n    }\n    \n    for ip, threat_level, threat_categories, aup in zip(filtered_result_0_data___observable, filtered_result_0_data___threat_level, filtered_result_0_data___threat_categories, filtered_result_0_data___aup):\n        score = talos_to_score_mapping.get(threat_level.lower(), \"\")\n        observable_object = {\n            \"value\": ip,\n            \"type\": \"ipv4\",\n            \"reputation\": {\n                \"threat_level\": threat_level,\n                \"threat_categories\": threat_categories,\n                \"aup_categories\": aup,\n                \"score\": score,\n                \"score_id\": score_table.get(score, \"\")\n            },\n            \"source\": \"Cisco Talos Intelligence\"\n        }\n        ip_addr = ipaddress.ip_address(ip)\n        if isinstance(ip_addr, ipaddress.IPv6Address):\n            observable_object[\"type\"] = \"ipv6\"\n\n        build_ip_output__observable_array.append(observable_object)\n\n",
+                    "warnings": {},
+                    "x": 1320,
+                    "y": 1380
+                },
+                "3": {
+                    "data": {
+                        "action": "url reputation",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "url reputation",
+                            "customNameId": 0,
+                            "description": "Use Talos to get threat data on an url",
+                            "join": [],
+                            "note": "Use Talos to get threat data on an url"
+                        },
+                        "connector": "Cisco Talos Intelligence",
+                        "connectorConfigs": [
+                            "cisco_talos_intelligence"
+                        ],
+                        "connectorId": "7c653487-22c8-4ec1-bca0-16a8b1513c86",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "url_reputation",
+                        "id": "3",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "url": "filtered-data:input_filter:condition_1:playbook_input:url"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "url"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 640,
+                    "y": 700
+                },
+                "4": {
+                    "data": {
+                        "action": "domain reputation",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "domain reputation",
+                            "customNameId": 0,
+                            "description": "Use Talos to get threat data on a domain",
+                            "join": [],
+                            "note": "Use Talos to get threat data on a domain"
+                        },
+                        "connector": "Cisco Talos Intelligence",
+                        "connectorConfigs": [
+                            "cisco_talos_intelligence"
+                        ],
+                        "connectorId": "7c653487-22c8-4ec1-bca0-16a8b1513c86",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "domain_reputation",
+                        "id": "4",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "domain": "filtered-data:input_filter:condition_2:playbook_input:domain"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "domain"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 700
+                },
+                "5": {
+                    "data": {
+                        "action": "ip reputation",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "ip reputation",
+                            "customNameId": 0,
+                            "description": "Use Talos to get threat data on an ip",
+                            "join": [],
+                            "note": "Use Talos to get threat data on an ip"
+                        },
+                        "connector": "Cisco Talos Intelligence",
+                        "connectorConfigs": [
+                            "cisco_talos_intelligence"
+                        ],
+                        "connectorId": "7c653487-22c8-4ec1-bca0-16a8b1513c86",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "ip_reputation",
+                        "id": "5",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "ip": "filtered-data:input_filter:condition_3:playbook_input:ip"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "ip"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 1320,
+                    "y": 700
+                },
+                "6": {
+                    "data": {
+                        "advanced": {
+                            "customName": "url reputation filter",
+                            "customNameId": 0,
+                            "description": "Exclude failing url reputations",
+                            "join": [],
+                            "note": "Exclude failing url reputations"
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "url_reputation:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "Success",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 2,
+                        "functionName": "url_reputation_filter",
+                        "id": "6",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 700,
+                    "y": 840
+                }
+            },
+            "notes": "Inputs: url, ip, domain\nInteractions: Cisco Talos Intelligence\nActions: url reputation, ip reputation, domain reputation, file reputation\nOutputs: note, observables"
+        },
+        "input_spec": [
+            {
+                "contains": [
+                    "url"
+                ],
+                "description": "A URL provided for reputation analysis",
+                "name": "url"
+            },
+            {
+                "contains": [
+                    "domain"
+                ],
+                "description": "A Domain provided for reputation analysis",
+                "name": "domain"
+            },
+            {
+                "contains": [
+                    "ip"
+                ],
+                "description": "An IP provided for reputation analysis",
+                "name": "ip"
+            }
+        ],
+        "output_spec": [
+            {
+                "contains": [],
+                "datapaths": [
+                    "build_url_output:custom_function:observable_array",
+                    "build_domain_output:custom_function:observable_array",
+                    "build_ip_output:custom_function:observable_array"
+                ],
+                "deduplicate": false,
+                "description": "An array of observable dictionaries with value, threat level, threat categories and AUP categories",
+                "metadata": {},
+                "name": "observable"
+            },
+            {
+                "contains": [],
+                "datapaths": [
+                    "format_1:formatted_data",
+                    "format_2:formatted_data",
+                    "format_3:formatted_data"
+                ],
+                "deduplicate": false,
+                "description": "An array of reports. One report per observable type.",
+                "metadata": {},
+                "name": "markdown_report"
+            }
+        ],
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "data",
+        "python_version": "3",
+        "schema": "5.0.15",
+        "version": "6.3.1.176"
+    },
+    "create_time": "2024-12-11T22:12:36.759275+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": [
+        "reputation",
+        "url",
+        "ip",
+        "domain",
+        "Cisco Talos Intelligence"
+    ]
+}
