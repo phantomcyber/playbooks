@@ -379,9 +379,9 @@ def build_url_output(action=None, success=None, container=None, results=None, ha
     from urllib.parse import urlparse
     build_url_output__observable_array = []
     
-    talos_to_score_mapping = {"unknown": "Unknown", "trusted": "Safe", "favorable": "Probably_Safe", "neutral": "May_not_be_Safe", "questionable": "Suspicious_or_Risky", "unstrusted": "Malicious"}
+    talos_to_score_mapping = {"unknown": "Unknown", "trusted": "Safe", "favorable": "Probably_Safe", "neutral": "May_not_be_Safe", "questionable": "Suspicious_or_Risky", "untrusted": "Malicious"}
     score_table = {
-        "Unkown": "0",
+        "Unknown": "0",
         "Very_Safe": "1",
         "Safe": "2",
         "Probably_Safe": "3",
@@ -426,7 +426,12 @@ def build_url_output(action=None, success=None, container=None, results=None, ha
     ## Custom Code End
     ################################################################################
 
-    phantom.save_run_data(key="build_url_output:observable_array", value=json.dumps(build_url_output__observable_array))
+    phantom.save_block_result(key="build_url_output__inputs:0:filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.Observable", value=json.dumps(filtered_result_0_data___observable))
+    phantom.save_block_result(key="build_url_output__inputs:1:filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.Threat_Level", value=json.dumps(filtered_result_0_data___threat_level))
+    phantom.save_block_result(key="build_url_output__inputs:2:filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.Threat_Categories", value=json.dumps(filtered_result_0_data___threat_categories))
+    phantom.save_block_result(key="build_url_output__inputs:3:filtered-data:url_reputation_filter:condition_1:url_reputation:action_result.data.*.AUP", value=json.dumps(filtered_result_0_data___aup))
+
+    phantom.save_block_result(key="build_url_output:observable_array", value=json.dumps(build_url_output__observable_array))
 
     return
 
@@ -454,9 +459,9 @@ def build_domain_output(action=None, success=None, container=None, results=None,
 
     build_domain_output__observable_array = []
     
-    talos_to_score_mapping = {"unknown": "Unknown", "trusted": "Safe", "favorable": "Probably_Safe", "neutral": "May_not_be_Safe", "questionable": "Suspicious_or_Risky", "unstrusted": "Malicious"}
+    talos_to_score_mapping = {"unknown": "Unknown", "trusted": "Safe", "favorable": "Probably_Safe", "neutral": "May_not_be_Safe", "questionable": "Suspicious_or_Risky", "untrusted": "Malicious"}
     score_table = {
-        "Unkown": "0",
+        "Unknown": "0",
         "Very_Safe": "1",
         "Safe": "2",
         "Probably_Safe": "3",
@@ -489,7 +494,12 @@ def build_domain_output(action=None, success=None, container=None, results=None,
     ## Custom Code End
     ################################################################################
 
-    phantom.save_run_data(key="build_domain_output:observable_array", value=json.dumps(build_domain_output__observable_array))
+    phantom.save_block_result(key="build_domain_output__inputs:0:filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.Observable", value=json.dumps(filtered_result_0_data___observable))
+    phantom.save_block_result(key="build_domain_output__inputs:1:filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.Threat_Level", value=json.dumps(filtered_result_0_data___threat_level))
+    phantom.save_block_result(key="build_domain_output__inputs:2:filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.Threat_Categories", value=json.dumps(filtered_result_0_data___threat_categories))
+    phantom.save_block_result(key="build_domain_output__inputs:3:filtered-data:domain_reputation_filter:condition_1:domain_reputation:action_result.data.*.AUP", value=json.dumps(filtered_result_0_data___aup))
+
+    phantom.save_block_result(key="build_domain_output:observable_array", value=json.dumps(build_domain_output__observable_array))
 
     return
 
@@ -518,9 +528,9 @@ def build_ip_output(action=None, success=None, container=None, results=None, han
     import ipaddress
     build_ip_output__observable_array = []
     
-    talos_to_score_mapping = {"unknown": "Unknown", "trusted": "Safe", "favorable": "Probably_Safe", "neutral": "May_not_be_Safe", "questionable": "Suspicious_or_Risky", "unstrusted": "Malicious"}
+    talos_to_score_mapping = {"unknown": "Unknown", "trusted": "Safe", "favorable": "Probably_Safe", "neutral": "May_not_be_Safe", "questionable": "Suspicious_or_Risky", "untrusted": "Malicious"}
     score_table = {
-        "Unkown": "0",
+        "Unknown": "0",
         "Very_Safe": "1",
         "Safe": "2",
         "Probably_Safe": "3",
@@ -557,7 +567,12 @@ def build_ip_output(action=None, success=None, container=None, results=None, han
     ## Custom Code End
     ################################################################################
 
-    phantom.save_run_data(key="build_ip_output:observable_array", value=json.dumps(build_ip_output__observable_array))
+    phantom.save_block_result(key="build_ip_output__inputs:0:filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.Observable", value=json.dumps(filtered_result_0_data___observable))
+    phantom.save_block_result(key="build_ip_output__inputs:1:filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.Threat_Level", value=json.dumps(filtered_result_0_data___threat_level))
+    phantom.save_block_result(key="build_ip_output__inputs:2:filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.Threat_Categories", value=json.dumps(filtered_result_0_data___threat_categories))
+    phantom.save_block_result(key="build_ip_output__inputs:3:filtered-data:ip_reputation_filter:condition_1:ip_reputation:action_result.data.*.AUP", value=json.dumps(filtered_result_0_data___aup))
+
+    phantom.save_block_result(key="build_ip_output:observable_array", value=json.dumps(build_ip_output__observable_array))
 
     return
 

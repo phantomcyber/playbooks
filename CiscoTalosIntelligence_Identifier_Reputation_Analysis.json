@@ -16,6 +16,7 @@
                 {
                     "conditions": [
                         {
+                            "conditionKey": "condition_key_1",
                             "index": 0
                         }
                     ],
@@ -28,6 +29,7 @@
                 {
                     "conditions": [
                         {
+                            "conditionKey": "condition_key_2",
                             "index": 1
                         }
                     ],
@@ -40,6 +42,7 @@
                 {
                     "conditions": [
                         {
+                            "conditionKey": "condition_key_3",
                             "index": 2
                         }
                     ],
@@ -73,6 +76,7 @@
                 {
                     "conditions": [
                         {
+                            "conditionKey": "condition_key_4",
                             "index": 0
                         }
                     ],
@@ -85,6 +89,7 @@
                 {
                     "conditions": [
                         {
+                            "conditionKey": "condition_key_5",
                             "index": 0
                         }
                     ],
@@ -97,6 +102,7 @@
                 {
                     "conditions": [
                         {
+                            "conditionKey": "condition_key_6",
                             "index": 0
                         }
                     ],
@@ -149,7 +155,7 @@
                     "targetPort": "1_in"
                 }
             ],
-            "hash": "eba6b9d077093e83e07346cba73e6ed0a16e86ea",
+            "hash": "257c83d513b473fe0bbe8d97bce866e93914b1a3",
             "nodes": {
                 "0": {
                     "data": {
@@ -165,7 +171,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 1000,
-                    "y": 419.9999999999985
+                    "y": 419.9999999999984
                 },
                 "1": {
                     "data": {
@@ -203,6 +209,7 @@
                                     }
                                 ],
                                 "conditionIndex": 0,
+                                "conditionKey": "condition_key_5",
                                 "customName": "Success",
                                 "logic": "and"
                             }
@@ -239,6 +246,7 @@
                                     }
                                 ],
                                 "conditionIndex": 0,
+                                "conditionKey": "condition_key_6",
                                 "customName": "Success",
                                 "logic": "and"
                             }
@@ -361,6 +369,7 @@
                                     }
                                 ],
                                 "conditionIndex": 0,
+                                "conditionKey": "condition_key_1",
                                 "customName": "url",
                                 "logic": "and"
                             },
@@ -374,6 +383,7 @@
                                     }
                                 ],
                                 "conditionIndex": 1,
+                                "conditionKey": "condition_key_2",
                                 "customName": "domain",
                                 "logic": "and"
                             },
@@ -387,6 +397,7 @@
                                     }
                                 ],
                                 "conditionIndex": 2,
+                                "conditionKey": "condition_key_3",
                                 "customName": "ip",
                                 "logic": "and"
                             }
@@ -430,7 +441,7 @@
                     "errors": {},
                     "id": "26",
                     "type": "code",
-                    "userCode": "\n    from urllib.parse import urlparse\n    build_url_output__observable_array = []\n    \n    talos_to_score_mapping = {\"unknown\": \"Unknown\", \"trusted\": \"Safe\", \"favorable\": \"Probably_Safe\", \"neutral\": \"May_not_be_Safe\", \"questionable\": \"Suspicious_or_Risky\", \"unstrusted\": \"Malicious\"}\n    score_table = {\n        \"Unkown\": \"0\",\n        \"Very_Safe\": \"1\",\n        \"Safe\": \"2\",\n        \"Probably_Safe\": \"3\",\n        \"Leans_Safe\": \"4\",\n        \"May_not_be_Safe\": \"5\",\n        \"Exercise_Caution\": \"6\",\n        \"Suspicious_or_Risky\": \"7\",\n        \"Possibly_Malicious\": \"8\",\n        \"Probably_Malicious\": \"9\",\n        \"Malicious\": \"10\"\n    }\n    \n    for url, threat_level, threat_categories, aup in zip(filtered_result_0_data___observable, filtered_result_0_data___threat_level, filtered_result_0_data___threat_categories, filtered_result_0_data___aup):\n        parsed_url = urlparse(url)\n        score = talos_to_score_mapping.get(threat_level.lower(), \"\")\n        observable_object = {\n            \"value\": url,\n            \"type\": \"url\",\n            \"reputation\": {\n                \"threat_level\": threat_level,\n                \"threat_categories\": threat_categories,\n                \"aup_categories\": aup,\n                \"score\": score,\n                \"score_id\": score_table.get(score, \"\")\n            },\n            \"attributes\": {\n                \"hostname\": parsed_url.hostname,\n                \"scheme\": parsed_url.scheme\n            },\n            \"source\": \"Cisco Talos Intelligence\",\n        }\n        if parsed_url.path:\n            observable_object['attributes']['path'] = parsed_url.path\n        if parsed_url.query:\n            observable_object['attributes']['query'] = parsed_url.query\n        if parsed_url.port:\n            observable_object['attributes']['port'] = parsed_url.port\n        \n        build_url_output__observable_array.append(observable_object)\n\n",
+                    "userCode": "\n    from urllib.parse import urlparse\n    build_url_output__observable_array = []\n    \n    talos_to_score_mapping = {\"unknown\": \"Unknown\", \"trusted\": \"Safe\", \"favorable\": \"Probably_Safe\", \"neutral\": \"May_not_be_Safe\", \"questionable\": \"Suspicious_or_Risky\", \"untrusted\": \"Malicious\"}\n    score_table = {\n        \"Unknown\": \"0\",\n        \"Very_Safe\": \"1\",\n        \"Safe\": \"2\",\n        \"Probably_Safe\": \"3\",\n        \"Leans_Safe\": \"4\",\n        \"May_not_be_Safe\": \"5\",\n        \"Exercise_Caution\": \"6\",\n        \"Suspicious_or_Risky\": \"7\",\n        \"Possibly_Malicious\": \"8\",\n        \"Probably_Malicious\": \"9\",\n        \"Malicious\": \"10\"\n    }\n    \n    for url, threat_level, threat_categories, aup in zip(filtered_result_0_data___observable, filtered_result_0_data___threat_level, filtered_result_0_data___threat_categories, filtered_result_0_data___aup):\n        parsed_url = urlparse(url)\n        score = talos_to_score_mapping.get(threat_level.lower(), \"\")\n        observable_object = {\n            \"value\": url,\n            \"type\": \"url\",\n            \"reputation\": {\n                \"threat_level\": threat_level,\n                \"threat_categories\": threat_categories,\n                \"aup_categories\": aup,\n                \"score\": score,\n                \"score_id\": score_table.get(score, \"\")\n            },\n            \"attributes\": {\n                \"hostname\": parsed_url.hostname,\n                \"scheme\": parsed_url.scheme\n            },\n            \"source\": \"Cisco Talos Intelligence\",\n        }\n        if parsed_url.path:\n            observable_object['attributes']['path'] = parsed_url.path\n        if parsed_url.query:\n            observable_object['attributes']['query'] = parsed_url.query\n        if parsed_url.port:\n            observable_object['attributes']['port'] = parsed_url.port\n        \n        build_url_output__observable_array.append(observable_object)\n\n",
                     "warnings": {},
                     "x": 640,
                     "y": 1380
@@ -462,7 +473,7 @@
                     "errors": {},
                     "id": "27",
                     "type": "code",
-                    "userCode": "\n    build_domain_output__observable_array = []\n    \n    talos_to_score_mapping = {\"unknown\": \"Unknown\", \"trusted\": \"Safe\", \"favorable\": \"Probably_Safe\", \"neutral\": \"May_not_be_Safe\", \"questionable\": \"Suspicious_or_Risky\", \"unstrusted\": \"Malicious\"}\n    score_table = {\n        \"Unkown\": \"0\",\n        \"Very_Safe\": \"1\",\n        \"Safe\": \"2\",\n        \"Probably_Safe\": \"3\",\n        \"Leans_Safe\": \"4\",\n        \"May_not_be_Safe\": \"5\",\n        \"Exercise_Caution\": \"6\",\n        \"Suspicious_or_Risky\": \"7\",\n        \"Possibly_Malicious\": \"8\",\n        \"Probably_Malicious\": \"9\",\n        \"Malicious\": \"10\"\n    }\n    \n    for domain, threat_level, threat_categories, aup in zip(filtered_result_0_data___observable, filtered_result_0_data___threat_level, filtered_result_0_data___threat_categories, filtered_result_0_data___aup):\n        score = talos_to_score_mapping.get(threat_level.lower(), \"\")\n        observable_object = {\n            \"value\": domain,\n            \"type\": \"domain\",\n            \"reputation\": {\n                \"threat_level\": threat_level,\n                \"threat_categories\": threat_categories,\n                \"aup_categories\": aup,\n                \"score\": score,\n                \"score_id\": score_table.get(score, \"\")\n            },\n            \"source\": \"Cisco Talos Intelligence\"\n        }\n        build_domain_output__observable_array.append(observable_object)\n\n",
+                    "userCode": "\n    build_domain_output__observable_array = []\n    \n    talos_to_score_mapping = {\"unknown\": \"Unknown\", \"trusted\": \"Safe\", \"favorable\": \"Probably_Safe\", \"neutral\": \"May_not_be_Safe\", \"questionable\": \"Suspicious_or_Risky\", \"untrusted\": \"Malicious\"}\n    score_table = {\n        \"Unknown\": \"0\",\n        \"Very_Safe\": \"1\",\n        \"Safe\": \"2\",\n        \"Probably_Safe\": \"3\",\n        \"Leans_Safe\": \"4\",\n        \"May_not_be_Safe\": \"5\",\n        \"Exercise_Caution\": \"6\",\n        \"Suspicious_or_Risky\": \"7\",\n        \"Possibly_Malicious\": \"8\",\n        \"Probably_Malicious\": \"9\",\n        \"Malicious\": \"10\"\n    }\n    \n    for domain, threat_level, threat_categories, aup in zip(filtered_result_0_data___observable, filtered_result_0_data___threat_level, filtered_result_0_data___threat_categories, filtered_result_0_data___aup):\n        score = talos_to_score_mapping.get(threat_level.lower(), \"\")\n        observable_object = {\n            \"value\": domain,\n            \"type\": \"domain\",\n            \"reputation\": {\n                \"threat_level\": threat_level,\n                \"threat_categories\": threat_categories,\n                \"aup_categories\": aup,\n                \"score\": score,\n                \"score_id\": score_table.get(score, \"\")\n            },\n            \"source\": \"Cisco Talos Intelligence\"\n        }\n        build_domain_output__observable_array.append(observable_object)\n\n",
                     "warnings": {},
                     "x": 980,
                     "y": 1380
@@ -494,7 +505,7 @@
                     "errors": {},
                     "id": "28",
                     "type": "code",
-                    "userCode": "\n    import ipaddress\n    build_ip_output__observable_array = []\n    \n    talos_to_score_mapping = {\"unknown\": \"Unknown\", \"trusted\": \"Safe\", \"favorable\": \"Probably_Safe\", \"neutral\": \"May_not_be_Safe\", \"questionable\": \"Suspicious_or_Risky\", \"unstrusted\": \"Malicious\"}\n    score_table = {\n        \"Unkown\": \"0\",\n        \"Very_Safe\": \"1\",\n        \"Safe\": \"2\",\n        \"Probably_Safe\": \"3\",\n        \"Leans_Safe\": \"4\",\n        \"May_not_be_Safe\": \"5\",\n        \"Exercise_Caution\": \"6\",\n        \"Suspicious_or_Risky\": \"7\",\n        \"Possibly_Malicious\": \"8\",\n        \"Probably_Malicious\": \"9\",\n        \"Malicious\": \"10\"\n    }\n    \n    for ip, threat_level, threat_categories, aup in zip(filtered_result_0_data___observable, filtered_result_0_data___threat_level, filtered_result_0_data___threat_categories, filtered_result_0_data___aup):\n        score = talos_to_score_mapping.get(threat_level.lower(), \"\")\n        observable_object = {\n            \"value\": ip,\n            \"type\": \"ipv4\",\n            \"reputation\": {\n                \"threat_level\": threat_level,\n                \"threat_categories\": threat_categories,\n                \"aup_categories\": aup,\n                \"score\": score,\n                \"score_id\": score_table.get(score, \"\")\n            },\n            \"source\": \"Cisco Talos Intelligence\"\n        }\n        ip_addr = ipaddress.ip_address(ip)\n        if isinstance(ip_addr, ipaddress.IPv6Address):\n            observable_object[\"type\"] = \"ipv6\"\n\n        build_ip_output__observable_array.append(observable_object)\n\n",
+                    "userCode": "\n    import ipaddress\n    build_ip_output__observable_array = []\n    \n    talos_to_score_mapping = {\"unknown\": \"Unknown\", \"trusted\": \"Safe\", \"favorable\": \"Probably_Safe\", \"neutral\": \"May_not_be_Safe\", \"questionable\": \"Suspicious_or_Risky\", \"untrusted\": \"Malicious\"}\n    score_table = {\n        \"Unknown\": \"0\",\n        \"Very_Safe\": \"1\",\n        \"Safe\": \"2\",\n        \"Probably_Safe\": \"3\",\n        \"Leans_Safe\": \"4\",\n        \"May_not_be_Safe\": \"5\",\n        \"Exercise_Caution\": \"6\",\n        \"Suspicious_or_Risky\": \"7\",\n        \"Possibly_Malicious\": \"8\",\n        \"Probably_Malicious\": \"9\",\n        \"Malicious\": \"10\"\n    }\n    \n    for ip, threat_level, threat_categories, aup in zip(filtered_result_0_data___observable, filtered_result_0_data___threat_level, filtered_result_0_data___threat_categories, filtered_result_0_data___aup):\n        score = talos_to_score_mapping.get(threat_level.lower(), \"\")\n        observable_object = {\n            \"value\": ip,\n            \"type\": \"ipv4\",\n            \"reputation\": {\n                \"threat_level\": threat_level,\n                \"threat_categories\": threat_categories,\n                \"aup_categories\": aup,\n                \"score\": score,\n                \"score_id\": score_table.get(score, \"\")\n            },\n            \"source\": \"Cisco Talos Intelligence\"\n        }\n        ip_addr = ipaddress.ip_address(ip)\n        if isinstance(ip_addr, ipaddress.IPv6Address):\n            observable_object[\"type\"] = \"ipv6\"\n\n        build_ip_output__observable_array.append(observable_object)\n\n",
                     "warnings": {},
                     "x": 1320,
                     "y": 1380
@@ -663,6 +674,7 @@
                                     }
                                 ],
                                 "conditionIndex": 0,
+                                "conditionKey": "condition_key_4",
                                 "customName": "Success",
                                 "logic": "and"
                             }
@@ -680,7 +692,13 @@
                     "y": 840
                 }
             },
-            "notes": "Inputs: url, ip, domain\nInteractions: Cisco Talos Intelligence\nActions: url reputation, ip reputation, domain reputation, file reputation\nOutputs: note, observables"
+            "notes": "Inputs: url, ip, domain\nInteractions: Cisco Talos Intelligence\nActions: url reputation, ip reputation, domain reputation, file reputation\nOutputs: note, observables",
+            "origin": {
+                "playbook_id": 11793,
+                "playbook_name": "CiscoTalosIntelligence_Identifier_Reputation_Analysis",
+                "playbook_repo_id": 1,
+                "playbook_repo_name": "community"
+            }
         },
         "input_spec": [
             {
@@ -734,10 +752,10 @@
         "playbook_trigger": "artifact_created",
         "playbook_type": "data",
         "python_version": "3",
-        "schema": "5.0.15",
-        "version": "6.3.1.176"
+        "schema": "5.0.17",
+        "version": "6.4.0.85"
     },
-    "create_time": "2024-12-11T22:12:36.759275+00:00",
+    "create_time": "2025-04-07T18:16:02.840773+00:00",
     "draft_mode": false,
     "labels": [
         "*"
