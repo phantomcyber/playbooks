@@ -1,5 +1,5 @@
 """
-This Playbook is designed to give you in depth insight not only into the affected Crowdstrike device, but also other devices in the Crowdstrike environment. \n\nFirst, it will hunt for the possible malicious File Hashes, URL/Domains and IPs on other environment.  At the same time it delivers URL and File Reputation from your Crowdstrike environment on relatable artifacts.  \n\nLastly, via prompt you will be delivered with pertinent information relating to actions run above.  You will then be tasked to answer Yes/No on Network Isolation of device, blocking the execution of malicious files and file eviction from the device completely. 
+This Playbook is designed to give you in depth insight not only into the affected Crowdstrike device, but also other devices in the Crowdstrike environment. \n\nFirst, it will hunt for the possible malicious File Hashes, URL/Domains and IPs on other environment.  At the same time it delivers URL and File Reputation from your Crowdstrike environment on relatable artifacts.  \n\nLastly, via prompt you will be delivered with contextual information from the previous actions.  You will then be tasked to decide whether to isolate the device, block the execution of malicious files and/or perform file eviction from the device completely. 
 """
 
 
@@ -53,7 +53,7 @@ def hunt_file(action=None, success=None, container=None, results=None, handle=No
     ## Custom Code End
     ################################################################################
 
-    phantom.act("hunt file", parameters=parameters, name="hunt_file", assets=["crowdstrike_oauth_api"], callback=crowdstrike_oauth_api_get_device_info_file)
+    phantom.act("hunt file", parameters=parameters, name="hunt_file", assets=["crowdstrike_oauth_api"], callback=get_device_info_file)
 
     return
 
@@ -72,6 +72,9 @@ def ioc_filter(action=None, success=None, container=None, results=None, handle=N
         conditions=[
             ["artifact:*.cef.fileHash", "!=", ""]
         ],
+        conditions_dps=[
+            ["artifact:*.cef.fileHash", "!=", ""]
+        ],
         name="ioc_filter:condition_1",
         delimiter=None)
 
@@ -83,6 +86,9 @@ def ioc_filter(action=None, success=None, container=None, results=None, handle=N
     matched_artifacts_2, matched_results_2 = phantom.condition(
         container=container,
         conditions=[
+            ["artifact:*.cef.fileHashSha256", "!=", ""]
+        ],
+        conditions_dps=[
             ["artifact:*.cef.fileHashSha256", "!=", ""]
         ],
         name="ioc_filter:condition_2",
@@ -98,6 +104,9 @@ def ioc_filter(action=None, success=None, container=None, results=None, handle=N
         conditions=[
             ["artifact:*.cef.requestURL", "!=", ""]
         ],
+        conditions_dps=[
+            ["artifact:*.cef.requestURL", "!=", ""]
+        ],
         name="ioc_filter:condition_3",
         delimiter=None)
 
@@ -109,6 +118,9 @@ def ioc_filter(action=None, success=None, container=None, results=None, handle=N
     matched_artifacts_4, matched_results_4 = phantom.condition(
         container=container,
         conditions=[
+            ["artifact:*.cef.dst", "!=", ""]
+        ],
+        conditions_dps=[
             ["artifact:*.cef.dst", "!=", ""]
         ],
         name="ioc_filter:condition_4",
@@ -124,12 +136,15 @@ def ioc_filter(action=None, success=None, container=None, results=None, handle=N
         conditions=[
             ["artifact:*.cef.sourceHostName", "!=", ""]
         ],
+        conditions_dps=[
+            ["artifact:*.cef.sourceHostName", "!=", ""]
+        ],
         name="ioc_filter:condition_5",
         delimiter=None)
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_5 or matched_results_5:
-        crowdstrike_oauth_api_endpoint_analysis(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_5, filtered_results=matched_results_5)
+        perform_endpoint_analysis(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_5, filtered_results=matched_results_5)
 
     return
 
@@ -247,103 +262,7 @@ def hunt_ip(action=None, success=None, container=None, results=None, handle=None
     ## Custom Code End
     ################################################################################
 
-    phantom.act("hunt ip", parameters=parameters, name="hunt_ip", assets=["crowdstrike_oauth_api"], callback=crowdstrike_oauth_api_get_device_info_ip)
-
-    return
-
-
-@phantom.playbook_block()
-def crowdstrike_oauth_api_endpoint_analysis(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("crowdstrike_oauth_api_endpoint_analysis() called")
-
-    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.sourceHostName"])
-
-    container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
-
-    inputs = {
-        "device": container_artifact_cef_item_0,
-    }
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    # call playbook "local/CrowdStrike_OAuth_API_Endpoint_Analysis", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/CrowdStrike_OAuth_API_Endpoint_Analysis", container=container, name="crowdstrike_oauth_api_endpoint_analysis", callback=crowdstrike_oauth_api_endpoint_analysis_callback, inputs=inputs)
-
-    return
-
-
-@phantom.playbook_block()
-def crowdstrike_oauth_api_endpoint_analysis_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("crowdstrike_oauth_api_endpoint_analysis_callback() called")
-
-    
-    # Downstream End block cannot be called directly, since execution will call on_finish automatically.
-    # Using placeholder callback function so child playbook is run synchronously.
-
-
-    return
-
-
-@phantom.playbook_block()
-def crowdstrike_oauth_api_get_device_info_file(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("crowdstrike_oauth_api_get_device_info_file() called")
-
-    hunt_file_result_data = phantom.collect2(container=container, datapath=["hunt_file:action_result.data.*.device_id"], action_results=results)
-
-    hunt_file_result_item_0 = [item[0] for item in hunt_file_result_data]
-
-    inputs = {
-        "device": hunt_file_result_item_0,
-    }
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    # call playbook "local/CrowdStrike_OAuth_API_Get_Device_Info", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/CrowdStrike_OAuth_API_Get_Device_Info", container=container, name="crowdstrike_oauth_api_get_device_info_file", callback=format_hunt_file_results, inputs=inputs)
-
-    return
-
-
-@phantom.playbook_block()
-def crowdstrike_oauth_api_get_device_info_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("crowdstrike_oauth_api_get_device_info_ip() called")
-
-    hunt_ip_result_data = phantom.collect2(container=container, datapath=["hunt_ip:action_result.data.*.device_id"], action_results=results)
-
-    hunt_ip_result_item_0 = [item[0] for item in hunt_ip_result_data]
-
-    inputs = {
-        "device": hunt_ip_result_item_0,
-    }
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    # call playbook "local/CrowdStrike_OAuth_API_Get_Device_Info", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/CrowdStrike_OAuth_API_Get_Device_Info", container=container, name="crowdstrike_oauth_api_get_device_info_ip", callback=format_hunt_ip_results, inputs=inputs)
+    phantom.act("hunt ip", parameters=parameters, name="hunt_ip", assets=["crowdstrike_oauth_api"], callback=get_device_info_ip)
 
     return
 
@@ -470,7 +389,7 @@ def format_hunt_file_results(action=None, success=None, container=None, results=
     parameters = [
         "filtered-data:ioc_filter:condition_1:artifact:*.cef.fileName",
         "hunt_file:action_result.parameter.hash",
-        "crowdstrike_oauth_api_get_device_info_file:playbook_output:hostname"
+        "get_device_info_file:playbook_output:hostname"
     ]
 
     ################################################################################
@@ -502,7 +421,7 @@ def format_hunt_ip_results(action=None, success=None, container=None, results=No
     # parameter list for template variable replacement
     parameters = [
         "hunt_ip:action_result.parameter.ip",
-        "crowdstrike_oauth_api_get_device_info_ip:playbook_output:hostname"
+        "get_device_info_ip:playbook_output:hostname"
     ]
 
     ################################################################################
@@ -550,7 +469,7 @@ def format_url_reputation_results(action=None, success=None, container=None, res
 
     phantom.format(container=container, template=template, parameters=parameters, name="format_url_reputation_results")
 
-    crowdstrike_oauth_api_get_device_info_domain(container=container)
+    get_device_info_domain(container=container)
 
     return
 
@@ -569,7 +488,7 @@ def format_hunt_domain_results(action=None, success=None, container=None, result
     # parameter list for template variable replacement
     parameters = [
         "hunt_domain:action_result.parameter.domain",
-        "crowdstrike_oauth_api_get_device_info_domain:playbook_output:hostname"
+        "get_device_info_domain:playbook_output:hostname"
     ]
 
     ################################################################################
@@ -588,8 +507,36 @@ def format_hunt_domain_results(action=None, success=None, container=None, result
 
 
 @phantom.playbook_block()
-def crowdstrike_oauth_api_get_device_info_domain(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("crowdstrike_oauth_api_get_device_info_domain() called")
+def get_device_info_file(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("get_device_info_file() called")
+
+    hunt_file_result_data = phantom.collect2(container=container, datapath=["hunt_file:action_result.data.*.device_id"], action_results=results)
+
+    hunt_file_result_item_0 = [item[0] for item in hunt_file_result_data]
+
+    inputs = {
+        "device": hunt_file_result_item_0,
+    }
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    # call playbook "community/CrowdStrike_OAuth_API_Get_Device_Info", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/CrowdStrike_OAuth_API_Get_Device_Info", container=container, name="get_device_info_file", callback=format_hunt_file_results, inputs=inputs)
+
+    return
+
+
+@phantom.playbook_block()
+def get_device_info_domain(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("get_device_info_domain() called")
 
     hunt_domain_result_data = phantom.collect2(container=container, datapath=["hunt_domain:action_result.data.*.device_id"], action_results=results)
 
@@ -609,8 +556,76 @@ def crowdstrike_oauth_api_get_device_info_domain(action=None, success=None, cont
     ## Custom Code End
     ################################################################################
 
-    # call playbook "local/CrowdStrike_OAuth_API_Get_Device_Info", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/CrowdStrike_OAuth_API_Get_Device_Info", container=container, name="crowdstrike_oauth_api_get_device_info_domain", callback=format_hunt_domain_results, inputs=inputs)
+    # call playbook "community/CrowdStrike_OAuth_API_Get_Device_Info", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/CrowdStrike_OAuth_API_Get_Device_Info", container=container, name="get_device_info_domain", callback=format_hunt_domain_results, inputs=inputs)
+
+    return
+
+
+@phantom.playbook_block()
+def get_device_info_ip(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("get_device_info_ip() called")
+
+    hunt_ip_result_data = phantom.collect2(container=container, datapath=["hunt_ip:action_result.data.*.device_id"], action_results=results)
+
+    hunt_ip_result_item_0 = [item[0] for item in hunt_ip_result_data]
+
+    inputs = {
+        "device": hunt_ip_result_item_0,
+    }
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    # call playbook "community/CrowdStrike_OAuth_API_Get_Device_Info", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/CrowdStrike_OAuth_API_Get_Device_Info", container=container, name="get_device_info_ip", callback=format_hunt_ip_results, inputs=inputs)
+
+    return
+
+
+@phantom.playbook_block()
+def perform_endpoint_analysis(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("perform_endpoint_analysis() called")
+
+    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.sourceHostName"])
+
+    container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
+
+    inputs = {
+        "device": container_artifact_cef_item_0,
+    }
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    # call playbook "community/CrowdStrike_OAuth_API_Endpoint_Analysis", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/CrowdStrike_OAuth_API_Endpoint_Analysis", container=container, name="perform_endpoint_analysis", callback=perform_endpoint_analysis_callback, inputs=inputs)
+
+    return
+
+
+@phantom.playbook_block()
+def perform_endpoint_analysis_callback(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("perform_endpoint_analysis_callback() called")
+
+    
+    # Downstream End block cannot be called directly, since execution will call on_finish automatically.
+    # Using placeholder callback function so child playbook is run synchronously.
+
 
     return
 
@@ -619,20 +634,20 @@ def crowdstrike_oauth_api_get_device_info_domain(action=None, success=None, cont
 def on_finish(container, summary):
     phantom.debug("on_finish() called")
 
-    crowdstrike_oauth_api_endpoint_analysis_output_service_observable = phantom.collect2(container=container, datapath=["crowdstrike_oauth_api_endpoint_analysis:playbook_output:service_observable"])
-    crowdstrike_oauth_api_endpoint_analysis_output_endpoint_observable = phantom.collect2(container=container, datapath=["crowdstrike_oauth_api_endpoint_analysis:playbook_output:endpoint_observable"])
-    crowdstrike_oauth_api_endpoint_analysis_output_network_observable = phantom.collect2(container=container, datapath=["crowdstrike_oauth_api_endpoint_analysis:playbook_output:network_observable"])
-    crowdstrike_oauth_api_endpoint_analysis_output_process_observable = phantom.collect2(container=container, datapath=["crowdstrike_oauth_api_endpoint_analysis:playbook_output:process_observable"])
+    perform_endpoint_analysis_output_service_observable = phantom.collect2(container=container, datapath=["perform_endpoint_analysis:playbook_output:service_observable"])
+    perform_endpoint_analysis_output_endpoint_observable = phantom.collect2(container=container, datapath=["perform_endpoint_analysis:playbook_output:endpoint_observable"])
+    perform_endpoint_analysis_output_network_observable = phantom.collect2(container=container, datapath=["perform_endpoint_analysis:playbook_output:network_observable"])
+    perform_endpoint_analysis_output_process_observable = phantom.collect2(container=container, datapath=["perform_endpoint_analysis:playbook_output:process_observable"])
     format_hunt_ip_results = phantom.get_format_data(name="format_hunt_ip_results")
     format_hunt_domain_results = phantom.get_format_data(name="format_hunt_domain_results")
     format_hunt_file_results = phantom.get_format_data(name="format_hunt_file_results")
     format_file_reputation_results = phantom.get_format_data(name="format_file_reputation_results")
     format_url_reputation_results = phantom.get_format_data(name="format_url_reputation_results")
 
-    crowdstrike_oauth_api_endpoint_analysis_output_service_observable_values = [item[0] for item in crowdstrike_oauth_api_endpoint_analysis_output_service_observable]
-    crowdstrike_oauth_api_endpoint_analysis_output_endpoint_observable_values = [item[0] for item in crowdstrike_oauth_api_endpoint_analysis_output_endpoint_observable]
-    crowdstrike_oauth_api_endpoint_analysis_output_network_observable_values = [item[0] for item in crowdstrike_oauth_api_endpoint_analysis_output_network_observable]
-    crowdstrike_oauth_api_endpoint_analysis_output_process_observable_values = [item[0] for item in crowdstrike_oauth_api_endpoint_analysis_output_process_observable]
+    perform_endpoint_analysis_output_service_observable_values = [item[0] for item in perform_endpoint_analysis_output_service_observable]
+    perform_endpoint_analysis_output_endpoint_observable_values = [item[0] for item in perform_endpoint_analysis_output_endpoint_observable]
+    perform_endpoint_analysis_output_network_observable_values = [item[0] for item in perform_endpoint_analysis_output_network_observable]
+    perform_endpoint_analysis_output_process_observable_values = [item[0] for item in perform_endpoint_analysis_output_process_observable]
 
     output = {
         "hunt_ip_results": format_hunt_ip_results,
@@ -640,10 +655,10 @@ def on_finish(container, summary):
         "hunt_file_results": format_hunt_file_results,
         "file_reputation_results": format_file_reputation_results,
         "url_reputation_results": format_url_reputation_results,
-        "services_observable": crowdstrike_oauth_api_endpoint_analysis_output_service_observable_values,
-        "endpoint_observable": crowdstrike_oauth_api_endpoint_analysis_output_endpoint_observable_values,
-        "network_observable": crowdstrike_oauth_api_endpoint_analysis_output_network_observable_values,
-        "process_observable": crowdstrike_oauth_api_endpoint_analysis_output_process_observable_values,
+        "services_observable": perform_endpoint_analysis_output_service_observable_values,
+        "endpoint_observable": perform_endpoint_analysis_output_endpoint_observable_values,
+        "network_observable": perform_endpoint_analysis_output_network_observable_values,
+        "process_observable": perform_endpoint_analysis_output_process_observable_values,
     }
 
     ################################################################################

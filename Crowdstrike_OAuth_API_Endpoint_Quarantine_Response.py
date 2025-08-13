@@ -18,126 +18,6 @@ def on_start(container):
     return
 
 @phantom.playbook_block()
-def crowdstrike_oauth_api_executable_denylisting(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("crowdstrike_oauth_api_executable_denylisting() called")
-
-    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.sourceHostName","artifact:*.cef.fileHashSha256"])
-
-    container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
-    container_artifact_cef_item_1 = [item[1] for item in container_artifact_data]
-
-    inputs = {
-        "device": container_artifact_cef_item_0,
-        "hash": container_artifact_cef_item_1,
-    }
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    # call playbook "local/CrowdStrike_OAuth_API_Executable_Denylisting", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/CrowdStrike_OAuth_API_Executable_Denylisting", container=container, name="crowdstrike_oauth_api_executable_denylisting", callback=add_executable_denylisting_results, inputs=inputs)
-
-    return
-
-
-@phantom.playbook_block()
-def crowdstrike_oauth_api_network_isolation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("crowdstrike_oauth_api_network_isolation() called")
-
-    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.sourceHostName"])
-
-    container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
-
-    device_combined_value = phantom.concatenate(container_artifact_cef_item_0, dedup=True)
-
-    inputs = {
-        "device": device_combined_value,
-    }
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    # call playbook "local/CrowdStrike_OAuth_API_Network_Isolation", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/CrowdStrike_OAuth_API_Network_Isolation", container=container, name="crowdstrike_oauth_api_network_isolation", callback=add_network_isolation_results, inputs=inputs)
-
-    return
-
-
-@phantom.playbook_block()
-def crowdstrike_oauth_api_file_eviction(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("crowdstrike_oauth_api_file_eviction() called")
-
-    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.sourceHostName"])
-    format_complete_file_path = phantom.get_format_data(name="format_complete_file_path")
-
-    container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
-
-    inputs = {
-        "path": format_complete_file_path,
-        "device": container_artifact_cef_item_0,
-    }
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    # call playbook "local/CrowdStrike_OAuth_API_File_Eviction", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/CrowdStrike_OAuth_API_File_Eviction", container=container, name="crowdstrike_oauth_api_file_eviction", callback=add_file_eviction_results, inputs=inputs)
-
-    return
-
-
-@phantom.playbook_block()
-def crowdstrike_oauth_api_file_collection(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("crowdstrike_oauth_api_file_collection() called")
-
-    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.sourceHostName"])
-    format_complete_file_path = phantom.get_format_data(name="format_complete_file_path")
-
-    container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
-
-    inputs = {
-        "path": format_complete_file_path,
-        "device": container_artifact_cef_item_0,
-    }
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    # call playbook "local/CrowdStrike_OAuth_API_File_Collection", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/CrowdStrike_OAuth_API_File_Collection", container=container, name="crowdstrike_oauth_api_file_collection", callback=add_file_collection_results, inputs=inputs)
-
-    return
-
-
-@phantom.playbook_block()
 def add_executable_denylisting_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("add_executable_denylisting_results() called")
 
@@ -146,9 +26,9 @@ def add_executable_denylisting_results(action=None, success=None, container=None
     # Denylisting input playbook run.
     ################################################################################
 
-    crowdstrike_oauth_api_executable_denylisting_output_markdown_report = phantom.collect2(container=container, datapath=["crowdstrike_oauth_api_executable_denylisting:playbook_output:markdown_report"])
+    perform_executable_denylisting_output_markdown_report = phantom.collect2(container=container, datapath=["perform_executable_denylisting:playbook_output:markdown_report"])
 
-    crowdstrike_oauth_api_executable_denylisting_output_markdown_report_values = [item[0] for item in crowdstrike_oauth_api_executable_denylisting_output_markdown_report]
+    perform_executable_denylisting_output_markdown_report_values = [item[0] for item in perform_executable_denylisting_output_markdown_report]
 
     ################################################################################
     ## Custom Code Start
@@ -160,7 +40,7 @@ def add_executable_denylisting_results(action=None, success=None, container=None
     ## Custom Code End
     ################################################################################
 
-    phantom.add_note(container=container, content=crowdstrike_oauth_api_executable_denylisting_output_markdown_report_values, note_format="markdown", note_type="general", title="Executable Denylisting Results")
+    phantom.add_note(container=container, content=perform_executable_denylisting_output_markdown_report_values, note_format="markdown", note_type="general", title="Executable Denylisting Results")
 
     return
 
@@ -174,9 +54,9 @@ def add_file_eviction_results(action=None, success=None, container=None, results
     # input playbook run.
     ################################################################################
 
-    crowdstrike_oauth_api_file_eviction_output_markdown_report = phantom.collect2(container=container, datapath=["crowdstrike_oauth_api_file_eviction:playbook_output:markdown_report"])
+    perform_file_eviction_output_markdown_report = phantom.collect2(container=container, datapath=["perform_file_eviction:playbook_output:markdown_report"])
 
-    crowdstrike_oauth_api_file_eviction_output_markdown_report_values = [item[0] for item in crowdstrike_oauth_api_file_eviction_output_markdown_report]
+    perform_file_eviction_output_markdown_report_values = [item[0] for item in perform_file_eviction_output_markdown_report]
 
     ################################################################################
     ## Custom Code Start
@@ -188,7 +68,7 @@ def add_file_eviction_results(action=None, success=None, container=None, results
     ## Custom Code End
     ################################################################################
 
-    phantom.add_note(container=container, content=crowdstrike_oauth_api_file_eviction_output_markdown_report_values, note_format="markdown", note_type="general", title="File Eviction Results")
+    phantom.add_note(container=container, content=perform_file_eviction_output_markdown_report_values, note_format="markdown", note_type="general", title="File Eviction Results")
 
     return
 
@@ -202,9 +82,9 @@ def add_network_isolation_results(action=None, success=None, container=None, res
     # input playbook run.
     ################################################################################
 
-    crowdstrike_oauth_api_network_isolation_output_markdown_report = phantom.collect2(container=container, datapath=["crowdstrike_oauth_api_network_isolation:playbook_output:markdown_report"])
+    perform_network_isolation_output_markdown_report = phantom.collect2(container=container, datapath=["perform_network_isolation:playbook_output:markdown_report"])
 
-    crowdstrike_oauth_api_network_isolation_output_markdown_report_values = [item[0] for item in crowdstrike_oauth_api_network_isolation_output_markdown_report]
+    perform_network_isolation_output_markdown_report_values = [item[0] for item in perform_network_isolation_output_markdown_report]
 
     ################################################################################
     ## Custom Code Start
@@ -216,7 +96,7 @@ def add_network_isolation_results(action=None, success=None, container=None, res
     ## Custom Code End
     ################################################################################
 
-    phantom.add_note(container=container, content=crowdstrike_oauth_api_network_isolation_output_markdown_report_values, note_format="markdown", note_type="general", title="Network Isolation Results")
+    phantom.add_note(container=container, content=perform_network_isolation_output_markdown_report_values, note_format="markdown", note_type="general", title="Network Isolation Results")
 
     return
 
@@ -250,7 +130,7 @@ def format_complete_file_path(action=None, success=None, container=None, results
 
     phantom.format(container=container, template=template, parameters=parameters, name="format_complete_file_path")
 
-    crowdstrike_oauth_api_file_collection(container=container)
+    perform_file_collection(container=container)
 
     return
 
@@ -264,30 +144,9 @@ def add_file_collection_results(action=None, success=None, container=None, resul
     # input playbook run.
     ################################################################################
 
-    crowdstrike_oauth_api_file_collection_output_markdown_report = phantom.collect2(container=container, datapath=["crowdstrike_oauth_api_file_collection:playbook_output:markdown_report"])
+    perform_file_collection_output_markdown_report = phantom.collect2(container=container, datapath=["perform_file_collection:playbook_output:markdown_report"])
 
-    crowdstrike_oauth_api_file_collection_output_markdown_report_values = [item[0] for item in crowdstrike_oauth_api_file_collection_output_markdown_report]
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.add_note(container=container, content=crowdstrike_oauth_api_file_collection_output_markdown_report_values, note_format="markdown", note_type="general", title="File Collection Results")
-
-    crowdstrike_oauth_api_file_eviction(container=container)
-
-    return
-
-
-@phantom.playbook_block()
-def crowdstrike_endpoint_ioc_enrichment(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("crowdstrike_endpoint_ioc_enrichment() called")
+    perform_file_collection_output_markdown_report_values = [item[0] for item in perform_file_collection_output_markdown_report]
 
     ################################################################################
     ## Custom Code Start
@@ -299,8 +158,9 @@ def crowdstrike_endpoint_ioc_enrichment(action=None, success=None, container=Non
     ## Custom Code End
     ################################################################################
 
-    # call playbook "local/Crowdstrike_Endpoint_IOC_Enrichment", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("local/Crowdstrike_Endpoint_IOC_Enrichment", container=container, name="crowdstrike_endpoint_ioc_enrichment", callback=format_analyst_message)
+    phantom.add_note(container=container, content=perform_file_collection_output_markdown_report_values, note_format="markdown", note_type="general", title="File Collection Results")
+
+    perform_file_eviction(container=container)
 
     return
 
@@ -321,16 +181,16 @@ def format_analyst_message(action=None, success=None, container=None, results=No
         "container:name",
         "artifact:*.cef.falconHostLink",
         "artifact:*.cef.sourceHostName",
-        "crowdstrike_endpoint_ioc_enrichment:playbook_output:endpoint_observable.endpoint_artifacts.0.domain",
-        "crowdstrike_endpoint_ioc_enrichment:playbook_output:endpoint_observable.endpoint_artifacts.0.ip",
-        "crowdstrike_endpoint_ioc_enrichment:playbook_output:endpoint_observable.endpoint_artifacts.0.external_ip",
-        "crowdstrike_endpoint_ioc_enrichment:playbook_output:endpoint_observable.endpoint_artifacts.0.type",
-        "crowdstrike_endpoint_ioc_enrichment:playbook_output:endpoint_observable.endpoint_artifacts.0.operating_system.name",
-        "crowdstrike_endpoint_ioc_enrichment:playbook_output:file_reputation_results",
-        "crowdstrike_endpoint_ioc_enrichment:playbook_output:url_reputation_results",
-        "crowdstrike_endpoint_ioc_enrichment:playbook_output:hunt_ip_results",
-        "crowdstrike_endpoint_ioc_enrichment:playbook_output:hunt_domain_results",
-        "crowdstrike_endpoint_ioc_enrichment:playbook_output:hunt_file_results"
+        "perform_ioc_enrichment:playbook_output:endpoint_observable.endpoint_artifacts.0.domain",
+        "perform_ioc_enrichment:playbook_output:endpoint_observable.endpoint_artifacts.0.ip",
+        "perform_ioc_enrichment:playbook_output:endpoint_observable.endpoint_artifacts.0.external_ip",
+        "perform_ioc_enrichment:playbook_output:endpoint_observable.endpoint_artifacts.0.type",
+        "perform_ioc_enrichment:playbook_output:endpoint_observable.endpoint_artifacts.0.operating_system.name",
+        "perform_ioc_enrichment:playbook_output:file_reputation_results",
+        "perform_ioc_enrichment:playbook_output:url_reputation_results",
+        "perform_ioc_enrichment:playbook_output:hunt_ip_results",
+        "perform_ioc_enrichment:playbook_output:hunt_domain_results",
+        "perform_ioc_enrichment:playbook_output:hunt_file_results"
     ]
 
     ################################################################################
@@ -429,15 +289,19 @@ def check_owner_is_set(action=None, success=None, container=None, results=None, 
         conditions=[
             [owner_value, "!=", ""]
         ],
+        conditions_dps=[
+            ["container:owner", "!=", ""]
+        ],
+        name="check_owner_is_set:condition_1",
         delimiter=None)
 
     # call connected blocks if condition 1 matched
     if found_match_1:
-        crowdstrike_endpoint_ioc_enrichment(action=action, success=success, container=container, results=results, handle=handle)
         return
 
     # check for 'else' condition 2
     add_owner_missing_note(action=action, success=success, container=container, results=results, handle=handle)
+    perform_ioc_enrichment(action=action, success=success, container=container, results=results, handle=handle)
 
     return
 
@@ -448,7 +312,7 @@ def add_owner_missing_note(action=None, success=None, container=None, results=No
 
     ################################################################################
     # Add a note to ensure users know the event on which this playbook is being run 
-    # need to have an owner assigned.
+    # needs to have an owner assigned.
     ################################################################################
 
     ################################################################################
@@ -482,12 +346,15 @@ def perform_applicable_response_actions(action=None, success=None, container=Non
         conditions=[
             ["prompt_analyst:action_result.summary.responses.0", "==", "Yes"]
         ],
+        conditions_dps=[
+            ["prompt_analyst:action_result.summary.responses.0", "==", "Yes"]
+        ],
         name="perform_applicable_response_actions:condition_1",
         delimiter=None)
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_1 or matched_results_1:
-        crowdstrike_oauth_api_executable_denylisting(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
+        perform_executable_denylisting(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_1, filtered_results=matched_results_1)
 
     # collect filtered artifact ids and results for 'if' condition 2
     matched_artifacts_2, matched_results_2 = phantom.condition(
@@ -495,17 +362,23 @@ def perform_applicable_response_actions(action=None, success=None, container=Non
         conditions=[
             ["prompt_analyst:action_result.summary.responses.1", "==", "Yes"]
         ],
+        conditions_dps=[
+            ["prompt_analyst:action_result.summary.responses.1", "==", "Yes"]
+        ],
         name="perform_applicable_response_actions:condition_2",
         delimiter=None)
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_2 or matched_results_2:
-        crowdstrike_oauth_api_network_isolation(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
+        perform_network_isolation(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
 
     # collect filtered artifact ids and results for 'if' condition 3
     matched_artifacts_3, matched_results_3 = phantom.condition(
         container=container,
         conditions=[
+            ["prompt_analyst:action_result.summary.responses.2", "==", "Yes"]
+        ],
+        conditions_dps=[
             ["prompt_analyst:action_result.summary.responses.2", "==", "Yes"]
         ],
         name="perform_applicable_response_actions:condition_3",
@@ -514,6 +387,144 @@ def perform_applicable_response_actions(action=None, success=None, container=Non
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_3 or matched_results_3:
         format_complete_file_path(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_3, filtered_results=matched_results_3)
+
+    return
+
+
+@phantom.playbook_block()
+def perform_ioc_enrichment(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("perform_ioc_enrichment() called")
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    # call playbook "local/Crowdstrike_OAuth_API_Endpoint_IOC_Enrichment", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("local/Crowdstrike_OAuth_API_Endpoint_IOC_Enrichment", container=container, name="perform_ioc_enrichment", callback=format_analyst_message)
+
+    return
+
+
+@phantom.playbook_block()
+def perform_network_isolation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("perform_network_isolation() called")
+
+    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.sourceHostName"])
+
+    container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
+
+    inputs = {
+        "device": container_artifact_cef_item_0,
+    }
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    # call playbook "community/CrowdStrike_OAuth_API_Network_Isolation", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/CrowdStrike_OAuth_API_Network_Isolation", container=container, name="perform_network_isolation", callback=add_network_isolation_results, inputs=inputs)
+
+    return
+
+
+@phantom.playbook_block()
+def perform_executable_denylisting(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("perform_executable_denylisting() called")
+
+    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.sourceHostName","artifact:*.cef.fileHashSha256"])
+
+    container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
+    container_artifact_cef_item_1 = [item[1] for item in container_artifact_data]
+
+    inputs = {
+        "device": container_artifact_cef_item_0,
+        "hash": container_artifact_cef_item_1,
+    }
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    # call playbook "community/CrowdStrike_OAuth_API_Executable_Denylisting", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/CrowdStrike_OAuth_API_Executable_Denylisting", container=container, name="perform_executable_denylisting", callback=add_executable_denylisting_results, inputs=inputs)
+
+    return
+
+
+@phantom.playbook_block()
+def perform_file_collection(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("perform_file_collection() called")
+
+    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.sourceHostName"])
+    format_complete_file_path = phantom.get_format_data(name="format_complete_file_path")
+
+    container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
+
+    inputs = {
+        "device": container_artifact_cef_item_0,
+        "path": format_complete_file_path,
+    }
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    # call playbook "community/CrowdStrike_OAuth_API_File_Collection", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/CrowdStrike_OAuth_API_File_Collection", container=container, name="perform_file_collection", callback=add_file_collection_results, inputs=inputs)
+
+    return
+
+
+@phantom.playbook_block()
+def perform_file_eviction(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("perform_file_eviction() called")
+
+    container_artifact_data = phantom.collect2(container=container, datapath=["artifact:*.cef.sourceHostName"])
+    format_complete_file_path = phantom.get_format_data(name="format_complete_file_path")
+
+    container_artifact_cef_item_0 = [item[0] for item in container_artifact_data]
+
+    inputs = {
+        "device": container_artifact_cef_item_0,
+        "path": format_complete_file_path,
+    }
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    # call playbook "community/CrowdStrike_OAuth_API_File_Eviction", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/CrowdStrike_OAuth_API_File_Eviction", container=container, name="perform_file_eviction", callback=add_file_eviction_results, inputs=inputs)
 
     return
 
