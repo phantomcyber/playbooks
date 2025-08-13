@@ -4,7 +4,7 @@
     "category": "Enrichment",
     "coa": {
         "data": {
-            "description": "This Playbook is designed to give you in depth insight not only into the affected Crowdstrike device, but also other devices in the Crowdstrike environment. \n\nFirst, it will hunt for the possible malicious File Hashes, URL/Domains and IPs on other environment.  At the same time it delivers URL and File Reputation from your Crowdstrike environment on relatable artifacts.  \n\nLastly, via prompt you will be delivered with pertinent information relating to actions run above.  You will then be tasked to answer Yes/No on Network Isolation of device, blocking the execution of malicious files and file eviction from the device completely. ",
+            "description": "This Playbook is designed to give you in depth insight not only into the affected Crowdstrike device, but also other devices in the Crowdstrike environment. \n\nFirst, it will hunt for the possible malicious File Hashes, URL/Domains and IPs on other environment.  At the same time it delivers URL and File Reputation from your Crowdstrike environment on relatable artifacts.  \n\nLastly, via prompt you will be delivered with contextual information from the previous actions.  You will then be tasked to decide whether to isolate the device, block the execution of malicious files and/or perform file eviction from the device completely. ",
             "edges": [
                 {
                     "id": "port_0_to_port_12",
@@ -16,6 +16,7 @@
                 {
                     "conditions": [
                         {
+                            "conditionKey": "condition_key_1",
                             "index": 0
                         }
                     ],
@@ -28,6 +29,7 @@
                 {
                     "conditions": [
                         {
+                            "conditionKey": "condition_key_2",
                             "index": 1
                         }
                     ],
@@ -40,6 +42,7 @@
                 {
                     "conditions": [
                         {
+                            "conditionKey": "condition_key_3",
                             "index": 2
                         }
                     ],
@@ -52,6 +55,7 @@
                 {
                     "conditions": [
                         {
+                            "conditionKey": "condition_key_4",
                             "index": 3
                         }
                     ],
@@ -60,32 +64,6 @@
                     "sourcePort": "12_out",
                     "targetNode": "18",
                     "targetPort": "18_in"
-                },
-                {
-                    "conditions": [
-                        {
-                            "index": 4
-                        }
-                    ],
-                    "id": "port_12_to_port_22",
-                    "sourceNode": "12",
-                    "sourcePort": "12_out",
-                    "targetNode": "22",
-                    "targetPort": "22_in"
-                },
-                {
-                    "id": "port_9_to_port_38",
-                    "sourceNode": "9",
-                    "sourcePort": "9_out",
-                    "targetNode": "38",
-                    "targetPort": "38_in"
-                },
-                {
-                    "id": "port_18_to_port_40",
-                    "sourceNode": "18",
-                    "sourcePort": "18_out",
-                    "targetNode": "40",
-                    "targetPort": "40_in"
                 },
                 {
                     "id": "port_17_to_port_43",
@@ -107,27 +85,6 @@
                     "sourcePort": "16_out",
                     "targetNode": "45",
                     "targetPort": "45_in"
-                },
-                {
-                    "id": "port_38_to_port_46",
-                    "sourceNode": "38",
-                    "sourcePort": "38_out",
-                    "targetNode": "46",
-                    "targetPort": "46_in"
-                },
-                {
-                    "id": "port_40_to_port_47",
-                    "sourceNode": "40",
-                    "sourcePort": "40_out",
-                    "targetNode": "47",
-                    "targetPort": "47_in"
-                },
-                {
-                    "id": "port_22_to_port_1",
-                    "sourceNode": "22",
-                    "sourcePort": "22_out",
-                    "targetNode": "1",
-                    "targetPort": "1_in"
                 },
                 {
                     "id": "port_42_to_port_48",
@@ -158,28 +115,76 @@
                     "targetPort": "1_in"
                 },
                 {
-                    "id": "port_48_to_port_50",
-                    "sourceNode": "48",
-                    "sourcePort": "48_out",
-                    "targetNode": "50",
-                    "targetPort": "50_in"
-                },
-                {
-                    "id": "port_50_to_port_49",
-                    "sourceNode": "50",
-                    "sourcePort": "50_out",
-                    "targetNode": "49",
-                    "targetPort": "49_in"
-                },
-                {
                     "id": "port_49_to_port_1",
                     "sourceNode": "49",
                     "sourcePort": "49_out",
                     "targetNode": "1",
                     "targetPort": "1_in"
+                },
+                {
+                    "id": "port_9_to_port_52",
+                    "sourceNode": "9",
+                    "sourcePort": "9_out",
+                    "targetNode": "52",
+                    "targetPort": "52_in"
+                },
+                {
+                    "id": "port_52_to_port_46",
+                    "sourceNode": "52",
+                    "sourcePort": "52_out",
+                    "targetNode": "46",
+                    "targetPort": "46_in"
+                },
+                {
+                    "id": "port_48_to_port_53",
+                    "sourceNode": "48",
+                    "sourcePort": "48_out",
+                    "targetNode": "53",
+                    "targetPort": "53_in"
+                },
+                {
+                    "id": "port_53_to_port_49",
+                    "sourceNode": "53",
+                    "sourcePort": "53_out",
+                    "targetNode": "49",
+                    "targetPort": "49_in"
+                },
+                {
+                    "id": "port_18_to_port_54",
+                    "sourceNode": "18",
+                    "sourcePort": "18_out",
+                    "targetNode": "54",
+                    "targetPort": "54_in"
+                },
+                {
+                    "id": "port_54_to_port_47",
+                    "sourceNode": "54",
+                    "sourcePort": "54_out",
+                    "targetNode": "47",
+                    "targetPort": "47_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "conditionKey": "condition_key_5",
+                            "index": 4
+                        }
+                    ],
+                    "id": "port_12_to_port_55",
+                    "sourceNode": "12",
+                    "sourcePort": "12_out",
+                    "targetNode": "55",
+                    "targetPort": "55_in"
+                },
+                {
+                    "id": "port_55_to_port_1",
+                    "sourceNode": "55",
+                    "sourcePort": "55_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
                 }
             ],
-            "hash": "6cc361b7870a035afe5406c04eed7939eb12eff2",
+            "hash": "af7fbb0bf6172f931f9f5791ad429b622cda65d6",
             "nodes": {
                 "0": {
                     "data": {
@@ -195,7 +200,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 700,
-                    "y": -5.755396159656812e-13
+                    "y": -7.460698725481052e-13
                 },
                 "1": {
                     "data": {
@@ -211,7 +216,7 @@
                     "type": "end",
                     "warnings": {},
                     "x": 700,
-                    "y": 1200
+                    "y": 1240
                 },
                 "12": {
                     "data": {
@@ -233,6 +238,7 @@
                                     }
                                 ],
                                 "conditionIndex": 0,
+                                "conditionKey": "condition_key_1",
                                 "customName": "File Hash IOCs",
                                 "logic": "and"
                             },
@@ -246,6 +252,7 @@
                                     }
                                 ],
                                 "conditionIndex": 1,
+                                "conditionKey": "condition_key_2",
                                 "customName": "SHA256 File Hash IOCs",
                                 "logic": "and"
                             },
@@ -259,6 +266,7 @@
                                     }
                                 ],
                                 "conditionIndex": 2,
+                                "conditionKey": "condition_key_3",
                                 "customName": "URL IOCs",
                                 "logic": "and"
                             },
@@ -272,6 +280,7 @@
                                     }
                                 ],
                                 "conditionIndex": 3,
+                                "conditionKey": "condition_key_4",
                                 "customName": "IP Address IOCs",
                                 "logic": "and"
                             },
@@ -285,6 +294,7 @@
                                     }
                                 ],
                                 "conditionIndex": 4,
+                                "conditionKey": "condition_key_5",
                                 "customName": "Hostname IOCs",
                                 "logic": "and"
                             }
@@ -457,129 +467,6 @@
                     "x": 1000,
                     "y": 340
                 },
-                "22": {
-                    "data": {
-                        "advanced": {
-                            "customName": "CrowdStrike_OAuth_API_Endpoint_Analysis",
-                            "customNameId": 0,
-                            "join": []
-                        },
-                        "functionId": 2,
-                        "functionName": "crowdstrike_oauth_api_endpoint_analysis",
-                        "id": "22",
-                        "inputs": {
-                            "device": {
-                                "datapaths": [
-                                    "artifact:*.cef.sourceHostName"
-                                ],
-                                "deduplicate": false
-                            }
-                        },
-                        "loop": {
-                            "enabled": false,
-                            "exitAfterUnit": "m",
-                            "exitAfterValue": 10,
-                            "exitConditionEnabled": false,
-                            "exitLoopAfter": 2,
-                            "pauseUnit": "m",
-                            "pauseValue": 2
-                        },
-                        "playbookName": "CrowdStrike_OAuth_API_Endpoint_Analysis",
-                        "playbookRepo": 2,
-                        "playbookRepoName": "local",
-                        "playbookType": "data",
-                        "synchronous": true,
-                        "type": "playbook"
-                    },
-                    "errors": {},
-                    "id": "22",
-                    "type": "playbook",
-                    "warnings": {},
-                    "x": 1320,
-                    "y": 300
-                },
-                "38": {
-                    "data": {
-                        "advanced": {
-                            "customName": "CrowdStrike_OAuth_API_Get_Device_Info_File",
-                            "customNameId": 0,
-                            "join": []
-                        },
-                        "functionId": 1,
-                        "functionName": "crowdstrike_oauth_api_get_device_info_file",
-                        "id": "38",
-                        "inputs": {
-                            "device": {
-                                "datapaths": [
-                                    "hunt_file:action_result.data.*.device_id"
-                                ],
-                                "deduplicate": false
-                            }
-                        },
-                        "loop": {
-                            "enabled": false,
-                            "exitAfterUnit": "m",
-                            "exitAfterValue": 10,
-                            "exitConditionEnabled": false,
-                            "exitLoopAfter": 2,
-                            "pauseUnit": "m",
-                            "pauseValue": 2
-                        },
-                        "playbookName": "CrowdStrike_OAuth_API_Get_Device_Info",
-                        "playbookRepo": 2,
-                        "playbookRepoName": "local",
-                        "playbookType": "data",
-                        "synchronous": true,
-                        "type": "playbook"
-                    },
-                    "errors": {},
-                    "id": "38",
-                    "type": "playbook",
-                    "warnings": {},
-                    "x": 340,
-                    "y": 460
-                },
-                "40": {
-                    "data": {
-                        "advanced": {
-                            "customName": "CrowdStrike_OAuth_API_Get_Device_Info_Ip",
-                            "customNameId": 0,
-                            "join": []
-                        },
-                        "functionId": 2,
-                        "functionName": "crowdstrike_oauth_api_get_device_info_ip",
-                        "id": "40",
-                        "inputs": {
-                            "device": {
-                                "datapaths": [
-                                    "hunt_ip:action_result.data.*.device_id"
-                                ],
-                                "deduplicate": false
-                            }
-                        },
-                        "loop": {
-                            "enabled": false,
-                            "exitAfterUnit": "m",
-                            "exitAfterValue": 10,
-                            "exitConditionEnabled": false,
-                            "exitLoopAfter": 2,
-                            "pauseUnit": "m",
-                            "pauseValue": 2
-                        },
-                        "playbookName": "CrowdStrike_OAuth_API_Get_Device_Info",
-                        "playbookRepo": 2,
-                        "playbookRepoName": "local",
-                        "playbookType": "data",
-                        "synchronous": true,
-                        "type": "playbook"
-                    },
-                    "errors": {},
-                    "id": "40",
-                    "type": "playbook",
-                    "warnings": {},
-                    "x": 1000,
-                    "y": 460
-                },
                 "42": {
                     "data": {
                         "action": "hunt domain",
@@ -739,7 +626,7 @@
                         "parameters": [
                             "filtered-data:ioc_filter:condition_1:artifact:*.cef.fileName",
                             "hunt_file:action_result.parameter.hash",
-                            "crowdstrike_oauth_api_get_device_info_file:playbook_output:hostname"
+                            "get_device_info_file:playbook_output:hostname"
                         ],
                         "template": "#### Hunt File Results\n| File | Hash | Seen on |               \n| --- | --- | --- |\n| {0} | {1} | {2} |\n",
                         "type": "format"
@@ -749,7 +636,7 @@
                     "type": "format",
                     "warnings": {},
                     "x": 340,
-                    "y": 600
+                    "y": 629
                 },
                 "47": {
                     "data": {
@@ -765,7 +652,7 @@
                         "id": "47",
                         "parameters": [
                             "hunt_ip:action_result.parameter.ip",
-                            "crowdstrike_oauth_api_get_device_info_ip:playbook_output:hostname"
+                            "get_device_info_ip:playbook_output:hostname"
                         ],
                         "template": "#### Hunt IP Results\n| IP | Seen on |                  \n| --- | --- |                     \n| {0} | {1} |",
                         "type": "format"
@@ -818,7 +705,7 @@
                         "id": "49",
                         "parameters": [
                             "hunt_domain:action_result.parameter.domain",
-                            "crowdstrike_oauth_api_get_device_info_domain:playbook_output:hostname"
+                            "get_device_info_domain:playbook_output:hostname"
                         ],
                         "template": "#### Hunt Domain Results\n| Domain | Seen on |                  \n| --- | --- |               \n| {0} | {1} |",
                         "type": "format"
@@ -830,16 +717,57 @@
                     "x": 680,
                     "y": 1020
                 },
-                "50": {
+                "52": {
                     "data": {
                         "advanced": {
-                            "customName": "CrowdStrike_OAuth_API_Get_Device_Info_Domain",
+                            "customName": "get device info file",
                             "customNameId": 0,
                             "join": []
                         },
                         "functionId": 1,
-                        "functionName": "crowdstrike_oauth_api_get_device_info_domain",
-                        "id": "50",
+                        "functionName": "get_device_info_file",
+                        "id": "52",
+                        "inputs": {
+                            "device": {
+                                "datapaths": [
+                                    "hunt_file:action_result.data.*.device_id"
+                                ],
+                                "deduplicate": false
+                            }
+                        },
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "playbookName": "CrowdStrike_OAuth_API_Get_Device_Info",
+                        "playbookRepo": 1,
+                        "playbookRepoName": "community",
+                        "playbookType": "data",
+                        "synchronous": true,
+                        "type": "playbook"
+                    },
+                    "errors": {},
+                    "id": "52",
+                    "type": "playbook",
+                    "warnings": {},
+                    "x": 340,
+                    "y": 480
+                },
+                "53": {
+                    "data": {
+                        "advanced": {
+                            "customName": "get device info domain",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 2,
+                        "functionName": "get_device_info_domain",
+                        "id": "53",
                         "inputs": {
                             "device": {
                                 "datapaths": [
@@ -858,18 +786,100 @@
                             "pauseValue": 2
                         },
                         "playbookName": "CrowdStrike_OAuth_API_Get_Device_Info",
-                        "playbookRepo": 2,
-                        "playbookRepoName": "local",
+                        "playbookRepo": 1,
+                        "playbookRepoName": "community",
                         "playbookType": "data",
                         "synchronous": true,
                         "type": "playbook"
                     },
                     "errors": {},
-                    "id": "50",
+                    "id": "53",
                     "type": "playbook",
                     "warnings": {},
                     "x": 680,
-                    "y": 884.5
+                    "y": 900
+                },
+                "54": {
+                    "data": {
+                        "advanced": {
+                            "customName": "get device info ip",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 3,
+                        "functionName": "get_device_info_ip",
+                        "id": "54",
+                        "inputs": {
+                            "device": {
+                                "datapaths": [
+                                    "hunt_ip:action_result.data.*.device_id"
+                                ],
+                                "deduplicate": false
+                            }
+                        },
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "playbookName": "CrowdStrike_OAuth_API_Get_Device_Info",
+                        "playbookRepo": 1,
+                        "playbookRepoName": "community",
+                        "playbookType": "data",
+                        "synchronous": true,
+                        "type": "playbook"
+                    },
+                    "errors": {},
+                    "id": "54",
+                    "type": "playbook",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 479.99999999999994
+                },
+                "55": {
+                    "data": {
+                        "advanced": {
+                            "customName": "perform endpoint analysis",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "perform_endpoint_analysis",
+                        "id": "55",
+                        "inputs": {
+                            "device": {
+                                "datapaths": [
+                                    "artifact:*.cef.sourceHostName"
+                                ],
+                                "deduplicate": false
+                            }
+                        },
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "playbookName": "CrowdStrike_OAuth_API_Endpoint_Analysis",
+                        "playbookRepo": 1,
+                        "playbookRepoName": "community",
+                        "playbookType": "data",
+                        "synchronous": true,
+                        "type": "playbook"
+                    },
+                    "errors": {},
+                    "id": "55",
+                    "type": "playbook",
+                    "warnings": {},
+                    "x": 1360,
+                    "y": 304.4999999999999
                 },
                 "9": {
                     "data": {
@@ -926,10 +936,10 @@
                     "y": 340
                 }
             },
-            "notes": "This playbook requires configuring the actions on a Crowdstrike configured connector along with making sure any input playbooks being used are configured in a similar fashion.",
+            "notes": "This playbook requires configuring  a CrowdStrike connector (app) along with making sure any input playbooks being used are configured in a similar fashion.",
             "origin": {
-                "playbook_id": 560,
-                "playbook_name": "Crowdstrike_Endpoint_Quarantine_Response",
+                "playbook_id": 599,
+                "playbook_name": "Crowdstrike_Endpoint_IOC_Enrichment",
                 "playbook_repo_id": 2,
                 "playbook_repo_name": "local"
             }
@@ -989,7 +999,7 @@
             {
                 "contains": [],
                 "datapaths": [
-                    "crowdstrike_oauth_api_endpoint_analysis:playbook_output:service_observable"
+                    "perform_endpoint_analysis:playbook_output:service_observable"
                 ],
                 "deduplicate": false,
                 "description": "",
@@ -999,7 +1009,7 @@
             {
                 "contains": [],
                 "datapaths": [
-                    "crowdstrike_oauth_api_endpoint_analysis:playbook_output:endpoint_observable"
+                    "perform_endpoint_analysis:playbook_output:endpoint_observable"
                 ],
                 "deduplicate": false,
                 "description": "",
@@ -1009,7 +1019,7 @@
             {
                 "contains": [],
                 "datapaths": [
-                    "crowdstrike_oauth_api_endpoint_analysis:playbook_output:network_observable"
+                    "perform_endpoint_analysis:playbook_output:network_observable"
                 ],
                 "deduplicate": false,
                 "description": "",
@@ -1019,7 +1029,7 @@
             {
                 "contains": [],
                 "datapaths": [
-                    "crowdstrike_oauth_api_endpoint_analysis:playbook_output:process_observable"
+                    "perform_endpoint_analysis:playbook_output:process_observable"
                 ],
                 "deduplicate": false,
                 "description": "",
@@ -1029,11 +1039,11 @@
         ],
         "playbook_trigger": "artifact_created",
         "playbook_type": "automation",
-        "python_version": "3",
-        "schema": "5.0.15",
-        "version": "6.3.1.178"
+        "python_version": "3.9",
+        "schema": "5.0.19",
+        "version": "6.4.1.356"
     },
-    "create_time": "2025-05-02T19:06:34.474295+00:00",
+    "create_time": "2025-08-12T14:16:57.607254+00:00",
     "draft_mode": false,
     "labels": [
         "*"
