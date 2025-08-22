@@ -208,14 +208,14 @@ def list_demux(action=None, success=None, container=None, results=None, handle=N
     # them into something we can loop thru and format better. 
     ################################################################################
 
-    get_notes_in_finding_or_investigation_3_result_data = phantom.collect2(container=container, datapath=["get_notes_in_finding_or_investigation_3:action_result.data.*.items","get_notes_in_finding_or_investigation_3:action_result.parameter.context.artifact_id"], action_results=results)
+    finding_and_investigation_notes_result_data = phantom.collect2(container=container, datapath=["finding_and_investigation_notes:action_result.data.*.items","finding_and_investigation_notes:action_result.parameter.context.artifact_id"], action_results=results)
 
     parameters = []
 
     # build parameters list for 'list_demux' call
-    for get_notes_in_finding_or_investigation_3_result_item in get_notes_in_finding_or_investigation_3_result_data:
+    for finding_and_investigation_notes_result_item in finding_and_investigation_notes_result_data:
         parameters.append({
-            "input_list": get_notes_in_finding_or_investigation_3_result_item[0],
+            "input_list": finding_and_investigation_notes_result_item[0],
         })
 
     ################################################################################
