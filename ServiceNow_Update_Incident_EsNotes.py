@@ -1,5 +1,5 @@
 """
-This ES Playbook will be added as the last phase in a response plan to send all the notes from an investigation to the SNOW incident you created or one that is out there already and found in an earlier query. 
+This ES Playbook will be added as the last phase in a response plan to send all the notes from an investigation to the SNOW incident created earlier in investigation.
 """
 
 
