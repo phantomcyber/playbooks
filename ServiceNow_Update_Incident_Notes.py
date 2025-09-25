@@ -82,40 +82,10 @@ def convert_note_to_json(action=None, success=None, container=None, results=None
 
     phantom.format(container=container, template=template, parameters=parameters, name="convert_note_to_json")
 
-    string_remove_crlf(container=container)
+    string_remove_crlf_4(container=container)
 
     return
 
-
-@phantom.playbook_block()
-def string_remove_crlf(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("string_remove_crlf() called")
-
-    ################################################################################
-    # Remove any \n characters from the input string
-    ################################################################################
-
-    convert_note_to_json = phantom.get_format_data(name="convert_note_to_json")
-
-    parameters = []
-
-    parameters.append({
-        "input_string": convert_note_to_json,
-    })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="community/string_remove_crlf", parameters=parameters, name="string_remove_crlf", callback=string_uri_decode)
-
-    return
 
 @phantom.playbook_block()
 def update_servicenow_incident(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
@@ -127,7 +97,7 @@ def update_servicenow_incident(action=None, success=None, container=None, result
         container=container,
         template="""{0}\n""",
         parameters=[
-            "string_uri_decode:custom_function_result.data.decoded_string"
+            "string_uri_decode_5:custom_function_result.data.decoded_string"
         ])
 
     ################################################################################
@@ -136,13 +106,13 @@ def update_servicenow_incident(action=None, success=None, container=None, result
     ################################################################################
 
     finding_data = phantom.collect2(container=container, datapath=["finding:custom_fields.snow_incident"])
-    string_uri_decode__result = phantom.collect2(container=container, datapath=["string_uri_decode:custom_function_result.data.decoded_string"])
+    string_uri_decode_5__result = phantom.collect2(container=container, datapath=["string_uri_decode_5:custom_function_result.data.decoded_string"])
 
     parameters = []
 
     # build parameters list for 'update_servicenow_incident' call
     for finding_data_item in finding_data:
-        for string_uri_decode__result_item in string_uri_decode__result:
+        for string_uri_decode_5__result_item in string_uri_decode_5__result:
             if finding_data_item[0] is not None:
                 parameters.append({
                     "id": finding_data_item[0],
@@ -164,38 +134,6 @@ def update_servicenow_incident(action=None, success=None, container=None, result
 
     return
 
-
-@phantom.playbook_block()
-def string_uri_decode(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("string_uri_decode() called")
-
-    ################################################################################
-    # Remove any uri encoding
-    ################################################################################
-
-    string_remove_crlf__result = phantom.collect2(container=container, datapath=["string_remove_crlf:custom_function_result.data.sanitized_string"])
-
-    parameters = []
-
-    # build parameters list for 'string_uri_decode' call
-    for string_remove_crlf__result_item in string_remove_crlf__result:
-        parameters.append({
-            "input_string": string_remove_crlf__result_item[0],
-        })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="community/string_uri_decode", parameters=parameters, name="string_uri_decode", callback=update_servicenow_incident)
-
-    return
 
 @phantom.playbook_block()
 def list_demux(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
@@ -264,6 +202,62 @@ def loop_convert_to_html(action=None, success=None, container=None, results=None
     phantom.format(container=container, template=template, parameters=parameters, name="loop_convert_to_html")
 
     convert_note_to_json(container=container)
+
+    return
+
+
+@phantom.playbook_block()
+def string_remove_crlf_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("string_remove_crlf_4() called")
+
+    convert_note_to_json = phantom.get_format_data(name="convert_note_to_json")
+
+    parameters = []
+
+    parameters.append({
+        "input_string": convert_note_to_json,
+    })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/string_remove_crlf", parameters=parameters, name="string_remove_crlf_4", callback=string_uri_decode_5)
+
+    return
+
+
+@phantom.playbook_block()
+def string_uri_decode_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("string_uri_decode_5() called")
+
+    string_remove_crlf_4__result = phantom.collect2(container=container, datapath=["string_remove_crlf_4:custom_function_result.data.sanitized_string"])
+
+    parameters = []
+
+    # build parameters list for 'string_uri_decode_5' call
+    for string_remove_crlf_4__result_item in string_remove_crlf_4__result:
+        parameters.append({
+            "input_string": string_remove_crlf_4__result_item[0],
+        })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/string_uri_decode", parameters=parameters, name="string_uri_decode_5", callback=update_servicenow_incident)
 
     return
 

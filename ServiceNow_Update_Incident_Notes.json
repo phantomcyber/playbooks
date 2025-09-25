@@ -14,32 +14,11 @@
                     "targetPort": "3_in"
                 },
                 {
-                    "id": "port_4_to_port_5",
-                    "sourceNode": "4",
-                    "sourcePort": "4_out",
-                    "targetNode": "5",
-                    "targetPort": "5_in"
-                },
-                {
                     "id": "port_6_to_port_1",
                     "sourceNode": "6",
                     "sourcePort": "6_out",
                     "targetNode": "1",
                     "targetPort": "1_in"
-                },
-                {
-                    "id": "port_5_to_port_7",
-                    "sourceNode": "5",
-                    "sourcePort": "5_out",
-                    "targetNode": "7",
-                    "targetPort": "7_in"
-                },
-                {
-                    "id": "port_7_to_port_6",
-                    "sourceNode": "7",
-                    "sourcePort": "7_out",
-                    "targetNode": "6",
-                    "targetPort": "6_in"
                 },
                 {
                     "id": "port_9_to_port_11",
@@ -61,9 +40,30 @@
                     "sourcePort": "3_out",
                     "targetNode": "9",
                     "targetPort": "9_in"
+                },
+                {
+                    "id": "port_4_to_port_12",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "12",
+                    "targetPort": "12_in"
+                },
+                {
+                    "id": "port_12_to_port_13",
+                    "sourceNode": "12",
+                    "sourcePort": "12_out",
+                    "targetNode": "13",
+                    "targetPort": "13_in"
+                },
+                {
+                    "id": "port_13_to_port_6",
+                    "sourceNode": "13",
+                    "sourcePort": "13_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
                 }
             ],
-            "hash": "555fcfee56cbf904dd3069937403d741c5957163",
+            "hash": "925bed13c8dbd1c161f312d6001075246dafe517",
             "nodes": {
                 "0": {
                     "data": {
@@ -85,7 +85,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 19.999999999999986,
-                    "y": -3.197442310920451e-13
+                    "y": -3.836930773104541e-13
                 },
                 "1": {
                     "data": {
@@ -131,6 +131,120 @@
                     "warnings": {},
                     "x": 1.4210854715202004e-14,
                     "y": 480
+                },
+                "12": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "string_remove_crlf",
+                            "repoName": "community"
+                        },
+                        "functionId": 4,
+                        "functionName": "string_remove_crlf_4",
+                        "id": "12",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "string_remove_crlf": {
+                                "description": "Sanitize the provided string to remove carriage return/line feed characters (LF, \\n).",
+                                "fields": [
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The string to replace LF characters from.",
+                                        "inputType": "item",
+                                        "label": "input_string",
+                                        "name": "input_string",
+                                        "placeholder": "string to sanitize",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "string_remove_crlf",
+                                "name": "string_remove_crlf"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "string_remove_crlf": {
+                                "input_string": "convert_note_to_json:formatted_data"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "12",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": 10,
+                    "y": 884.5
+                },
+                "13": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "string_uri_decode",
+                            "repoName": "community"
+                        },
+                        "functionId": 5,
+                        "functionName": "string_uri_decode_5",
+                        "id": "13",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "string_uri_decode": {
+                                "description": "Decodes a URI-encoded string to a plain text string.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The URI encoded string to decode",
+                                        "inputType": "item",
+                                        "label": "input_string",
+                                        "name": "input_string",
+                                        "placeholder": "The URI encoded string to decode",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "string_uri_decode",
+                                "name": "string_uri_decode"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "string_uri_decode": {
+                                "input_string": "string_remove_crlf_4:custom_function_result.data.sanitized_string"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "13",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 1024.5
                 },
                 "3": {
                     "data": {
@@ -206,70 +320,6 @@
                     "x": 1.4210854715202004e-14,
                     "y": 662
                 },
-                "5": {
-                    "customCode": "@phantom.playbook_block()\ndef string_remove_crlf(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"string_remove_crlf() called\")\n\n    ################################################################################\n    # Remove any \\n characters from the input string\n    ################################################################################\n\n    convert_note_to_json = phantom.get_format_data(name=\"convert_note_to_json\")\n\n    parameters = []\n\n    parameters.append({\n        \"input_string\": convert_note_to_json,\n    })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.custom_function(custom_function=\"community/string_remove_crlf\", parameters=parameters, name=\"string_remove_crlf\", callback=string_uri_decode)\n\n    return",
-                    "data": {
-                        "advanced": {
-                            "customName": "string remove crlf",
-                            "customNameId": 0,
-                            "description": "Remove any \\n characters from the input string",
-                            "join": [],
-                            "note": "Remove any \\n characters from the input string"
-                        },
-                        "customFunction": {
-                            "draftMode": false,
-                            "name": "string_remove_crlf",
-                            "repoName": "local"
-                        },
-                        "functionId": 1,
-                        "functionName": "string_remove_crlf",
-                        "id": "5",
-                        "loop": {
-                            "enabled": false,
-                            "exitAfterUnit": "m",
-                            "exitAfterValue": 10,
-                            "exitConditionEnabled": false,
-                            "exitLoopAfter": 2,
-                            "pauseUnit": "m",
-                            "pauseValue": 2
-                        },
-                        "nestedNodeChildren": [],
-                        "nestedNodeParent": null,
-                        "selectMore": false,
-                        "type": "utility",
-                        "utilities": {
-                            "string_remove_crlf": {
-                                "description": "Sanitize the provided string to remove carriage return/line feed characters (CR/LF, \\r \\n).",
-                                "fields": [
-                                    {
-                                        "dataTypes": [],
-                                        "description": "The string to remove CR/LF characters from.",
-                                        "inputType": "item",
-                                        "label": "input_string",
-                                        "name": "input_string",
-                                        "placeholder": "string to sanitize",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    }
-                                ],
-                                "label": "string_remove_crlf",
-                                "name": "string_remove_crlf"
-                            }
-                        },
-                        "utilityType": "custom_function",
-                        "values": {
-                            "string_remove_crlf": {
-                                "input_string": "convert_note_to_json:formatted_data"
-                            }
-                        }
-                    },
-                    "errors": {},
-                    "id": "5",
-                    "type": "utility",
-                    "warnings": {},
-                    "x": 1.4210854715202004e-14,
-                    "y": 838
-                },
                 "6": {
                     "data": {
                         "action": "update ticket",
@@ -305,7 +355,7 @@
                             "fields": {
                                 "functionId": 1,
                                 "parameters": [
-                                    "string_uri_decode:custom_function_result.data.decoded_string"
+                                    "string_uri_decode_5:custom_function_result.data.decoded_string"
                                 ],
                                 "template": "{0}\n"
                             },
@@ -324,70 +374,8 @@
                     "id": "6",
                     "type": "action",
                     "warnings": {},
-                    "x": 1.4210854715202004e-14,
+                    "x": 0,
                     "y": 1200
-                },
-                "7": {
-                    "customCode": "@phantom.playbook_block()\ndef string_uri_decode(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"string_uri_decode() called\")\n\n    ################################################################################\n    # Remove any uri encoding\n    ################################################################################\n\n    string_remove_crlf__result = phantom.collect2(container=container, datapath=[\"string_remove_crlf:custom_function_result.data.sanitized_string\"])\n\n    parameters = []\n\n    # build parameters list for 'string_uri_decode' call\n    for string_remove_crlf__result_item in string_remove_crlf__result:\n        parameters.append({\n            \"input_string\": string_remove_crlf__result_item[0],\n        })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.custom_function(custom_function=\"community/string_uri_decode\", parameters=parameters, name=\"string_uri_decode\", callback=update_servicenow_incident)\n\n    return",
-                    "data": {
-                        "advanced": {
-                            "customName": "string uri decode",
-                            "customNameId": 0,
-                            "description": "Remove any uri encoding",
-                            "join": [],
-                            "note": "Remove any uri encoding"
-                        },
-                        "customFunction": {
-                            "draftMode": false,
-                            "name": "string_uri_decode",
-                            "repoName": "local"
-                        },
-                        "functionId": 2,
-                        "functionName": "string_uri_decode",
-                        "id": "7",
-                        "loop": {
-                            "enabled": false,
-                            "exitAfterUnit": "m",
-                            "exitAfterValue": 10,
-                            "exitConditionEnabled": false,
-                            "exitLoopAfter": 2,
-                            "pauseUnit": "m",
-                            "pauseValue": 2
-                        },
-                        "selectMore": false,
-                        "type": "utility",
-                        "utilities": {
-                            "string_uri_decode": {
-                                "description": "Decodes a URI-encoded string to a plain text string.",
-                                "fields": [
-                                    {
-                                        "dataTypes": [],
-                                        "description": "The URI encoded string to decode",
-                                        "inputType": "item",
-                                        "label": "input_string",
-                                        "name": "input_string",
-                                        "placeholder": "The URI encoded string to decode",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    }
-                                ],
-                                "label": "string_uri_decode",
-                                "name": "string_uri_decode"
-                            }
-                        },
-                        "utilityType": "custom_function",
-                        "values": {
-                            "string_uri_decode": {
-                                "input_string": "string_remove_crlf:custom_function_result.data.sanitized_string"
-                            }
-                        }
-                    },
-                    "errors": {},
-                    "id": "7",
-                    "type": "utility",
-                    "warnings": {},
-                    "x": 1.4210854715202004e-14,
-                    "y": 1020
                 },
                 "9": {
                     "data": {
@@ -469,7 +457,7 @@
         "schema": "5.0.22",
         "version": "7.0.0.190"
     },
-    "create_time": "2025-09-25T18:16:59.180654+00:00",
+    "create_time": "2025-09-25T19:44:42.930484+00:00",
     "draft_mode": false,
     "labels": [
         "es_soar_integration"
