@@ -124,7 +124,7 @@
                     "targetPort": "12_in"
                 }
             ],
-            "hash": "acc9c7c08d418f145e56d88c105c97380731ccc3",
+            "hash": "d9d9396c8a1f061eeccf5c8f2b80eda249d68c67",
             "nodes": {
                 "0": {
                     "data": {
@@ -140,7 +140,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 200,
-                    "y": -20.000000000000384
+                    "y": -20.000000000000448
                 },
                 "1": {
                     "data": {
@@ -186,6 +186,7 @@
                     "y": 1080
                 },
                 "11": {
+                    "customCode": "@phantom.playbook_block()\ndef string_remove_crlf_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"string_remove_crlf_2() called\")\n\n    ################################################################################\n    # Remove any \\n characters from the input string\n    ################################################################################\n\n    convert_note_to_json2 = phantom.get_format_data(name=\"convert_note_to_json2\")\n\n    parameters = []\n\n    parameters.append({\n        \"input_string\": convert_note_to_json2,\n    })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.custom_function(custom_function=\"community/string_remove_crlf\", parameters=parameters, name=\"string_remove_crlf_2\", callback=stiring_uri_decode2)\n\n    return",
                     "data": {
                         "advanced": {
                             "customName": "string remove crlf 2",
@@ -306,6 +307,7 @@
                     "y": 1580
                 },
                 "13": {
+                    "customCode": "@phantom.playbook_block()\ndef string_uri_decode(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"string_uri_decode() called\")\n\n    ################################################################################\n    # Remove any uri encoding\n    ################################################################################\n\n    string_remove_crlf__result = phantom.collect2(container=container, datapath=[\"string_remove_crlf:custom_function_result.data.sanitized_string\"])\n\n    parameters = []\n\n    # build parameters list for 'string_uri_decode' call\n    for string_remove_crlf__result_item in string_remove_crlf__result:\n        parameters.append({\n            \"input_string\": string_remove_crlf__result_item[0],\n        })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.custom_function(custom_function=\"community/string_uri_decode\", parameters=parameters, name=\"string_uri_decode\", callback=update_servicenow_incident)\n\n    return",
                     "data": {
                         "advanced": {
                             "customName": "string uri decode",
@@ -363,10 +365,11 @@
                     "id": "13",
                     "type": "utility",
                     "warnings": {},
-                    "x": 1.4210854715202004e-14,
+                    "x": 0,
                     "y": 1460
                 },
                 "14": {
+                    "customCode": "@phantom.playbook_block()\ndef stiring_uri_decode2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"stiring_uri_decode2() called\")\n\n    ################################################################################\n    # Remove any uri encoding\n    ################################################################################\n\n    string_remove_crlf_2__result = phantom.collect2(container=container, datapath=[\"string_remove_crlf_2:custom_function_result.data.sanitized_string\"])\n\n    parameters = []\n\n    # build parameters list for 'stiring_uri_decode2' call\n    for string_remove_crlf_2__result_item in string_remove_crlf_2__result:\n        parameters.append({\n            \"input_string\": string_remove_crlf_2__result_item[0],\n        })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.custom_function(custom_function=\"community/string_uri_decode\", parameters=parameters, name=\"stiring_uri_decode2\", callback=update_servicenow_incident_2)\n\n    return",
                     "data": {
                         "advanced": {
                             "customName": "stiring uri decode2",
@@ -598,6 +601,7 @@
                     "y": 1080
                 },
                 "7": {
+                    "customCode": "@phantom.playbook_block()\ndef string_remove_crlf(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):\n    phantom.debug(\"string_remove_crlf() called\")\n\n    ################################################################################\n    # Remove any \\n characters from the input string\n    ################################################################################\n\n    convert_note_to_json = phantom.get_format_data(name=\"convert_note_to_json\")\n\n    parameters = []\n\n    parameters.append({\n        \"input_string\": convert_note_to_json,\n    })\n\n    ################################################################################\n    ## Custom Code Start\n    ################################################################################\n\n    # Write your custom code here...\n\n    ################################################################################\n    ## Custom Code End\n    ################################################################################\n\n    phantom.custom_function(custom_function=\"community/string_remove_crlf\", parameters=parameters, name=\"string_remove_crlf\", callback=string_uri_decode)\n\n    return",
                     "data": {
                         "advanced": {
                             "customName": "string remove crlf",
@@ -655,7 +659,7 @@
                     "id": "7",
                     "type": "utility",
                     "warnings": {},
-                    "x": 1.4210854715202004e-14,
+                    "x": 0,
                     "y": 1240
                 },
                 "8": {
@@ -771,10 +775,10 @@
             },
             "notes": "This is an input playbook that is designed to be added to a larger automation playbook you have that does initial triage of a detection.",
             "origin": {
-                "playbook_id": 243,
-                "playbook_name": "servicenow_update_incident",
-                "playbook_repo_id": 2,
-                "playbook_repo_name": "local"
+                "playbook_id": 60,
+                "playbook_name": "ServiceNow_Update_Incident",
+                "playbook_repo_id": 1,
+                "playbook_repo_name": "community"
             }
         },
         "input_spec": [
@@ -801,10 +805,10 @@
         "playbook_trigger": "artifact_created",
         "playbook_type": "data",
         "python_version": "3.13",
-        "schema": "5.0.20",
-        "version": "6.4.1.361"
+        "schema": "5.0.22",
+        "version": "7.0.0.190"
     },
-    "create_time": "2025-08-20T19:07:43.098342+00:00",
+    "create_time": "2025-09-25T18:17:57.187541+00:00",
     "draft_mode": false,
     "labels": [
         "*"

@@ -225,10 +225,9 @@ def string_remove_crlf(action=None, success=None, container=None, results=None, 
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="local/string_remove_crlf", parameters=parameters, name="string_remove_crlf", callback=string_uri_decode)
+    phantom.custom_function(custom_function="community/string_remove_crlf", parameters=parameters, name="string_remove_crlf", callback=string_uri_decode)
 
     return
-
 
 @phantom.playbook_block()
 def update_servicenow_incident(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
@@ -369,10 +368,9 @@ def string_remove_crlf_2(action=None, success=None, container=None, results=None
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="local/string_remove_crlf", parameters=parameters, name="string_remove_crlf_2", callback=stiring_uri_decode2)
+    phantom.custom_function(custom_function="community/string_remove_crlf", parameters=parameters, name="string_remove_crlf_2", callback=stiring_uri_decode2)
 
     return
-
 
 @phantom.playbook_block()
 def update_servicenow_incident_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
@@ -450,10 +448,9 @@ def string_uri_decode(action=None, success=None, container=None, results=None, h
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="local/string_uri_decode", parameters=parameters, name="string_uri_decode", callback=update_servicenow_incident)
+    phantom.custom_function(custom_function="community/string_uri_decode", parameters=parameters, name="string_uri_decode", callback=update_servicenow_incident)
 
     return
-
 
 @phantom.playbook_block()
 def stiring_uri_decode2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
@@ -483,10 +480,9 @@ def stiring_uri_decode2(action=None, success=None, container=None, results=None,
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="local/string_uri_decode", parameters=parameters, name="stiring_uri_decode2", callback=update_servicenow_incident_2)
+    phantom.custom_function(custom_function="community/string_uri_decode", parameters=parameters, name="stiring_uri_decode2", callback=update_servicenow_incident_2)
 
     return
-
 
 @phantom.playbook_block()
 def on_finish(container, summary):
