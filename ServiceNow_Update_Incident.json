@@ -124,7 +124,7 @@
                     "targetPort": "12_in"
                 }
             ],
-            "hash": "9977e13d7b94d6aeba0068325ae5c273c98bbe4e",
+            "hash": "93b827a7ce3f1955682a09812515c841dcd18932",
             "nodes": {
                 "0": {
                     "data": {
@@ -140,7 +140,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 200,
-                    "y": -20.00000000000051
+                    "y": -20.000000000000576
                 },
                 "1": {
                     "data": {
@@ -161,14 +161,14 @@
                 "10": {
                     "data": {
                         "advanced": {
-                            "customName": "convert note to json2",
+                            "customName": "local convert note to json",
                             "customNameId": 0,
                             "description": "this takes the Observables from SOAR automation and converts to json fromat that SOAR will accept. ",
                             "join": [],
                             "note": "this takes the Observables from SOAR automation and converts to json fromat that SOAR will accept. "
                         },
                         "functionId": 4,
-                        "functionName": "convert_note_to_json2",
+                        "functionName": "local_convert_note_to_json",
                         "id": "10",
                         "nestedNodeChildren": [],
                         "nestedNodeParent": null,
@@ -190,7 +190,7 @@
                         "action": "update ticket",
                         "actionType": "generic",
                         "advanced": {
-                            "customName": "update servicenow incident 2",
+                            "customName": "local update servicenow incident",
                             "customNameId": 0,
                             "description": "This will input the note that was configured to be sent from parent playbook in the start block to the Service Now Incident. ",
                             "join": [],
@@ -203,7 +203,7 @@
                         "connectorId": "a590c3bc-ca41-4a0e-b063-8066ca868794",
                         "connectorVersion": "v1",
                         "functionId": 2,
-                        "functionName": "update_servicenow_incident_2",
+                        "functionName": "local_update_servicenow_incident",
                         "id": "12",
                         "loop": {
                             "enabled": false,
@@ -220,7 +220,7 @@
                             "fields": {
                                 "functionId": 2,
                                 "parameters": [
-                                    "string_uri_decode_8:custom_function_result.data.decoded_string"
+                                    "local_string_uri_decode:custom_function_result.data.decoded_string"
                                 ],
                                 "template": "{0}\n"
                             },
@@ -245,6 +245,8 @@
                 "15": {
                     "data": {
                         "advanced": {
+                            "customName": "manual input string remove crlf",
+                            "customNameId": 0,
                             "join": []
                         },
                         "customFunction": {
@@ -253,7 +255,7 @@
                             "repoName": "community"
                         },
                         "functionId": 5,
-                        "functionName": "string_remove_crlf_5",
+                        "functionName": "manual_input_string_remove_crlf",
                         "id": "15",
                         "loop": {
                             "enabled": false,
@@ -288,7 +290,7 @@
                         "utilityType": "custom_function",
                         "values": {
                             "string_remove_crlf": {
-                                "input_string": "convert_note_to_json:formatted_data"
+                                "input_string": "manual_input_convert_note_json:formatted_data"
                             }
                         }
                     },
@@ -297,11 +299,13 @@
                     "type": "utility",
                     "warnings": {},
                     "x": 0,
-                    "y": 1240
+                    "y": 1220
                 },
                 "16": {
                     "data": {
                         "advanced": {
+                            "customName": "manual input string uri decode",
+                            "customNameId": 0,
                             "join": []
                         },
                         "customFunction": {
@@ -310,7 +314,7 @@
                             "repoName": "community"
                         },
                         "functionId": 6,
-                        "functionName": "string_uri_decode_6",
+                        "functionName": "manual_input_string_uri_decode",
                         "id": "16",
                         "loop": {
                             "enabled": false,
@@ -344,8 +348,11 @@
                         },
                         "utilityType": "custom_function",
                         "values": {
+                            "string_remove_crlf": {
+                                "input_string": "manual_input_convert_note_json:formatted_data"
+                            },
                             "string_uri_decode": {
-                                "input_string": "string_remove_crlf_5:custom_function_result.data.sanitized_string"
+                                "input_string": "manual_input_string_remove_crlf:custom_function_result.data.sanitized_string"
                             }
                         }
                     },
@@ -359,6 +366,8 @@
                 "17": {
                     "data": {
                         "advanced": {
+                            "customName": "local string remove crlf",
+                            "customNameId": 0,
                             "join": []
                         },
                         "customFunction": {
@@ -367,7 +376,7 @@
                             "repoName": "community"
                         },
                         "functionId": 7,
-                        "functionName": "string_remove_crlf_7",
+                        "functionName": "local_string_remove_crlf",
                         "id": "17",
                         "loop": {
                             "enabled": false,
@@ -402,7 +411,7 @@
                         "utilityType": "custom_function",
                         "values": {
                             "string_remove_crlf": {
-                                "input_string": "convert_note_to_json2:formatted_data"
+                                "input_string": "local_convert_note_to_json:formatted_data"
                             }
                         }
                     },
@@ -410,12 +419,14 @@
                     "id": "17",
                     "type": "utility",
                     "warnings": {},
-                    "x": 350,
-                    "y": 1284.5
+                    "x": 360,
+                    "y": 1280
                 },
                 "18": {
                     "data": {
                         "advanced": {
+                            "customName": "local string uri decode",
+                            "customNameId": 0,
                             "join": []
                         },
                         "customFunction": {
@@ -424,7 +435,7 @@
                             "repoName": "community"
                         },
                         "functionId": 8,
-                        "functionName": "string_uri_decode_8",
+                        "functionName": "local_string_uri_decode",
                         "id": "18",
                         "loop": {
                             "enabled": false,
@@ -458,8 +469,11 @@
                         },
                         "utilityType": "custom_function",
                         "values": {
+                            "string_remove_crlf": {
+                                "input_string": "local_convert_note_to_json:formatted_data"
+                            },
                             "string_uri_decode": {
-                                "input_string": "string_remove_crlf_7:custom_function_result.data.sanitized_string"
+                                "input_string": "local_string_remove_crlf:custom_function_result.data.sanitized_string"
                             }
                         }
                     },
@@ -467,7 +481,7 @@
                     "id": "18",
                     "type": "utility",
                     "warnings": {},
-                    "x": 380,
+                    "x": 360,
                     "y": 1420
                 },
                 "2": {
@@ -618,14 +632,14 @@
                 "6": {
                     "data": {
                         "advanced": {
-                            "customName": "convert note to json",
+                            "customName": "manual input convert note json",
                             "customNameId": 0,
                             "description": "this takes the Observables from SOAR automation and converts to json fromat that SOAR will accept. ",
                             "join": [],
                             "note": "this takes the Observables from SOAR automation and converts to json fromat that SOAR will accept. "
                         },
                         "functionId": 3,
-                        "functionName": "convert_note_to_json",
+                        "functionName": "manual_input_convert_note_json",
                         "id": "6",
                         "parameters": [
                             "playbook_input:note"
@@ -637,7 +651,7 @@
                     "id": "6",
                     "type": "format",
                     "warnings": {},
-                    "x": 1.4210854715202004e-14,
+                    "x": 0,
                     "y": 1080
                 },
                 "8": {
@@ -645,7 +659,7 @@
                         "action": "update ticket",
                         "actionType": "generic",
                         "advanced": {
-                            "customName": "update servicenow incident",
+                            "customName": "manual input update servicenow incident",
                             "customNameId": 0,
                             "description": "This will input the note that was configured to be sent from parent playbook in the start block to the Service Now Incident. ",
                             "join": [],
@@ -658,7 +672,7 @@
                         "connectorId": "a590c3bc-ca41-4a0e-b063-8066ca868794",
                         "connectorVersion": "v1",
                         "functionId": 1,
-                        "functionName": "update_servicenow_incident",
+                        "functionName": "manual_input_update_servicenow_incident",
                         "id": "8",
                         "loop": {
                             "enabled": false,
@@ -673,7 +687,7 @@
                             "fields": {
                                 "functionId": 1,
                                 "parameters": [
-                                    "string_uri_decode_6:custom_function_result.data.decoded_string"
+                                    "manual_input_string_uri_decode:custom_function_result.data.decoded_string"
                                 ],
                                 "template": "{0}\n"
                             },
@@ -786,7 +800,7 @@
         "schema": "5.0.22",
         "version": "7.0.0.190"
     },
-    "create_time": "2025-09-25T19:42:46.655711+00:00",
+    "create_time": "2025-09-30T16:22:11.257291+00:00",
     "draft_mode": false,
     "labels": [
         "*"
