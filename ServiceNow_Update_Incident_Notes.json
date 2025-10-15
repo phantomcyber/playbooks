@@ -21,20 +21,6 @@
                     "targetPort": "1_in"
                 },
                 {
-                    "id": "port_9_to_port_11",
-                    "sourceNode": "9",
-                    "sourcePort": "9_out",
-                    "targetNode": "11",
-                    "targetPort": "11_in"
-                },
-                {
-                    "id": "port_11_to_port_4",
-                    "sourceNode": "11",
-                    "sourcePort": "11_out",
-                    "targetNode": "4",
-                    "targetPort": "4_in"
-                },
-                {
                     "id": "port_3_to_port_9",
                     "sourceNode": "3",
                     "sourcePort": "3_out",
@@ -61,9 +47,30 @@
                     "sourcePort": "13_out",
                     "targetNode": "6",
                     "targetPort": "6_in"
+                },
+                {
+                    "id": "port_9_to_port_15",
+                    "sourceNode": "9",
+                    "sourcePort": "9_out",
+                    "targetNode": "15",
+                    "targetPort": "15_in"
+                },
+                {
+                    "id": "port_15_to_port_11",
+                    "sourceNode": "15",
+                    "sourcePort": "15_out",
+                    "targetNode": "11",
+                    "targetPort": "11_in"
+                },
+                {
+                    "id": "port_11_to_port_4",
+                    "sourceNode": "11",
+                    "sourcePort": "11_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
                 }
             ],
-            "hash": "900e1cfbf1930d9f34e79495f6a69d5703e6b419",
+            "hash": "cb2255ebb9124090d7e6d3f66bd44f3dee13cc4c",
             "nodes": {
                 "0": {
                     "data": {
@@ -84,8 +91,8 @@
                     "id": "0",
                     "type": "start",
                     "warnings": {},
-                    "x": 19.999999999999986,
-                    "y": -4.476419235288631e-13
+                    "x": 20,
+                    "y": 0
                 },
                 "1": {
                     "data": {
@@ -100,8 +107,8 @@
                     "id": "1",
                     "type": "end",
                     "warnings": {},
-                    "x": 19.999999999999986,
-                    "y": 1382
+                    "x": 20,
+                    "y": 1518
                 },
                 "11": {
                     "data": {
@@ -117,20 +124,20 @@
                         "id": "11",
                         "parameters": [
                             "list_demux:custom_function_result.data.output.content",
-                            "list_demux:custom_function_result.data.output.title",
-                            "list_demux:custom_function_result.data.output.create_time",
+                            "list_demux:custom_function_result.data.output.response_plan_info.response_phase.name",
+                            "convert_create_time_to_readable:custom_function_result.data.output_iso8601",
                             "list_demux:custom_function_result.data.output.author.realname",
                             "list_demux:custom_function_result.data.output.response_plan_info.response_task.name"
                         ],
-                        "template": "[code]\n<h4>ES Notes</h4>\n%%\n<b>Task</b> {4}\n<br/><b>Author</b> {3}\n<br/><b>Created Time</b> {2}\n<br/><b>title</b> {1}\n<br/><b>content</b> {0}\n<br/><br/>\n%%\n[/code]",
+                        "template": "[code]\n<h4>ES Notes</h4>\n%%\n<b>Phase</b> {1}\n<br/><b>Task</b> {4}\n<br/><b>Author</b> {3}\n<br/><b>Created Time</b> {2} \n<br/><b>Note Content</b> {0}\n<br/><br/>\n%%\n[/code]\n",
                         "type": "format"
                     },
                     "errors": {},
                     "id": "11",
                     "type": "format",
                     "warnings": {},
-                    "x": 1.4210854715202004e-14,
-                    "y": 480
+                    "x": 0,
+                    "y": 678
                 },
                 "12": {
                     "data": {
@@ -188,8 +195,8 @@
                     "id": "12",
                     "type": "utility",
                     "warnings": {},
-                    "x": 10,
-                    "y": 884.5
+                    "x": 0,
+                    "y": 1030
                 },
                 "13": {
                     "data": {
@@ -248,7 +255,66 @@
                     "type": "utility",
                     "warnings": {},
                     "x": 0,
-                    "y": 1020
+                    "y": 1178
+                },
+                "15": {
+                    "data": {
+                        "advanced": {
+                            "customName": "convert create time to readable",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "string_epoch_to_timestamp",
+                            "repoName": "community"
+                        },
+                        "functionId": 1,
+                        "functionName": "convert_create_time_to_readable",
+                        "id": "15",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "string_epoch_to_timestamp": {
+                                "description": "Convert an epoch time to various human readable formats.  This custom function only supports epoch values without a fractional part.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The epoch value to convert",
+                                        "inputType": "item",
+                                        "label": "input_epoch",
+                                        "name": "input_epoch",
+                                        "placeholder": "The epoch value to convert",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "string_epoch_to_timestamp",
+                                "name": "string_epoch_to_timestamp"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "string_epoch_to_timestamp": {
+                                "input_epoch": "list_demux:custom_function_result.data.output.create_time"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "15",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 516
                 },
                 "3": {
                     "data": {
@@ -294,7 +360,7 @@
                     "id": "3",
                     "type": "enterpriseSecurity",
                     "warnings": {},
-                    "x": 1.4210854715202004e-14,
+                    "x": 0,
                     "y": 148
                 },
                 "4": {
@@ -321,8 +387,8 @@
                     "id": "4",
                     "type": "format",
                     "warnings": {},
-                    "x": 1.4210854715202004e-14,
-                    "y": 662
+                    "x": 0,
+                    "y": 854
                 },
                 "6": {
                     "data": {
@@ -356,13 +422,7 @@
                         "nestedNodeChildren": [],
                         "nestedNodeParent": null,
                         "parameters": {
-                            "fields": {
-                                "functionId": 1,
-                                "parameters": [
-                                    "string_uri_decode:custom_function_result.data.decoded_string"
-                                ],
-                                "template": "{0}\n"
-                            },
+                            "fields": "string_uri_decode:custom_function_result.data.decoded_string",
                             "id": "finding:custom_fields.snow_incident",
                             "table": "incident"
                         },
@@ -378,8 +438,8 @@
                     "id": "6",
                     "type": "action",
                     "warnings": {},
-                    "x": 1.4210854715202004e-14,
-                    "y": 1200
+                    "x": 0,
+                    "y": 1326
                 },
                 "9": {
                     "data": {
@@ -434,15 +494,22 @@
                         "values": {
                             "list_demux": {
                                 "input_list": "finding_and_investigation_notes:action_result.data.*.items"
+                            },
+                            "string_epoch_to_timestamp": {
+                                "input_epoch": "list_demux:custom_function_result.data.output.create_time"
                             }
                         }
                     },
                     "errors": {},
                     "id": "9",
                     "type": "utility",
-                    "warnings": {},
-                    "x": 1.4210854715202004e-14,
-                    "y": 320
+                    "warnings": {
+                        "config": [
+                            "Reconfigure invalid datapath."
+                        ]
+                    },
+                    "x": 0,
+                    "y": 340
                 }
             },
             "notes": "This ES Playbook will be added as the last phase in a response plan to send all the notes from an investigation to the SNOW incident created earlier in investigation.",
@@ -461,7 +528,7 @@
         "schema": "5.0.22",
         "version": "7.0.0.190"
     },
-    "create_time": "2025-09-30T16:11:58.482485+00:00",
+    "create_time": "2025-10-15T20:03:35.746120+00:00",
     "draft_mode": false,
     "labels": [
         "es_soar_integration"

@@ -93,13 +93,6 @@ def update_servicenow_incident(action=None, success=None, container=None, result
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
 
-    fields_formatted_string = phantom.format(
-        container=container,
-        template="""{0}\n""",
-        parameters=[
-            "string_uri_decode:custom_function_result.data.decoded_string"
-        ])
-
     ################################################################################
     # This will input the note that was configured to be sent from parent playbook 
     # in the start block to the Service Now Incident. 
@@ -117,7 +110,7 @@ def update_servicenow_incident(action=None, success=None, container=None, result
                 parameters.append({
                     "id": finding_data_item[0],
                     "table": "incident",
-                    "fields": fields_formatted_string,
+                    "fields": string_uri_decode__result_item[0],
                 })
 
     ################################################################################
@@ -164,7 +157,7 @@ def list_demux(action=None, success=None, container=None, results=None, handle=N
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="community/list_demux", parameters=parameters, name="list_demux", callback=loop_convert_to_html)
+    phantom.custom_function(custom_function="community/list_demux", parameters=parameters, name="list_demux", callback=convert_create_time_to_readable)
 
     return
 
@@ -178,13 +171,13 @@ def loop_convert_to_html(action=None, success=None, container=None, results=None
     # HTML which for service now looks better. 
     ################################################################################
 
-    template = """[code]\n<h4>ES Notes</h4>\n%%\n<b>Task</b> {4}\n<br/><b>Author</b> {3}\n<br/><b>Created Time</b> {2}\n<br/><b>title</b> {1}\n<br/><b>content</b> {0}\n<br/><br/>\n%%\n[/code]"""
+    template = """[code]\n<h4>ES Notes</h4>\n%%\n<b>Phase</b> {1}\n<br/><b>Task</b> {4}\n<br/><b>Author</b> {3}\n<br/><b>Created Time</b> {2} \n<br/><b>Note Content</b> {0}\n<br/><br/>\n%%\n[/code]\n"""
 
     # parameter list for template variable replacement
     parameters = [
         "list_demux:custom_function_result.data.output.content",
-        "list_demux:custom_function_result.data.output.title",
-        "list_demux:custom_function_result.data.output.create_time",
+        "list_demux:custom_function_result.data.output.response_plan_info.response_phase.name",
+        "convert_create_time_to_readable:custom_function_result.data.output_iso8601",
         "list_demux:custom_function_result.data.output.author.realname",
         "list_demux:custom_function_result.data.output.response_plan_info.response_task.name"
     ]
@@ -258,6 +251,35 @@ def string_uri_decode(action=None, success=None, container=None, results=None, h
     ################################################################################
 
     phantom.custom_function(custom_function="community/string_uri_decode", parameters=parameters, name="string_uri_decode", callback=update_servicenow_incident)
+
+    return
+
+
+@phantom.playbook_block()
+def convert_create_time_to_readable(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("convert_create_time_to_readable() called")
+
+    list_demux__result = phantom.collect2(container=container, datapath=["list_demux:custom_function_result.data.output.create_time"])
+
+    parameters = []
+
+    # build parameters list for 'convert_create_time_to_readable' call
+    for list_demux__result_item in list_demux__result:
+        parameters.append({
+            "input_epoch": list_demux__result_item[0],
+        })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/string_epoch_to_timestamp", parameters=parameters, name="convert_create_time_to_readable", callback=loop_convert_to_html)
 
     return
 

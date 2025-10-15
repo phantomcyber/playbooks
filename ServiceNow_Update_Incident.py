@@ -205,13 +205,6 @@ def manual_input_update_servicenow_incident(action=None, success=None, container
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
 
-    fields_formatted_string = phantom.format(
-        container=container,
-        template="""{0}\n""",
-        parameters=[
-            "manual_input_string_uri_decode:custom_function_result.data.decoded_string"
-        ])
-
     ################################################################################
     # This will input the note that was configured to be sent from parent playbook 
     # in the start block to the Service Now Incident. 
@@ -229,7 +222,7 @@ def manual_input_update_servicenow_incident(action=None, success=None, container
                 parameters.append({
                     "id": input_snow_incident_result_item[0],
                     "table": "incident",
-                    "fields": fields_formatted_string,
+                    "fields": manual_input_string_uri_decode__result_item[0],
                     "context": {'artifact_id': input_snow_incident_result_item[1]},
                 })
 
@@ -318,13 +311,6 @@ def local_update_servicenow_incident(action=None, success=None, container=None, 
 
     # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
 
-    fields_formatted_string = phantom.format(
-        container=container,
-        template="""{0}\n""",
-        parameters=[
-            "local_string_uri_decode:custom_function_result.data.decoded_string"
-        ])
-
     ################################################################################
     # This will input the note that was configured to be sent from parent playbook 
     # in the start block to the Service Now Incident. 
@@ -342,7 +328,7 @@ def local_update_servicenow_incident(action=None, success=None, container=None, 
                 parameters.append({
                     "id": playbook_input_snow_incident_item[0],
                     "table": "incident",
-                    "fields": fields_formatted_string,
+                    "fields": local_string_uri_decode__result_item[0],
                 })
 
     ################################################################################
