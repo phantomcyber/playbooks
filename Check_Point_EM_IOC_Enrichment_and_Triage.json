@@ -1,0 +1,681 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Enrichment",
+    "coa": {
+        "data": {
+            "description": "Accepts IOCs (IP, domain, hash, URL) from SIEM/SOAR alerts and enriches them using Check Point EM threat intelligence APIs. Provides verdict, telemetry, malware family, actor attribution, first seen, and confidence data. Applies decision logic to escalate malicious indicators or suppress benign ones.",
+            "edges": [
+                {
+                    "id": "port_0_to_port_2",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_2_to_port_3",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 1
+                        }
+                    ],
+                    "id": "port_2_to_port_4",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 2
+                        }
+                    ],
+                    "id": "port_2_to_port_5",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 3
+                        }
+                    ],
+                    "id": "port_2_to_port_6",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_3_to_port_7",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "id": "port_4_to_port_7",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "id": "port_5_to_port_7",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "id": "port_6_to_port_7",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "id": "port_7_to_port_8",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_8_to_port_9",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "9",
+                    "targetPort": "9_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 1
+                        }
+                    ],
+                    "id": "port_8_to_port_10",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "10",
+                    "targetPort": "10_in"
+                },
+                {
+                    "id": "port_9_to_port_11",
+                    "sourceNode": "9",
+                    "sourcePort": "9_out",
+                    "targetNode": "11",
+                    "targetPort": "11_in"
+                },
+                {
+                    "id": "port_10_to_port_11",
+                    "sourceNode": "10",
+                    "sourcePort": "10_out",
+                    "targetNode": "11",
+                    "targetPort": "11_in"
+                },
+                {
+                    "id": "port_11_to_port_12",
+                    "sourceNode": "11",
+                    "sourcePort": "11_out",
+                    "targetNode": "12",
+                    "targetPort": "12_in"
+                },
+                {
+                    "id": "port_12_to_port_1",
+                    "sourceNode": "12",
+                    "sourcePort": "12_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "check_point_em_ioc_enrichment_v1",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 0
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 1600
+                },
+                "2": {
+                    "data": {
+                        "advanced": {
+                            "customName": "route ioc by type",
+                            "customNameId": 0,
+                            "description": "Routes IOCs to appropriate Check Point EM enrichment endpoints based on indicator type.",
+                            "join": [],
+                            "note": "Routes IOCs to appropriate Check Point EM enrichment endpoints based on indicator type."
+                        },
+                        "functionId": 1,
+                        "functionName": "route_ioc_by_type",
+                        "id": "2",
+                        "inputParameters": [
+                            "playbook_input:indicator_value",
+                            "playbook_input:indicator_type"
+                        ],
+                        "outputVariables": [
+                            "sha256_indicators",
+                            "domain_indicators",
+                            "ipv4_indicators",
+                            "url_indicators"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "code",
+                    "userCode": "\n    import re\n    \n    route_ioc_by_type__sha256_indicators = []\n    route_ioc_by_type__domain_indicators = []\n    route_ioc_by_type__ipv4_indicators = []\n    route_ioc_by_type__url_indicators = []\n    \n    indicator_values = playbook_input_indicator_value if isinstance(playbook_input_indicator_value, list) else [playbook_input_indicator_value]\n    indicator_types = playbook_input_indicator_type if isinstance(playbook_input_indicator_type, list) else [playbook_input_indicator_type]\n    \n    for value, ioc_type in zip(indicator_values, indicator_types):\n        if not value:\n            continue\n            \n        ioc_type_lower = (ioc_type or '').lower()\n        \n        # Auto-detect type if not provided\n        if not ioc_type_lower or ioc_type_lower == 'auto':\n            if re.match(r'^[a-fA-F0-9]{64}$', value):\n                ioc_type_lower = 'sha256'\n            elif re.match(r'^[a-fA-F0-9]{32}$', value):\n                ioc_type_lower = 'md5'\n            elif re.match(r'^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$', value):\n                ioc_type_lower = 'ip'\n            elif re.match(r'^https?://', value):\n                ioc_type_lower = 'url'\n            else:\n                ioc_type_lower = 'domain'\n        \n        if ioc_type_lower in ['sha256', 'hash', 'md5', 'sha1']:\n            route_ioc_by_type__sha256_indicators.append(value)\n        elif ioc_type_lower == 'domain':\n            route_ioc_by_type__domain_indicators.append(value)\n        elif ioc_type_lower in ['ip', 'ipv4', 'ip address']:\n            route_ioc_by_type__ipv4_indicators.append(value)\n        elif ioc_type_lower == 'url':\n            route_ioc_by_type__url_indicators.append(value)\n    \n    phantom.debug(f\"Routed IOCs - SHA256: {len(route_ioc_by_type__sha256_indicators)}, Domain: {len(route_ioc_by_type__domain_indicators)}, IPv4: {len(route_ioc_by_type__ipv4_indicators)}, URL: {len(route_ioc_by_type__url_indicators)}\")\n",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 140
+                },
+                "3": {
+                    "data": {
+                        "action": "ioc - get file reputation",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "enrich sha256",
+                            "customNameId": 0,
+                            "description": "Query Check Point EM IOC enrichment API for SHA256 file hashes.",
+                            "join": [],
+                            "note": "Query Check Point EM IOC enrichment API for SHA256 file hashes. Endpoint: GET /api/v1/file/sha256"
+                        },
+                        "connector": "Cyberint Alerts",
+                        "connectorConfigs": [
+                            "cyberint"
+                        ],
+                        "connectorId": "e8c7f864-cba7-47b7-a375-08abf243ff82",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "enrich_sha256",
+                        "id": "3",
+                        "loop": {
+                            "enabled": true,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "pauseUnit": "s",
+                            "pauseValue": 1,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2
+                        },
+                        "parameters": {
+                            "SHA256": "route_ioc_by_type:custom_function:sha256_indicators"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "SHA256"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 320
+                },
+                "4": {
+                    "data": {
+                        "action": "ioc - get domain reputation",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "enrich domain",
+                            "customNameId": 0,
+                            "description": "Query Check Point EM IOC enrichment API for domains.",
+                            "join": [],
+                            "note": "Query Check Point EM IOC enrichment API for domains. Endpoint: GET /api/v1/file/domain"
+                        },
+                        "connector": "Cyberint Alerts",
+                        "connectorConfigs": [
+                            "cyberint"
+                        ],
+                        "connectorId": "e8c7f864-cba7-47b7-a375-08abf243ff82",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "enrich_domain",
+                        "id": "4",
+                        "loop": {
+                            "enabled": true,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "pauseUnit": "s",
+                            "pauseValue": 1,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2
+                        },
+                        "parameters": {
+                            "Domain": "route_ioc_by_type:custom_function:domain_indicators"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "Domain"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 140,
+                    "y": 320
+                },
+                "5": {
+                    "data": {
+                        "action": "ioc - get ip reputation",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "enrich ipv4",
+                            "customNameId": 0,
+                            "description": "Query Check Point EM IOC enrichment API for IPv4 addresses.",
+                            "join": [],
+                            "note": "Query Check Point EM IOC enrichment API for IPv4 addresses. Endpoint: GET /api/v1/file/ipv4"
+                        },
+                        "connector": "Cyberint Alerts",
+                        "connectorConfigs": [
+                            "cyberint"
+                        ],
+                        "connectorId": "e8c7f864-cba7-47b7-a375-08abf243ff82",
+                        "connectorVersion": "v1",
+                        "functionId": 3,
+                        "functionName": "enrich_ipv4",
+                        "id": "5",
+                        "loop": {
+                            "enabled": true,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "pauseUnit": "s",
+                            "pauseValue": 1,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2
+                        },
+                        "parameters": {
+                            "IP": "route_ioc_by_type:custom_function:ipv4_indicators"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "IP"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 280,
+                    "y": 320
+                },
+                "6": {
+                    "data": {
+                        "action": "ioc - get url reputation",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "enrich url",
+                            "customNameId": 0,
+                            "description": "Query Check Point EM IOC enrichment API for URLs.",
+                            "join": [],
+                            "note": "Query Check Point EM IOC enrichment API for URLs. Endpoint: GET /api/v1/file/url"
+                        },
+                        "connector": "Cyberint Alerts",
+                        "connectorConfigs": [
+                            "cyberint"
+                        ],
+                        "connectorId": "e8c7f864-cba7-47b7-a375-08abf243ff82",
+                        "connectorVersion": "v1",
+                        "functionId": 4,
+                        "functionName": "enrich_url",
+                        "id": "6",
+                        "loop": {
+                            "enabled": true,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "pauseUnit": "s",
+                            "pauseValue": 1,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2
+                        },
+                        "parameters": {
+                            "URL": "route_ioc_by_type:custom_function:url_indicators"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "URL"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 420,
+                    "y": 320
+                },
+                "7": {
+                    "data": {
+                        "advanced": {
+                            "customName": "normalize check point em results",
+                            "customNameId": 0,
+                            "description": "Consolidates and normalizes enrichment results from all Check Point EM API responses.",
+                            "join": [
+                                "enrich_sha256",
+                                "enrich_domain",
+                                "enrich_ipv4",
+                                "enrich_url"
+                            ],
+                            "note": "Consolidates and normalizes enrichment results from all Check Point EM API responses including verdict, telemetry, malware family, actor attribution, first seen, and confidence."
+                        },
+                        "functionId": 2,
+                        "functionName": "normalize_check_point_em_results",
+                        "id": "7",
+                        "inputParameters": [
+                            "enrich_sha256:action_result.data",
+                            "enrich_sha256:action_result.parameter.SHA256",
+                            "enrich_domain:action_result.data",
+                            "enrich_domain:action_result.parameter.Domain",
+                            "enrich_ipv4:action_result.data",
+                            "enrich_ipv4:action_result.parameter.IP",
+                            "enrich_url:action_result.data",
+                            "enrich_url:action_result.parameter.URL"
+                        ],
+                        "outputVariables": [
+                            "enriched_indicators",
+                            "malicious_count",
+                            "benign_count",
+                            "unknown_count"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "7",
+                    "type": "code",
+                    "userCode": "\n    normalize_check_point_em_results__enriched_indicators = []\n    normalize_check_point_em_results__malicious_count = 0\n    normalize_check_point_em_results__benign_count = 0\n    normalize_check_point_em_results__unknown_count = 0\n    \n    def process_enrichment(data_list, indicator_list, indicator_type):\n        results = []\n        malicious = 0\n        benign = 0\n        unknown = 0\n        \n        if not data_list or not indicator_list:\n            return results, malicious, benign, unknown\n            \n        for data, indicator in zip(data_list, indicator_list):\n            if not data:\n                continue\n                \n            enrichment = {\n                'indicator': indicator,\n                'type': indicator_type,\n                'verdict': data.get('verdict', 'unknown'),\n                'confidence': data.get('confidence', 0),\n                'malware_family': data.get('malware_family', []),\n                'actor_attribution': data.get('actor_attribution', []),\n                'first_seen': data.get('first_seen', ''),\n                'last_seen': data.get('last_seen', ''),\n                'telemetry': data.get('telemetry', {}),\n                'tags': data.get('tags', []),\n                'source': 'Check Point EM'\n            }\n            \n            verdict_lower = enrichment['verdict'].lower()\n            if verdict_lower in ['malicious', 'high', 'critical']:\n                malicious += 1\n                enrichment['score_id'] = 10\n                enrichment['score'] = 'Malicious'\n            elif verdict_lower in ['suspicious', 'medium']:\n                malicious += 1\n                enrichment['score_id'] = 7\n                enrichment['score'] = 'Suspicious'\n            elif verdict_lower in ['benign', 'safe', 'clean', 'low']:\n                benign += 1\n                enrichment['score_id'] = 1\n                enrichment['score'] = 'Benign'\n            else:\n                unknown += 1\n                enrichment['score_id'] = 5\n                enrichment['score'] = 'Unknown'\n            \n            results.append(enrichment)\n        \n        return results, malicious, benign, unknown\n    \n    # Process SHA256 results\n    sha256_results, sha256_mal, sha256_ben, sha256_unk = process_enrichment(\n        enrich_sha256_result_item_0 if enrich_sha256_result_item_0 else [],\n        enrich_sha256_parameter_SHA256 if enrich_sha256_parameter_SHA256 else [],\n        'sha256'\n    )\n    normalize_check_point_em_results__enriched_indicators.extend(sha256_results)\n    \n    # Process Domain results\n    domain_results, domain_mal, domain_ben, domain_unk = process_enrichment(\n        enrich_domain_result_item_0 if enrich_domain_result_item_0 else [],\n        enrich_domain_parameter_Domain if enrich_domain_parameter_Domain else [],\n        'domain'\n    )\n    normalize_check_point_em_results__enriched_indicators.extend(domain_results)\n    \n    # Process IPv4 results\n    ipv4_results, ipv4_mal, ipv4_ben, ipv4_unk = process_enrichment(\n        enrich_ipv4_result_item_0 if enrich_ipv4_result_item_0 else [],\n        enrich_ipv4_parameter_IP if enrich_ipv4_parameter_IP else [],\n        'ipv4'\n    )\n    normalize_check_point_em_results__enriched_indicators.extend(ipv4_results)\n    \n    # Process URL results\n    url_results, url_mal, url_ben, url_unk = process_enrichment(\n        enrich_url_result_item_0 if enrich_url_result_item_0 else [],\n        enrich_url_parameter_URL if enrich_url_parameter_URL else [],\n        'url'\n    )\n    normalize_check_point_em_results__enriched_indicators.extend(url_results)\n    \n    normalize_check_point_em_results__malicious_count = sha256_mal + domain_mal + ipv4_mal + url_mal\n    normalize_check_point_em_results__benign_count = sha256_ben + domain_ben + ipv4_ben + url_ben\n    normalize_check_point_em_results__unknown_count = sha256_unk + domain_unk + ipv4_unk + url_unk\n    \n    phantom.debug(f\"Enrichment complete - Malicious: {normalize_check_point_em_results__malicious_count}, Benign: {normalize_check_point_em_results__benign_count}, Unknown: {normalize_check_point_em_results__unknown_count}\")\n",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 520
+                },
+                "8": {
+                    "data": {
+                        "advanced": {
+                            "customName": "decision logic",
+                            "customNameId": 0,
+                            "description": "Applies decision logic: malicious indicators are escalated, benign indicators are suppressed.",
+                            "join": [],
+                            "note": "Applies decision logic: malicious indicators are escalated, benign indicators are suppressed."
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": ">",
+                                        "param": "normalize_check_point_em_results:custom_function:malicious_count",
+                                        "value": "0"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "has_malicious",
+                                "logic": "and"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 1,
+                                        "op": "==",
+                                        "param": "normalize_check_point_em_results:custom_function:malicious_count",
+                                        "value": "0"
+                                    }
+                                ],
+                                "conditionIndex": 1,
+                                "customName": "no_malicious",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "decision_logic",
+                        "id": "8",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 250,
+                    "y": 700
+                },
+                "9": {
+                    "data": {
+                        "advanced": {
+                            "customName": "escalate malicious",
+                            "customNameId": 0,
+                            "description": "Escalates alerts containing malicious indicators.",
+                            "join": [],
+                            "note": "Escalates alerts containing malicious indicators by updating container severity and adding note."
+                        },
+                        "functionId": 3,
+                        "functionName": "escalate_malicious",
+                        "id": "9",
+                        "inputParameters": [
+                            "normalize_check_point_em_results:custom_function:enriched_indicators",
+                            "normalize_check_point_em_results:custom_function:malicious_count"
+                        ],
+                        "outputVariables": [
+                            "escalation_note"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "9",
+                    "type": "code",
+                    "userCode": "\n    malicious_indicators = [i for i in normalize_check_point_em_results__enriched_indicators if i.get('score_id', 0) >= 7]\n    \n    note_content = f\"## Check Point EM IOC Enrichment - MALICIOUS INDICATORS DETECTED\\n\\n\"\n    note_content += f\"**Total Malicious Indicators:** {normalize_check_point_em_results__malicious_count}\\n\\n\"\n    note_content += \"| Indicator | Type | Verdict | Confidence | Malware Family | Actor Attribution |\\n\"\n    note_content += \"|-----------|------|---------|------------|----------------|-------------------|\\n\"\n    \n    for indicator in malicious_indicators:\n        malware_fam = ', '.join(indicator.get('malware_family', [])) or 'N/A'\n        actor_attr = ', '.join(indicator.get('actor_attribution', [])) or 'N/A'\n        note_content += f\"| `{indicator['indicator']}` | {indicator['type']} | {indicator['verdict']} | {indicator.get('confidence', 'N/A')} | {malware_fam} | {actor_attr} |\\n\"\n    \n    note_content += f\"\\n**Recommendation:** Escalate for immediate investigation and potential containment.\\n\"\n    \n    phantom.set_severity(container=container, severity=\"high\")\n    phantom.add_note(container=container, content=note_content, note_format=\"markdown\", note_type=\"general\", title=\"Check Point EM IOC Enrichment - Malicious Indicators\")\n    \n    escalate_malicious__escalation_note = note_content\n    phantom.debug(\"Escalated container due to malicious indicators\")\n",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 900
+                },
+                "10": {
+                    "data": {
+                        "advanced": {
+                            "customName": "suppress benign",
+                            "customNameId": 0,
+                            "description": "Adds informational note for benign/unknown indicators.",
+                            "join": [],
+                            "note": "Adds informational note for benign/unknown indicators without escalation."
+                        },
+                        "functionId": 4,
+                        "functionName": "suppress_benign",
+                        "id": "10",
+                        "inputParameters": [
+                            "normalize_check_point_em_results:custom_function:enriched_indicators",
+                            "normalize_check_point_em_results:custom_function:benign_count",
+                            "normalize_check_point_em_results:custom_function:unknown_count"
+                        ],
+                        "outputVariables": [
+                            "suppression_note"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "10",
+                    "type": "code",
+                    "userCode": "\n    note_content = f\"## Check Point EM IOC Enrichment - No Malicious Indicators\\n\\n\"\n    note_content += f\"**Benign Indicators:** {normalize_check_point_em_results__benign_count}\\n\"\n    note_content += f\"**Unknown Indicators:** {normalize_check_point_em_results__unknown_count}\\n\\n\"\n    \n    if normalize_check_point_em_results__enriched_indicators:\n        note_content += \"| Indicator | Type | Verdict | Confidence |\\n\"\n        note_content += \"|-----------|------|---------|------------|\\n\"\n        \n        for indicator in normalize_check_point_em_results__enriched_indicators:\n            note_content += f\"| `{indicator['indicator']}` | {indicator['type']} | {indicator['verdict']} | {indicator.get('confidence', 'N/A')} |\\n\"\n    \n    note_content += f\"\\n**Recommendation:** No immediate action required. Consider closing as false positive if no other indicators present.\\n\"\n    \n    phantom.add_note(container=container, content=note_content, note_format=\"markdown\", note_type=\"general\", title=\"Check Point EM IOC Enrichment - Benign/Unknown\")\n    \n    suppress_benign__suppression_note = note_content\n    phantom.debug(\"No malicious indicators found - added informational note\")\n",
+                    "warnings": {},
+                    "x": 340,
+                    "y": 900
+                },
+                "11": {
+                    "data": {
+                        "advanced": {
+                            "customName": "build observable output",
+                            "customNameId": 0,
+                            "description": "Builds observable array for playbook output.",
+                            "join": [
+                                "escalate_malicious",
+                                "suppress_benign"
+                            ],
+                            "note": "Builds observable array for playbook output with normalized scores and enrichment data."
+                        },
+                        "functionId": 5,
+                        "functionName": "build_observable_output",
+                        "id": "11",
+                        "inputParameters": [
+                            "normalize_check_point_em_results:custom_function:enriched_indicators"
+                        ],
+                        "outputVariables": [
+                            "observable_array"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "11",
+                    "type": "code",
+                    "userCode": "\n    build_observable_output__observable_array = []\n    \n    for indicator in normalize_check_point_em_results__enriched_indicators:\n        observable = {\n            \"value\": indicator['indicator'],\n            \"type\": indicator['type'],\n            \"reputation\": {\n                \"score_id\": indicator.get('score_id', 5),\n                \"score\": indicator.get('score', 'Unknown'),\n                \"confidence\": indicator.get('confidence', 0)\n            },\n            \"enrichment\": {\n                \"verdict\": indicator.get('verdict', 'unknown'),\n                \"malware_family\": indicator.get('malware_family', []),\n                \"actor_attribution\": indicator.get('actor_attribution', []),\n                \"first_seen\": indicator.get('first_seen', ''),\n                \"last_seen\": indicator.get('last_seen', ''),\n                \"tags\": indicator.get('tags', [])\n            },\n            \"source\": \"Check Point EM\",\n            \"source_link\": \"https://app.checkpoint.com/em\"\n        }\n        build_observable_output__observable_array.append(observable)\n    \n    phantom.debug(f\"Built {len(build_observable_output__observable_array)} observables for output\")\n",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 1100
+                },
+                "12": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format enrichment report",
+                            "customNameId": 0,
+                            "description": "Formats a comprehensive enrichment report for the container.",
+                            "join": [],
+                            "note": "Formats a comprehensive enrichment report with all IOC enrichment details."
+                        },
+                        "functionId": 1,
+                        "functionName": "format_enrichment_report",
+                        "id": "12",
+                        "parameters": [
+                            "normalize_check_point_em_results:custom_function:enriched_indicators",
+                            "normalize_check_point_em_results:custom_function:malicious_count",
+                            "normalize_check_point_em_results:custom_function:benign_count",
+                            "normalize_check_point_em_results:custom_function:unknown_count"
+                        ],
+                        "template": "# Check Point EM IOC Enrichment Report\n\n**Summary:**\n- Total Indicators Analyzed: {0}\n- Malicious: {1}\n- Benign: {2}\n- Unknown: {3}\n\n**Source:** Check Point EM Threat Intelligence Platform\n\n---\n\nThis playbook enriched IOCs using Check Point EM APIs:\n- `/api/v1/file/sha256` - File hash enrichment\n- `/api/v1/file/domain` - Domain enrichment\n- `/api/v1/file/ipv4` - IP address enrichment\n- `/api/v1/file/url` - URL enrichment\n",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "12",
+                    "type": "format",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 1300
+                }
+            },
+            "notes": "Inputs: indicator_value, indicator_type\nInteractions: Check Point EM APIs\nActions: IOC enrichment (SHA256, Domain, IPv4, URL)\nOutputs: observable array, enrichment report\n\nCheck Point EM API Endpoints:\n- GET /api/v1/file/sha256\n- GET /api/v1/file/domain\n- GET /api/v1/file/ipv4\n- GET /api/v1/file/url"
+        },
+        "input_spec": [
+            {
+                "contains": [
+                    "hash",
+                    "sha256",
+                    "md5",
+                    "domain",
+                    "ip",
+                    "url"
+                ],
+                "description": "The IOC value to enrich (IP, domain, hash, or URL)",
+                "name": "indicator_value"
+            },
+            {
+                "contains": [],
+                "description": "The type of IOC (sha256, domain, ip, url). If not provided, type will be auto-detected.",
+                "name": "indicator_type"
+            }
+        ],
+        "output_spec": [
+            {
+                "contains": [],
+                "datapaths": [
+                    "build_observable_output:custom_function:observable_array"
+                ],
+                "deduplicate": false,
+                "description": "An array of observable dictionaries with value, type, reputation score, and Check Point EM enrichment data.",
+                "metadata": {},
+                "name": "observable"
+            },
+            {
+                "contains": [],
+                "datapaths": [
+                    "format_enrichment_report:formatted_data"
+                ],
+                "deduplicate": false,
+                "description": "Formatted markdown report summarizing the IOC enrichment results.",
+                "metadata": {},
+                "name": "report"
+            }
+        ],
+        "playbook_type": "data",
+        "python_version": "3.13",
+        "schema": "5.0.15",
+        "version": "7.0.0.190"
+    },
+    "create_time": "2025-01-27T00:00:00.000000+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": [
+        "ioc",
+        "enrichment",
+        "check_point_em",
+        "threat_intel",
+        "ip",
+        "domain",
+        "hash",
+        "url",
+        "D3-IAA"
+    ]
+}
