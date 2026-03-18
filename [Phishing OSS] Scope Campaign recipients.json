@@ -1,0 +1,293 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Search and Purge",
+    "coa": {
+        "data": {
+            "description": "This playbook finds all recipients who received a phishing campaign email by searching Email logs in Splunk.",
+            "edges": [
+                {
+                    "id": "port_4_to_port_1",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_0_to_port_8",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                },
+                {
+                    "id": "port_8_to_port_2",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "id": "port_2_to_port_9",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "9",
+                    "targetPort": "9_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "conditionKey": "condition_key_0",
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_9_to_port_4",
+                    "sourceNode": "9",
+                    "sourcePort": "9_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                }
+            ],
+            "hash": "51b8c509c93996d25b113153514e8071d2297c0c",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 19.999999999999986,
+                    "y": -6.750155989720952e-13
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 19.999999999999986,
+                    "y": 592
+                },
+                "2": {
+                    "data": {
+                        "action": "run query",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "Splunk",
+                        "connectorConfigs": [
+                            "srv-rpa-rz-sgs-dmo_splunk-rz_core"
+                        ],
+                        "connectorId": "91883aa8-9c81-470b-97a1-5d8f7995f560",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "run_query_1",
+                        "id": "2",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "command": "search",
+                            "query": "format_spl:custom_function:spl_for_run_query",
+                            "search_mode": "smart",
+                            "start_time": "-7d"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "query"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "search",
+                                "field": "command"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "smart",
+                                "field": "search_mode"
+                            }
+                        ],
+                        "tab": "byAction",
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 239.9999999999999
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "customName": "extract emails",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "extract_emails",
+                        "id": "4",
+                        "inputParameters": [
+                            "run_query_1:action_result.data",
+                            ""
+                        ],
+                        "outputVariables": [
+                            "email_list"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "code",
+                    "userCode": "\n    # Write your custom code here...\n    import re\n    phantom.debug(\"run_query_1_result_item_0: \")\n    phantom.debug(run_query_1_result_item_0)\n    extract_emails__email_list = []\n    \n    if run_query_1_result_item_0[0] != []:\n        event_data=run_query_1_result_item_0[0][0]\n        phantom.debug(event_data)\n        email_pattern = r'\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b'\n        extracted_emails = []\n        #phantom.debug(event_data.get(\"email\", []))\n        for item in event_data.get(\"email\", []):\n            matches = re.findall(email_pattern, item)\n            phantom.debug(matches)\n            extracted_emails.extend(matches)\n            \n        phantom.debug(\"extracted_emails: \")    \n        phantom.debug(extracted_emails)\n        extract_emails__email_list=extracted_emails\n\n",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 500
+                },
+                "8": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format SPL",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 2,
+                        "functionName": "format_spl",
+                        "id": "8",
+                        "inputParameters": [
+                            "playbook_input:sender",
+                            "playbook_input:subject"
+                        ],
+                        "outputVariables": [
+                            "spl_for_run_query"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "code",
+                    "userCode": "\n    # Write your custom code here...\n    sender=playbook_input_sender_values[0]\n    subject=playbook_input_subject_values[0]\n    \n    #spl=\"\"\"\n    #index=obs-gsuite sourcetype=gsuite:gmail:bigquery ((source.from_header_address=\"\"\"+str(sender)+\"\"\" OR sender=\"\"\"+str(sender)+\"\"\") AND subject=\\\"\"\"\"+str(subject)+\"\"\"\\\") | eval source.from_header_address = lower(source.from_header_address) | bin _time span=5m | stats earliest(_time) as first_seen, values(sender) as sender, values(source.from_header_address) as header_src, values(source.from_header_displayname) as display_name, values(connection_info.client_ip) as client_ip, values(subject) as subject, values(connection_info.dkim_pass) as dkim_pass, values(connection_info.dmarc_pass) as dmarc_pass, values(attachment{}.file_extension_type) AS file_extension_type, values(connection_info.dmarc_published_domain) as dmarc_published_domain, values(attachment{}.malware_family) as malware_family, values(connection_info.ip_geo_city) as ip_geo_city, values(connection_info.ip_geo_country) as ip_geo_country, values(is_spam) as is_spam, values(link_domain{}) as link_domain, values(num_message_attachments) as num_attachments, values(payload_size) as payload_size, values(source.service) as src_service by rfc2822_message_id recipient | eval client_ip = mvfilter(NOT match(client_ip,\"null\")), dmarc_pass = mvfilter(NOT match(dmarc_pass,\"null\")), dmarc_published_domain = mvfilter(NOT match(dmarc_published_domain,\"null\")), ip_geo_country = mvfilter(NOT match(ip_geo_country,\"null\")), is_spam = mvfilter(NOT match(is_spam,\"null\")) | sort 0 first_seen | convert timeformat=\"%m/%d/%Y %H:%M:%S\" ctime(first_seen) | eval email = first_seen.\" - \".recipient.\" -> \".subject | stats values(email) as email\n    #\"\"\"\n    \n    #Added as a part of https://splunk.atlassian.net/browse/SOAR-2753\n    new_spl=\"\"\"\n    index=obs-gsuite sourcetype=gsuite:gmail:bigquery ((gmail.message_info.source.from_header_address=\"\"\"+str(sender)+\"\"\" AND gmail.message_info.subject=\\\"\"\"\"+str(subject)+\"\"\"\\\")) | bin _time span=5m | rename gmail.message_info.* as * | rename destination{}.address AS dest, source.address AS sender, subject AS subject | fields sender, source.from_header_displayname, connection_info.client_ip, subject, connection_info.dkim_pass, connection_info.dmarc_pass, attachment{}.file_extension_type, connection_info.dmarc_published_domain, attachment{}.malware_family, connection_info.ip_geo_city, connection_info.ip_geo_country, is_spam, payload_size, source.service, rfc2822_message_id, dest | stats earliest(_time) as first_seen, values(source.from_header_displayname) as display_name, values(subject) as subject values(connection_info.client_ip) as client_ip, values(connection_info.dkim_pass) as dkim_pass, values(connection_info.dmarc_pass) as dmarc_pass, values(attachment{}.file_extension_type) AS file_extension_type, values(connection_info.dmarc_published_domain) as dmarc_published_domain, values(attachment{}.malware_family) as malware_family, values(connection_info.ip_geo_city) as ip_geo_city, values(connection_info.ip_geo_country) as ip_geo_country, values(is_spam) as is_spam, values(payload_size) as payload_size, values(source.service) as src_service by _time sender dest | eval client_ip = mvfilter(NOT match(client_ip,\"null\")), dmarc_pass = mvfilter(NOT match(dmarc_pass,\"null\")), dmarc_published_domain = mvfilter(NOT match(dmarc_published_domain,\"null\")), ip_geo_country = mvfilter(NOT match(ip_geo_country,\"null\")), is_spam = mvfilter(NOT match(is_spam,\"null\")) | convert timeformat=\"%m/%d/%Y %H:%M:%S\" ctime(first_seen) | eval event_time = strftime(_time, \"%m/%d/%y %H:%M:%S\") | eval email = event_time.\" - \" .sender.\" - \".dest.\" -> \".subject | stats values(email) as email dc(dest) by sender\n    \"\"\"\n    \n    format_spl__spl_for_run_query=new_spl\n\n",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 139.99999999999983
+                },
+                "9": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "comparisonKey": "comparison_key_0",
+                                        "op": "!=",
+                                        "param": "run_query_1:action_result.summary.total_events",
+                                        "value": "0"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "conditionKey": "condition_key_0",
+                                "customName": "Results",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "decision_1",
+                        "id": "9",
+                        "type": "decision"
+                    },
+                    "errors": {},
+                    "id": "9",
+                    "type": "decision",
+                    "warnings": {},
+                    "x": 80,
+                    "y": 340
+                }
+            },
+            "notes": "This playbook finds all recipients who received a phishing campaign email by searching Email logs in Splunk.",
+            "origin": {
+                "playbook_id": 16268,
+                "playbook_name": "[Phishing Pond] Campaign recipients Output",
+                "playbook_repo_id": 12,
+                "playbook_repo_name": "sgs-soarcloud-gso-dev"
+            }
+        },
+        "input_spec": [
+            {
+                "contains": [],
+                "description": "",
+                "name": "sender"
+            },
+            {
+                "contains": [
+                    "ps_EmailSubject"
+                ],
+                "description": "",
+                "name": "subject"
+            }
+        ],
+        "output_spec": [
+            {
+                "contains": [],
+                "datapaths": [
+                    "extract_emails:custom_function:email_list"
+                ],
+                "deduplicate": false,
+                "description": "",
+                "metadata": {},
+                "name": "emails_list"
+            }
+        ],
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "data",
+        "python_version": "3.13",
+        "schema": "5.0.24",
+        "version": "8.4.0.154"
+    },
+    "create_time": "2026-03-17T13:32:46.736089+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": []
+}

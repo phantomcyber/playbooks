@@ -1,0 +1,326 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Search and Purge",
+    "coa": {
+        "data": {
+            "description": "This playbook trashes phishing emails from a user's inbox after a confirmed threat has been analyzed.",
+            "edges": [
+                {
+                    "id": "port_4_to_port_6",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_3_to_port_7",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "conditionKey": "condition_key_1",
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_7_to_port_4",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "id": "port_0_to_port_3",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "id": "port_6_to_port_1",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "11289f8476c1542546045f832fe79b11892bc0a0",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 139.99999999999966
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 1000,
+                    "y": 1000
+                },
+                "3": {
+                    "data": {
+                        "action": "run query",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "Search email",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "connector": "G Suite for GMail",
+                        "connectorConfigs": [
+                            "srv_gso_phantom_gmail-prod_ingest"
+                        ],
+                        "connectorId": "9c73f233-2c4a-406a-855e-41d8d2497d0e",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "search_email",
+                        "id": "3",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "email": "playbook_input:splunker_email",
+                            "label": "",
+                            "max_results": 100,
+                            "sender": "playbook_input:email_sender",
+                            "subject": "playbook_input:email_subject"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "email"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "Inbox",
+                                "field": "label"
+                            },
+                            {
+                                "data_type": "numeric",
+                                "default": 100,
+                                "field": "max_results"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 960,
+                    "y": 379.99999999999994
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "customName": "purge_email_id",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 2,
+                        "functionName": "purge_email_id",
+                        "id": "4",
+                        "inputParameters": [
+                            "search_email:action_result.data.*.id"
+                        ],
+                        "outputVariables": [
+                            "purge_email_id"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "code",
+                    "userCode": "\n    # Write your custom code here...\n    purge_email_id__purge_email_id=search_email_result_item_0[0]\n    phantom.debug(purge_email_id__purge_email_id)\n   \n",
+                    "warnings": {},
+                    "x": 960,
+                    "y": 680
+                },
+                "6": {
+                    "data": {
+                        "action": "trash email",
+                        "actionType": "generic",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "Gmail Purge Power",
+                        "connectorConfigs": [
+                            "srv_gso_phantom_gmail-prod_ingest_clone_1705568601214_clone_1714669770465_clone_1715796934016_clone_1715799345461"
+                        ],
+                        "connectorId": "c1197707-8052-45ce-8316-988024aee1dc",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "trash_email_1",
+                        "id": "6",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "email": "playbook_input:splunker_email",
+                            "id": "purge_email_id:custom_function:purge_email_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "id"
+                            },
+                            {
+                                "data_type": "string",
+                                "default": "",
+                                "field": "email"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 960,
+                    "y": 800
+                },
+                "7": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "comparisonKey": "comparison_key_aa8be40a-e6c3-42f7-bf06-32e3b3bbf587",
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "search_email:action_result.summary.total_messages_returned",
+                                        "value": "0"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "conditionKey": "condition_key_1",
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "decision_1",
+                        "id": "7",
+                        "type": "decision"
+                    },
+                    "errors": {},
+                    "id": "7",
+                    "type": "decision",
+                    "warnings": {},
+                    "x": 1040,
+                    "y": 500
+                }
+            },
+            "notes": "This playbook trashes phishing emails from a user's inbox after a confirmed threat has been analyzed.",
+            "origin": {
+                "playbook_id": 15225,
+                "playbook_name": "[PP] Purge worker",
+                "playbook_repo_id": 2,
+                "playbook_repo_name": "local"
+            }
+        },
+        "input_spec": [
+            {
+                "contains": [],
+                "description": "",
+                "name": "splunker_email"
+            },
+            {
+                "contains": [],
+                "description": "",
+                "name": "email_subject"
+            },
+            {
+                "contains": [],
+                "description": "",
+                "name": "email_sender"
+            }
+        ],
+        "output_spec": null,
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "data",
+        "python_version": "3.13",
+        "schema": "5.0.24",
+        "version": "8.4.0.154"
+    },
+    "create_time": "2026-03-17T13:22:45.639386+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": []
+}
