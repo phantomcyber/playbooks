@@ -183,6 +183,95 @@
                     "x": 190,
                     "y": 1600
                 },
+                "10": {
+                    "data": {
+                        "advanced": {
+                            "customName": "suppress benign",
+                            "customNameId": 0,
+                            "description": "Adds informational note for benign/unknown indicators.",
+                            "join": [],
+                            "note": "Adds informational note for benign/unknown indicators without escalation."
+                        },
+                        "functionId": 4,
+                        "functionName": "suppress_benign",
+                        "id": "10",
+                        "inputParameters": [
+                            "normalize_check_point_em_results:custom_function:enriched_indicators",
+                            "normalize_check_point_em_results:custom_function:benign_count",
+                            "normalize_check_point_em_results:custom_function:unknown_count"
+                        ],
+                        "outputVariables": [
+                            "suppression_note"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "10",
+                    "type": "code",
+                    "userCode": "\n    note_content = f\"## Check Point EM IOC Enrichment - No Malicious Indicators\\n\\n\"\n    note_content += f\"**Benign Indicators:** {normalize_check_point_em_results__benign_count}\\n\"\n    note_content += f\"**Unknown Indicators:** {normalize_check_point_em_results__unknown_count}\\n\\n\"\n    \n    if normalize_check_point_em_results__enriched_indicators:\n        note_content += \"| Indicator | Type | Verdict | Confidence |\\n\"\n        note_content += \"|-----------|------|---------|------------|\\n\"\n        \n        for indicator in normalize_check_point_em_results__enriched_indicators:\n            note_content += f\"| `{indicator['indicator']}` | {indicator['type']} | {indicator['verdict']} | {indicator.get('confidence', 'N/A')} |\\n\"\n    \n    note_content += f\"\\n**Recommendation:** No immediate action required. Consider closing as false positive if no other indicators present.\\n\"\n    \n    phantom.add_note(container=container, content=note_content, note_format=\"markdown\", note_type=\"general\", title=\"Check Point EM IOC Enrichment - Benign/Unknown\")\n    \n    suppress_benign__suppression_note = note_content\n    phantom.debug(\"No malicious indicators found - added informational note\")\n",
+                    "warnings": {},
+                    "x": 340,
+                    "y": 900
+                },
+                "11": {
+                    "data": {
+                        "advanced": {
+                            "customName": "build observable output",
+                            "customNameId": 0,
+                            "description": "Builds observable array for playbook output.",
+                            "join": [
+                                "escalate_malicious",
+                                "suppress_benign"
+                            ],
+                            "note": "Builds observable array for playbook output with normalized scores and enrichment data."
+                        },
+                        "functionId": 5,
+                        "functionName": "build_observable_output",
+                        "id": "11",
+                        "inputParameters": [
+                            "normalize_check_point_em_results:custom_function:enriched_indicators"
+                        ],
+                        "outputVariables": [
+                            "observable_array"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "11",
+                    "type": "code",
+                    "userCode": "\n    build_observable_output__observable_array = []\n    \n    for indicator in normalize_check_point_em_results__enriched_indicators:\n        observable = {\n            \"value\": indicator['indicator'],\n            \"type\": indicator['type'],\n            \"reputation\": {\n                \"score_id\": indicator.get('score_id', 5),\n                \"score\": indicator.get('score', 'Unknown'),\n                \"confidence\": indicator.get('confidence', 0)\n            },\n            \"enrichment\": {\n                \"verdict\": indicator.get('verdict', 'unknown'),\n                \"malware_family\": indicator.get('malware_family', []),\n                \"actor_attribution\": indicator.get('actor_attribution', []),\n                \"first_seen\": indicator.get('first_seen', ''),\n                \"last_seen\": indicator.get('last_seen', ''),\n                \"tags\": indicator.get('tags', [])\n            },\n            \"source\": \"Check Point EM\",\n            \"source_link\": \"https://app.checkpoint.com/em\"\n        }\n        build_observable_output__observable_array.append(observable)\n    \n    phantom.debug(f\"Built {len(build_observable_output__observable_array)} observables for output\")\n",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 1100
+                },
+                "12": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format enrichment report",
+                            "customNameId": 0,
+                            "description": "Formats a comprehensive enrichment report for the container.",
+                            "join": [],
+                            "note": "Formats a comprehensive enrichment report with all IOC enrichment details."
+                        },
+                        "functionId": 1,
+                        "functionName": "format_enrichment_report",
+                        "id": "12",
+                        "parameters": [
+                            "normalize_check_point_em_results:custom_function:enriched_indicators",
+                            "normalize_check_point_em_results:custom_function:malicious_count",
+                            "normalize_check_point_em_results:custom_function:benign_count",
+                            "normalize_check_point_em_results:custom_function:unknown_count"
+                        ],
+                        "template": "# Check Point EM IOC Enrichment Report\n\n**Summary:**\n- Total Indicators Analyzed: {0}\n- Malicious: {1}\n- Benign: {2}\n- Unknown: {3}\n\n**Source:** Check Point EM Threat Intelligence Platform\n\n---\n\nThis playbook enriched IOCs using Check Point EM APIs:\n- `/api/v1/file/sha256` - File hash enrichment\n- `/api/v1/file/domain` - Domain enrichment\n- `/api/v1/file/ipv4` - IP address enrichment\n- `/api/v1/file/url` - URL enrichment\n",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "12",
+                    "type": "format",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 1300
+                },
                 "2": {
                     "data": {
                         "advanced": {
@@ -239,10 +328,10 @@
                             "enabled": true,
                             "exitAfterUnit": "m",
                             "exitAfterValue": 10,
-                            "pauseUnit": "s",
-                            "pauseValue": 1,
                             "exitConditionEnabled": false,
-                            "exitLoopAfter": 2
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "s",
+                            "pauseValue": 1
                         },
                         "parameters": {
                             "SHA256": "route_ioc_by_type:custom_function:sha256_indicators"
@@ -286,10 +375,10 @@
                             "enabled": true,
                             "exitAfterUnit": "m",
                             "exitAfterValue": 10,
-                            "pauseUnit": "s",
-                            "pauseValue": 1,
                             "exitConditionEnabled": false,
-                            "exitLoopAfter": 2
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "s",
+                            "pauseValue": 1
                         },
                         "parameters": {
                             "Domain": "route_ioc_by_type:custom_function:domain_indicators"
@@ -333,10 +422,10 @@
                             "enabled": true,
                             "exitAfterUnit": "m",
                             "exitAfterValue": 10,
-                            "pauseUnit": "s",
-                            "pauseValue": 1,
                             "exitConditionEnabled": false,
-                            "exitLoopAfter": 2
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "s",
+                            "pauseValue": 1
                         },
                         "parameters": {
                             "IP": "route_ioc_by_type:custom_function:ipv4_indicators"
@@ -380,10 +469,10 @@
                             "enabled": true,
                             "exitAfterUnit": "m",
                             "exitAfterValue": 10,
-                            "pauseUnit": "s",
-                            "pauseValue": 1,
                             "exitConditionEnabled": false,
-                            "exitLoopAfter": 2
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "s",
+                            "pauseValue": 1
                         },
                         "parameters": {
                             "URL": "route_ioc_by_type:custom_function:url_indicators"
@@ -523,95 +612,6 @@
                     "warnings": {},
                     "x": 0,
                     "y": 900
-                },
-                "10": {
-                    "data": {
-                        "advanced": {
-                            "customName": "suppress benign",
-                            "customNameId": 0,
-                            "description": "Adds informational note for benign/unknown indicators.",
-                            "join": [],
-                            "note": "Adds informational note for benign/unknown indicators without escalation."
-                        },
-                        "functionId": 4,
-                        "functionName": "suppress_benign",
-                        "id": "10",
-                        "inputParameters": [
-                            "normalize_check_point_em_results:custom_function:enriched_indicators",
-                            "normalize_check_point_em_results:custom_function:benign_count",
-                            "normalize_check_point_em_results:custom_function:unknown_count"
-                        ],
-                        "outputVariables": [
-                            "suppression_note"
-                        ],
-                        "type": "code"
-                    },
-                    "errors": {},
-                    "id": "10",
-                    "type": "code",
-                    "userCode": "\n    note_content = f\"## Check Point EM IOC Enrichment - No Malicious Indicators\\n\\n\"\n    note_content += f\"**Benign Indicators:** {normalize_check_point_em_results__benign_count}\\n\"\n    note_content += f\"**Unknown Indicators:** {normalize_check_point_em_results__unknown_count}\\n\\n\"\n    \n    if normalize_check_point_em_results__enriched_indicators:\n        note_content += \"| Indicator | Type | Verdict | Confidence |\\n\"\n        note_content += \"|-----------|------|---------|------------|\\n\"\n        \n        for indicator in normalize_check_point_em_results__enriched_indicators:\n            note_content += f\"| `{indicator['indicator']}` | {indicator['type']} | {indicator['verdict']} | {indicator.get('confidence', 'N/A')} |\\n\"\n    \n    note_content += f\"\\n**Recommendation:** No immediate action required. Consider closing as false positive if no other indicators present.\\n\"\n    \n    phantom.add_note(container=container, content=note_content, note_format=\"markdown\", note_type=\"general\", title=\"Check Point EM IOC Enrichment - Benign/Unknown\")\n    \n    suppress_benign__suppression_note = note_content\n    phantom.debug(\"No malicious indicators found - added informational note\")\n",
-                    "warnings": {},
-                    "x": 340,
-                    "y": 900
-                },
-                "11": {
-                    "data": {
-                        "advanced": {
-                            "customName": "build observable output",
-                            "customNameId": 0,
-                            "description": "Builds observable array for playbook output.",
-                            "join": [
-                                "escalate_malicious",
-                                "suppress_benign"
-                            ],
-                            "note": "Builds observable array for playbook output with normalized scores and enrichment data."
-                        },
-                        "functionId": 5,
-                        "functionName": "build_observable_output",
-                        "id": "11",
-                        "inputParameters": [
-                            "normalize_check_point_em_results:custom_function:enriched_indicators"
-                        ],
-                        "outputVariables": [
-                            "observable_array"
-                        ],
-                        "type": "code"
-                    },
-                    "errors": {},
-                    "id": "11",
-                    "type": "code",
-                    "userCode": "\n    build_observable_output__observable_array = []\n    \n    for indicator in normalize_check_point_em_results__enriched_indicators:\n        observable = {\n            \"value\": indicator['indicator'],\n            \"type\": indicator['type'],\n            \"reputation\": {\n                \"score_id\": indicator.get('score_id', 5),\n                \"score\": indicator.get('score', 'Unknown'),\n                \"confidence\": indicator.get('confidence', 0)\n            },\n            \"enrichment\": {\n                \"verdict\": indicator.get('verdict', 'unknown'),\n                \"malware_family\": indicator.get('malware_family', []),\n                \"actor_attribution\": indicator.get('actor_attribution', []),\n                \"first_seen\": indicator.get('first_seen', ''),\n                \"last_seen\": indicator.get('last_seen', ''),\n                \"tags\": indicator.get('tags', [])\n            },\n            \"source\": \"Check Point EM\",\n            \"source_link\": \"https://app.checkpoint.com/em\"\n        }\n        build_observable_output__observable_array.append(observable)\n    \n    phantom.debug(f\"Built {len(build_observable_output__observable_array)} observables for output\")\n",
-                    "warnings": {},
-                    "x": 190,
-                    "y": 1100
-                },
-                "12": {
-                    "data": {
-                        "advanced": {
-                            "customName": "format enrichment report",
-                            "customNameId": 0,
-                            "description": "Formats a comprehensive enrichment report for the container.",
-                            "join": [],
-                            "note": "Formats a comprehensive enrichment report with all IOC enrichment details."
-                        },
-                        "functionId": 1,
-                        "functionName": "format_enrichment_report",
-                        "id": "12",
-                        "parameters": [
-                            "normalize_check_point_em_results:custom_function:enriched_indicators",
-                            "normalize_check_point_em_results:custom_function:malicious_count",
-                            "normalize_check_point_em_results:custom_function:benign_count",
-                            "normalize_check_point_em_results:custom_function:unknown_count"
-                        ],
-                        "template": "# Check Point EM IOC Enrichment Report\n\n**Summary:**\n- Total Indicators Analyzed: {0}\n- Malicious: {1}\n- Benign: {2}\n- Unknown: {3}\n\n**Source:** Check Point EM Threat Intelligence Platform\n\n---\n\nThis playbook enriched IOCs using Check Point EM APIs:\n- `/api/v1/file/sha256` - File hash enrichment\n- `/api/v1/file/domain` - Domain enrichment\n- `/api/v1/file/ipv4` - IP address enrichment\n- `/api/v1/file/url` - URL enrichment\n",
-                        "type": "format"
-                    },
-                    "errors": {},
-                    "id": "12",
-                    "type": "format",
-                    "warnings": {},
-                    "x": 190,
-                    "y": 1300
                 }
             },
             "notes": "Inputs: indicator_value, indicator_type\nInteractions: Check Point EM APIs\nActions: IOC enrichment (SHA256, Domain, IPv4, URL)\nOutputs: observable array, enrichment report\n\nCheck Point EM API Endpoints:\n- GET /api/v1/file/sha256\n- GET /api/v1/file/domain\n- GET /api/v1/file/ipv4\n- GET /api/v1/file/url"
@@ -657,12 +657,13 @@
                 "name": "report"
             }
         ],
+        "playbook_trigger": "artifact_created",
         "playbook_type": "data",
         "python_version": "3.13",
         "schema": "5.0.15",
         "version": "7.0.0.190"
     },
-    "create_time": "2025-01-27T00:00:00.000000+00:00",
+    "create_time": "2026-06-22T10:15:24.987644+00:00",
     "draft_mode": false,
     "labels": [
         "*"
