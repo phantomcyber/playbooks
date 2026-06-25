@@ -1,0 +1,752 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Use Cases",
+    "coa": {
+        "data": {
+            "description": "Automates or semi-automates the takedown process for high-confidence phishing websites detected by Check Point EM. Extracts phishing alert details, enriches with website data and screenshots, evaluates confidence/severity thresholds, initiates takedown requests, and continuously monitors takedown status until resolution.",
+            "edges": [
+                {
+                    "id": "port_0_to_port_2",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_2_to_port_3",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "id": "port_3_to_port_4",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "id": "port_4_to_port_5",
+                    "sourceNode": "4",
+                    "sourcePort": "5_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_5_to_port_6",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 1
+                        }
+                    ],
+                    "id": "port_5_to_port_7",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "id": "port_6_to_port_8",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                },
+                {
+                    "id": "port_7_to_port_8",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_8_to_port_9",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "9",
+                    "targetPort": "9_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 1
+                        }
+                    ],
+                    "id": "port_8_to_port_12",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "12",
+                    "targetPort": "12_in"
+                },
+                {
+                    "id": "port_9_to_port_10",
+                    "sourceNode": "9",
+                    "sourcePort": "9_out",
+                    "targetNode": "10",
+                    "targetPort": "10_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_10_to_port_11",
+                    "sourceNode": "10",
+                    "sourcePort": "10_out",
+                    "targetNode": "11",
+                    "targetPort": "11_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "index": 1
+                        }
+                    ],
+                    "id": "port_10_to_port_9",
+                    "sourceNode": "10",
+                    "sourcePort": "10_out",
+                    "targetNode": "9",
+                    "targetPort": "9_in"
+                },
+                {
+                    "id": "port_11_to_port_13",
+                    "sourceNode": "11",
+                    "sourcePort": "11_out",
+                    "targetNode": "13",
+                    "targetPort": "13_in"
+                },
+                {
+                    "id": "port_12_to_port_13",
+                    "sourceNode": "12",
+                    "sourcePort": "12_out",
+                    "targetNode": "13",
+                    "targetPort": "13_in"
+                },
+                {
+                    "id": "port_13_to_port_14",
+                    "sourceNode": "13",
+                    "sourcePort": "13_out",
+                    "targetNode": "14",
+                    "targetPort": "14_in"
+                },
+                {
+                    "id": "port_14_to_port_1",
+                    "sourceNode": "14",
+                    "sourcePort": "14_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "check_point_em_phishing_takedown_v1",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 0
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 2000
+                },
+                "10": {
+                    "data": {
+                        "advanced": {
+                            "customName": "check status change",
+                            "customNameId": 0,
+                            "description": "Checks if takedown status has changed from pending/request_sent.",
+                            "join": [],
+                            "note": "Monitors until status changes to any other than pending or request_sent."
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "not in",
+                                        "param": "poll_takedown_status:action_result.data.*.status",
+                                        "value": "pending,request_sent"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "status_changed",
+                                "logic": "and"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 1,
+                                        "op": "in",
+                                        "param": "poll_takedown_status:action_result.data.*.status",
+                                        "value": "pending,request_sent"
+                                    }
+                                ],
+                                "conditionIndex": 1,
+                                "customName": "status_pending",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 4,
+                        "functionName": "check_status_change",
+                        "id": "10",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "10",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 60,
+                    "y": 1400
+                },
+                "11": {
+                    "data": {
+                        "advanced": {
+                            "customName": "process status change",
+                            "customNameId": 0,
+                            "description": "Processes takedown status change and triggers notifications.",
+                            "join": [],
+                            "note": "Once takedown status changes, annotate ticket and trigger notification. If pending_details, provide as high-priority to SOC."
+                        },
+                        "functionId": 2,
+                        "functionName": "process_status_change",
+                        "id": "11",
+                        "inputParameters": [
+                            "poll_takedown_status:action_result.data",
+                            "enrich_phishing_data:custom_function:phishing_url"
+                        ],
+                        "outputVariables": [
+                            "status_update",
+                            "requires_action"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "11",
+                    "type": "code",
+                    "userCode": "\n    process_status_change__status_update = ''\n    process_status_change__requires_action = False\n    \n    status_data = poll_takedown_status_result_item_0\n    phishing_url = enrich_phishing_data__phishing_url\n    \n    if status_data:\n        if isinstance(status_data, list):\n            status_data = status_data[0] if status_data else {}\n        \n        current_status = status_data.get('status', 'unknown')\n        pending_details = status_data.get('pending_details', '')\n        resolution_date = status_data.get('resolution_date', '')\n        \n        status_note = f\"\"\"## Phishing Takedown Status Update\n\n**URL:** {phishing_url}\n**Current Status:** {current_status}\n**Resolution Date:** {resolution_date or 'Pending'}\n\n\"\"\"\n        \n        if current_status == 'completed' or current_status == 'taken_down':\n            status_note += \"\"\"### SUCCESS: Website has been taken down!\n\nThe phishing website has been successfully removed by the hosting provider/registrar.\n\"\"\"\n            phantom.set_severity(container=container, severity=\"low\")\n            \n        elif current_status == 'pending_details':\n            status_note += f\"\"\"### ACTION REQUIRED: Additional Information Needed\n\n**Details Required:** {pending_details}\n\nPlease provide the requested information to proceed with the takedown.\n\"\"\"\n            process_status_change__requires_action = True\n            phantom.set_severity(container=container, severity=\"high\")\n            \n        elif current_status == 'rejected':\n            status_note += \"\"\"### REJECTED: Takedown request was rejected\n\nThe takedown request was rejected. Manual intervention may be required.\n\"\"\"\n            phantom.set_severity(container=container, severity=\"medium\")\n            \n        else:\n            status_note += f\"\"\"### Status: {current_status}\n\nContinue monitoring for further updates.\n\"\"\"\n        \n        phantom.add_note(container=container, content=status_note, note_format=\"markdown\", note_type=\"general\", title=f\"Takedown Status: {current_status.upper()}\")\n        \n        process_status_change__status_update = status_note\n    \n    phantom.debug(f\"Processed status change: requires_action={process_status_change__requires_action}\")\n",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 1580
+                },
+                "12": {
+                    "data": {
+                        "advanced": {
+                            "customName": "log no takedown",
+                            "customNameId": 0,
+                            "description": "Logs that takedown was not initiated.",
+                            "join": [],
+                            "note": "Logs that takedown was declined or not initiated."
+                        },
+                        "functionId": 3,
+                        "functionName": "log_no_takedown",
+                        "id": "12",
+                        "inputParameters": [
+                            "enrich_phishing_data:custom_function:phishing_url",
+                            "enrich_phishing_data:custom_function:confidence_score"
+                        ],
+                        "outputVariables": [
+                            "no_takedown_note"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "12",
+                    "type": "code",
+                    "userCode": "\n    log_no_takedown__no_takedown_note = f\"\"\"## Phishing Alert - No Takedown Initiated\n\n**URL:** {enrich_phishing_data__phishing_url}\n**Confidence Score:** {enrich_phishing_data__confidence_score}\n\nTakedown was not initiated for this phishing alert. This may be due to:\n- Analyst decision to decline takedown\n- Confidence score below threshold\n- Technical error submitting takedown request\n\nPlease review manually if needed.\n\"\"\"\n    \n    phantom.add_note(container=container, content=log_no_takedown__no_takedown_note, note_format=\"markdown\", note_type=\"general\", title=\"Phishing Alert - No Takedown\")\n    \n    phantom.debug(\"Logged: takedown not initiated\")\n",
+                    "warnings": {},
+                    "x": 340,
+                    "y": 1220
+                },
+                "13": {
+                    "data": {
+                        "advanced": {
+                            "customName": "build observable output",
+                            "customNameId": 0,
+                            "description": "Builds observable array for playbook output.",
+                            "join": [
+                                "process_status_change",
+                                "log_no_takedown"
+                            ],
+                            "note": "Builds observable array with phishing website details and takedown status."
+                        },
+                        "functionId": 4,
+                        "functionName": "build_observable_output",
+                        "id": "13",
+                        "inputParameters": [
+                            "enrich_phishing_data:custom_function:phishing_details",
+                            "poll_takedown_status:action_result.data"
+                        ],
+                        "outputVariables": [
+                            "observable_array"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "13",
+                    "type": "code",
+                    "userCode": "\n    build_observable_output__observable_array = []\n    \n    phishing_details = enrich_phishing_data__phishing_details or {}\n    takedown_data = poll_takedown_status_result_item_0 or {}\n    \n    if isinstance(takedown_data, list):\n        takedown_data = takedown_data[0] if takedown_data else {}\n    \n    observable = {\n        \"value\": phishing_details.get('url', ''),\n        \"type\": \"url\",\n        \"classification\": \"phishing\",\n        \"details\": {\n            \"title\": phishing_details.get('title', ''),\n            \"registrar\": phishing_details.get('registrar', ''),\n            \"a_record\": phishing_details.get('a_record', ''),\n            \"has_password_field\": phishing_details.get('has_password_field', False),\n            \"has_ssl_certificate\": phishing_details.get('has_ssl_certificate', False),\n            \"detection_reasons\": phishing_details.get('detection_reasons', [])\n        },\n        \"takedown\": {\n            \"status\": takedown_data.get('status', 'not_initiated'),\n            \"initiated\": bool(takedown_data),\n            \"resolution_date\": takedown_data.get('resolution_date', '')\n        },\n        \"source\": \"Check Point EM\"\n    }\n    \n    build_observable_output__observable_array.append(observable)\n    \n    phantom.debug(f\"Built observable for phishing URL: {observable['value']}\")\n",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 1760
+                },
+                "14": {
+                    "data": {
+                        "advanced": {
+                            "customName": "format final report",
+                            "customNameId": 0,
+                            "description": "Formats comprehensive phishing takedown report.",
+                            "join": [],
+                            "note": "Formats comprehensive report with phishing details and takedown status for SLA tracking."
+                        },
+                        "functionId": 1,
+                        "functionName": "format_final_report",
+                        "id": "14",
+                        "parameters": [
+                            "enrich_phishing_data:custom_function:phishing_details"
+                        ],
+                        "template": "# Check Point EM Phishing Takedown Report\n\nThis playbook processed a phishing website alert and initiated takedown procedures.\n\n**API Endpoints Used:**\n- `POST /api/v1/alerts` - Retrieve phishing alert details\n- `POST /api/v1/submit` - Submit takedown request\n- `POST /api/v1/submit` - Poll takedown status\n\n## Key Benefits\n\n- Streamlines takedown request process for high-confidence phishing\n- Reduces effort for monitoring takedown request status\n- Improves verbosity of phishing ticket information\n- Enables status tracking for SLA purposes\n\n**Source:** Check Point EM Threat Intelligence Platform\n",
+                        "type": "format"
+                    },
+                    "errors": {},
+                    "id": "14",
+                    "type": "format",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 1900
+                },
+                "2": {
+                    "data": {
+                        "advanced": {
+                            "customName": "alert input filter",
+                            "customNameId": 0,
+                            "description": "Validates that phishing alert ID is provided.",
+                            "join": [],
+                            "note": "Validates that phishing alert ID or URL is provided."
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "playbook_input:alert_id",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "alert_provided",
+                                "logic": "or"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "alert_input_filter",
+                        "id": "2",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 230,
+                    "y": 140
+                },
+                "3": {
+                    "data": {
+                        "action": "get enriched alerts",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "get phishing alert details",
+                            "customNameId": 0,
+                            "description": "Retrieves phishing alert details from Check Point EM Alert API.",
+                            "join": [],
+                            "note": "Retrieves phishing alert details from Check Point EM Alert API."
+                        },
+                        "connector": "Cyberint Alerts",
+                        "connectorConfigs": [
+                            "cyberint"
+                        ],
+                        "connectorId": "e8c7f864-cba7-47b7-a375-08abf243ff82",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "get_phishing_alert_details",
+                        "id": "3",
+                        "parameters": {},
+                        "requiredParameters": [],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 170,
+                    "y": 320
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "customName": "enrich phishing data",
+                            "customNameId": 0,
+                            "description": "Extracts and enriches phishing website data from alert response.",
+                            "join": [],
+                            "note": "Extracts alertData including url, title, a_record, copyright, registrar, mx_records, nameservers, redirect_chain, detection_reasons, has_password_field, whois_created_date, has_ssl_certificate, page_source_matches, page_copyright_matches."
+                        },
+                        "functionId": 1,
+                        "functionName": "enrich_phishing_data",
+                        "id": "4",
+                        "inputParameters": [
+                            "get_phishing_alert_details:action_result.data"
+                        ],
+                        "outputVariables": [
+                            "phishing_details",
+                            "phishing_url",
+                            "confidence_score",
+                            "severity_score",
+                            "detection_reasons"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "code",
+                    "userCode": "\n    enrich_phishing_data__phishing_details = {}\n    enrich_phishing_data__phishing_url = ''\n    enrich_phishing_data__confidence_score = 0\n    enrich_phishing_data__severity_score = 0\n    enrich_phishing_data__detection_reasons = []\n    \n    alert_data = get_phishing_alert_details_result_item_0\n    \n    if alert_data:\n        # Handle list response\n        if isinstance(alert_data, list):\n            alert_data = alert_data[0] if alert_data else {}\n        \n        alert_details = alert_data.get('alertData', alert_data)\n        \n        enrich_phishing_data__phishing_details = {\n            'url': alert_details.get('url', ''),\n            'title': alert_details.get('title', ''),\n            'a_record': alert_details.get('a_record', ''),\n            'copyright': alert_details.get('copyright', ''),\n            'registrar': alert_details.get('registrar', ''),\n            'mx_records': alert_details.get('mx_records', []),\n            'nameservers': alert_details.get('nameservers', []),\n            'redirect_chain': alert_details.get('redirect_chain', []),\n            'detection_reasons': alert_details.get('detection_reasons', []),\n            'has_password_field': alert_details.get('has_password_field', False),\n            'whois_created_date': alert_details.get('whois_created_date', ''),\n            'has_ssl_certificate': alert_details.get('has_ssl_certificate', False),\n            'page_source_matches': alert_details.get('page_source_matches', []),\n            'page_copyright_matches': alert_details.get('page_copyright_matches', []),\n            'screenshot_url': alert_details.get('screenshot_url', '')\n        }\n        \n        enrich_phishing_data__phishing_url = enrich_phishing_data__phishing_details['url']\n        enrich_phishing_data__confidence_score = alert_data.get('confidence', 0)\n        enrich_phishing_data__severity_score = alert_data.get('severity', 0)\n        enrich_phishing_data__detection_reasons = enrich_phishing_data__phishing_details['detection_reasons']\n    \n    phantom.debug(f\"Enriched phishing data for URL: {enrich_phishing_data__phishing_url}\")\n    phantom.debug(f\"Confidence: {enrich_phishing_data__confidence_score}, Severity: {enrich_phishing_data__severity_score}\")\n",
+                    "warnings": {},
+                    "x": 170,
+                    "y": 500
+                },
+                "5": {
+                    "data": {
+                        "advanced": {
+                            "customName": "evaluate takedown threshold",
+                            "customNameId": 0,
+                            "description": "Evaluates if confidence and severity meet threshold for automatic takedown.",
+                            "join": [],
+                            "note": "If confidence + severity are above a set threshold, auto-initiate or semi-automatically initiate the takedown."
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": ">=",
+                                        "param": "enrich_phishing_data:custom_function:confidence_score",
+                                        "value": "playbook_input:confidence_threshold"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "auto_takedown",
+                                "logic": "and"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 1,
+                                        "op": "<",
+                                        "param": "enrich_phishing_data:custom_function:confidence_score",
+                                        "value": "playbook_input:confidence_threshold"
+                                    }
+                                ],
+                                "conditionIndex": 1,
+                                "customName": "manual_review",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 2,
+                        "functionName": "evaluate_takedown_threshold",
+                        "id": "5",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 250,
+                    "y": 680
+                },
+                "6": {
+                    "data": {
+                        "action": "alerts - submit takedown",
+                        "actionType": "contain",
+                        "advanced": {
+                            "customName": "auto initiate takedown",
+                            "customNameId": 0,
+                            "description": "Automatically initiates takedown request for high-confidence phishing.",
+                            "join": [],
+                            "note": "Initiates takedown using submit takedown request API."
+                        },
+                        "connector": "Cyberint Alerts",
+                        "connectorConfigs": [
+                            "cyberint"
+                        ],
+                        "connectorId": "e8c7f864-cba7-47b7-a375-08abf243ff82",
+                        "connectorVersion": "v1",
+                        "functionId": 2,
+                        "functionName": "auto_initiate_takedown",
+                        "id": "6",
+                        "parameters": {
+                            "Alert_ID": "playbook_input:alert_id",
+                            "Brand": "",
+                            "Customer_ID": "",
+                            "Note": "Auto-initiated takedown via SOAR playbook based on high confidence score",
+                            "Reason": "enrich_phishing_data:custom_function:detection_reasons",
+                            "URL": "enrich_phishing_data:custom_function:phishing_url"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "Customer_ID"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "Reason"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "URL"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "Brand"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 860
+                },
+                "7": {
+                    "data": {
+                        "advanced": {
+                            "customName": "analyst review prompt",
+                            "customNameId": 0,
+                            "description": "Prompts analyst to review and approve takedown for lower confidence phishing.",
+                            "join": [],
+                            "note": "Presents a button or dialogue in the SIEM/SOAR alert to initiate the takedown directly."
+                        },
+                        "approver": "Administrator",
+                        "functionId": 1,
+                        "functionName": "analyst_review_prompt",
+                        "id": "7",
+                        "message": "## Phishing Website Takedown Review Required\n\nPlease review the phishing alert details and decide whether to initiate a takedown request.\n\n**Options:**\n- Yes: Initiate takedown request\n- No: Do not takedown\n- Investigate: Need more investigation",
+                        "parameters": [],
+                        "responseTime": 60,
+                        "responses": [],
+                        "type": "prompt"
+                    },
+                    "errors": {},
+                    "id": "7",
+                    "type": "prompt",
+                    "warnings": {},
+                    "x": 340,
+                    "y": 860
+                },
+                "8": {
+                    "data": {
+                        "advanced": {
+                            "customName": "check takedown initiated",
+                            "customNameId": 0,
+                            "description": "Checks if takedown was successfully initiated.",
+                            "join": [
+                                "auto_initiate_takedown",
+                                "analyst_review_prompt"
+                            ],
+                            "note": "Verifies that takedown request was submitted successfully."
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "auto_initiate_takedown:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "customName": "takedown_initiated",
+                                "logic": "or"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 1,
+                                        "op": "!=",
+                                        "param": "auto_initiate_takedown:action_result.status",
+                                        "value": "success"
+                                    }
+                                ],
+                                "conditionIndex": 1,
+                                "customName": "takedown_not_initiated",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 3,
+                        "functionName": "check_takedown_initiated",
+                        "id": "8",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 250,
+                    "y": 1040
+                },
+                "9": {
+                    "data": {
+                        "action": "alerts - retrieve takedowns",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "poll takedown status",
+                            "customNameId": 0,
+                            "description": "Polls takedown status until resolution.",
+                            "join": [],
+                            "note": "Continuously polls takedown status. Runs on scheduled basis until status changes."
+                        },
+                        "connector": "Cyberint Alerts",
+                        "connectorConfigs": [
+                            "cyberint"
+                        ],
+                        "connectorId": "e8c7f864-cba7-47b7-a375-08abf243ff82",
+                        "connectorVersion": "v1",
+                        "functionId": 3,
+                        "functionName": "poll_takedown_status",
+                        "id": "9",
+                        "loop": {
+                            "enabled": true,
+                            "exitAfterUnit": "h",
+                            "exitAfterValue": 24,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 30
+                        },
+                        "parameters": {
+                            "Customer_ID": ""
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "Customer_ID"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "9",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 1220
+                }
+            },
+            "notes": "Inputs: alert_id, confidence_threshold, auto_takedown\nInteractions: Check Point EM Alert API, Takedown API\nActions: Alert retrieval, takedown submission, status monitoring\nOutputs: observable array, takedown status, incident report\n\nCheck Point EM API Endpoints:\n- POST /api/v1/alerts - Get phishing alert details\n- POST /api/v1/submit - Submit takedown request\n- POST /api/v1/submit (filter by alert_id) - Poll takedown status"
+        },
+        "input_spec": [
+            {
+                "contains": [],
+                "description": "The Check Point EM alert ID for the phishing website alert",
+                "name": "alert_id"
+            },
+            {
+                "contains": [],
+                "description": "Confidence score threshold for automatic takedown (0-100). Alerts below this threshold require manual approval. Default: 80",
+                "name": "confidence_threshold"
+            },
+            {
+                "contains": [],
+                "description": "If true, automatically initiates takedown without analyst approval when confidence threshold is met. Default: false",
+                "name": "auto_takedown"
+            }
+        ],
+        "output_spec": [
+            {
+                "contains": [],
+                "datapaths": [
+                    "build_observable_output:custom_function:observable_array"
+                ],
+                "deduplicate": false,
+                "description": "Array of phishing URL observable objects with details and takedown status.",
+                "metadata": {},
+                "name": "observable"
+            },
+            {
+                "contains": [],
+                "datapaths": [
+                    "format_final_report:formatted_data"
+                ],
+                "deduplicate": false,
+                "description": "Formatted markdown report summarizing the phishing takedown process.",
+                "metadata": {},
+                "name": "report"
+            }
+        ],
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "automation",
+        "python_version": "3.13",
+        "schema": "5.0.15",
+        "version": "7.0.0.190"
+    },
+    "create_time": "2026-06-22T10:15:27.058074+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": [
+        "phishing",
+        "takedown",
+        "check_point_em",
+        "response",
+        "brand_protection",
+        "D3-RTSD"
+    ]
+}
