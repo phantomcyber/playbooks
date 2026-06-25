@@ -14,9 +14,9 @@ Check Point EM API Endpoints:
 
 import phantom.rules as phantom
 import json
-from datetime import datetime, timedelta
 
 
+@phantom.playbook_block()
 def on_start(container):
     phantom.debug('on_start() called')
 
@@ -26,6 +26,7 @@ def on_start(container):
     return
 
 
+@phantom.playbook_block()
 def alert_input_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('alert_input_filter() called')
 
@@ -49,18 +50,22 @@ def alert_input_filter(action=None, success=None, container=None, results=None, 
     return
 
 
+@phantom.playbook_block()
 def get_phishing_alert_details(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_phishing_alert_details() called')
 
     alert_id = phantom.get_run_data(key='alert_id')
 
-    parameters = [{}]
+    parameters = [{
+        'alert_id': alert_id
+    }]
 
     phantom.act(action='get enriched alerts', parameters=parameters, assets=['cyberint'], callback=enrich_phishing_data, name='get_phishing_alert_details')
 
     return
 
 
+@phantom.playbook_block()
 def enrich_phishing_data(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('enrich_phishing_data() called')
 
@@ -143,6 +148,7 @@ def enrich_phishing_data(action=None, success=None, container=None, results=None
     return
 
 
+@phantom.playbook_block()
 def evaluate_takedown_threshold(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('evaluate_takedown_threshold() called')
 
@@ -165,6 +171,7 @@ def evaluate_takedown_threshold(action=None, success=None, container=None, resul
     return
 
 
+@phantom.playbook_block()
 def auto_initiate_takedown(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('auto_initiate_takedown() called')
 
@@ -188,6 +195,7 @@ def auto_initiate_takedown(action=None, success=None, container=None, results=No
     return
 
 
+@phantom.playbook_block()
 def analyst_review_prompt(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('analyst_review_prompt() called')
 
@@ -235,6 +243,7 @@ Please review and decide whether to initiate a takedown request.
     return
 
 
+@phantom.playbook_block()
 def process_analyst_decision(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('process_analyst_decision() called')
 
@@ -254,6 +263,7 @@ def process_analyst_decision(action=None, success=None, container=None, results=
     return
 
 
+@phantom.playbook_block()
 def manual_initiate_takedown(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('manual_initiate_takedown() called')
 
@@ -277,6 +287,7 @@ def manual_initiate_takedown(action=None, success=None, container=None, results=
     return
 
 
+@phantom.playbook_block()
 def check_takedown_initiated(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('check_takedown_initiated() called')
 
@@ -314,7 +325,8 @@ def check_takedown_initiated(action=None, success=None, container=None, results=
     return
 
 
-def poll_takedown_status(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+@phantom.playbook_block()
+def poll_takedown_status(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug('poll_takedown_status() called')
 
     alert_id = phantom.get_run_data(key='alert_id')
@@ -323,12 +335,27 @@ def poll_takedown_status(action=None, success=None, container=None, results=None
         'Customer_ID': ''
     }]
 
-    phantom.act(action='alerts - retrieve takedowns', parameters=parameters, assets=['cyberint'], callback=check_status_change, name='poll_takedown_status')
+    # Initialize loop state on the first poll. The delay_time spaces out repeat
+    # polls so the takedown status is re-checked until it leaves a pending state
+    # or the iteration/TTL limits are reached.
+    if not loop_state_json:
+        loop_state_json = {
+            "current_iteration": 1,
+            "max_iterations": 15,
+            "conditions": [],
+            "max_ttl": 3600,
+            "delay_time": 300,
+        }
+
+    loop_state = phantom.LoopState(state=loop_state_json)
+
+    phantom.act(action='alerts - retrieve takedowns', parameters=parameters, assets=['cyberint'], callback=check_status_change, name='poll_takedown_status', loop_state=loop_state.to_json())
 
     return
 
 
-def check_status_change(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
+@phantom.playbook_block()
+def check_status_change(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug('check_status_change() called')
 
     results_data = phantom.collect2(container=container, datapath=[
@@ -343,16 +370,24 @@ def check_status_change(action=None, success=None, container=None, results=None,
     pending_states = ['pending', 'request_sent']
 
     if current_status and current_status not in pending_states:
-        # Status has changed
+        # Status has reached a terminal state - process the result
         process_status_change(container=container)
     else:
-        # Status still pending - continue polling (handled by loop in action)
-        phantom.debug("Status still pending, continuing to monitor...")
-        # The action loop will handle re-polling
+        # Status still pending - re-poll after a delay until the status changes
+        # or the loop's iteration/TTL limits are reached.
+        loop_state = phantom.LoopState(state=loop_state_json)
+        if loop_state.should_continue(container=container, results=results):
+            loop_state.increment()
+            phantom.debug(f"Status still pending; scheduling re-poll (iteration {loop_state.to_json().get('current_iteration')})")
+            poll_takedown_status(container=container, loop_state_json=loop_state.to_json())
+        else:
+            phantom.debug("Polling limit reached; takedown still pending. Finalizing with last known status.")
+            process_status_change(container=container)
 
     return
 
 
+@phantom.playbook_block()
 def process_status_change(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('process_status_change() called')
 
@@ -427,6 +462,7 @@ Continue monitoring for further updates.
     return
 
 
+@phantom.playbook_block()
 def log_no_takedown(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('log_no_takedown() called')
 
@@ -456,6 +492,7 @@ Please review manually if needed.
     return
 
 
+@phantom.playbook_block()
 def build_observable_output(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('build_observable_output() called')
 
@@ -497,6 +534,7 @@ def build_observable_output(action=None, success=None, container=None, results=N
     return
 
 
+@phantom.playbook_block()
 def format_final_report(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_final_report() called')
 
@@ -530,6 +568,7 @@ This playbook processed a phishing website alert and initiated takedown procedur
     return
 
 
+@phantom.playbook_block()
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
 

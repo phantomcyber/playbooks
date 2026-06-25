@@ -16,9 +16,10 @@ Integrations:
 
 import phantom.rules as phantom
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 
 
+@phantom.playbook_block()
 def on_start(container):
     phantom.debug('on_start() called')
 
@@ -28,6 +29,7 @@ def on_start(container):
     return
 
 
+@phantom.playbook_block()
 def input_filter(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('input_filter() called')
 
@@ -44,6 +46,7 @@ def input_filter(action=None, success=None, container=None, results=None, handle
     return
 
 
+@phantom.playbook_block()
 def get_leaked_credentials(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('get_leaked_credentials() called')
 
@@ -63,6 +66,7 @@ def get_leaked_credentials(action=None, success=None, container=None, results=No
     return
 
 
+@phantom.playbook_block()
 def check_credentials_found(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('check_credentials_found() called')
 
@@ -87,6 +91,7 @@ def check_credentials_found(action=None, success=None, container=None, results=N
     return
 
 
+@phantom.playbook_block()
 def check_account_status(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('check_account_status() called')
 
@@ -120,6 +125,7 @@ def check_account_status(action=None, success=None, container=None, results=None
     return
 
 
+@phantom.playbook_block()
 def filter_active_accounts(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('filter_active_accounts() called')
 
@@ -159,6 +165,7 @@ def filter_active_accounts(action=None, success=None, container=None, results=No
     return
 
 
+@phantom.playbook_block()
 def force_password_reset(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('force_password_reset() called')
 
@@ -176,6 +183,7 @@ def force_password_reset(action=None, success=None, container=None, results=None
     return
 
 
+@phantom.playbook_block()
 def log_no_credentials(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('log_no_credentials() called')
 
@@ -192,6 +200,7 @@ def log_no_credentials(action=None, success=None, container=None, results=None, 
     return
 
 
+@phantom.playbook_block()
 def log_inactive_accounts(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('log_inactive_accounts() called')
 
@@ -206,6 +215,7 @@ def log_inactive_accounts(action=None, success=None, container=None, results=Non
     return
 
 
+@phantom.playbook_block()
 def send_notifications(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('send_notifications() called')
 
@@ -263,6 +273,7 @@ def send_notifications(action=None, success=None, container=None, results=None, 
     return
 
 
+@phantom.playbook_block()
 def format_no_findings_report(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_no_findings_report() called')
 
@@ -288,6 +299,7 @@ No new leaked credentials were discovered for this domain since the last scan.
     return
 
 
+@phantom.playbook_block()
 def create_incident_log(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('create_incident_log() called')
 
@@ -305,7 +317,7 @@ def create_incident_log(action=None, success=None, container=None, results=None,
 
     incident_report = f"""# Credential Leak Incident Report
 
-**Generated:** {datetime.utcnow().isoformat()}Z
+**Generated:** {datetime.now(timezone.utc).isoformat()}
 **Source:** Check Point EM Argos Platform
 **Playbook:** Check_Point_EM_Credential_Leak_Validation
 
@@ -353,6 +365,7 @@ def create_incident_log(action=None, success=None, container=None, results=None,
     return
 
 
+@phantom.playbook_block()
 def build_output(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('build_output() called')
 
@@ -396,6 +409,7 @@ def build_output(action=None, success=None, container=None, results=None, handle
     return
 
 
+@phantom.playbook_block()
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
 

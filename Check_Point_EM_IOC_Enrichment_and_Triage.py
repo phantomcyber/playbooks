@@ -15,9 +15,9 @@ Check Point EM API Endpoints:
 
 import phantom.rules as phantom
 import json
-from datetime import datetime, timedelta
 
 
+@phantom.playbook_block()
 def on_start(container):
     phantom.debug('on_start() called')
 
@@ -27,6 +27,7 @@ def on_start(container):
     return
 
 
+@phantom.playbook_block()
 def route_ioc_by_type(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('route_ioc_by_type() called')
 
@@ -100,6 +101,7 @@ def route_ioc_by_type(action=None, success=None, container=None, results=None, h
     return
 
 
+@phantom.playbook_block()
 def enrich_sha256(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('enrich_sha256() called')
 
@@ -116,6 +118,7 @@ def enrich_sha256(action=None, success=None, container=None, results=None, handl
     return
 
 
+@phantom.playbook_block()
 def enrich_domain(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('enrich_domain() called')
 
@@ -132,6 +135,7 @@ def enrich_domain(action=None, success=None, container=None, results=None, handl
     return
 
 
+@phantom.playbook_block()
 def enrich_ipv4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('enrich_ipv4() called')
 
@@ -148,6 +152,7 @@ def enrich_ipv4(action=None, success=None, container=None, results=None, handle=
     return
 
 
+@phantom.playbook_block()
 def enrich_url(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('enrich_url() called')
 
@@ -164,6 +169,7 @@ def enrich_url(action=None, success=None, container=None, results=None, handle=N
     return
 
 
+@phantom.playbook_block()
 def normalize_check_point_em_results(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('normalize_check_point_em_results() called')
 
@@ -277,6 +283,7 @@ def normalize_check_point_em_results(action=None, success=None, container=None, 
     return
 
 
+@phantom.playbook_block()
 def escalate_malicious(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('escalate_malicious() called')
 
@@ -307,6 +314,7 @@ def escalate_malicious(action=None, success=None, container=None, results=None, 
     return
 
 
+@phantom.playbook_block()
 def suppress_benign(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('suppress_benign() called')
 
@@ -336,6 +344,7 @@ def suppress_benign(action=None, success=None, container=None, results=None, han
     return
 
 
+@phantom.playbook_block()
 def build_observable_output(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('build_observable_output() called')
 
@@ -374,6 +383,7 @@ def build_observable_output(action=None, success=None, container=None, results=N
     return
 
 
+@phantom.playbook_block()
 def format_enrichment_report(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, **kwargs):
     phantom.debug('format_enrichment_report() called')
 
@@ -408,6 +418,7 @@ This playbook enriched IOCs using Check Point EM APIs:
     return
 
 
+@phantom.playbook_block()
 def on_finish(container, summary):
     phantom.debug('on_finish() called')
 
