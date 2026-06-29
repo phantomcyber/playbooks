@@ -1,13 +1,13 @@
-def Get_Container_Custom_Data_Key(container_id=None, custom_key=None, **kwargs):
+def get_container_custom_data_key(container_id=None, custom_key=None, **kwargs):
     """
     This custom function retrieves a specific key-value pair from a container's custom_fields
     
     Args:
-        container_id
-        custom_key
+        container_id: Container ID
+        custom_key: The name of the custom field to retrieve
     
     Returns a JSON-serializable object that implements the configured data paths:
-        *.custom_key_value
+        *.custom_key_value: Returns [{"custom_key_value": "<value>"}]
     """
     ############################ Custom Code Goes Below This Line #################################
     import json
