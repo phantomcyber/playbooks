@@ -1,0 +1,616 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Orchestration",
+    "coa": {
+        "data": {
+            "description": "This playbook detects duplicate email threads to avoid re-processing emails that are part of an existing conversation (e.g., replies in an ongoing thread).",
+            "edges": [
+                {
+                    "id": "port_0_to_port_2",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "conditionKey": "condition_key_1",
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_2_to_port_3",
+                    "sourceNode": "2",
+                    "sourcePort": "2_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "id": "port_3_to_port_4",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "conditionKey": "condition_key_2",
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_4_to_port_5",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "5",
+                    "targetPort": "5_in"
+                },
+                {
+                    "id": "port_10_to_port_1",
+                    "sourceNode": "10",
+                    "sourcePort": "10_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "conditionKey": "condition_key_3",
+                            "index": 1
+                        }
+                    ],
+                    "id": "port_4_to_port_11",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "11",
+                    "targetPort": "11_in"
+                },
+                {
+                    "id": "port_11_to_port_10",
+                    "sourceNode": "11",
+                    "sourcePort": "11_out",
+                    "targetNode": "10",
+                    "targetPort": "10_in"
+                },
+                {
+                    "id": "port_5_to_port_12",
+                    "sourceNode": "5",
+                    "sourcePort": "5_out",
+                    "targetNode": "12",
+                    "targetPort": "12_in"
+                },
+                {
+                    "id": "port_12_to_port_1",
+                    "sourceNode": "12",
+                    "sourcePort": "12_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "682d844ed5162f5cd99e9cfcc3e1a12c98e64f12",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 340,
+                    "y": -40.0000000000004
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 380,
+                    "y": 900
+                },
+                "10": {
+                    "data": {
+                        "advanced": {
+                            "join": [],
+                            "refreshNotableData": true
+                        },
+                        "functionId": 4,
+                        "functionName": "add_tag_4",
+                        "id": "10",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "tab": "apis",
+                        "type": "utility",
+                        "utilities": {
+                            "add_tags": {
+                                "description": "",
+                                "fields": [
+                                    {
+                                        "choices": "tags",
+                                        "description": "",
+                                        "label": "tag",
+                                        "name": "tags",
+                                        "placeholder": "Enter a tag",
+                                        "renderType": "combobox",
+                                        "required": true
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "container",
+                                        "required": false
+                                    },
+                                    {
+                                        "hidden": true,
+                                        "name": "trace",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "add tag",
+                                "name": "add_tags",
+                                "refreshNotableData": true
+                            }
+                        },
+                        "utilityType": "api",
+                        "values": {
+                            "add_tags": {
+                                "_internal": [
+                                    "container",
+                                    "trace"
+                                ],
+                                "tags": "PreviousThread"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "10",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": 640,
+                    "y": 660
+                },
+                "11": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "set_container_custom_data_dey_value",
+                            "repoName": "community"
+                        },
+                        "functionId": 5,
+                        "functionName": "set_container_custom_data_dey_value_5",
+                        "id": "11",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "set_container_custom_data_dey_value": {
+                                "description": "This custom function sets/updates a key-value pair in a container's custom_fields.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Container ID",
+                                        "inputType": "item",
+                                        "label": "container_id",
+                                        "name": "container_id",
+                                        "placeholder": "",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The name of the custom field to set",
+                                        "inputType": "item",
+                                        "label": "custom_key",
+                                        "name": "custom_key",
+                                        "placeholder": "",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The value to store",
+                                        "inputType": "item",
+                                        "label": "custom_value",
+                                        "name": "custom_value",
+                                        "placeholder": "",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "set_container_custom_data_dey_value",
+                                "name": "set_container_custom_data_dey_value"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "set_container_custom_data_dey_value": {
+                                "container_id": "container:id",
+                                "custom_key": "PreviousThreadFlag",
+                                "custom_value": "True"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "11",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": 640,
+                    "y": 540
+                },
+                "12": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "set_container_custom_data_dey_value",
+                            "repoName": "community"
+                        },
+                        "functionId": 6,
+                        "functionName": "set_container_custom_data_dey_value_6",
+                        "id": "12",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "set_container_custom_data_dey_value": {
+                                "description": "This custom function sets/updates a key-value pair in a container's custom_fields.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Container ID",
+                                        "inputType": "item",
+                                        "label": "container_id",
+                                        "name": "container_id",
+                                        "placeholder": "",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The name of the custom field to set",
+                                        "inputType": "item",
+                                        "label": "custom_key",
+                                        "name": "custom_key",
+                                        "placeholder": "",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The value to store",
+                                        "inputType": "item",
+                                        "label": "custom_value",
+                                        "name": "custom_value",
+                                        "placeholder": "",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "set_container_custom_data_dey_value",
+                                "name": "set_container_custom_data_dey_value"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "set_container_custom_data_dey_value": {
+                                "container_id": "container:id",
+                                "custom_key": "PreviousThreadFlag",
+                                "custom_value": "False"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "12",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": -20,
+                    "y": 660
+                },
+                "2": {
+                    "data": {
+                        "advanced": {
+                            "delimiter": ",",
+                            "delimiter_enabled": true,
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "comparisonKey": "comparison_key_84d96bbe-5329-424e-808e-37e7522bb64b",
+                                        "conditionIndex": 0,
+                                        "op": "in",
+                                        "param": "Reporter Email",
+                                        "value": "artifact:*.name"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "conditionKey": "condition_key_1",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "filter_1",
+                        "id": "2",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "2",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 380,
+                    "y": 80
+                },
+                "3": {
+                    "data": {
+                        "advanced": {
+                            "customName": "IsPreviousEmailThread",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "ispreviousemailthread",
+                        "id": "3",
+                        "inputParameters": [
+                            "filtered-data:filter_1:condition_1:artifact:*.cef.emailHeaders.References"
+                        ],
+                        "outputVariables": [
+                            "IsThreadFlag"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "code",
+                    "userCode": "\n    # Write your custom code here...\n    ispreviousemailthread__isthreadflag = False\n    referenceFound = False\n    \n    phantom.debug(filtered_artifact_0__cef_emailheaders_references)\n    \n    if(filtered_artifact_0__cef_emailheaders_references[0]):\n        success, message, execs = phantom.get_list(list_name='Ingested_Email_Message_ID')\n    \n        phantom.error(\n        'phantom.get_list results: success: {}, message: {}, execs: {}'\\\n        .format(success, message, execs)\n        )\n        \n        for i in execs:\n            for item in i:\n                phantom.debug(str(i[0])+\" : i[0]\")\n                phantom.debug(str(filtered_artifact_0__cef_emailheaders_references[0])+\" : filtered_artifact_0__cef_emailheaders_references\")\n                if str(i[0]) in str(filtered_artifact_0__cef_emailheaders_references[0]):  # If previously seen message_id is present in the References header of this message. This message is part of a previous conversation.\n                    referenceFound=True\n    \n    if (filtered_artifact_0__cef_emailheaders_references and referenceFound):\n        ispreviousemailthread__isthreadflag=True\n\n",
+                    "warnings": {},
+                    "x": 320,
+                    "y": 279.9999999999998
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "delimiter": ",",
+                            "delimiter_enabled": true,
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "comparisonKey": "comparison_key_fcbca7f5-ec0a-4ccb-a649-8df9b5f4e25b",
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "ispreviousemailthread:custom_function:isthreadflag",
+                                        "value": "True"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "conditionKey": "condition_key_2",
+                                "customName": "New Email",
+                                "logic": "and"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "comparisonKey": "comparison_key_3baa72d3-6e88-4dab-9420-5c3dd015bb80",
+                                        "conditionIndex": 1,
+                                        "op": "==",
+                                        "param": "ispreviousemailthread:custom_function:isthreadflag",
+                                        "value": "True"
+                                    }
+                                ],
+                                "conditionIndex": 1,
+                                "conditionKey": "condition_key_3",
+                                "customName": "Old Thread",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 2,
+                        "functionName": "filter_2",
+                        "id": "4",
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 380,
+                    "y": 380
+                },
+                "5": {
+                    "data": {
+                        "advanced": {
+                            "customName": "add to ingested list",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "add_to_ingested_list",
+                        "id": "5",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "tab": "apis",
+                        "type": "utility",
+                        "utilities": {
+                            "add_list": {
+                                "description": "",
+                                "fields": [
+                                    {
+                                        "choices": "lists",
+                                        "description": "",
+                                        "label": "list",
+                                        "name": "list_name",
+                                        "placeholder": "Select a list",
+                                        "renderType": "combobox",
+                                        "required": true
+                                    },
+                                    {
+                                        "description": "",
+                                        "label": "data",
+                                        "name": "values",
+                                        "placeholder": "Enter data",
+                                        "renderType": "datapath",
+                                        "required": true
+                                    }
+                                ],
+                                "label": "add to list",
+                                "name": "add_list"
+                            }
+                        },
+                        "utilityType": "api",
+                        "values": {
+                            "add_list": {
+                                "list_name": "Ingested_Email_Message_ID",
+                                "values": "filtered-data:filter_1:condition_1:artifact:*.cef.emailHeaders.Message-ID"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "5",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": -20,
+                    "y": 540
+                }
+            },
+            "notes": "This playbook detects duplicate email threads to avoid re-processing emails that are part of an existing conversation (e.g., replies in an ongoing thread).\nMakes use of a CustomList `Ingested_Email_Message_ID`. Needs to be created separately",
+            "origin": {
+                "playbook_id": 16125,
+                "playbook_name": "[Phishing OSS] Not Previous Thread",
+                "playbook_repo_id": 12,
+                "playbook_repo_name": "community"
+            }
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "automation",
+        "python_version": "3.13",
+        "schema": "5.0.24",
+        "version": "8.5.0.248"
+    },
+    "create_time": "2026-06-30T14:55:30.647894+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": [
+        "phishing",
+        "email_thread"
+    ]
+}
