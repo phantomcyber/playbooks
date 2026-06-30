@@ -127,7 +127,7 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
 
     # call connected blocks if filtered artifacts or results
     if matched_artifacts_2 or matched_results_2:
-        set_container_custom_data_key_value_2(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
+        set_container_custom_data_dey_value_5(action=action, success=success, container=container, results=results, handle=handle, filtered_artifacts=matched_artifacts_2, filtered_results=matched_results_2)
 
     return
 
@@ -152,65 +152,7 @@ def add_to_ingested_list(action=None, success=None, container=None, results=None
 
     phantom.add_list(list_name="Ingested_Email_Message_ID", values=filtered_artifact_0__cef_emailheaders_message_id)
 
-    set_container_custom_data_key_value_3(container=container)
-
-    return
-
-
-@phantom.playbook_block()
-def set_container_custom_data_key_value_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("set_container_custom_data_key_value_2() called")
-
-    id_value = container.get("id", None)
-
-    parameters = []
-
-    parameters.append({
-        "custom_key": "PreviousThreadFlag",
-        "container_id": id_value,
-        "custom_value": True,
-    })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="local/Set_Container_Custom_Data_Key_Value", parameters=parameters, name="set_container_custom_data_key_value_2", callback=add_tag_4)
-
-    return
-
-
-@phantom.playbook_block()
-def set_container_custom_data_key_value_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("set_container_custom_data_key_value_3() called")
-
-    id_value = container.get("id", None)
-
-    parameters = []
-
-    parameters.append({
-        "custom_key": "PreviousThreadFlag",
-        "container_id": id_value,
-        "custom_value": False,
-    })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="local/Set_Container_Custom_Data_Key_Value", parameters=parameters, name="set_container_custom_data_key_value_3")
+    set_container_custom_data_dey_value_6(container=container)
 
     return
 
@@ -232,6 +174,64 @@ def add_tag_4(action=None, success=None, container=None, results=None, handle=No
     phantom.add_tags(container=container, tags="PreviousThread")
 
     container = phantom.get_container(container.get('id', None))
+
+    return
+
+
+@phantom.playbook_block()
+def set_container_custom_data_dey_value_5(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("set_container_custom_data_dey_value_5() called")
+
+    id_value = container.get("id", None)
+
+    parameters = []
+
+    parameters.append({
+        "container_id": id_value,
+        "custom_key": "PreviousThreadFlag",
+        "custom_value": True,
+    })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/set_container_custom_data_dey_value", parameters=parameters, name="set_container_custom_data_dey_value_5", callback=add_tag_4)
+
+    return
+
+
+@phantom.playbook_block()
+def set_container_custom_data_dey_value_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("set_container_custom_data_dey_value_6() called")
+
+    id_value = container.get("id", None)
+
+    parameters = []
+
+    parameters.append({
+        "container_id": id_value,
+        "custom_key": "PreviousThreadFlag",
+        "custom_value": False,
+    })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/set_container_custom_data_dey_value", parameters=parameters, name="set_container_custom_data_dey_value_6")
 
     return
 

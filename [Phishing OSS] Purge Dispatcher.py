@@ -21,13 +21,13 @@ def on_start(container):
 def input_validation(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("input_validation() called")
 
-    get_email_subject_data = phantom.collect2(container=container, datapath=["get_email_subject:custom_function_result.data.*.custom_key_value"])
     get_email_sender_data = phantom.collect2(container=container, datapath=["get_email_sender:custom_function_result.data.*.custom_key_value"])
-    get_action_data = phantom.collect2(container=container, datapath=["get_action:custom_function_result.data.*.custom_key_value"])
+    get_email_subject_1_data = phantom.collect2(container=container, datapath=["get_email_subject_1:custom_function_result.data.*.custom_key_value"])
+    get_action_1_data = phantom.collect2(container=container, datapath=["get_action_1:custom_function_result.data.*.custom_key_value"])
 
-    get_email_subject_data___custom_key_value = [item[0] for item in get_email_subject_data]
     get_email_sender_data___custom_key_value = [item[0] for item in get_email_sender_data]
-    get_action_data___custom_key_value = [item[0] for item in get_action_data]
+    get_email_subject_1_data___custom_key_value = [item[0] for item in get_email_subject_1_data]
+    get_action_1_data___custom_key_value = [item[0] for item in get_action_1_data]
 
     input_validation__email_subject = None
     input_validation__email_sender = None
@@ -39,9 +39,9 @@ def input_validation(action=None, success=None, container=None, results=None, ha
     ################################################################################
 
     # Write your custom code here...
-    input_validation__action=get_action_data___custom_key_value[0]
+    input_validation__action=get_action_1_data___custom_key_value[0]
     input_validation__email_sender=get_email_sender_data___custom_key_value[0]
-    input_validation__email_subject =get_email_subject_data___custom_key_value[0]
+    input_validation__email_subject =get_email_subject_1_data___custom_key_value[0]
     
     input_validation__inputvalidflag = False
     
@@ -58,9 +58,9 @@ def input_validation(action=None, success=None, container=None, results=None, ha
     ## Custom Code End
     ################################################################################
 
-    phantom.save_block_result(key="input_validation__inputs:0:get_email_subject:custom_function_result.data.*.custom_key_value", value=json.dumps(get_email_subject_data___custom_key_value))
-    phantom.save_block_result(key="input_validation__inputs:1:get_email_sender:custom_function_result.data.*.custom_key_value", value=json.dumps(get_email_sender_data___custom_key_value))
-    phantom.save_block_result(key="input_validation__inputs:2:get_action:custom_function_result.data.*.custom_key_value", value=json.dumps(get_action_data___custom_key_value))
+    phantom.save_block_result(key="input_validation__inputs:0:get_email_sender:custom_function_result.data.*.custom_key_value", value=json.dumps(get_email_sender_data___custom_key_value))
+    phantom.save_block_result(key="input_validation__inputs:1:get_email_subject_1:custom_function_result.data.*.custom_key_value", value=json.dumps(get_email_subject_1_data___custom_key_value))
+    phantom.save_block_result(key="input_validation__inputs:2:get_action_1:custom_function_result.data.*.custom_key_value", value=json.dumps(get_action_1_data___custom_key_value))
 
     phantom.save_block_result(key="input_validation:email_subject", value=json.dumps(input_validation__email_subject))
     phantom.save_block_result(key="input_validation:email_sender", value=json.dumps(input_validation__email_sender))
@@ -375,7 +375,7 @@ def dispatch_purge(action=None, success=None, container=None, results=None, hand
         }
 
         # call playbook "local/[PP] UnPurge worker", returns the playbook_run_id
-        playbook_run_id = phantom.playbook("sgs-soarcloud-gso-dev/[Phishing OSS] Purge Worker", container=container, inputs=inputs)
+        playbook_run_id = phantom.playbook("community/[Phishing OSS] Purge Worker", container=container, inputs=inputs)
     
 
     ################################################################################
@@ -473,8 +473,8 @@ def get_email_sender(action=None, success=None, container=None, results=None, ha
     parameters = []
 
     parameters.append({
+        "container_id": id_value,
         "custom_key": "email_campaign_sender",
-        "container_id": id_value,
     })
 
     ################################################################################
@@ -487,63 +487,7 @@ def get_email_sender(action=None, success=None, container=None, results=None, ha
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="sgs-soarcloud-gso-dev/Get_Container_Custom_Data_Key", parameters=parameters, name="get_email_sender", callback=get_email_subject)
-
-    return
-
-
-@phantom.playbook_block()
-def get_email_subject(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("get_email_subject() called")
-
-    id_value = container.get("id", None)
-
-    parameters = []
-
-    parameters.append({
-        "custom_key": "email_campaign_subject",
-        "container_id": id_value,
-    })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="sgs-soarcloud-gso-dev/Get_Container_Custom_Data_Key", parameters=parameters, name="get_email_subject", callback=get_action)
-
-    return
-
-
-@phantom.playbook_block()
-def get_action(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("get_action() called")
-
-    id_value = container.get("id", None)
-
-    parameters = []
-
-    parameters.append({
-        "custom_key": "purge_action",
-        "container_id": id_value,
-    })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="sgs-soarcloud-gso-dev/Get_Container_Custom_Data_Key", parameters=parameters, name="get_action", callback=input_validation)
+    phantom.custom_function(custom_function="community/get_container_custom_data_key", parameters=parameters, name="get_email_sender", callback=get_email_subject_1)
 
     return
 
@@ -594,8 +538,64 @@ def playbook__phishing_oss__scope_campaign_recipients_1(action=None, success=Non
     ## Custom Code End
     ################################################################################
 
-    # call playbook "sgs-soarcloud-gso-dev/[Phishing OSS] Scope Campaign recipients", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("sgs-soarcloud-gso-dev/[Phishing OSS] Scope Campaign recipients", container=container, name="playbook__phishing_oss__scope_campaign_recipients_1", callback=stub_for_spl_scope_playbook, inputs=inputs)
+    # call playbook "community/[Phishing OSS] Scope Campaign recipients", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/[Phishing OSS] Scope Campaign recipients", container=container, name="playbook__phishing_oss__scope_campaign_recipients_1", callback=stub_for_spl_scope_playbook, inputs=inputs)
+
+    return
+
+
+@phantom.playbook_block()
+def get_email_subject_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("get_email_subject_1() called")
+
+    id_value = container.get("id", None)
+
+    parameters = []
+
+    parameters.append({
+        "container_id": id_value,
+        "custom_key": "email_campaign_subject",
+    })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/get_container_custom_data_key", parameters=parameters, name="get_email_subject_1", callback=get_action_1)
+
+    return
+
+
+@phantom.playbook_block()
+def get_action_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("get_action_1() called")
+
+    id_value = container.get("id", None)
+
+    parameters = []
+
+    parameters.append({
+        "container_id": id_value,
+        "custom_key": "purge_action",
+    })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/get_container_custom_data_key", parameters=parameters, name="get_action_1", callback=input_validation)
 
     return
 

@@ -42,27 +42,6 @@
                     "targetPort": "13_in"
                 },
                 {
-                    "id": "port_19_to_port_20",
-                    "sourceNode": "19",
-                    "sourcePort": "19_out",
-                    "targetNode": "20",
-                    "targetPort": "20_in"
-                },
-                {
-                    "id": "port_20_to_port_21",
-                    "sourceNode": "20",
-                    "sourcePort": "20_out",
-                    "targetNode": "21",
-                    "targetPort": "21_in"
-                },
-                {
-                    "id": "port_21_to_port_2",
-                    "sourceNode": "21",
-                    "sourcePort": "21_out",
-                    "targetNode": "2",
-                    "targetPort": "2_in"
-                },
-                {
                     "id": "port_2_to_port_22",
                     "sourceNode": "2",
                     "sourcePort": "2_out",
@@ -115,9 +94,30 @@
                     "sourcePort": "15_out",
                     "targetNode": "1",
                     "targetPort": "1_in"
+                },
+                {
+                    "id": "port_19_to_port_30",
+                    "sourceNode": "19",
+                    "sourcePort": "19_out",
+                    "targetNode": "30",
+                    "targetPort": "30_in"
+                },
+                {
+                    "id": "port_30_to_port_31",
+                    "sourceNode": "30",
+                    "sourcePort": "30_out",
+                    "targetNode": "31",
+                    "targetPort": "31_in"
+                },
+                {
+                    "id": "port_31_to_port_2",
+                    "sourceNode": "31",
+                    "sourcePort": "31_out",
+                    "targetNode": "2",
+                    "targetPort": "2_in"
                 }
             ],
-            "hash": "e4bfce2a094f2754a0c8658bf33337aa894fe6e8",
+            "hash": "c58d3805882363c752e62e57df2ada8dc20e3c03",
             "nodes": {
                 "0": {
                     "data": {
@@ -133,7 +133,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 940,
-                    "y": -320.0000000000006
+                    "y": -320.00000000000074
                 },
                 "1": {
                     "data": {
@@ -170,7 +170,7 @@
                     "errors": {},
                     "id": "13",
                     "type": "code",
-                    "userCode": "\n    # Write your custom code here...\n    for item in create_purge_processing_list__purge_list:\n        inputs = {\n            \"splunker_email\": item[\"splunker_recipient\"],\n            \"email_subject\": item[\"subject\"],\n            \"email_sender\": item[\"sender\"],\n        }\n\n        # call playbook \"local/[PP] UnPurge worker\", returns the playbook_run_id\n        playbook_run_id = phantom.playbook(\"sgs-soarcloud-gso-dev/[Phishing OSS] Purge Worker\", container=container, inputs=inputs)\n    \n\n",
+                    "userCode": "\n    # Write your custom code here...\n    for item in create_purge_processing_list__purge_list:\n        inputs = {\n            \"splunker_email\": item[\"splunker_recipient\"],\n            \"email_subject\": item[\"subject\"],\n            \"email_sender\": item[\"sender\"],\n        }\n\n        # call playbook \"local/[PP] UnPurge worker\", returns the playbook_run_id\n        playbook_run_id = phantom.playbook(\"community/[Phishing OSS] Purge Worker\", container=container, inputs=inputs)\n    \n\n",
                     "warnings": {},
                     "x": 920,
                     "y": 1160
@@ -209,8 +209,8 @@
                         },
                         "customFunction": {
                             "draftMode": false,
-                            "name": "Get_Container_Custom_Data_Key",
-                            "repoName": "sgs-soarcloud-gso-dev"
+                            "name": "get_container_custom_data_key",
+                            "repoName": "community"
                         },
                         "functionId": 4,
                         "functionName": "get_email_sender",
@@ -243,12 +243,12 @@
                         "selectMore": false,
                         "type": "utility",
                         "utilities": {
-                            "Get_Container_Custom_Data_Key": {
-                                "description": "Get container custom data field key values",
+                            "get_container_custom_data_key": {
+                                "description": "This custom function retrieves a specific key-value pair from a container's custom_fields",
                                 "fields": [
                                     {
                                         "dataTypes": [],
-                                        "description": "",
+                                        "description": "Container ID",
                                         "inputType": "item",
                                         "label": "container_id",
                                         "name": "container_id",
@@ -258,7 +258,7 @@
                                     },
                                     {
                                         "dataTypes": [],
-                                        "description": "",
+                                        "description": "The name of the custom field to retrieve",
                                         "inputType": "item",
                                         "label": "custom_key",
                                         "name": "custom_key",
@@ -267,13 +267,13 @@
                                         "required": false
                                     }
                                 ],
-                                "label": "Get_Container_Custom_Data_Key",
-                                "name": "Get_Container_Custom_Data_Key"
+                                "label": "get_container_custom_data_key",
+                                "name": "get_container_custom_data_key"
                             }
                         },
                         "utilityType": "custom_function",
                         "values": {
-                            "Get_Container_Custom_Data_Key": {
+                            "get_container_custom_data_key": {
                                 "container_id": "container:id",
                                 "custom_key": "email_campaign_sender"
                             }
@@ -284,7 +284,7 @@
                     "type": "utility",
                     "warnings": {},
                     "x": 920,
-                    "y": -180.0000000000001
+                    "y": -180
                 },
                 "2": {
                     "data": {
@@ -297,9 +297,9 @@
                         "functionName": "input_validation",
                         "id": "2",
                         "inputParameters": [
-                            "get_email_subject:custom_function_result.data.*.custom_key_value",
                             "get_email_sender:custom_function_result.data.*.custom_key_value",
-                            "get_action:custom_function_result.data.*.custom_key_value"
+                            "get_email_subject_1:custom_function_result.data.*.custom_key_value",
+                            "get_action_1:custom_function_result.data.*.custom_key_value"
                         ],
                         "outputVariables": [
                             "email subject",
@@ -312,182 +312,10 @@
                     "errors": {},
                     "id": "2",
                     "type": "code",
-                    "userCode": "\n    # Write your custom code here...\n    input_validation__action=get_action_data___custom_key_value[0]\n    input_validation__email_sender=get_email_sender_data___custom_key_value[0]\n    input_validation__email_subject =get_email_subject_data___custom_key_value[0]\n    \n    input_validation__inputvalidflag = False\n    \n    \n    #input_validation__action=\"unpurge\"\n    #input_validation__email_sender=\"purge-unpurge-test@splunk.com\"\n    #input_validation__email_subject =\"10Apr_phishingTest_naman_2\"\n    \n    if input_validation__action is not None and input_validation__action!=\"\" and input_validation__email_sender is not None and input_validation__email_sender!=\"\" and input_validation__email_sender is not None and input_validation__email_sender!=\"\":\n        input_validation__inputvalidflag=True\n    \n\n",
+                    "userCode": "\n    # Write your custom code here...\n    input_validation__action=get_action_1_data___custom_key_value[0]\n    input_validation__email_sender=get_email_sender_data___custom_key_value[0]\n    input_validation__email_subject =get_email_subject_1_data___custom_key_value[0]\n    \n    input_validation__inputvalidflag = False\n    \n    \n    #input_validation__action=\"unpurge\"\n    #input_validation__email_sender=\"purge-unpurge-test@splunk.com\"\n    #input_validation__email_subject =\"10Apr_phishingTest_naman_2\"\n    \n    if input_validation__action is not None and input_validation__action!=\"\" and input_validation__email_sender is not None and input_validation__email_sender!=\"\" and input_validation__email_sender is not None and input_validation__email_sender!=\"\":\n        input_validation__inputvalidflag=True\n    \n\n",
                     "warnings": {},
                     "x": 920,
-                    "y": 159.9999999999999
-                },
-                "20": {
-                    "data": {
-                        "advanced": {
-                            "customName": "get_email_subject",
-                            "customNameId": 0,
-                            "join": []
-                        },
-                        "customFunction": {
-                            "draftMode": false,
-                            "name": "Get_Container_Custom_Data_Key",
-                            "repoName": "sgs-soarcloud-gso-dev"
-                        },
-                        "functionId": 5,
-                        "functionName": "get_email_subject",
-                        "id": "20",
-                        "loop": {
-                            "conditions": [
-                                {
-                                    "comparisons": [
-                                        {
-                                            "comparisonKey": "comparison_key_0",
-                                            "op": "==",
-                                            "param": "",
-                                            "value": ""
-                                        }
-                                    ],
-                                    "conditionIndex": 0,
-                                    "conditionKey": "condition_key_0",
-                                    "logic": "and",
-                                    "type": "if"
-                                }
-                            ],
-                            "enabled": false,
-                            "exitAfterUnit": "m",
-                            "exitAfterValue": 10,
-                            "exitConditionEnabled": false,
-                            "exitLoopAfter": 2,
-                            "pauseUnit": "m",
-                            "pauseValue": 2
-                        },
-                        "selectMore": false,
-                        "type": "utility",
-                        "utilities": {
-                            "Get_Container_Custom_Data_Key": {
-                                "description": "Get container custom data field key values",
-                                "fields": [
-                                    {
-                                        "dataTypes": [],
-                                        "description": "",
-                                        "inputType": "item",
-                                        "label": "container_id",
-                                        "name": "container_id",
-                                        "placeholder": "",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    },
-                                    {
-                                        "dataTypes": [],
-                                        "description": "",
-                                        "inputType": "item",
-                                        "label": "custom_key",
-                                        "name": "custom_key",
-                                        "placeholder": "",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    }
-                                ],
-                                "label": "Get_Container_Custom_Data_Key",
-                                "name": "Get_Container_Custom_Data_Key"
-                            }
-                        },
-                        "utilityType": "custom_function",
-                        "values": {
-                            "Get_Container_Custom_Data_Key": {
-                                "container_id": "container:id",
-                                "custom_key": "email_campaign_subject"
-                            }
-                        }
-                    },
-                    "errors": {},
-                    "id": "20",
-                    "type": "utility",
-                    "warnings": {},
-                    "x": 920,
-                    "y": -80.00000000000009
-                },
-                "21": {
-                    "data": {
-                        "advanced": {
-                            "customName": "get_action",
-                            "customNameId": 0,
-                            "join": []
-                        },
-                        "customFunction": {
-                            "draftMode": false,
-                            "name": "Get_Container_Custom_Data_Key",
-                            "repoName": "sgs-soarcloud-gso-dev"
-                        },
-                        "functionId": 6,
-                        "functionName": "get_action",
-                        "id": "21",
-                        "loop": {
-                            "conditions": [
-                                {
-                                    "comparisons": [
-                                        {
-                                            "comparisonKey": "comparison_key_0",
-                                            "op": "==",
-                                            "param": "",
-                                            "value": ""
-                                        }
-                                    ],
-                                    "conditionIndex": 0,
-                                    "conditionKey": "condition_key_0",
-                                    "logic": "and",
-                                    "type": "if"
-                                }
-                            ],
-                            "enabled": false,
-                            "exitAfterUnit": "m",
-                            "exitAfterValue": 10,
-                            "exitConditionEnabled": false,
-                            "exitLoopAfter": 2,
-                            "pauseUnit": "m",
-                            "pauseValue": 2
-                        },
-                        "selectMore": false,
-                        "type": "utility",
-                        "utilities": {
-                            "Get_Container_Custom_Data_Key": {
-                                "description": "Get container custom data field key values",
-                                "fields": [
-                                    {
-                                        "dataTypes": [],
-                                        "description": "",
-                                        "inputType": "item",
-                                        "label": "container_id",
-                                        "name": "container_id",
-                                        "placeholder": "",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    },
-                                    {
-                                        "dataTypes": [],
-                                        "description": "",
-                                        "inputType": "item",
-                                        "label": "custom_key",
-                                        "name": "custom_key",
-                                        "placeholder": "",
-                                        "renderType": "datapath",
-                                        "required": false
-                                    }
-                                ],
-                                "label": "Get_Container_Custom_Data_Key",
-                                "name": "Get_Container_Custom_Data_Key"
-                            }
-                        },
-                        "utilityType": "custom_function",
-                        "values": {
-                            "Get_Container_Custom_Data_Key": {
-                                "container_id": "container:id",
-                                "custom_key": "purge_action"
-                            }
-                        }
-                    },
-                    "errors": {},
-                    "id": "21",
-                    "type": "utility",
-                    "warnings": {},
-                    "x": 920,
-                    "y": 39.999999999999915
+                    "y": 160
                 },
                 "22": {
                     "data": {
@@ -573,7 +401,7 @@
                         },
                         "playbookName": "[Phishing OSS] Scope Campaign recipients",
                         "playbookRepo": 12,
-                        "playbookRepoName": "sgs-soarcloud-gso-dev",
+                        "playbookRepoName": "community",
                         "playbookType": "data",
                         "synchronous": true,
                         "type": "playbook"
@@ -615,6 +443,178 @@
                     },
                     "x": 920,
                     "y": 920
+                },
+                "30": {
+                    "data": {
+                        "advanced": {
+                            "customName": "get_email_subject",
+                            "customNameId": 1,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "get_container_custom_data_key",
+                            "repoName": "community"
+                        },
+                        "functionId": 2,
+                        "functionName": "get_email_subject_1",
+                        "id": "30",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "get_container_custom_data_key": {
+                                "description": "This custom function retrieves a specific key-value pair from a container's custom_fields",
+                                "fields": [
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Container ID",
+                                        "inputType": "item",
+                                        "label": "container_id",
+                                        "name": "container_id",
+                                        "placeholder": "",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The name of the custom field to retrieve",
+                                        "inputType": "item",
+                                        "label": "custom_key",
+                                        "name": "custom_key",
+                                        "placeholder": "",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "get_container_custom_data_key",
+                                "name": "get_container_custom_data_key"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "get_container_custom_data_key": {
+                                "container_id": "container:id",
+                                "custom_key": "email_campaign_subject"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "30",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": 920,
+                    "y": -60
+                },
+                "31": {
+                    "data": {
+                        "advanced": {
+                            "customName": "get_action",
+                            "customNameId": 1,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "get_container_custom_data_key",
+                            "repoName": "community"
+                        },
+                        "functionId": 3,
+                        "functionName": "get_action_1",
+                        "id": "31",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "type": "utility",
+                        "utilities": {
+                            "get_container_custom_data_key": {
+                                "description": "This custom function retrieves a specific key-value pair from a container's custom_fields",
+                                "fields": [
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Container ID",
+                                        "inputType": "item",
+                                        "label": "container_id",
+                                        "name": "container_id",
+                                        "placeholder": "",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The name of the custom field to retrieve",
+                                        "inputType": "item",
+                                        "label": "custom_key",
+                                        "name": "custom_key",
+                                        "placeholder": "",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "get_container_custom_data_key",
+                                "name": "get_container_custom_data_key"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "get_container_custom_data_key": {
+                                "container_id": "container:id",
+                                "custom_key": "purge_action"
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "31",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": 920,
+                    "y": 60
                 },
                 "4": {
                     "data": {
@@ -818,9 +818,9 @@
             "notes": "This playbook orchestrates bulk email purge operations across multiple users who received a phishing email. It's the coordinator that manages the \"Purge Worker\" playbook for each affected recipient.\n\nUses CustomList email_purge_lookup. Needs to be created separately",
             "origin": {
                 "playbook_id": 16279,
-                "playbook_name": "[Phishing Pond] Purge Dispatcher",
+                "playbook_name": "[Phishing OSS] Purge Dispatcher",
                 "playbook_repo_id": 12,
-                "playbook_repo_name": "sgs-soarcloud-gso-dev"
+                "playbook_repo_name": "community"
             }
         },
         "input_spec": null,
@@ -829,9 +829,9 @@
         "playbook_type": "automation",
         "python_version": "3.13",
         "schema": "5.0.24",
-        "version": "8.4.0.154"
+        "version": "8.5.0.248"
     },
-    "create_time": "2026-03-18T07:47:46.417133+00:00",
+    "create_time": "2026-06-30T15:14:35.609021+00:00",
     "draft_mode": false,
     "labels": [
         "*"

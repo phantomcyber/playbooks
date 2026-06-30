@@ -4,15 +4,8 @@
     "category": "Search and Purge",
     "coa": {
         "data": {
-            "description": "This playbook trashes phishing emails from a user's inbox after a confirmed threat has been analyzed.",
+            "description": "This playbook trashes phishing emails from a user's inbox after a confirmed threat has been analyzed.\n\n",
             "edges": [
-                {
-                    "id": "port_4_to_port_6",
-                    "sourceNode": "4",
-                    "sourcePort": "4_out",
-                    "targetNode": "6",
-                    "targetPort": "6_in"
-                },
                 {
                     "id": "port_3_to_port_7",
                     "sourceNode": "3",
@@ -41,14 +34,21 @@
                     "targetPort": "3_in"
                 },
                 {
-                    "id": "port_6_to_port_1",
-                    "sourceNode": "6",
-                    "sourcePort": "6_out",
+                    "id": "port_4_to_port_10",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "10",
+                    "targetPort": "10_in"
+                },
+                {
+                    "id": "port_10_to_port_1",
+                    "sourceNode": "10",
+                    "sourcePort": "10_out",
                     "targetNode": "1",
                     "targetPort": "1_in"
                 }
             ],
-            "hash": "11289f8476c1542546045f832fe79b11892bc0a0",
+            "hash": "93f18d16fd612161fd4f032b62a26d5af760f60c",
             "nodes": {
                 "0": {
                     "data": {
@@ -64,7 +64,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 980,
-                    "y": 139.99999999999966
+                    "y": 139.99999999999957
                 },
                 "1": {
                     "data": {
@@ -79,8 +79,73 @@
                     "id": "1",
                     "type": "end",
                     "warnings": {},
-                    "x": 1000,
-                    "y": 1000
+                    "x": 980,
+                    "y": 977
+                },
+                "10": {
+                    "data": {
+                        "action": "trash email",
+                        "actionType": "generic",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "G Suite for GMail",
+                        "connectorConfigs": [
+                            "gmail"
+                        ],
+                        "connectorId": "9c73f233-2c4a-406a-855e-41d8d2497d0e",
+                        "connectorVersion": "v1",
+                        "functionId": 3,
+                        "functionName": "trash_email_3",
+                        "id": "10",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "email": "playbook_input:splunker_email",
+                            "id": "purge_email_id:custom_function:purge_email_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "id"
+                            },
+                            {
+                                "data_type": "string",
+                                "field": "email"
+                            }
+                        ],
+                        "tab": "byConnector",
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "10",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 980,
+                    "y": 820
                 },
                 "3": {
                     "data": {
@@ -93,7 +158,7 @@
                         },
                         "connector": "G Suite for GMail",
                         "connectorConfigs": [
-                            "srv_gso_phantom_gmail-prod_ingest"
+                            "gmail"
                         ],
                         "connectorId": "9c73f233-2c4a-406a-855e-41d8d2497d0e",
                         "connectorVersion": "v1",
@@ -155,7 +220,7 @@
                     "type": "action",
                     "warnings": {},
                     "x": 960,
-                    "y": 379.99999999999994
+                    "y": 380
                 },
                 "4": {
                     "data": {
@@ -182,72 +247,6 @@
                     "warnings": {},
                     "x": 960,
                     "y": 680
-                },
-                "6": {
-                    "data": {
-                        "action": "trash email",
-                        "actionType": "generic",
-                        "advanced": {
-                            "join": []
-                        },
-                        "connector": "Gmail Purge Power",
-                        "connectorConfigs": [
-                            "srv_gso_phantom_gmail-prod_ingest_clone_1705568601214_clone_1714669770465_clone_1715796934016_clone_1715799345461"
-                        ],
-                        "connectorId": "c1197707-8052-45ce-8316-988024aee1dc",
-                        "connectorVersion": "v1",
-                        "functionId": 1,
-                        "functionName": "trash_email_1",
-                        "id": "6",
-                        "loop": {
-                            "conditions": [
-                                {
-                                    "comparisons": [
-                                        {
-                                            "comparisonKey": "comparison_key_0",
-                                            "op": "==",
-                                            "param": "",
-                                            "value": ""
-                                        }
-                                    ],
-                                    "conditionIndex": 0,
-                                    "conditionKey": "condition_key_0",
-                                    "logic": "and",
-                                    "type": "if"
-                                }
-                            ],
-                            "enabled": false,
-                            "exitAfterUnit": "m",
-                            "exitAfterValue": 10,
-                            "exitConditionEnabled": false,
-                            "exitLoopAfter": 2,
-                            "pauseUnit": "m",
-                            "pauseValue": 2
-                        },
-                        "parameters": {
-                            "email": "playbook_input:splunker_email",
-                            "id": "purge_email_id:custom_function:purge_email_id"
-                        },
-                        "requiredParameters": [
-                            {
-                                "data_type": "string",
-                                "default": "",
-                                "field": "id"
-                            },
-                            {
-                                "data_type": "string",
-                                "default": "",
-                                "field": "email"
-                            }
-                        ],
-                        "type": "action"
-                    },
-                    "errors": {},
-                    "id": "6",
-                    "type": "action",
-                    "warnings": {},
-                    "x": 960,
-                    "y": 800
                 },
                 "7": {
                     "data": {
@@ -285,7 +284,7 @@
                     "y": 500
                 }
             },
-            "notes": "This playbook trashes phishing emails from a user's inbox after a confirmed threat has been analyzed.",
+            "notes": "This playbook trashes phishing emails from a user's inbox after a confirmed threat has been analyzed.\n\nPlease replace with your asset for Gmail or equivalent email app  asset for those actions.",
             "origin": {
                 "playbook_id": 15225,
                 "playbook_name": "[PP] Purge worker",
@@ -315,9 +314,9 @@
         "playbook_type": "data",
         "python_version": "3.13",
         "schema": "5.0.24",
-        "version": "8.4.0.154"
+        "version": "8.5.0.248"
     },
-    "create_time": "2026-03-17T13:22:45.639386+00:00",
+    "create_time": "2026-06-30T15:52:46.638590+00:00",
     "draft_mode": false,
     "labels": [
         "*"

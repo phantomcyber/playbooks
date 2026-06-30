@@ -1,5 +1,5 @@
 """
-This playbook blocks malicious indicators extracted from a phishing analysis. It takes indicators from an &quot;SAA Indicators&quot; artifact and applies blocking actions across multiple security tools.
+This playbook blocks malicious indicators extracted from a phishing analysis. It takes indicators from an &quot;SAA Indicators&quot; artifact and applies blocking actions across multiple security tools.\n\n
 """
 
 

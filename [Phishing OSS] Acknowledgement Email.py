@@ -1,5 +1,5 @@
 """
-This is a playbook for automated phishing report acknowledgment. It processes emails submitted to phishing inbox and sends appropriate automated responses based on how the user submitted their report.
+This is a playbook for automated phishing report acknowledgment. It processes emails submitted to phishing inbox and sends appropriate automated responses based on how the user submitted their report.\n
 """
 
 
@@ -12,8 +12,8 @@ from datetime import datetime, timedelta
 def on_start(container):
     phantom.debug('on_start() called')
 
-    # call 'decision_2' block
-    decision_2(container=container)
+    # call 'decision_1' block
+    decision_1(container=container)
 
     return
 
@@ -48,10 +48,10 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
     matched_artifacts_1, matched_results_1 = phantom.condition(
         container=container,
         conditions=[
-            ["phishinginbox@splunk.com", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"]
+            ["playbook_input:phishing_inbox_email", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"]
         ],
         conditions_dps=[
-            ["phishinginbox@splunk.com", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"]
+            ["playbook_input:phishing_inbox_email", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"]
         ],
         name="filter_2:condition_1",
         delimiter=",")
@@ -64,10 +64,10 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
     matched_artifacts_2, matched_results_2 = phantom.condition(
         container=container,
         conditions=[
-            ["phishinginbox@splunk.com", "not in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"]
+            ["playbook_input:phishing_inbox_email", "not in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"]
         ],
         conditions_dps=[
-            ["phishinginbox@splunk.com", "not in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"]
+            ["playbook_input:phishing_inbox_email", "not in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"]
         ],
         name="filter_2:condition_2",
         delimiter=",")
@@ -129,11 +129,12 @@ def filter_4(action=None, success=None, container=None, results=None, handle=Non
 def wrong_email_attached_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("wrong_email_attached_format() called")
 
-    template = """<p>Hello {0},</p>\n<p>Whoops! It looks like you accidentally forwarded the wrong email to the phishing pond. Please re-send it as an attachment using the following process:</p>\n\n<p style=\"padding-left: 30px;\"><strong>Using Gmail:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>In the original email, click the three dots in the top right corner - click \"download message\" - and then forward that download as an attachment to phishinginbox@splunk.com.</li>\n</ul>\n\n<p style=\"padding-left: 30px;\"><strong>If using Outlook on a Mac:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>If the message is open, you can select <u>Forward as Attachment</u>.</li>\n  <li>If you don't have the message open, you can <u>right click</u> the message from the Outlook listing and select Forward as Attachment from the popup menu.</li>\n</ul>\n\n<p style=\"padding-left: 30px;\"><strong>If using OWA or Outlook on Windows:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>Click \"New mail,\" then drag and drop the email you wish to forward into the body of the new message. It will appear as an attachment -- send this new message to phishinginbox@splunk.com.</li>\n</ul>\n\n<p>Your help in improving the overall security posture at Splunk is greatly appreciated!</p>\n<p>Thank you,<br />\nPhishing Pond<br />\nThreat Response - Security Operations Center<br />\nSplunk &gt; Turn Data Into Doing<br />\n<a href=\"mailto:phishinginbox@splunk.com\">phishinginbox@splunk.com</a> | <a href=\"http://www.splunk.com\">www.splunk.com</a></p>"""
+    template = """<p>Hello {0},</p>\n<p>Whoops! It looks like you accidentally forwarded the wrong email to the phishing inbox. Please re-send it as an attachment using the following process:</p>\n\n<p style=\"padding-left: 30px;\"><strong>Using Gmail:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>In the original email, click the three dots in the top right corner - click \"download message\" - and then forward that download as an attachment to {1}</li>\n</ul>\n\n<p style=\"padding-left: 30px;\"><strong>If using Outlook on a Mac:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>If the message is open, you can select <u>Forward as Attachment</u>.</li>\n  <li>If you don't have the message open, you can <u>right click</u> the message from the Outlook listing and select Forward as Attachment from the popup menu.</li>\n</ul>\n\n<p style=\"padding-left: 30px;\"><strong>If using OWA or Outlook on Windows:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>Click \"New mail,\" then drag and drop the email you wish to forward into the body of the new message. It will appear as an attachment -- send this new message to {1}.</li>\n</ul>\n\n<p>Your help in improving the overall security posture at Splunk is greatly appreciated!</p>\n<p>Thank you,<br />\nThreat Response - Security Operations Center<br />\nSplunk &gt; Turn Data Into Doing<br />\n<a href=\"mailto:{1}\">{1}</a> | <a href=\"http://www.splunk.com\">www.splunk.com</a></p>"""
 
     # parameter list for template variable replacement
     parameters = [
-        "filtered-data:filter_4:condition_1:artifact:*.cef.fromEmail"
+        "filtered-data:filter_4:condition_1:artifact:*.cef.fromEmail",
+        "playbook_input:phishing_inbox_email"
     ]
 
     ################################################################################
@@ -157,11 +158,12 @@ def wrong_email_attached_format(action=None, success=None, container=None, resul
 def correct_email_attached_format(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("correct_email_attached_format() called")
 
-    template = """<p>Hello {0},</p>\n<p>Thank you for reporting suspicious emails to Phishing Pond. We have received your email and will perform analysis of the content. In the meantime, please do not click on any links or attachments in this email to be safe.</p>\n<p>Your help in improving the overall security posture at Splunk is greatly appreciated!</p>\n<p>Thank you,<br />\nPhishing Pond<br/>\nThreat Response - Security Operations Center<br/>\nSplunk &gt; Turn Data Into Doing<br/>\n<a href=\"mailto:phishinginbox@splunk.com\">phishinginbox@splunk.com</a> | <a href=\"http://www.splunk.com\">www.splunk.com</a></p>\n"""
+    template = """<p>Hello {0},</p>\n<p>Thank you for reporting suspicious emails to Phishing inbox. We have received your email and will perform analysis of the content. In the meantime, please do not click on any links or attachments in this email to be safe.</p>\n<p>Your help in improving the overall security posture at Splunk is greatly appreciated!</p>\n<p>Thank you,<br />\nThreat Response - Security Operations Center<br/>\nSplunk &gt; Turn Data Into Doing<br/>\n<a href=\"mailto:{1}\">{1}</a> | <a href=\"http://www.splunk.com\">www.splunk.com</a></p>\n"""
 
     # parameter list for template variable replacement
     parameters = [
-        "filtered-data:filter_3:condition_1:artifact:*.cef.fromEmail"
+        "filtered-data:filter_3:condition_1:artifact:*.cef.fromEmail",
+        "playbook_input:phishing_inbox_email"
     ]
 
     ################################################################################
@@ -208,11 +210,12 @@ def filter_5(action=None, success=None, container=None, results=None, handle=Non
 def no_email_attached(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
     phantom.debug("no_email_attached() called")
 
-    template = """<p>Hello {0},</p>\n<p>Whoops! It looks like you accidentally forwarded the wrong email to the phishing pond. Please re-send it as an attachment using the following process:</p>\n\n<p style=\"padding-left: 30px;\"><strong>Using Gmail:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>In the original email, click the three dots in the top right corner - click \"download message\" - and then forward that download as an attachment to phishinginbox@splunk.com.</li>\n</ul>\n\n<p style=\"padding-left: 30px;\"><strong>If using Outlook on a Mac:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>If the message is open, you can select <u>Forward as Attachment</u>.</li>\n  <li>If you don't have the message open, you can <u>right click</u> the message from the Outlook listing and select Forward as Attachment from the popup menu.</li>\n</ul>\n\n<p style=\"padding-left: 30px;\"><strong>If using OWA or Outlook on Windows:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>Click \"New mail,\" then drag and drop the email you wish to forward into the body of the new message. It will appear as an attachment -- send this new message to phishinginbox@splunk.com.</li>\n</ul>\n\n<p>Your help in improving the overall security posture at Splunk is greatly appreciated!</p>\n<p>Thank you,<br />\nPhishing Pond<br />\nThreat Response - Security Operations Center<br />\nSplunk &gt; Turn Data Into Doing<br />\n<a href=\"mailto:phishinginbox@splunk.com\">phishinginbox@splunk.com</a> | <a href=\"http://www.splunk.com\">www.splunk.com</a></p>"""
+    template = """<p>Hello {0},</p>\n<p>Whoops! It looks like you accidentally forwarded the wrong email to the phishing pond. Please re-send it as an attachment using the following process:</p>\n\n<p style=\"padding-left: 30px;\"><strong>Using Gmail:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>In the original email, click the three dots in the top right corner - click \"download message\" - and then forward that download as an attachment to {1}</li>\n</ul>\n\n<p style=\"padding-left: 30px;\"><strong>If using Outlook on a Mac:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>If the message is open, you can select <u>Forward as Attachment</u>.</li>\n  <li>If you don't have the message open, you can <u>right click</u> the message from the Outlook listing and select Forward as Attachment from the popup menu.</li>\n</ul>\n\n<p style=\"padding-left: 30px;\"><strong>If using OWA or Outlook on Windows:</strong></p>\n<ul style=\"padding-left: 30px;\">\n  <li>Click \"New mail,\" then drag and drop the email you wish to forward into the body of the new message. It will appear as an attachment -- send this new message to {1}.</li>\n</ul>\n\n<p>Your help in improving the overall security posture at Splunk is greatly appreciated!</p>\n<p>Thank you,<br />\nThreat Response - Security Operations Center<br />\nSplunk &gt; Turn Data Into Doing<br />\n<a href=\"mailto:{1}\">{1}</a> | <a href=\"http://www.splunk.com\">www.splunk.com</a></p>"""
 
     # parameter list for template variable replacement
     parameters = [
-        "filtered-data:filter_5:condition_1:artifact:*.cef.fromEmail"
+        "filtered-data:filter_5:condition_1:artifact:*.cef.fromEmail",
+        "playbook_input:phishing_inbox_email"
     ]
 
     ################################################################################
@@ -295,6 +298,7 @@ def send_htmlemail_1(action=None, success=None, container=None, results=None, ha
         ])
 
     filtered_artifact_0_data_filter_5 = phantom.collect2(container=container, datapath=["filtered-data:filter_5:condition_1:artifact:*.cef.fromEmail","filtered-data:filter_5:condition_1:artifact:*.cef.emailHeaders.Subject","filtered-data:filter_5:condition_1:artifact:*.id"])
+    playbook_input_phishing_inbox_email = phantom.collect2(container=container, datapath=["playbook_input:phishing_inbox_email"])
     no_email_attached = phantom.get_format_data(name="no_email_attached")
     add_reference_to_forward_response__references_value = json.loads(_ if (_ := phantom.get_run_data(key="add_reference_to_forward_response:references_value")) != "" else "null")  # pylint: disable=used-before-assignment
 
@@ -302,16 +306,17 @@ def send_htmlemail_1(action=None, success=None, container=None, results=None, ha
 
     # build parameters list for 'send_htmlemail_1' call
     for filtered_artifact_0_item_filter_5 in filtered_artifact_0_data_filter_5:
-        if filtered_artifact_0_item_filter_5[0] is not None and no_email_attached is not None:
-            parameters.append({
-                "cc": "",
-                "to": filtered_artifact_0_item_filter_5[0],
-                "from": "dev_soar@splunk.com",
-                "headers": headers_formatted_string,
-                "subject": subject_formatted_string,
-                "html_body": no_email_attached,
-                "context": {'artifact_id': filtered_artifact_0_item_filter_5[2]},
-            })
+        for playbook_input_phishing_inbox_email_item in playbook_input_phishing_inbox_email:
+            if filtered_artifact_0_item_filter_5[0] is not None and no_email_attached is not None:
+                parameters.append({
+                    "cc": "",
+                    "to": filtered_artifact_0_item_filter_5[0],
+                    "from": playbook_input_phishing_inbox_email_item[0],
+                    "headers": headers_formatted_string,
+                    "subject": subject_formatted_string,
+                    "html_body": no_email_attached,
+                    "context": {'artifact_id': filtered_artifact_0_item_filter_5[2]},
+                })
 
     ################################################################################
     ## Custom Code Start
@@ -434,6 +439,7 @@ def send_htmlemail_2(action=None, success=None, container=None, results=None, ha
         ])
 
     filtered_artifact_0_data_filter_3 = phantom.collect2(container=container, datapath=["filtered-data:filter_3:condition_1:artifact:*.cef.fromEmail","filtered-data:filter_3:condition_1:artifact:*.cef.emailHeaders.Subject","filtered-data:filter_3:condition_1:artifact:*.id"])
+    playbook_input_phishing_inbox_email = phantom.collect2(container=container, datapath=["playbook_input:phishing_inbox_email"])
     correct_email_attached_format = phantom.get_format_data(name="correct_email_attached_format")
     add_references_to_correct_email_response__references_value = json.loads(_ if (_ := phantom.get_run_data(key="add_references_to_correct_email_response:references_value")) != "" else "null")  # pylint: disable=used-before-assignment
 
@@ -441,16 +447,17 @@ def send_htmlemail_2(action=None, success=None, container=None, results=None, ha
 
     # build parameters list for 'send_htmlemail_2' call
     for filtered_artifact_0_item_filter_3 in filtered_artifact_0_data_filter_3:
-        if filtered_artifact_0_item_filter_3[0] is not None and correct_email_attached_format is not None:
-            parameters.append({
-                "cc": "",
-                "to": filtered_artifact_0_item_filter_3[0],
-                "from": "dev_soar@splunk.com",
-                "headers": headers_formatted_string,
-                "subject": subject_formatted_string,
-                "html_body": correct_email_attached_format,
-                "context": {'artifact_id': filtered_artifact_0_item_filter_3[2]},
-            })
+        for playbook_input_phishing_inbox_email_item in playbook_input_phishing_inbox_email:
+            if filtered_artifact_0_item_filter_3[0] is not None and correct_email_attached_format is not None:
+                parameters.append({
+                    "cc": "",
+                    "to": filtered_artifact_0_item_filter_3[0],
+                    "from": playbook_input_phishing_inbox_email_item[0],
+                    "headers": headers_formatted_string,
+                    "subject": subject_formatted_string,
+                    "html_body": correct_email_attached_format,
+                    "context": {'artifact_id': filtered_artifact_0_item_filter_3[2]},
+                })
 
     ################################################################################
     ## Custom Code Start
@@ -487,6 +494,7 @@ def send_htmlemail_3(action=None, success=None, container=None, results=None, ha
         ])
 
     filtered_artifact_0_data_filter_4 = phantom.collect2(container=container, datapath=["filtered-data:filter_4:condition_1:artifact:*.cef.fromEmail","filtered-data:filter_4:condition_1:artifact:*.cef.emailHeaders.Subject","filtered-data:filter_4:condition_1:artifact:*.id"])
+    playbook_input_phishing_inbox_email = phantom.collect2(container=container, datapath=["playbook_input:phishing_inbox_email"])
     wrong_email_attached_format = phantom.get_format_data(name="wrong_email_attached_format")
     add_reference_to_wrong_email_response__references_value = json.loads(_ if (_ := phantom.get_run_data(key="add_reference_to_wrong_email_response:references_value")) != "" else "null")  # pylint: disable=used-before-assignment
 
@@ -494,16 +502,17 @@ def send_htmlemail_3(action=None, success=None, container=None, results=None, ha
 
     # build parameters list for 'send_htmlemail_3' call
     for filtered_artifact_0_item_filter_4 in filtered_artifact_0_data_filter_4:
-        if filtered_artifact_0_item_filter_4[0] is not None and wrong_email_attached_format is not None:
-            parameters.append({
-                "cc": "",
-                "to": filtered_artifact_0_item_filter_4[0],
-                "from": "dev_soar@splunk.com",
-                "headers": headers_formatted_string,
-                "subject": subject_formatted_string,
-                "html_body": wrong_email_attached_format,
-                "context": {'artifact_id': filtered_artifact_0_item_filter_4[2]},
-            })
+        for playbook_input_phishing_inbox_email_item in playbook_input_phishing_inbox_email:
+            if filtered_artifact_0_item_filter_4[0] is not None and wrong_email_attached_format is not None:
+                parameters.append({
+                    "cc": "",
+                    "to": filtered_artifact_0_item_filter_4[0],
+                    "from": playbook_input_phishing_inbox_email_item[0],
+                    "headers": headers_formatted_string,
+                    "subject": subject_formatted_string,
+                    "html_body": wrong_email_attached_format,
+                    "context": {'artifact_id': filtered_artifact_0_item_filter_4[2]},
+                })
 
     ################################################################################
     ## Custom Code Start
@@ -521,8 +530,8 @@ def send_htmlemail_3(action=None, success=None, container=None, results=None, ha
 
 
 @phantom.playbook_block()
-def decision_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("decision_2() called")
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("decision_1() called")
 
     # check for 'if' condition 1
     found_match_1 = phantom.decision(
@@ -533,7 +542,7 @@ def decision_2(action=None, success=None, container=None, results=None, handle=N
         conditions_dps=[
             ["artifact:*.name", "==", "Attached Suspicious Email"]
         ],
-        name="decision_2:condition_1",
+        name="decision_1:condition_1",
         delimiter=",")
 
     # call connected blocks if condition 1 matched

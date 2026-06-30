@@ -3,7 +3,7 @@ This playbook detonates suspicious email attachments in Splunk Attack Analyzer (
 """
 
 
-import phantom.rules as phantom # type: ignore
+import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
 

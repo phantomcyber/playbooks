@@ -26,12 +26,12 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
         container=container,
         logical_operator="or",
         conditions=[
-            ["phishinginbox@splunk.com", "not in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.toEmail"],
-            ["phishinginbox@splunk.com", "not in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.emailHeaders.CC"]
+            ["playbook_input:phishing_inbox_email", "not in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.toEmail"],
+            ["playbook_input:phishing_inbox_email", "not in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.emailHeaders.CC"]
         ],
         conditions_dps=[
-            ["phishinginbox@splunk.com", "not in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.toEmail"],
-            ["phishinginbox@splunk.com", "not in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.emailHeaders.CC"]
+            ["playbook_input:phishing_inbox_email", "not in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.toEmail"],
+            ["playbook_input:phishing_inbox_email", "not in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.emailHeaders.CC"]
         ],
         name="filter_1:condition_1",
         delimiter=",")
@@ -230,16 +230,7 @@ def on_finish(container, summary):
     ## Custom Code Start
     ################################################################################
 
-    # This function is called after all actions are completed.
-    # summary of all the action and/or all details of actions
-    # can be collected here.
-
-    # summary_json = phantom.get_summary()
-    # if 'result' in summary_json:
-        # for action_result in summary_json['result']:
-            # if 'action_run_id' in action_result:
-                # action_results = phantom.get_action_results(action_run_id=action_result['action_run_id'], result_data=False, flatten=False)
-                # phantom.debug(action_results)
+    # Write your custom code here...
 
     ################################################################################
     ## Custom Code End

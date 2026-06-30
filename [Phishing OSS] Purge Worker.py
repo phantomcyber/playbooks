@@ -1,9 +1,9 @@
 """
-This playbook trashes phishing emails from a user&#39;s inbox after a confirmed threat has been analyzed.
+This playbook trashes phishing emails from a user&#39;s inbox after a confirmed threat has been analyzed.\n\n
 """
 
 
-import phantom.rules as phantom # type: ignore
+import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
 
@@ -52,7 +52,7 @@ def search_email(action=None, success=None, container=None, results=None, handle
     ## Custom Code End
     ################################################################################
 
-    phantom.act("run query", parameters=parameters, name="search_email", assets=["srv_gso_phantom_gmail-prod_ingest"], callback=decision_1)
+    phantom.act("run query", parameters=parameters, name="search_email", assets=["gmail"], callback=decision_1)
 
     return
 
@@ -85,41 +85,7 @@ def purge_email_id(action=None, success=None, container=None, results=None, hand
 
     phantom.save_block_result(key="purge_email_id_called", value="True")
 
-    trash_email_1(container=container)
-
-    return
-
-
-@phantom.playbook_block()
-def trash_email_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("trash_email_1() called")
-
-    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
-
-    playbook_input_splunker_email = phantom.collect2(container=container, datapath=["playbook_input:splunker_email"])
-    purge_email_id__purge_email_id = json.loads(_ if (_ := phantom.get_run_data(key="purge_email_id:purge_email_id")) != "" else "null")  # pylint: disable=used-before-assignment
-
-    parameters = []
-
-    # build parameters list for 'trash_email_1' call
-    for playbook_input_splunker_email_item in playbook_input_splunker_email:
-        if purge_email_id__purge_email_id is not None and playbook_input_splunker_email_item[0] is not None:
-            parameters.append({
-                "id": purge_email_id__purge_email_id,
-                "email": playbook_input_splunker_email_item[0],
-            })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.act("trash email", parameters=parameters, name="trash_email_1", assets=["srv_gso_phantom_gmail-prod_ingest"])
+    trash_email_3(container=container)
 
     return
 
@@ -144,6 +110,40 @@ def decision_1(action=None, success=None, container=None, results=None, handle=N
     if found_match_1:
         purge_email_id(action=action, success=success, container=container, results=results, handle=handle)
         return
+
+    return
+
+
+@phantom.playbook_block()
+def trash_email_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("trash_email_3() called")
+
+    # phantom.debug('Action: {0} {1}'.format(action['name'], ('SUCCEEDED' if success else 'FAILED')))
+
+    playbook_input_splunker_email = phantom.collect2(container=container, datapath=["playbook_input:splunker_email"])
+    purge_email_id__purge_email_id = json.loads(_ if (_ := phantom.get_run_data(key="purge_email_id:purge_email_id")) != "" else "null")  # pylint: disable=used-before-assignment
+
+    parameters = []
+
+    # build parameters list for 'trash_email_3' call
+    for playbook_input_splunker_email_item in playbook_input_splunker_email:
+        if purge_email_id__purge_email_id is not None and playbook_input_splunker_email_item[0] is not None:
+            parameters.append({
+                "id": purge_email_id__purge_email_id,
+                "email": playbook_input_splunker_email_item[0],
+            })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.act("trash email", parameters=parameters, name="trash_email_3", assets=["gmail"])
 
     return
 

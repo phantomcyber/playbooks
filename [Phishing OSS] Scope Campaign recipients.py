@@ -3,7 +3,7 @@ This playbook finds all recipients who received a phishing campaign email by sea
 """
 
 
-import phantom.rules as phantom # type: ignore
+import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
 

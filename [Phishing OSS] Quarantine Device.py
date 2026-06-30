@@ -1,9 +1,9 @@
 """
-This playbook identifies and quarantines devices that interacted with phishing indicators by searching activity logs and isolating affected endpoints.
+This playbook identifies and quarantines devices that interacted with phishing indicators by searching activity logs and isolating affected endpoints.\n
 """
 
 
-import phantom.rules as phantom # type: ignore
+import phantom.rules as phantom
 import json
 from datetime import datetime, timedelta
 

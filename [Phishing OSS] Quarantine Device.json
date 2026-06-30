@@ -4,7 +4,7 @@
     "category": "Response",
     "coa": {
         "data": {
-            "description": "This playbook identifies and quarantines devices that interacted with phishing indicators by searching activity logs and isolating affected endpoints.",
+            "description": "This playbook identifies and quarantines devices that interacted with phishing indicators by searching activity logs and isolating affected endpoints.\n",
             "edges": [
                 {
                     "id": "port_4_to_port_6",
@@ -55,7 +55,7 @@
                     "targetPort": "4_in"
                 }
             ],
-            "hash": "500b0e7d65697fbdf5fe7248604d90d346935b08",
+            "hash": "f68cc4bd1ada1012a5c05042e56fb976a675f387",
             "nodes": {
                 "0": {
                     "data": {
@@ -71,7 +71,7 @@
                     "type": "start",
                     "warnings": {},
                     "x": 880,
-                    "y": 199.9999999999998
+                    "y": 199.9999999999997
                 },
                 "1": {
                     "data": {
@@ -86,8 +86,8 @@
                     "id": "1",
                     "type": "end",
                     "warnings": {},
-                    "x": 1000,
-                    "y": 1000
+                    "x": 880,
+                    "y": 960
                 },
                 "4": {
                     "data": {
@@ -112,7 +112,7 @@
                     "type": "code",
                     "userCode": "\n    # Write your custom code here...\n    observable_list=playbook_splunk_identifier_activity_analysis_1_output_observable_values\n    #logic to extract list and make into an artifact with device list\n    phantom.debug(observable_list)\n    unique_asset_ids = set()\n    for item in observable_list:\n        if item and \"identifier_activity\" in item:\n            for activity in item[\"identifier_activity\"]:\n                if \"id\" in activity:\n                    unique_asset_ids.add(activity[\"id\"])\n    \n    device_observable_list__device_list=sorted(unique_asset_ids)\n    phantom.debug(device_observable_list__device_list)\n        \n\n",
                     "warnings": {},
-                    "x": 880,
+                    "x": 860,
                     "y": 700
                 },
                 "6": {
@@ -124,7 +124,7 @@
                         },
                         "connector": "FireAMP",
                         "connectorConfigs": [
-                            "deep_fireamp_dummy"
+                            "cisco_fireamp"
                         ],
                         "connectorId": "897890aa-14f5-4d6c-b68c-e557ff30d251",
                         "connectorVersion": "v1",
@@ -178,7 +178,7 @@
                     "id": "6",
                     "type": "action",
                     "warnings": {},
-                    "x": 880,
+                    "x": 860,
                     "y": 820
                 },
                 "7": {
@@ -317,11 +317,11 @@
                     "id": "9",
                     "type": "playbook",
                     "warnings": {},
-                    "x": 560,
-                    "y": 580
+                    "x": 860,
+                    "y": 560
                 }
             },
-            "notes": "This playbook identifies and quarantines devices that interacted with phishing indicators by searching activity logs and isolating affected endpoints."
+            "notes": "This playbook identifies and quarantines devices that interacted with phishing indicators by searching activity logs and isolating affected endpoints.\n\nPlease replace with your own asset for FireAMP or equivalent app asset for quarantine device action."
         },
         "input_spec": null,
         "output_spec": null,
@@ -329,9 +329,9 @@
         "playbook_type": "automation",
         "python_version": "3.13",
         "schema": "5.0.24",
-        "version": "8.4.0.154"
+        "version": "8.5.0.248"
     },
-    "create_time": "2026-03-18T06:43:45.496973+00:00",
+    "create_time": "2026-06-30T15:31:40.563972+00:00",
     "draft_mode": false,
     "labels": [
         "*"

@@ -31,8 +31,8 @@ def playbook__phishing_oss__phishing_attachment_filter_1(action=None, success=No
     ## Custom Code End
     ################################################################################
 
-    # call playbook "sgs-soarcloud-gso-dev/[Phishing OSS] Phishing Attachment Filter", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("sgs-soarcloud-gso-dev/[Phishing OSS] Phishing Attachment Filter", container=container, name="playbook__phishing_oss__phishing_attachment_filter_1", callback=playbook__phishing_oss__not_previous_thread_1)
+    # call playbook "community/[Phishing OSS] Phishing Attachment Filter", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/[Phishing OSS] Phishing Attachment Filter", container=container, name="playbook__phishing_oss__phishing_attachment_filter_1", callback=playbook__phishing_oss__not_previous_thread_1)
 
     return
 
@@ -51,43 +51,15 @@ def playbook__phishing_oss__not_previous_thread_1(action=None, success=None, con
     ## Custom Code End
     ################################################################################
 
-    # call playbook "sgs-soarcloud-gso-dev/[Phishing OSS] Not Previous Thread", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("sgs-soarcloud-gso-dev/[Phishing OSS] Not Previous Thread", container=container, name="playbook__phishing_oss__not_previous_thread_1", callback=get_container_custom_data_key_1)
+    # call playbook "community/[Phishing OSS] Not Previous Thread", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/[Phishing OSS] Not Previous Thread", container=container, name="playbook__phishing_oss__not_previous_thread_1", callback=get_container_custom_data_key_6)
 
     return
 
 
 @phantom.playbook_block()
-def get_container_custom_data_key_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("get_container_custom_data_key_1() called")
-
-    id_value = container.get("id", None)
-
-    parameters = []
-
-    parameters.append({
-        "custom_key": "PreviousThreadFlag",
-        "container_id": id_value,
-    })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="local/Get_Container_Custom_Data_Key", parameters=parameters, name="get_container_custom_data_key_1", callback=decision_4)
-
-    return
-
-
-@phantom.playbook_block()
-def decision_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("decision_4() called")
+def decision_1(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("decision_1() called")
 
     tags_value = container.get("tags", None)
 
@@ -96,14 +68,14 @@ def decision_4(action=None, success=None, container=None, results=None, handle=N
         container=container,
         logical_operator="or",
         conditions=[
-            ["get_container_custom_data_key_1:custom_function_result.data.*.custom_key_value", "==", False],
+            ["get_container_custom_data_key_6:custom_function_result.data.*.custom_key_value", "==", False],
             ["Previous Thread", "not in", tags_value]
         ],
         conditions_dps=[
-            ["get_container_custom_data_key_1:custom_function_result.data.*.custom_key_value", "==", False],
+            ["get_container_custom_data_key_6:custom_function_result.data.*.custom_key_value", "==", False],
             ["Previous Thread", "not in", "container:tags"]
         ],
-        name="decision_4:condition_1",
+        name="decision_1:condition_1",
         delimiter=",")
 
     # call connected blocks if condition 1 matched
@@ -128,8 +100,8 @@ def playbook__phishing_oss__acknowledgement_email_1(action=None, success=None, c
     ## Custom Code End
     ################################################################################
 
-    # call playbook "sgs-soarcloud-gso-dev/[Phishing OSS] Acknowledgement Email", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("sgs-soarcloud-gso-dev/[Phishing OSS] Acknowledgement Email", container=container, name="playbook__phishing_oss__acknowledgement_email_1", callback=playbook__phishing_oss__saa_enrich_1)
+    # call playbook "community/[Phishing OSS] Acknowledgement Email", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/[Phishing OSS] Acknowledgement Email", container=container, name="playbook__phishing_oss__acknowledgement_email_1", callback=playbook__phishing_oss__saa_enrich_1)
 
     return
 
@@ -148,8 +120,8 @@ def playbook__phishing_oss__saa_enrich_1(action=None, success=None, container=No
     ## Custom Code End
     ################################################################################
 
-    # call playbook "sgs-soarcloud-gso-dev/[Phishing OSS] SAA Enrich", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("sgs-soarcloud-gso-dev/[Phishing OSS] SAA Enrich", container=container, name="playbook__phishing_oss__saa_enrich_1", callback=score_above_threshold)
+    # call playbook "community/[Phishing OSS] SAA Enrich", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/[Phishing OSS] SAA Enrich", container=container, name="playbook__phishing_oss__saa_enrich_1", callback=score_above_threshold)
 
     return
 
@@ -172,40 +144,11 @@ def score_above_threshold(action=None, success=None, container=None, results=Non
 
     # call connected blocks if condition 1 matched
     if found_match_1:
-        set_container_custom_data_key_value_2(action=action, success=success, container=container, results=results, handle=handle)
         playbook__phishing_oss__indicator_blocks_1(action=action, success=success, container=container, results=results, handle=handle)
         playbook__phishing_oss__quarantine_device_1(action=action, success=success, container=container, results=results, handle=handle)
         playbook__phishing_oss__tip_addition_1(action=action, success=success, container=container, results=results, handle=handle)
+        set_container_custom_data_dey_value_7(action=action, success=success, container=container, results=results, handle=handle)
         return
-
-    return
-
-
-@phantom.playbook_block()
-def set_container_custom_data_key_value_2(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("set_container_custom_data_key_value_2() called")
-
-    id_value = container.get("id", None)
-
-    parameters = []
-
-    parameters.append({
-        "custom_key": "purge_action",
-        "container_id": id_value,
-        "custom_value": "purge",
-    })
-
-    ################################################################################
-    ## Custom Code Start
-    ################################################################################
-
-    # Write your custom code here...
-
-    ################################################################################
-    ## Custom Code End
-    ################################################################################
-
-    phantom.custom_function(custom_function="sgs-soarcloud-gso-dev/Set_Container_Custom_Data_Key_Value", parameters=parameters, name="set_container_custom_data_key_value_2", callback=filter_attached_email)
 
     return
 
@@ -224,8 +167,8 @@ def playbook__phishing_oss__indicator_blocks_1(action=None, success=None, contai
     ## Custom Code End
     ################################################################################
 
-    # call playbook "sgs-soarcloud-gso-dev/[Phishing OSS] Indicator Blocks", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("sgs-soarcloud-gso-dev/[Phishing OSS] Indicator Blocks", container=container)
+    # call playbook "community/[Phishing OSS] Indicator Blocks", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/[Phishing OSS] Indicator Blocks", container=container)
 
     return
 
@@ -244,8 +187,8 @@ def playbook__phishing_oss__quarantine_device_1(action=None, success=None, conta
     ## Custom Code End
     ################################################################################
 
-    # call playbook "sgs-soarcloud-gso-dev/[Phishing OSS] Quarantine Device", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("sgs-soarcloud-gso-dev/[Phishing OSS] Quarantine Device", container=container)
+    # call playbook "community/[Phishing OSS] Quarantine Device", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/[Phishing OSS] Quarantine Device", container=container)
 
     return
 
@@ -264,8 +207,8 @@ def playbook__phishing_oss__tip_addition_1(action=None, success=None, container=
     ## Custom Code End
     ################################################################################
 
-    # call playbook "sgs-soarcloud-gso-dev/[Phishing OSS] TIP Addition", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("sgs-soarcloud-gso-dev/[Phishing OSS] TIP Addition", container=container)
+    # call playbook "community/[Phishing OSS] TIP Addition", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/[Phishing OSS] TIP Addition", container=container)
 
     return
 
@@ -284,8 +227,8 @@ def playbook__phishing_oss__purge_dispatcher_1(action=None, success=None, contai
     ## Custom Code End
     ################################################################################
 
-    # call playbook "sgs-soarcloud-gso-dev/[Phishing OSS] Purge Dispatcher", returns the playbook_run_id
-    playbook_run_id = phantom.playbook("sgs-soarcloud-gso-dev/[Phishing OSS] Purge Dispatcher", container=container)
+    # call playbook "community/[Phishing OSS] Purge Dispatcher", returns the playbook_run_id
+    playbook_run_id = phantom.playbook("community/[Phishing OSS] Purge Dispatcher", container=container)
 
     return
 
@@ -321,10 +264,10 @@ def filter_out_auto_replies(action=None, success=None, container=None, results=N
     matched_artifacts_1, matched_results_1 = phantom.condition(
         container=container,
         conditions=[
-            ["phishing-pond@splunk.com", "not in", "filtered-data:filter_attached_email:condition_1:artifact:*.cef.fromEmail"]
+            ["playbook_input:phishing_inbox_email", "not in", "filtered-data:filter_attached_email:condition_1:artifact:*.cef.fromEmail"]
         ],
         conditions_dps=[
-            ["phishing-pond@splunk.com", "not in", "filtered-data:filter_attached_email:condition_1:artifact:*.cef.fromEmail"]
+            ["playbook_input:phishing_inbox_email", "not in", "filtered-data:filter_attached_email:condition_1:artifact:*.cef.fromEmail"]
         ],
         name="filter_out_auto_replies:condition_1",
         delimiter=",")
@@ -418,14 +361,71 @@ def identify_campaign(action=None, success=None, container=None, results=None, h
 
     phantom.save_block_result(key="identify_campaign_called", value="True")
 
-    set_container_custom_data_key_value_3(container=container)
+    set_container_custom_data_dey_value_8(container=container)
 
     return
 
 
 @phantom.playbook_block()
-def set_container_custom_data_key_value_3(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("set_container_custom_data_key_value_3() called")
+def get_container_custom_data_key_6(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("get_container_custom_data_key_6() called")
+
+    id_value = container.get("id", None)
+
+    parameters = []
+
+    parameters.append({
+        "container_id": id_value,
+        "custom_key": "PreviousThreadFlag",
+    })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/get_container_custom_data_key", parameters=parameters, name="get_container_custom_data_key_6", callback=decision_1)
+
+    return
+
+
+@phantom.playbook_block()
+def set_container_custom_data_dey_value_7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("set_container_custom_data_dey_value_7() called")
+
+    id_value = container.get("id", None)
+
+    parameters = []
+
+    parameters.append({
+        "container_id": id_value,
+        "custom_key": "purge_action",
+        "custom_value": "purge",
+    })
+
+    ################################################################################
+    ## Custom Code Start
+    ################################################################################
+
+    # Write your custom code here...
+
+    ################################################################################
+    ## Custom Code End
+    ################################################################################
+
+    phantom.custom_function(custom_function="community/set_container_custom_data_dey_value", parameters=parameters, name="set_container_custom_data_dey_value_7", callback=filter_attached_email)
+
+    return
+
+
+@phantom.playbook_block()
+def set_container_custom_data_dey_value_8(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("set_container_custom_data_dey_value_8() called")
 
     id_value = container.get("id", None)
     identify_campaign__subject = json.loads(_ if (_ := phantom.get_run_data(key="identify_campaign:subject")) != "" else "null")  # pylint: disable=used-before-assignment
@@ -433,8 +433,8 @@ def set_container_custom_data_key_value_3(action=None, success=None, container=N
     parameters = []
 
     parameters.append({
-        "custom_key": "email_campaign_subject",
         "container_id": id_value,
+        "custom_key": "email_campaign_subject",
         "custom_value": identify_campaign__subject,
     })
 
@@ -448,14 +448,14 @@ def set_container_custom_data_key_value_3(action=None, success=None, container=N
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="local/Set_Container_Custom_Data_Key_Value", parameters=parameters, name="set_container_custom_data_key_value_3", callback=set_container_custom_data_key_value_4)
+    phantom.custom_function(custom_function="community/set_container_custom_data_dey_value", parameters=parameters, name="set_container_custom_data_dey_value_8", callback=set_container_custom_data_dey_value_9)
 
     return
 
 
 @phantom.playbook_block()
-def set_container_custom_data_key_value_4(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("set_container_custom_data_key_value_4() called")
+def set_container_custom_data_dey_value_9(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("set_container_custom_data_dey_value_9() called")
 
     id_value = container.get("id", None)
     identify_campaign__sender = json.loads(_ if (_ := phantom.get_run_data(key="identify_campaign:sender")) != "" else "null")  # pylint: disable=used-before-assignment
@@ -463,8 +463,8 @@ def set_container_custom_data_key_value_4(action=None, success=None, container=N
     parameters = []
 
     parameters.append({
-        "custom_key": "email_campaign_sender",
         "container_id": id_value,
+        "custom_key": "email_campaign_sender",
         "custom_value": identify_campaign__sender,
     })
 
@@ -478,7 +478,7 @@ def set_container_custom_data_key_value_4(action=None, success=None, container=N
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="local/Set_Container_Custom_Data_Key_Value", parameters=parameters, name="set_container_custom_data_key_value_4", callback=playbook__phishing_oss__purge_dispatcher_1)
+    phantom.custom_function(custom_function="community/set_container_custom_data_dey_value", parameters=parameters, name="set_container_custom_data_dey_value_9", callback=playbook__phishing_oss__purge_dispatcher_1)
 
     return
 
