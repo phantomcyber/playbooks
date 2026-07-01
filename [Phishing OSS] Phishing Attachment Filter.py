@@ -44,10 +44,10 @@ def filter_1(action=None, success=None, container=None, results=None, handle=Non
     matched_artifacts_2, matched_results_2 = phantom.condition(
         container=container,
         conditions=[
-            ["phishinginbox@splunk.com", "in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.toEmail"]
+            ["playbook_input:phishing_inbox_email", "in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.toEmail"]
         ],
         conditions_dps=[
-            ["phishinginbox@splunk.com", "in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.toEmail"]
+            ["playbook_input:phishing_inbox_email", "in", "filtered-data:filter_email_artifacts_0:condition_1:artifact:*.cef.toEmail"]
         ],
         name="filter_1:condition_2",
         delimiter=",")
@@ -68,12 +68,12 @@ def filter_2(action=None, success=None, container=None, results=None, handle=Non
         container=container,
         logical_operator="and",
         conditions=[
-            ["phishinginbox@splunk.com", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"],
-            ["splunk.com", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.toEmail"]
+            ["playbook_input:phishing_inbox_email", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"],
+            ["playbook_input:company_domain", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.toEmail"]
         ],
         conditions_dps=[
-            ["phishinginbox@splunk.com", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"],
-            ["splunk.com", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.toEmail"]
+            ["playbook_input:phishing_inbox_email", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.fromEmail"],
+            ["playbook_input:company_domain", "in", "filtered-data:filter_1:condition_1:artifact:*.cef.toEmail"]
         ],
         name="filter_2:condition_1",
         delimiter=",")

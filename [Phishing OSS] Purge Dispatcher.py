@@ -46,9 +46,6 @@ def input_validation(action=None, success=None, container=None, results=None, ha
     input_validation__inputvalidflag = False
     
     
-    #input_validation__action="unpurge"
-    #input_validation__email_sender="purge-unpurge-test@splunk.com"
-    #input_validation__email_subject ="10Apr_phishingTest_naman_2"
     
     if input_validation__action is not None and input_validation__action!="" and input_validation__email_sender is not None and input_validation__email_sender!="" and input_validation__email_sender is not None and input_validation__email_sender!="":
         input_validation__inputvalidflag=True
@@ -473,8 +470,8 @@ def get_email_sender(action=None, success=None, container=None, results=None, ha
     parameters = []
 
     parameters.append({
-        "container_id": id_value,
         "custom_key": "email_campaign_sender",
+        "container_id": id_value,
     })
 
     ################################################################################
@@ -553,8 +550,8 @@ def get_email_subject_1(action=None, success=None, container=None, results=None,
     parameters = []
 
     parameters.append({
-        "container_id": id_value,
         "custom_key": "email_campaign_subject",
+        "container_id": id_value,
     })
 
     ################################################################################
@@ -581,8 +578,8 @@ def get_action_1(action=None, success=None, container=None, results=None, handle
     parameters = []
 
     parameters.append({
-        "container_id": id_value,
         "custom_key": "purge_action",
+        "container_id": id_value,
     })
 
     ################################################################################
