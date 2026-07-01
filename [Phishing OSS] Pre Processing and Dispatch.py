@@ -147,7 +147,7 @@ def score_above_threshold(action=None, success=None, container=None, results=Non
         playbook__phishing_oss__indicator_blocks_1(action=action, success=success, container=container, results=results, handle=handle)
         playbook__phishing_oss__quarantine_device_1(action=action, success=success, container=container, results=results, handle=handle)
         playbook__phishing_oss__tip_addition_1(action=action, success=success, container=container, results=results, handle=handle)
-        set_container_custom_data_dey_value_7(action=action, success=success, container=container, results=results, handle=handle)
+        set_container_custom_data_key_value_7(action=action, success=success, container=container, results=results, handle=handle)
         return
 
     return
@@ -361,7 +361,7 @@ def identify_campaign(action=None, success=None, container=None, results=None, h
 
     phantom.save_block_result(key="identify_campaign_called", value="True")
 
-    set_container_custom_data_dey_value_8(container=container)
+    set_container_custom_data_key_value_8(container=container)
 
     return
 
@@ -395,8 +395,8 @@ def get_container_custom_data_key_6(action=None, success=None, container=None, r
 
 
 @phantom.playbook_block()
-def set_container_custom_data_dey_value_7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("set_container_custom_data_dey_value_7() called")
+def set_container_custom_data_key_value_7(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("set_container_custom_data_key_value_7() called")
 
     id_value = container.get("id", None)
 
@@ -418,14 +418,14 @@ def set_container_custom_data_dey_value_7(action=None, success=None, container=N
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="community/set_container_custom_data_dey_value", parameters=parameters, name="set_container_custom_data_dey_value_7", callback=filter_attached_email)
+    phantom.custom_function(custom_function="community/set_container_custom_data_key_value", parameters=parameters, name="set_container_custom_data_key_value_7", callback=filter_attached_email)
 
     return
 
 
 @phantom.playbook_block()
-def set_container_custom_data_dey_value_8(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("set_container_custom_data_dey_value_8() called")
+def set_container_custom_data_key_value_8(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("set_container_custom_data_key_value_8() called")
 
     id_value = container.get("id", None)
     identify_campaign__subject = json.loads(_ if (_ := phantom.get_run_data(key="identify_campaign:subject")) != "" else "null")  # pylint: disable=used-before-assignment
@@ -448,14 +448,14 @@ def set_container_custom_data_dey_value_8(action=None, success=None, container=N
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="community/set_container_custom_data_dey_value", parameters=parameters, name="set_container_custom_data_dey_value_8", callback=set_container_custom_data_dey_value_9)
+    phantom.custom_function(custom_function="community/set_container_custom_data_key_value", parameters=parameters, name="set_container_custom_data_key_value_8", callback=set_container_custom_data_key_value_9)
 
     return
 
 
 @phantom.playbook_block()
-def set_container_custom_data_dey_value_9(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    phantom.debug("set_container_custom_data_dey_value_9() called")
+def set_container_custom_data_key_value_9(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
+    phantom.debug("set_container_custom_data_key_value_9() called")
 
     id_value = container.get("id", None)
     identify_campaign__sender = json.loads(_ if (_ := phantom.get_run_data(key="identify_campaign:sender")) != "" else "null")  # pylint: disable=used-before-assignment
@@ -478,7 +478,7 @@ def set_container_custom_data_dey_value_9(action=None, success=None, container=N
     ## Custom Code End
     ################################################################################
 
-    phantom.custom_function(custom_function="community/set_container_custom_data_dey_value", parameters=parameters, name="set_container_custom_data_dey_value_9", callback=playbook__phishing_oss__purge_dispatcher_1)
+    phantom.custom_function(custom_function="community/set_container_custom_data_key_value", parameters=parameters, name="set_container_custom_data_key_value_9", callback=playbook__phishing_oss__purge_dispatcher_1)
 
     return
 
