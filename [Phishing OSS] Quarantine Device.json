@@ -1,0 +1,344 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Response",
+    "coa": {
+        "data": {
+            "description": "This playbook identifies and quarantines devices that interacted with phishing indicators by searching activity logs and isolating affected endpoints.\n",
+            "edges": [
+                {
+                    "id": "port_4_to_port_6",
+                    "sourceNode": "4",
+                    "sourcePort": "4_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_0_to_port_8",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "conditionKey": "condition_key_0",
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_8_to_port_7",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "id": "port_6_to_port_1",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "id": "port_7_to_port_9",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "9",
+                    "targetPort": "9_in"
+                },
+                {
+                    "id": "port_9_to_port_4",
+                    "sourceNode": "9",
+                    "sourcePort": "9_out",
+                    "targetNode": "4",
+                    "targetPort": "4_in"
+                }
+            ],
+            "hash": "f68cc4bd1ada1012a5c05042e56fb976a675f387",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 880,
+                    "y": 199.9999999999997
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 880,
+                    "y": 960
+                },
+                "4": {
+                    "data": {
+                        "advanced": {
+                            "customName": "device observable list",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "device_observable_list",
+                        "id": "4",
+                        "inputParameters": [
+                            "playbook_splunk_identifier_activity_analysis_1:playbook_output:observable"
+                        ],
+                        "outputVariables": [
+                            "device_list"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "4",
+                    "type": "code",
+                    "userCode": "\n    # Write your custom code here...\n    observable_list=playbook_splunk_identifier_activity_analysis_1_output_observable_values\n    #logic to extract list and make into an artifact with device list\n    phantom.debug(observable_list)\n    unique_asset_ids = set()\n    for item in observable_list:\n        if item and \"identifier_activity\" in item:\n            for activity in item[\"identifier_activity\"]:\n                if \"id\" in activity:\n                    unique_asset_ids.add(activity[\"id\"])\n    \n    device_observable_list__device_list=sorted(unique_asset_ids)\n    phantom.debug(device_observable_list__device_list)\n        \n\n",
+                    "warnings": {},
+                    "x": 860,
+                    "y": 700
+                },
+                "6": {
+                    "data": {
+                        "action": "quarantine device",
+                        "actionType": "contain",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "FireAMP",
+                        "connectorConfigs": [
+                            "cisco_fireamp"
+                        ],
+                        "connectorId": "897890aa-14f5-4d6c-b68c-e557ff30d251",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "quarantine_device_1",
+                        "id": "6",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "connector_guid": {
+                                "functionId": 1,
+                                "parameters": [
+                                    "device_observable_list:custom_function:device_list"
+                                ],
+                                "template": "%%\n{0}\n%%"
+                            }
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "connector_guid"
+                            }
+                        ],
+                        "tab": "byConnector",
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 860,
+                    "y": 820
+                },
+                "7": {
+                    "data": {
+                        "advanced": {
+                            "customName": "Parse Indicators",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 2,
+                        "functionName": "parse_indicators",
+                        "id": "7",
+                        "inputParameters": [
+                            "filtered-data:filter_1:condition_1:artifact:*.cef"
+                        ],
+                        "nestedNodeChildren": [],
+                        "nestedNodeParent": null,
+                        "outputVariables": [
+                            "file_list",
+                            "domain_list",
+                            "ip_list",
+                            "url_list"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "7",
+                    "type": "code",
+                    "userCode": "\n    # Write your custom code here...\n    indicator_artifact=filtered_artifact_0__cef[0]\n    indicators=indicator_artifact.get(\"indicators\")\n    phantom.debug(indicators)\n    \n    parse_indicators__file_list=indicators.get(\"hashes\")\n    phantom.debug(parse_indicators__file_list)\n    parse_indicators__ip_list=indicators.get(\"ips\")\n    phantom.debug(parse_indicators__ip_list)\n    parse_indicators__domain_list=indicators.get(\"domains\")\n    phantom.debug(parse_indicators__domain_list)\n    parse_indicators__url_list=indicators.get(\"urls\")\n    phantom.debug(parse_indicators__url_list)\n    #parse_indicators__email_list=indicators.get(\"emails\")\n    #phantom.debug(parse_indicators__email_list)\n\n",
+                    "warnings": {},
+                    "x": 860,
+                    "y": 459.9999999999999
+                },
+                "8": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "comparisonKey": "comparison_key_0",
+                                        "op": "==",
+                                        "param": "artifact:*.name",
+                                        "value": "SAA Indicators"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "conditionKey": "condition_key_0",
+                                "customName": "Indicator artifact",
+                                "logic": "and"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "filter_1",
+                        "id": "8",
+                        "nestedNodeChildren": [],
+                        "nestedNodeParent": null,
+                        "type": "filter"
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "filter",
+                    "warnings": {},
+                    "x": 920,
+                    "y": 300
+                },
+                "9": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "playbook_Splunk_Identifier_Activity_Analysis_1",
+                        "id": "9",
+                        "inputs": {
+                            "domain": {
+                                "datapaths": [
+                                    "parse_indicators:custom_function:domain_list"
+                                ],
+                                "deduplicate": false
+                            },
+                            "file": {
+                                "datapaths": [
+                                    "parse_indicators:custom_function:file_list"
+                                ],
+                                "deduplicate": false
+                            },
+                            "ip": {
+                                "datapaths": [
+                                    "parse_indicators:custom_function:ip_list"
+                                ],
+                                "deduplicate": false
+                            },
+                            "url": {
+                                "datapaths": [
+                                    "parse_indicators:custom_function:url_list"
+                                ],
+                                "deduplicate": false
+                            }
+                        },
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "playbookName": "Splunk_Identifier_Activity_Analysis",
+                        "playbookRepo": 1,
+                        "playbookRepoName": "community",
+                        "playbookType": "data",
+                        "synchronous": true,
+                        "type": "playbook"
+                    },
+                    "errors": {},
+                    "id": "9",
+                    "type": "playbook",
+                    "warnings": {},
+                    "x": 860,
+                    "y": 560
+                }
+            },
+            "notes": "This playbook identifies and quarantines devices that interacted with phishing indicators by searching activity logs and isolating affected endpoints.\n\nPlease replace with your own asset for FireAMP or equivalent app asset for quarantine device action."
+        },
+        "input_spec": null,
+        "output_spec": null,
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "automation",
+        "python_version": "3.13",
+        "schema": "5.0.24",
+        "version": "8.5.0.248"
+    },
+    "create_time": "2026-06-30T15:31:40.563972+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": [
+        "phishing",
+        "PhishingEmail",
+        "SAA"
+    ]
+}

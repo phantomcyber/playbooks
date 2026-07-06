@@ -1,0 +1,562 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Dynamic Analysis",
+    "coa": {
+        "data": {
+            "description": "This playbook detonates suspicious email attachments in Splunk Attack Analyzer (SAA) sandbox  and extracts indicators for downstream analysis.",
+            "edges": [
+                {
+                    "id": "port_8_to_port_20",
+                    "sourceNode": "8",
+                    "sourcePort": "8_out",
+                    "targetNode": "20",
+                    "targetPort": "20_in"
+                },
+                {
+                    "id": "port_6_to_port_24",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "24",
+                    "targetPort": "24_in"
+                },
+                {
+                    "id": "port_0_to_port_6",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_20_to_port_38",
+                    "sourceNode": "20",
+                    "sourcePort": "20_out",
+                    "targetNode": "38",
+                    "targetPort": "38_in"
+                },
+                {
+                    "id": "port_38_to_port_41",
+                    "sourceNode": "38",
+                    "sourcePort": "38_out",
+                    "targetNode": "41",
+                    "targetPort": "41_in"
+                },
+                {
+                    "id": "port_41_to_port_1",
+                    "sourceNode": "41",
+                    "sourcePort": "41_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "conditionKey": "condition_key_3",
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_24_to_port_7",
+                    "sourceNode": "24",
+                    "sourcePort": "24_out",
+                    "targetNode": "7",
+                    "targetPort": "7_in"
+                },
+                {
+                    "id": "port_7_to_port_8",
+                    "sourceNode": "7",
+                    "sourcePort": "7_out",
+                    "targetNode": "8",
+                    "targetPort": "8_in"
+                }
+            ],
+            "hash": "05c0adba883414581d1497ca5f436312dd4f1aff",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 1280,
+                    "y": -100.0000000000004
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 1280,
+                    "y": 1000
+                },
+                "20": {
+                    "data": {
+                        "advanced": {
+                            "customName": "data validation",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 4,
+                        "functionName": "data_validation",
+                        "id": "20",
+                        "inputParameters": [
+                            "get_job_summary_1:action_result.data.*.Verdict"
+                        ],
+                        "outputVariables": [
+                            "verdict"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "20",
+                    "type": "code",
+                    "userCode": "\n    # Write your custom code here...\n\n    phantom.debug(get_job_summary_1_result_item_0)\n    if get_job_summary_1_result_item_0[0] is None:\n        data_validation__verdict = \"Verdict Not Available\"\n        \n\n",
+                    "warnings": {},
+                    "x": 1260,
+                    "y": 520
+                },
+                "24": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "comparisonKey": "comparison_key_66b5454b-6c10-431e-96da-0f9b649ede9c",
+                                        "conditionIndex": 0,
+                                        "op": "!=",
+                                        "param": "attached_email_vault_id:custom_function:email_vault_id",
+                                        "value": "None"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "conditionKey": "condition_key_3",
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            }
+                        ],
+                        "functionId": 1,
+                        "functionName": "decision_1",
+                        "id": "24",
+                        "type": "decision"
+                    },
+                    "errors": {},
+                    "id": "24",
+                    "type": "decision",
+                    "warnings": {},
+                    "x": 1340,
+                    "y": 120
+                },
+                "38": {
+                    "data": {
+                        "advanced": {
+                            "customName": "Parse Indicators",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 3,
+                        "functionName": "parse_indicators",
+                        "id": "38",
+                        "inputParameters": [
+                            "get_job_summary_1:action_result.data"
+                        ],
+                        "outputVariables": [
+                            "indicator_artifact_dict",
+                            "indicator_emails",
+                            "indicator_domains",
+                            "indicator_files",
+                            "indicator_urls"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "38",
+                    "type": "code",
+                    "userCode": "\n    # Write your custom code here...\n    # Add below to a list\n    # ip , domains, urls, hashes, sender_emails \n    indicator_dict={}\n    # add dummy data\n    indicator_dict[\"ips\"]=[\"8.8.8.8\",\"1.1.1.1\"]\n    indicator_dict[\"domains\"]=[\"google.com\"]\n    indicator_dict[\"hashes\"]=[\"0f8b4b26a26210a1b11c46e840dbe7e45a972bc2\",\"13addd05d2afd58ff5e6972291d8bad0\",\"35ba7e6c6b88b5475059b82da8761711\",\"626cf679c33683f70ac13b2eaaa2df2f\",\"7888acb3101dc718625e7a69483510bd44a22bdf\",\"8aecea335ef65c481f42f9be62b60c7ed35df926\",\"c95e17a16fbda939c71c9bdf049a23e1f67fcda2c354b78234ba5acf032e0642\",\"d74cb11f3dc21afa54ee32049fbd7dfb15b20bd70f26a0dba67885095702aa4f\",\"e8b46c9daa94e265b33b7c4ffa67759de7a5faff73a1bde60baa9b39af438742\"]\n    indicator_dict[\"emails\"]=[\"attacker@senderdomain.com\",\"new@sample.com\"]\n    indicator_dict[\"urls\"]=[\"example.com/job/fd789f0f-6816-44b4-8d3e-0bd2fd082ee1\",\"sample.com/job/fd789f0f-6816-44b4-8d3e-0bd2fd082ee1\"]\n    phantom.debug(indicator_dict)\n    # dummy data that can be used for testing\n    job_summary=get_job_summary_1_result_item_0[0]\n    \n    \n    import re\n    import json\n    from pathlib import Path\n    from typing import Dict, List, Set, Any\n\n\n    # Regex patterns\n    PATTERNS = {\n        'emails': r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}',\n        'urls': r'https?://[^\\s<>\"\\']+',\n        'domains': r'(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}',\n        'md5': r'\\b[a-fA-F0-9]{32}\\b',\n        'sha1': r'\\b[a-fA-F0-9]{40}\\b',\n        'sha256': r'\\b[a-fA-F0-9]{64}\\b',\n        'ipv4': r'(?<![.\\d])(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?![.\\d])',\n    }\n\n\n    def _collect_strings(data) -> List[str]:\n        \"\"\"Recursively collect all string values from a data structure.\"\"\"\n        strings = []\n        \n        def recurse(value):\n            if isinstance(value, str):\n                strings.append(value)\n            elif isinstance(value, dict):\n                for v in value.values():\n                    recurse(v)\n            elif isinstance(value, (list, tuple)):\n                for item in value:\n                    recurse(item)\n        \n        recurse(data)\n        return strings\n\n\n    # Patterns to ignore for emails\n    EMAIL_IGNORE_PATTERNS = [\n        #r'.*@<yourcompanyname>\\.com$', # please replace with your company domain in the sld.tld format. for eg: if company domain is mycompany.com, then use r'.*@mycompany\\.com$'\n        r'.*@mail\\.gmail\\.com$',\n    ]\n\n\n    def _matches_email_ignore_pattern(email: str) -> bool:\n        \"\"\"Check if email matches any ignore pattern.\"\"\"\n        email_lower = email.lower()\n        for pattern in EMAIL_IGNORE_PATTERNS:\n            if re.match(pattern, email_lower):\n                return True\n        return False\n\n\n    def extract_emails(data, ignorelist: Set[str] = None) -> List[str]:\n        \"\"\"\n        Extract email addresses from data.\n        \n        Args:\n            data: Input data (dict, list, or string)\n            ignorelist: Set of emails to exclude. Pass an empty set to disable filtering.\n        \"\"\"\n        if ignorelist is None:\n            ignorelist = set()\n        \n        emails = set()\n        for text in _collect_strings(data):\n            emails.update(re.findall(PATTERNS['emails'], text))\n        \n        # Filter out ignored emails and patterns\n        filtered = {\n            e for e in emails \n            if e.lower() not in {i.lower() for i in ignorelist} \n            and not _matches_email_ignore_pattern(e)\n        }\n        return sorted(filtered)\n\n\n        # Patterns to ignore for URLs\n    URL_IGNORE_PATTERNS = [\n        r'.*app\\.twinwave\\.io.*',\n    ]\n\n\n    def _matches_url_ignore_pattern(url: str) -> bool:\n        \"\"\"Check if URL matches any ignore pattern.\"\"\"\n        url_lower = url.lower()\n        for pattern in URL_IGNORE_PATTERNS:\n            if re.match(pattern, url_lower):\n                return True\n        return False\n\n\n    def extract_urls(data, ignorelist: Set[str] = None) -> List[str]:\n        \"\"\"\n        Extract URLs from data.\n        \n        Args:\n            data: Input data (dict, list, or string)\n            ignorelist: Set of URLs to exclude. Pass an empty set to disable filtering.\n        \"\"\"\n        if ignorelist is None:\n            ignorelist = set()\n        \n        urls = set()\n        for text in _collect_strings(data):\n            urls.update(re.findall(PATTERNS['urls'], text))\n        \n        # Filter out ignored URLs and patterns\n        filtered = {\n            u for u in urls \n            if u.lower() not in {i.lower() for i in ignorelist} \n            and not _matches_url_ignore_pattern(u)\n        }\n        return sorted(filtered)\n\n\n    # Default domains to ignore (common benign domains)\n    DEFAULT_DOMAIN_IGNORELIST = {\n        'google.com',\n        'gmail.com',\n        'mail.google.com',\n        'googleapis.com',\n        'gstatic.com',\n        'microsoft.com',\n        'outlook.com',\n        'office.com',\n        'windows.net',\n        'header.from',\n        'org.apache.tika.parser.CompositeParser',\n        'org.apache.tika.parser.image.ImageParser',\n        'org.apache.tika.parser.ocr.TesseractOCRParser',\n        'org.apache.tika.parser.pdf.PDFParser',\n    }\n\n    # Patterns to ignore (file extensions and subdomain wildcards)\n    IGNORE_PATTERNS = [\n        r'.*\\.eml$',\n        r'.*\\.tgz$',\n        r'.*\\.json\\.gz$',\n        r'.*\\.pdf$',\n        r'.*\\.png$',\n        r'.*\\.google\\.com$',\n        r'.*gmail\\.com$',\n        r'.*splunk\\.com$',\n        r'.*twinwave\\.io$',\n        r'.*smtp\\.mailfrom.*',\n    ]\n\n\n    def _matches_ignore_pattern(domain: str) -> bool:\n        \"\"\"Check if domain matches any ignore pattern.\"\"\"\n        domain_lower = domain.lower()\n        for pattern in IGNORE_PATTERNS:\n            if re.match(pattern, domain_lower):\n                return True\n        return False\n\n\n    def extract_domains(data, ignorelist: Set[str] = None) -> List[str]:\n        \"\"\"\n        Extract domains from data.\n        \n        Args:\n            data: Input data (dict, list, or string)\n            ignorelist: Set of domains to exclude. If None, uses DEFAULT_DOMAIN_IGNORELIST.\n                       Pass an empty set to disable filtering.\n        \"\"\"\n        if ignorelist is None:\n            ignorelist = DEFAULT_DOMAIN_IGNORELIST\n        \n        domains = set()\n        for text in _collect_strings(data):\n            domains.update(re.findall(PATTERNS['domains'], text))\n        \n        # Filter out ignored domains and patterns\n        filtered = {\n            d for d in domains \n            if d.lower() not in {i.lower() for i in ignorelist} \n            and not _matches_ignore_pattern(d)\n        }\n        return sorted(filtered)\n\n\n    def extract_hashes(data) -> List[str]:\n        \"\"\"Extract file hashes (MD5, SHA1, SHA256) from data.\"\"\"\n        hashes = set()\n        for text in _collect_strings(data):\n            hashes.update(re.findall(PATTERNS['md5'], text))\n            hashes.update(re.findall(PATTERNS['sha1'], text))\n            hashes.update(re.findall(PATTERNS['sha256'], text))\n        return sorted(hashes)\n\n    \n    # Default IPs to ignore\n    DEFAULT_IP_IGNORELIST = {\n        '8.8.8.8',\n    }\n\n\n    def extract_ips(data, ignorelist: Set[str] = None) -> List[str]:\n        \"\"\"\n        Extract IPv4 addresses from data.\n        \n        Args:\n            data: Input data (dict, list, or string)\n            ignorelist: Set of IPs to exclude. If None, uses DEFAULT_IP_IGNORELIST.\n                       Pass an empty set to disable filtering.\n        \"\"\"\n        if ignorelist is None:\n            ignorelist = DEFAULT_IP_IGNORELIST\n        \n        ips = set()\n        for text in _collect_strings(data):\n            ips.update(re.findall(PATTERNS['ipv4'], text))\n        \n        # Filter out ignored IPs\n        filtered = {ip for ip in ips if ip not in ignorelist}\n        return sorted(filtered)\n    \n    def extract_iocs(data) -> Dict[str, List[str]]:\n        \"\"\"\n        Extract all IOCs (domains, email addresses, URLs, file hashes, IPs) from data.\n        \"\"\"\n        return {\n            'emails': extract_emails(data),\n            'urls': extract_urls(data),\n            'domains': extract_domains(data),\n            'hashes': extract_hashes(data),\n            'ips': extract_ips(data)\n        }\n    \n    extracted = extract_iocs(job_summary)\n    \n    \n    parse_indicators__indicator_artifact_dict=extracted#indicator_dict#\n    phantom.debug(parse_indicators__indicator_artifact_dict)\n    parse_indicators__indicator_emails = extracted.get(\"emails\")\n    parse_indicators__indicator_domains = extracted.get(\"domains\")\n    parse_indicators__indicator_files = extracted.get(\"hashes\")\n    parse_indicators__indicator_urls = extracted.get(\"urls\")\n    \n\n",
+                    "warnings": {},
+                    "x": 1260,
+                    "y": 640
+                },
+                "41": {
+                    "data": {
+                        "advanced": {
+                            "customName": "Create Indicator artifact",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "customFunction": {
+                            "draftMode": false,
+                            "name": "artifact_create",
+                            "repoName": "community"
+                        },
+                        "functionId": 11,
+                        "functionName": "create_indicator_artifact",
+                        "id": "41",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "selectMore": false,
+                        "tab": "customFunctions",
+                        "type": "utility",
+                        "utilities": {
+                            "artifact_create": {
+                                "description": "Create a new artifact with the specified attributes. Supports all fields available in /rest/artifact. Add any unlisted inputs as dictionary keys in input_json. Unsupported keys will automatically be dropped.",
+                                "fields": [
+                                    {
+                                        "dataTypes": [
+                                            "phantom container id"
+                                        ],
+                                        "description": "Container which the artifact will be added to.",
+                                        "inputType": "item",
+                                        "label": "container",
+                                        "name": "container",
+                                        "placeholder": "container:id",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The name of the new artifact, which is optional and defaults to \"artifact\".",
+                                        "inputType": "item",
+                                        "label": "name",
+                                        "name": "name",
+                                        "placeholder": "artifact",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The label of the new artifact, which is optional and defaults to \"events\"",
+                                        "inputType": "item",
+                                        "label": "label",
+                                        "name": "label",
+                                        "placeholder": "events",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            ""
+                                        ],
+                                        "description": "The severity of the new artifact, which is optional and defaults to \"Medium\". Typically this is either \"High\", \"Medium\", or \"Low\".",
+                                        "inputType": "item",
+                                        "label": "severity",
+                                        "name": "severity",
+                                        "placeholder": "Medium",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The name of the CEF field to populate in the artifact, such as \"destinationAddress\" or \"sourceDnsDomain\". Required only if cef_value is provided.",
+                                        "inputType": "item",
+                                        "label": "cef_field",
+                                        "name": "cef_field",
+                                        "placeholder": "destinationAddress",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [
+                                            "*"
+                                        ],
+                                        "description": "The value of the CEF field to populate in the artifact, such as the IP address, domain name, or file hash. Required only if cef_field is provided.",
+                                        "inputType": "item",
+                                        "label": "cef_value",
+                                        "name": "cef_value",
+                                        "placeholder": "192.0.2.192",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "The CEF data type of the data in cef_value. For example, this could be \"ip\", \"hash\", or \"domain\". Optional.",
+                                        "inputType": "item",
+                                        "label": "cef_data_type",
+                                        "name": "cef_data_type",
+                                        "placeholder": "ip",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "A comma-separated list of tags to apply to the created artifact, which is optional.",
+                                        "inputType": "item",
+                                        "label": "tags",
+                                        "name": "tags",
+                                        "placeholder": "tag1, tag2, tag3",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Either \"true\" or \"false\", depending on whether or not the new artifact should trigger the execution of any playbooks that are set to active on the label of the container the artifact will be added to. Optional and defaults to \"false\".",
+                                        "inputType": "item",
+                                        "label": "run_automation",
+                                        "name": "run_automation",
+                                        "placeholder": "false",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    },
+                                    {
+                                        "dataTypes": [],
+                                        "description": "Optional parameter to modify any extra attributes of the artifact. Input_json will be merged with other inputs. In the event of a conflict, input_json will take precedence.",
+                                        "inputType": "item",
+                                        "label": "input_json",
+                                        "name": "input_json",
+                                        "placeholder": "{\"source_data_identifier\": \"1234\", \"data\": \"5678\"}",
+                                        "renderType": "datapath",
+                                        "required": false
+                                    }
+                                ],
+                                "label": "artifact_create",
+                                "name": "artifact_create"
+                            }
+                        },
+                        "utilityType": "custom_function",
+                        "values": {
+                            "artifact_create": {
+                                "cef_data_type": null,
+                                "cef_field": "indicators",
+                                "cef_value": "parse_indicators:custom_function:indicator_artifact_dict",
+                                "container": "container:id",
+                                "input_json": "parse_indicators:custom_function:indicator_artifact_dict",
+                                "label": null,
+                                "name": "SAA Indicators",
+                                "run_automation": null,
+                                "severity": null,
+                                "tags": null
+                            }
+                        }
+                    },
+                    "errors": {},
+                    "id": "41",
+                    "type": "utility",
+                    "warnings": {},
+                    "x": 1260,
+                    "y": 780
+                },
+                "6": {
+                    "data": {
+                        "advanced": {
+                            "customName": "attached_email_vault_id",
+                            "customNameId": 0,
+                            "join": []
+                        },
+                        "functionId": 1,
+                        "functionName": "attached_email_vault_id",
+                        "id": "6",
+                        "inputParameters": [
+                            "container:id"
+                        ],
+                        "outputVariables": [
+                            "email_vault_id"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "code",
+                    "userCode": "\n    # Write your custom code here...\n    success, message, info = phantom.vault_info(\n        container_id=id_value\n    )\n    \n    phantom.debug(info)\n    \n    for item in info:\n        if item.get(\"name\",\"\") == \"attached_email.eml\" or item.get(\"name\",\"\") == \"Forwarded Message.eml\" or \".eml\" in item.get(\"name\",\"\") and item.get(\"name\",\"\") != \"email.eml\":\n            vault_info=item\n            vault_id=item.get(\"vault_id\")\n            attached_email_vault_id__email_vault_id=vault_id\n    \n    phantom.debug(attached_email_vault_id__email_vault_id)\n    \n\n",
+                    "warnings": {},
+                    "x": 1260,
+                    "y": 19.99999999999983
+                },
+                "7": {
+                    "data": {
+                        "action": "detonate file",
+                        "actionType": "generic",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "Splunk Attack Analyzer Connector for Splunk SOAR",
+                        "connectorConfigs": [
+                            "splunk_saa"
+                        ],
+                        "connectorId": "de681fee-c552-45bf-9212-827b1c7529f8",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "detonate_file_1",
+                        "id": "7",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "file": "attached_email_vault_id:custom_function:email_vault_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "file"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "7",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 1260,
+                    "y": 280
+                },
+                "8": {
+                    "data": {
+                        "action": "get job summary",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "join": []
+                        },
+                        "connector": "Splunk Attack Analyzer Connector for Splunk SOAR",
+                        "connectorConfigs": [
+                            "splunk_saa"
+                        ],
+                        "connectorId": "de681fee-c552-45bf-9212-827b1c7529f8",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "get_job_summary_1",
+                        "id": "8",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "comparisonKey": "comparison_key_0",
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "job_id": "detonate_file_1:action_result.data.*.JobID",
+                            "timeout": "5"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "job_id"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "8",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 1260,
+                    "y": 420
+                }
+            },
+            "notes": "This playbook detonates suspicious email attachments in Splunk Attack Analyzer (SAA) sandbox  and extracts indicators for downstream analysis.\n\nPlease replace with your own SAA asset or equivalent app asset for the corresponding actions.\n\nPlease update EMAIL_IGNORE_PATTERNS in Parse Indicators code block with your own company's email domains.",
+            "origin": {
+                "playbook_id": 16127,
+                "playbook_name": "[Phishing OSS] SAA Enrich",
+                "playbook_repo_id": 12,
+                "playbook_repo_name": "community"
+            }
+        },
+        "input_spec": null,
+        "output_spec": [
+            {
+                "contains": [
+                    "integer"
+                ],
+                "datapaths": [
+                    "get_job_summary_1:action_result.summary.Score"
+                ],
+                "deduplicate": false,
+                "description": "Score reported by SAA analsyis",
+                "metadata": {},
+                "name": "saa_score"
+            }
+        ],
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "automation",
+        "python_version": "3.13",
+        "schema": "5.0.24",
+        "version": "8.5.0.248"
+    },
+    "create_time": "2026-07-06T17:20:21.691006+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": [
+        "SAA",
+        "PhishingEmail"
+    ]
+}
