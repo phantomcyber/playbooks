@@ -206,13 +206,14 @@ def parse_indicators(action=None, success=None, container=None, results=None, ha
     # Add below to a list
     # ip , domains, urls, hashes, sender_emails 
     indicator_dict={}
-    #add dummy data
+    # add dummy data
     indicator_dict["ips"]=["8.8.8.8","1.1.1.1"]
-    indicator_dict["domains"]=["google.com","splunk.com"]
+    indicator_dict["domains"]=["google.com"]
     indicator_dict["hashes"]=["0f8b4b26a26210a1b11c46e840dbe7e45a972bc2","13addd05d2afd58ff5e6972291d8bad0","35ba7e6c6b88b5475059b82da8761711","626cf679c33683f70ac13b2eaaa2df2f","7888acb3101dc718625e7a69483510bd44a22bdf","8aecea335ef65c481f42f9be62b60c7ed35df926","c95e17a16fbda939c71c9bdf049a23e1f67fcda2c354b78234ba5acf032e0642","d74cb11f3dc21afa54ee32049fbd7dfb15b20bd70f26a0dba67885095702aa4f","e8b46c9daa94e265b33b7c4ffa67759de7a5faff73a1bde60baa9b39af438742"]
     indicator_dict["emails"]=["attacker@senderdomain.com","new@sample.com"]
     indicator_dict["urls"]=["example.com/job/fd789f0f-6816-44b4-8d3e-0bd2fd082ee1","sample.com/job/fd789f0f-6816-44b4-8d3e-0bd2fd082ee1"]
     phantom.debug(indicator_dict)
+    # dummy data that can be used for testing
     job_summary=get_job_summary_1_result_item_0[0]
     
     
@@ -254,7 +255,7 @@ def parse_indicators(action=None, success=None, container=None, results=None, ha
 
     # Patterns to ignore for emails
     EMAIL_IGNORE_PATTERNS = [
-        r'.*@splunk\.com$',
+        #r'.*@<yourcompanyname>\.com$', # please replace with your company domain in the sld.tld format. for eg: if company domain is mycompany.com, then use r'.*@mycompany\.com$'
         r'.*@mail\.gmail\.com$',
     ]
 
