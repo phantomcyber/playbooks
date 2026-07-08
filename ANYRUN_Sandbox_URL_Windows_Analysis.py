@@ -5,7 +5,6 @@ This playbook is designed for automated URL analysis in the ANY.RUN Sandbox on a
 
 import phantom.rules as phantom
 import json
-from datetime import datetime, timedelta
 
 
 @phantom.playbook_block()
@@ -51,7 +50,7 @@ def detonate_url_windows(action=None, success=None, container=None, results=None
                 "opt_privacy_type": "bylink",
                 "opt_timeout": 120,
                 "obj_ext_extension": True,
-                "user_tags": "splunk-soar-analysis"
+                "user_tags": "splunk-soar"
             })
 
     ################################################################################
@@ -64,7 +63,7 @@ def detonate_url_windows(action=None, success=None, container=None, results=None
     ## Custom Code End
     ################################################################################
 
-    phantom.act("detonate url windows", parameters=parameters, name="detonate_url_windows", assets=["fkravtsov-test-2"], callback=get_analysis_verdict)
+    phantom.act("detonate url windows", parameters=parameters, name="detonate_url_windows", assets=["anyrun"], callback=get_analysis_verdict)
 
     return
 
@@ -101,7 +100,7 @@ def get_iocs(action=None, success=None, container=None, results=None, handle=Non
     ## Custom Code End
     ################################################################################
 
-    phantom.act("get iocs", parameters=parameters, name="get_iocs", assets=["fkravtsov-test-2"], callback=build_output_malicious)
+    phantom.act("get iocs", parameters=parameters, name="get_iocs", assets=["anyrun"], callback=build_output_malicious)
 
     return
 
@@ -138,7 +137,7 @@ def get_analysis_verdict(action=None, success=None, container=None, results=None
     ## Custom Code End
     ################################################################################
 
-    phantom.act("get analysis verdict", parameters=parameters, name="get_analysis_verdict", assets=["fkravtsov-test-2"], callback=decision_2)
+    phantom.act("get analysis verdict", parameters=parameters, name="get_analysis_verdict", assets=["anyrun"], callback=decision_2)
 
     return
 
@@ -203,7 +202,7 @@ def get_report(action=None, success=None, container=None, results=None, handle=N
     ## Custom Code End
     ################################################################################
 
-    phantom.act("get report", parameters=parameters, name="get_report", assets=["fkravtsov-test-2"], callback=get_report_html)
+    phantom.act("get report", parameters=parameters, name="get_report", assets=["anyrun"], callback=get_report_html)
 
     return
 
@@ -241,7 +240,7 @@ def get_report_html(action=None, success=None, container=None, results=None, han
     ## Custom Code End
     ################################################################################
 
-    phantom.act("get report html", parameters=parameters, name="get_report_html", assets=["fkravtsov-test-2"], callback=get_iocs)
+    phantom.act("get report html", parameters=parameters, name="get_report_html", assets=["anyrun"], callback=get_iocs)
 
     return
 
@@ -264,7 +263,13 @@ def build_output_malicious(action=None, success=None, container=None, results=No
     get_analysis_verdict_result_item_1 = [item[1] for item in get_analysis_verdict_result_data]
     get_analysis_verdict_result_item_2 = [item[2] for item in get_analysis_verdict_result_data]
 
-    build_output_malicious__anyrun_analysis_results = None
+    build_output_malicious__anyrun_analysis_results = [
+        get_report_html_result_item_0,
+        get_report_html_result_item_1,
+        get_analysis_verdict_result_item_0,
+        get_analysis_verdict_result_item_1,
+        get_analysis_verdict_result_item_2
+    ]
 
     ################################################################################
     ## Custom Code Start
@@ -296,15 +301,20 @@ def build_output_safe(action=None, success=None, container=None, results=None, h
     # the observables data path.
     ################################################################################
 
-    get_report_1_result_data = phantom.collect2(container=container, datapath=["get_report_1:action_result.data.*.analysis_url"], action_results=results)
+    get_report_result_data = phantom.collect2(container=container, datapath=["get_report:action_result.data.*.analysis_url"], action_results=results)
     get_analysis_verdict_result_data = phantom.collect2(container=container, datapath=["get_analysis_verdict:action_result.data.*.object_value","get_analysis_verdict:action_result.data.*.object_type","get_analysis_verdict:action_result.data.*.verdict"], action_results=results)
 
-    get_report_1_result_item_0 = [item[0] for item in get_report_1_result_data]
+    get_report_result_item_0 = [item[0] for item in get_report_result_data]
     get_analysis_verdict_result_item_0 = [item[0] for item in get_analysis_verdict_result_data]
     get_analysis_verdict_result_item_1 = [item[1] for item in get_analysis_verdict_result_data]
     get_analysis_verdict_result_item_2 = [item[2] for item in get_analysis_verdict_result_data]
 
-    build_output_safe__anyrun_analysis_results = None
+    build_output_safe__anyrun_analysis_results = [
+        get_report_result_item_0,
+        get_analysis_verdict_result_item_0,
+        get_analysis_verdict_result_item_1,
+        get_analysis_verdict_result_item_2
+    ]
 
     ################################################################################
     ## Custom Code Start
@@ -316,7 +326,7 @@ def build_output_safe(action=None, success=None, container=None, results=None, h
     ## Custom Code End
     ################################################################################
 
-    phantom.save_block_result(key="build_output_safe__inputs:0:get_report_1:action_result.data.*.analysis_url", value=json.dumps(get_report_1_result_item_0))
+    phantom.save_block_result(key="build_output_safe__inputs:0:get_report:action_result.data.*.analysis_url", value=json.dumps(get_report_result_item_0))
     phantom.save_block_result(key="build_output_safe__inputs:1:get_analysis_verdict:action_result.data.*.object_value", value=json.dumps(get_analysis_verdict_result_item_0))
     phantom.save_block_result(key="build_output_safe__inputs:2:get_analysis_verdict:action_result.data.*.object_type", value=json.dumps(get_analysis_verdict_result_item_1))
     phantom.save_block_result(key="build_output_safe__inputs:3:get_analysis_verdict:action_result.data.*.verdict", value=json.dumps(get_analysis_verdict_result_item_2))
@@ -339,9 +349,9 @@ def on_finish(container, summary):
     ################################################################################
 
     build_output__anyrun_analysis_results = json.loads(_ if (_ := phantom.get_run_data(
-        key="build_output:anyrun_analysis_results")) != "" else "null")  # pylint: disable=used-before-assignment
+        key="build_output_malicious:anyrun_analysis_results")) != "" else "null")  # pylint: disable=used-before-assignment
     build_output_1__anyrun_analysis_results = json.loads(_ if (_ := phantom.get_run_data(
-        key="build_output_1:anyrun_analysis_results")) != "" else "null")  # pylint: disable=used-before-assignment
+        key="build_output_safe:anyrun_analysis_results")) != "" else "null")  # pylint: disable=used-before-assignment
 
     if build_output__anyrun_analysis_results:
         output["results"] = build_output__anyrun_analysis_results
