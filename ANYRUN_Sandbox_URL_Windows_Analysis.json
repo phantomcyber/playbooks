@@ -1,0 +1,559 @@
+{
+    "blockly": false,
+    "blockly_xml": "<xml></xml>",
+    "category": "Dynamic Analysis",
+    "coa": {
+        "data": {
+            "customCode": null,
+            "description": "This playbook is designed for automated URL analysis in the ANY.RUN Sandbox on a Windows virtual machine. It enriches artifacts through a ready-made workflow: submitting objects to the sandbox, retrieving verdicts, extracting IoCs, and generating detailed reports on malicious objects.",
+            "edges": [
+                {
+                    "id": "port_0_to_port_3",
+                    "sourceNode": "0",
+                    "sourcePort": "0_out",
+                    "targetNode": "3",
+                    "targetPort": "3_in"
+                },
+                {
+                    "id": "port_3_to_port_17",
+                    "sourceNode": "3",
+                    "sourcePort": "3_out",
+                    "targetNode": "17",
+                    "targetPort": "17_in"
+                },
+                {
+                    "id": "port_17_to_port_18",
+                    "sourceNode": "17",
+                    "sourcePort": "17_out",
+                    "targetNode": "18",
+                    "targetPort": "18_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "conditionKey": "condition_key_2",
+                            "index": 1
+                        }
+                    ],
+                    "id": "port_18_to_port_19",
+                    "sourceNode": "18",
+                    "sourcePort": "18_out",
+                    "targetNode": "19",
+                    "targetPort": "19_in"
+                },
+                {
+                    "id": "port_19_to_port_23",
+                    "sourceNode": "19",
+                    "sourcePort": "19_out",
+                    "targetNode": "23",
+                    "targetPort": "23_in"
+                },
+                {
+                    "id": "port_23_to_port_6",
+                    "sourceNode": "23",
+                    "sourcePort": "23_out",
+                    "targetNode": "6",
+                    "targetPort": "6_in"
+                },
+                {
+                    "id": "port_6_to_port_24",
+                    "sourceNode": "6",
+                    "sourcePort": "6_out",
+                    "targetNode": "24",
+                    "targetPort": "24_in"
+                },
+                {
+                    "id": "port_24_to_port_1",
+                    "sourceNode": "24",
+                    "sourcePort": "24_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                },
+                {
+                    "conditions": [
+                        {
+                            "conditionKey": "condition_key_1",
+                            "index": 0
+                        }
+                    ],
+                    "id": "port_18_to_port_25",
+                    "sourceNode": "18",
+                    "sourcePort": "18_out",
+                    "targetNode": "25",
+                    "targetPort": "25_in"
+                },
+                {
+                    "id": "port_25_to_port_1",
+                    "sourceNode": "25",
+                    "sourcePort": "25_out",
+                    "targetNode": "1",
+                    "targetPort": "1_in"
+                }
+            ],
+            "hash": "f2c1676787b8848d0ab6e32608b4c0f0b8a6d571",
+            "nodes": {
+                "0": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_start",
+                        "id": "0",
+                        "type": "start"
+                    },
+                    "errors": {},
+                    "id": "0",
+                    "type": "start",
+                    "warnings": {},
+                    "x": 190,
+                    "y": -1.9184653865522705e-13
+                },
+                "1": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "functionName": "on_finish",
+                        "id": "1",
+                        "type": "end"
+                    },
+                    "errors": {},
+                    "id": "1",
+                    "type": "end",
+                    "warnings": {},
+                    "x": 190,
+                    "y": 1260
+                },
+                "17": {
+                    "data": {
+                        "action": "get analysis verdict",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "get analysis verdict",
+                            "customNameId": 0,
+                            "description": "Retrieves the verdict based on the results of analyzing the URL by analysis_id",
+                            "join": [],
+                            "note": "Retrieves the verdict based on the results of analyzing the URL by analysis_id"
+                        },
+                        "connector": "ANY.RUN",
+                        "connectorConfigs": [
+                            "anyrun"
+                        ],
+                        "connectorId": "22a6a703-24dd-41eb-9736-1d6067e56abf",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "get_analysis_verdict",
+                        "id": "17",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "analysis_id": "detonate_url_windows:action_result.data.*.analysis_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "analysis_id"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "17",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 170,
+                    "y": 296
+                },
+                "18": {
+                    "data": {
+                        "advanced": {
+                            "join": []
+                        },
+                        "conditions": [
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 0,
+                                        "op": "==",
+                                        "param": "get_analysis_verdict:action_result.data.*.verdict",
+                                        "value": "No threats detected"
+                                    }
+                                ],
+                                "conditionIndex": 0,
+                                "conditionKey": "condition_key_1",
+                                "customName": "No threats detected",
+                                "display": "If",
+                                "logic": "and",
+                                "type": "if"
+                            },
+                            {
+                                "comparisons": [
+                                    {
+                                        "conditionIndex": 1,
+                                        "op": "==",
+                                        "param": "",
+                                        "value": ""
+                                    }
+                                ],
+                                "conditionIndex": 1,
+                                "conditionKey": "condition_key_2",
+                                "customName": "Malicious or suspicious",
+                                "display": "Else",
+                                "logic": "and",
+                                "type": "else"
+                            }
+                        ],
+                        "functionId": 2,
+                        "functionName": "decision_2",
+                        "id": "18",
+                        "type": "decision"
+                    },
+                    "errors": {},
+                    "id": "18",
+                    "type": "decision",
+                    "warnings": {},
+                    "x": 250,
+                    "y": 444
+                },
+                "19": {
+                    "customCode": null,
+                    "data": {
+                        "action": "get report",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "get report",
+                            "customNameId": 0,
+                            "description": "Retrieves the JSON Report based on the results of analyzing the Malicious or Suspicious URL by analysis_id",
+                            "join": [],
+                            "note": "Retrieves the JSON Report based on the results of analyzing the Malicious or Suspicious URL by analysis_id"
+                        },
+                        "connector": "ANY.RUN",
+                        "connectorConfigs": [
+                            "anyrun"
+                        ],
+                        "connectorId": "22a6a703-24dd-41eb-9736-1d6067e56abf",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "get_report",
+                        "id": "19",
+                        "loop": {
+                            "conditions": [
+                                {
+                                    "comparisons": [
+                                        {
+                                            "conditionIndex": 0,
+                                            "op": "==",
+                                            "param": "",
+                                            "value": ""
+                                        }
+                                    ],
+                                    "conditionIndex": 0,
+                                    "conditionKey": "condition_key_0",
+                                    "display": "If",
+                                    "logic": "and",
+                                    "type": "if"
+                                }
+                            ],
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "analysis_id": "detonate_url_windows:action_result.data.*.analysis_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "analysis_id"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "19",
+                    "type": "action",
+                    "userCode": null,
+                    "warnings": {},
+                    "x": 1.4210854715202004e-14,
+                    "y": 624
+                },
+                "23": {
+                    "data": {
+                        "action": "get report html",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "get report html",
+                            "customNameId": 0,
+                            "description": "Retrieves the HTML Report based on the results of analyzing the Malicious or Suspicious URL by analysis_id",
+                            "join": [],
+                            "note": "Retrieves the HTML Report based on the results of analyzing the Malicious or Suspicious URL by analysis_id"
+                        },
+                        "connector": "ANY.RUN",
+                        "connectorConfigs": [
+                            "anyrun"
+                        ],
+                        "connectorId": "22a6a703-24dd-41eb-9736-1d6067e56abf",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "get_report_html",
+                        "id": "23",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "analysis_id": "detonate_url_windows:action_result.data.*.analysis_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "analysis_id"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "23",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 1.4210854715202004e-14,
+                    "y": 772
+                },
+                "24": {
+                    "data": {
+                        "advanced": {
+                            "customName": "build output malicious",
+                            "customNameId": 0,
+                            "description": "This block uses custom code to generate an observable dictionary to output into the observables data path.",
+                            "join": [],
+                            "note": "This block uses custom code to generate an observable dictionary to output into the observables data path."
+                        },
+                        "functionId": 2,
+                        "functionName": "build_output_malicious",
+                        "id": "24",
+                        "inputParameters": [
+                            "detonate_url_windows:action_result.data.*.analysis_url",
+                            "get_analysis_verdict:action_result.data.*.object_value",
+                            "get_analysis_verdict:action_result.data.*.object_type",
+                            "get_analysis_verdict:action_result.data.*.verdict",
+                            "get_report_html:action_result.data.*.tags"
+                        ],
+                        "nestedNodeChildren": [],
+                        "nestedNodeParent": null,
+                        "outputVariables": [
+                            "anyrun_analysis_results"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "24",
+                    "type": "code",
+                    "userCode": "   \n   \n    \n",
+                    "warnings": {},
+                    "x": 0,
+                    "y": 1080
+                },
+                "25": {
+                    "data": {
+                        "advanced": {
+                            "customName": "build output safe",
+                            "customNameId": 0,
+                            "description": "This block uses custom code to generate an observable dictionary to output into the observables data path.",
+                            "join": [],
+                            "note": "This block uses custom code to generate an observable dictionary to output into the observables data path."
+                        },
+                        "functionId": 1,
+                        "functionName": "build_output_safe",
+                        "id": "25",
+                        "inputParameters": [
+                            "detonate_url_windows:action_result.data.*.analysis_url",
+                            "get_analysis_verdict:action_result.data.*.object_value",
+                            "get_analysis_verdict:action_result.data.*.object_type",
+                            "get_analysis_verdict:action_result.data.*.verdict"
+                        ],
+                        "nestedNodeChildren": [],
+                        "nestedNodeParent": null,
+                        "outputVariables": [
+                            "anyrun_analysis_results"
+                        ],
+                        "type": "code"
+                    },
+                    "errors": {},
+                    "id": "25",
+                    "type": "code",
+                    "userCode": "   \n   \n    \n",
+                    "warnings": {
+                        "config": [
+                            "Reconfigure invalid datapath."
+                        ]
+                    },
+                    "x": 340,
+                    "y": 1060
+                },
+                "3": {
+                    "data": {
+                        "action": "detonate url windows",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "detonate url windows",
+                            "customNameId": 0,
+                            "description": "Submits URL for analysis in ANY.RUN Sandbox by input value",
+                            "join": [],
+                            "note": "Submits URL for analysis in ANY.RUN Sandbox by input value"
+                        },
+                        "connector": "ANY.RUN",
+                        "connectorConfigs": [
+                            "anyrun"
+                        ],
+                        "connectorId": "22a6a703-24dd-41eb-9736-1d6067e56abf",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "detonate_url_windows",
+                        "id": "3",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "obj_url": "playbook_input:url",
+                            "env_type": "complete",
+                            "env_locale": "en-US",
+                            "env_bitness": 64,
+                            "env_version": 10,
+                            "obj_ext_browser": "Microsoft Edge",
+                            "opt_network_connect": true,
+                            "opt_network_fakenet": false,
+                            "opt_network_tor": false,
+                            "opt_network_geo": "fastest",
+                            "opt_network_mitm": false,
+                            "opt_network_residential_proxy": false,
+                            "opt_network_residential_proxy_geo": "fastest",
+                            "opt_privacy_type": "bylink",
+                            "opt_timeout": 120,
+                            "obj_ext_extension": true,
+                            "user_tags": "splunk-soar-analysis"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "obj_url"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "3",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 170,
+                    "y": 148
+                },
+                "6": {
+                    "data": {
+                        "action": "get iocs",
+                        "actionType": "investigate",
+                        "advanced": {
+                            "customName": "get iocs",
+                            "customNameId": 0,
+                            "description": "Retrieves the CSV Report with IoCs extracted from URL analysis by analysis_id",
+                            "join": [],
+                            "note": "Retrieves the CSV Report with IoCs extracted from URL analysis by analysis_id"
+                        },
+                        "connector": "ANY.RUN",
+                        "connectorConfigs": [
+                            "anyrun"
+                        ],
+                        "connectorId": "22a6a703-24dd-41eb-9736-1d6067e56abf",
+                        "connectorVersion": "v1",
+                        "functionId": 1,
+                        "functionName": "get_iocs",
+                        "id": "6",
+                        "loop": {
+                            "enabled": false,
+                            "exitAfterUnit": "m",
+                            "exitAfterValue": 10,
+                            "exitConditionEnabled": false,
+                            "exitLoopAfter": 2,
+                            "pauseUnit": "m",
+                            "pauseValue": 2
+                        },
+                        "parameters": {
+                            "analysis_id": "get_analysis_verdict:action_result.parameter.analysis_id"
+                        },
+                        "requiredParameters": [
+                            {
+                                "data_type": "string",
+                                "field": "analysis_id"
+                            }
+                        ],
+                        "type": "action"
+                    },
+                    "errors": {},
+                    "id": "6",
+                    "type": "action",
+                    "warnings": {},
+                    "x": 1.4210854715202004e-14,
+                    "y": 920
+                }
+            },
+            "notes": "",
+            "origin": {
+                "playbook_id": 217,
+                "playbook_name": "ANYRUN_Sandbox_URL_Windows_Analysis",
+                "playbook_repo_id": 2,
+                "playbook_repo_name": "local"
+            }
+        },
+        "input_spec": [
+            {
+                "contains": [
+                    "url"
+                ],
+                "description": "URL you want to submit",
+                "name": "url"
+            }
+        ],
+        "output_spec": [
+            {
+                "contains": [],
+                "datapaths": [],
+                "deduplicate": false,
+                "description": "",
+                "metadata": {},
+                "name": "results"
+            }
+        ],
+        "playbook_trigger": "artifact_created",
+        "playbook_type": "data",
+        "python_version": "3.13",
+        "schema": "5.0.20",
+        "version": "6.4.1.361"
+    },
+    "create_time": "2026-02-16T13:23:12.941508+00:00",
+    "draft_mode": false,
+    "labels": [
+        "*"
+    ],
+    "tags": []
+}
