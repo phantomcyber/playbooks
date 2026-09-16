@@ -26,7 +26,7 @@ def detonate_url_windows(action=None, success=None, container=None, results=None
     # Submits URL for analysis in ANY.RUN Sandbox by vault_id(s)
     ################################################################################
 
-    playbook_input_url = phantom.collect2(container=container, datapath=["playbook_input:url"])
+    playbook_input_url = phantom.collect2(container=container, datapath=["artifact:*.cef.requestURL"])
 
     parameters = []
 

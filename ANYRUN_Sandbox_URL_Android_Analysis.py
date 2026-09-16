@@ -26,7 +26,7 @@ def detonate_url_android(action=None, success=None, container=None, results=None
     # Submits URL for analysis in ANY.RUN Sandbox by vault_id(s)
     ################################################################################
 
-    playbook_input_url = phantom.collect2(container=container, datapath=["playbook_input:url"])
+    playbook_input_url = phantom.collect2(container=container, datapath=["artifact:*.cef.requestURL"])
 
     parameters = []
 
@@ -45,7 +45,7 @@ def detonate_url_android(action=None, success=None, container=None, results=None
                 "opt_network_residential_proxy_geo": "fastest",
                 "opt_privacy_type": "bylink",
                 "opt_timeout": 120,
-                "user_tags": "splunk-soar-analysis",
+                "user_tags": "splunk-soar",
             })
 
     ################################################################################

@@ -63,7 +63,7 @@ def detonate_file_windows(action=None, success=None, container=None, results=Non
     # Submits file for analysis in ANY.RUN Sandbox by vault_id(s)
     ################################################################################
 
-    playbook_input_vault_id = phantom.collect2(container=container, datapath=["playbook_input:vault_id"])
+    playbook_input_vault_id = phantom.collect2(container=container, datapath=["artifact:*.cef.vaultId"])
 
     parameters = []
 
@@ -90,7 +90,7 @@ def detonate_file_windows(action=None, success=None, container=None, results=Non
                 "obj_ext_startfolder": "temp",
                 "obj_force_elevation": False,
                 "auto_confirm_uac": True,
-                "user_tags": "splunk-soar-analysis"
+                "user_tags": "splunk-soar"
             })
 
     ################################################################################
